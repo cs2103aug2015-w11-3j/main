@@ -6,9 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-// Main class
 
-public class Celebi extends Application {
+public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
