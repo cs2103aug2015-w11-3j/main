@@ -1,12 +1,10 @@
 package common;
 
-import logic.Logic;
-
 public class Common {
 	
 static Common instance;
 	
-	private String usrFileDirectory;		// User data file directory
+	private String usrFileDirectory;						// User data file directory
 	private final String configDirectory = "usr.conf";		// Config to store global settings
 
 	public static Common getInstance(){
@@ -25,7 +23,6 @@ static Common instance;
 	}
 	public String getUsrFileDirectory(){
 		if(usrFileDirectory == null){
-			setUpFileDirectory();
 		}
 		return usrFileDirectory;
 	}

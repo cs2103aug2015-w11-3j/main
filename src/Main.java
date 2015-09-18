@@ -1,3 +1,17 @@
+import ui.UI;
+import ui.UIInterface;
+
+public class Main{
+	public static void main(String[] args){
+		UIInterface mUI = new UI();
+		mUI.init();
+	}
+}
+
+
+
+/* Snippet for GUI
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -5,7 +19,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-
 
 public class Main extends Application {
 	public static void main(String[] args) {
@@ -35,3 +48,4 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 }
+*/
