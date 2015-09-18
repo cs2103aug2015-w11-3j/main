@@ -22,7 +22,7 @@ public class CelebiBag {
 		return celebis.get(index);
 	}
 	
-	public Celebi addtCelebi(Celebi c) {
+	public Celebi addCelebi(Celebi c) {
 		// TODO
 		
 		return null;

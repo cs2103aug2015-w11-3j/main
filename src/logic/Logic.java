@@ -1,8 +1,8 @@
 package logic;
 
-import common.Celebi;
-import common.Celebi.Command;
 import common.CelebiBag;
+import parser.ParsedCommand;
+import parser.ParsedCommand.Command;
 import parser.Parser;
 import parser.ParserInterface;
 import storage.Storage;
@@ -32,7 +32,7 @@ public class Logic implements LogicInterface {
 
 	@Override
 	public Command executeCommand(String cmd) {
-		Celebi rtnCelebi = parser.parseCommand(cmd);
+		ParsedCommand rtnCelebi = parser.parseCommand(cmd);
 		// DO things with it
 		switch (rtnCelebi.getCmd()) {
 		case Add:

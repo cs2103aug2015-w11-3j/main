@@ -1,8 +1,5 @@
 package parser;
 
-import common.Celebi;
-import common.Celebi.Command;
-
 public class Parser implements ParserInterface {
 
 	@Override
@@ -13,19 +10,13 @@ public class Parser implements ParserInterface {
 	}
 
 	@Override
-	public Celebi parseCommand(String s) {
-		Celebi c = new Celebi();
+	public ParsedCommand parseCommand(String s) {
+		ParsedCommand c = new ParsedCommand();
 		if (s.equals("quit")) {
-			c.setCmd(Command.Quit);
+			c.setCmd(ParsedCommand.Command.Quit);
 			System.out.println("parser received quit");
 		}
 		return c;
-	}
-
-	@Override
-	public Celebi updateCelebi(Celebi c) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

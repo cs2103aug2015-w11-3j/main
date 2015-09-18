@@ -2,11 +2,11 @@ package ui;
 
 import java.util.Scanner;
 
-import common.Celebi.Command;
 import common.CelebiBag;
 import common.Common;
 import logic.Logic;
 import logic.LogicInterface;
+import parser.ParsedCommand.Command;
 
 public class UI implements UIInterface {
 
@@ -41,9 +41,8 @@ public class UI implements UIInterface {
 			Command cmd = logic.executeCommand(sc.nextLine());
 			switch (cmd) {
 			case Add:
-				CelebiBag cb;
+				CelebiBag cb = logic.getCelebiBag();
 				System.out.println("Add entered.");
-				cb = logic.getCelebiBag();
 			case Quit:
 				System.out.println("Quit entered.");
 				isRunning = false;
