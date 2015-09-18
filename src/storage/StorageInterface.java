@@ -1,11 +1,11 @@
 package storage;
 
-import common.CelebiContainer;
+import common.CelebiBag;
 
 public interface StorageInterface {
 	public void init();
 
-	public boolean load(String s, CelebiContainer c);
+	public boolean load(String s, CelebiBag c);
 	
-	public void save(CelebiContainer c);
+	public void save(CelebiBag c);
 }

@@ -1,6 +1,6 @@
 package storage;
 
-import common.CelebiContainer;
+import common.CelebiBag;
 
 public class Storage implements StorageInterface {
 
@@ -15,13 +15,13 @@ public class Storage implements StorageInterface {
 
 
 	@Override
-	public void save(CelebiContainer c) {
+	public void save(CelebiBag c) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public boolean load(String s, CelebiContainer c) {
+	public boolean load(String s, CelebiBag c) {
 		
 		boolean loadSuccessful = true;
 		return loadSuccessful;

@@ -3,6 +3,7 @@ package ui;
 import java.util.Scanner;
 
 import common.Celebi.Command;
+import common.CelebiBag;
 import common.Common;
 import logic.Logic;
 import logic.LogicInterface;
@@ -39,6 +40,10 @@ public class UI implements UIInterface {
 		while (isRunning) {
 			Command cmd = logic.executeCommand(sc.nextLine());
 			switch (cmd) {
+			case Add:
+				CelebiBag cb;
+				System.out.println("Add entered.");
+				cb = logic.getCelebiBag();
 			case Quit:
 				System.out.println("Quit entered.");
 				isRunning = false;

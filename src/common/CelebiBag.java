@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Storage for Celebis
  * Provides sorting
  */
-public class CelebiContainer {
+public class CelebiBag {
 	
 	public enum SortBy{
 		
@@ -14,7 +14,7 @@ public class CelebiContainer {
 	
 	private ArrayList<Celebi> celebis;
 	
-	public CelebiContainer(){
+	public CelebiBag(){
 		celebis = new ArrayList<Celebi>();
 	}
 	
@@ -31,8 +31,8 @@ public class CelebiContainer {
 	/*
 	 * Sort will return a new container with sorted type
 	 */
-	public CelebiContainer sort(SortBy attribute){
-		CelebiContainer newContainer = new CelebiContainer();
+	public CelebiBag sort(SortBy attribute){
+		CelebiBag newContainer = new CelebiBag();
 		return newContainer;
 	}
 }

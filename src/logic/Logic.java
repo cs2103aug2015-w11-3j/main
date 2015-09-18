@@ -2,7 +2,7 @@ package logic;
 
 import common.Celebi;
 import common.Celebi.Command;
-import common.CelebiContainer;
+import common.CelebiBag;
 import parser.Parser;
 import parser.ParserInterface;
 import storage.Storage;
@@ -12,7 +12,7 @@ public class Logic implements LogicInterface {
 
 	StorageInterface storage;
 	ParserInterface parser;
-	CelebiContainer mContainer;
+	CelebiBag mBag;
 
 	public Logic() {
 
@@ -49,7 +49,13 @@ public class Logic implements LogicInterface {
 	@Override
 	public boolean initData(String s) {
 		
-		return storage.load(s, mContainer);
+		return storage.load(s, mBag);
+	}
+
+	@Override
+	public CelebiBag getCelebiBag() {
+		// TODO Auto-generated method stub
+		return mBag;
 	}
 
 }
