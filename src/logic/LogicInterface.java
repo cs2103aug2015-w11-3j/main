@@ -1,9 +1,13 @@
 package logic;
 
-import common.CelebiContainer;
+import common.Celebi;
 
 public interface LogicInterface {
+
 	public void init();
-	public CelebiContainer executeCommand();
-	
+
+	public boolean initData(String s); // Returns true if successfully init data
+
+	public Celebi.Command executeCommand(String cmd);
+
 }

@@ -1,34 +1,55 @@
 package logic;
 
+import common.Celebi;
+import common.Celebi.Command;
 import common.CelebiContainer;
-import common.Common;
+import parser.Parser;
+import parser.ParserInterface;
 import storage.Storage;
 import storage.StorageInterface;
 
 public class Logic implements LogicInterface {
-	
-	StorageInterface storage;
-	
-	public Logic(){
-		
-	}
 
-	public void setUpFileDirectory() {
-		String fileDir = Common.getInstance().getUsrFileDirectory();
-		
+	StorageInterface storage;
+	ParserInterface parser;
+	CelebiContainer mContainer;
+
+	public Logic() {
+
 	}
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
+		System.out.println("Logic Init");
+		
 		storage = new Storage();
+		storage.init();
+		parser = new Parser();
+		parser.init();
+		
+		System.out.println("Logic Init complete");
 	}
 
 	@Override
-	public CelebiContainer executeCommand() {
-		// TODO Auto-generated method stub
-		return null;
+	public Command executeCommand(String cmd) {
+		Celebi rtnCelebi = parser.parseCommand(cmd);
+		// DO things with it
+		switch (rtnCelebi.getCmd()) {
+		case Add:
+			break;
+		case Quit:
+			System.out.println("Logic received quit");
+			break;
+		default:
+			break;
+		}
+		return rtnCelebi.getCmd();
 	}
-	
-	
+
+	@Override
+	public boolean initData(String s) {
+		
+		return storage.load(s, mContainer);
+	}
+
 }
