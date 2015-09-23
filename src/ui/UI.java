@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import common.CelebiBag;
 import common.Common;
+import logic.IntegrityCommandException;
 import logic.Logic;
 import logic.LogicInterface;
 import parser.ParsedCommand.Command;
@@ -38,7 +39,13 @@ public class UI implements UIInterface {
 		Scanner sc = new Scanner(System.in);
 		boolean isRunning = true;
 		while (isRunning) {
-			Command cmd = logic.executeCommand(sc.nextLine());
+			Command cmd = null;
+			try {
+				cmd = logic.executeCommand(sc.nextLine());
+			} catch (IntegrityCommandException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			switch (cmd) {
 			case Add:
 				CelebiBag cb = logic.getCelebiBag();
