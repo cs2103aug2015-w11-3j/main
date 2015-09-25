@@ -1,5 +1,6 @@
 package storage;
 
+import common.Celebi;
 import common.CelebiBag;
 
 public interface StorageInterface {
@@ -7,5 +8,5 @@ public interface StorageInterface {
 
 	public boolean load(String s, CelebiBag c);
 	
-	public void save(CelebiBag c);
+	public Celebi save(Celebi c);
 }
