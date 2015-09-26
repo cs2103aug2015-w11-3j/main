@@ -4,13 +4,17 @@ import java.util.Date;
 
 /*
  * Our task object.
- * Stores data
+ * Stores task data
  */
 public class Celebi {
 	private int cId;
 	private String cName;
 	private Date cStart;
 	private Date cEnd;
+	boolean cIsComplete;
+	// ArrayList<String> tags;
+	// int priorityLevel; // Unknown usage
+	// ArrayList<TimePeriod> blockOffPeriods;
 	
 	// constructor
 	public Celebi (String name, Date start, Date end) {
@@ -20,7 +24,12 @@ public class Celebi {
 	}
 	
 	
+
 	// setters
+	public void setComplete(boolean isComplete) {
+		cIsComplete = isComplete;
+	}
+	
 	public void setId(int id) {
 		cId = id;
 	}
@@ -39,6 +48,10 @@ public class Celebi {
 	
 	
 	//getters
+	public boolean isComplete() {
+		return cIsComplete;
+	}
+	
 	public int getId() {
 		return cId;
 	}
