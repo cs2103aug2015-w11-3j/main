@@ -7,6 +7,11 @@ import java.util.Date;
  * Stores task data
  */
 public class Celebi {
+
+	public static final enum CelebiPriority {
+		Low, Normal, High, Critical
+	}
+
 	private int cId;
 	private String cName;
 	private Date cStart;
