@@ -1,6 +1,10 @@
 package common;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.ArrayList;
 
 /*
  * Our task object.
@@ -8,18 +12,47 @@ import java.util.Date;
  */
 public class Celebi {
 
-	public static final enum CelebiPriority {
-		Low, Normal, High, Critical
+	// Reference for possible Celebi data fields
+	public static final enum Data {
+		ID, 
+		NAME, DESCRIPTION,
+		DATE_START, DATE_END,
+		TAGS, PRIORITY, 
+		IS_COMPLETED,
+		BLOCKED_PERIODS,
+		SCHEDULED_DAYS
+	}
+
+	public static final enum Priority {
+		LOW, NORMAL, HIGH, CRITICAL
 	}
 
 	private int cId;
+
 	private String cName;
+	private String cDescription;
+
 	private Date cStart;
 	private Date cEnd;
-	boolean cIsComplete;
-	// ArrayList<String> tags;
-	// int priorityLevel; // Unknown usage
-	// ArrayList<TimePeriod> blockOffPeriods;
+
+	private Priority cPriority;
+	private boolean cIsCompleted;
+
+	/*
+		Abstract data structure used is Set.
+		Primary operations: find, remove, iterateAll.
+		Constraints: no duplicates.
+
+		Use LinkedHashSet implementation.
+		HashMap provide O(1) access and removal.
+		LinkedHashSet provides O(n) iterateAll compared
+		to HashMap's O(m). 
+		n = number of values, m = table size, n < m.
+	*/
+	private Set<String> cTags;
+	// Implementation: ArrayList
+	private List<Period> cBlocked;
+
 	
 	// constructor
 	public Celebi (String name, Date start, Date end) {
@@ -44,11 +77,11 @@ public class Celebi {
 	}	
 	
 	public void setStart(Date start) {
-		cStart = cloneDate(start);
+		cStart = start.clone();
 	}
 	
 	public void setEnd(Date end) {
-		cEnd = cloneDate(end);
+		cEnd = end.clone();
 	}	
 	
 	
@@ -66,22 +99,14 @@ public class Celebi {
 	}
 	
 	public Date getStart() {
-		return cloneDate(cStart);
+		return cStart.clone();
 	}
 	
 	public Date getEnd() {
-		return cloneDate(cEnd);
+		return cEnd.clone();
 	}
 	
 	
 	// private methods
 	
-	// generate a new date to prevent the data in this Celebi from being changed
-	private Date cloneDate(Date date) {
-		if (date == null) {
-			return null;
-		} else {
-			return new Date(date.getTime());
-		}
-	}
 }
