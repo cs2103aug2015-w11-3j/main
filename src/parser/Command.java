@@ -1,7 +1,7 @@
 package parser;
 
 import java.util.Date;
-
+import common.Celebi;
 
 public class Command {
 
@@ -9,7 +9,7 @@ public class Command {
 		Add,
 		Delete, Update, 
 		Sort, Search, FilterByTags, 
-		Tag
+		Tag,
 		Quit, Invalid
 	}
 
@@ -27,16 +27,30 @@ public class Command {
 	private final String searchKey
 
 
-	public ParsedCommand(Command cmd){
+	public ParsedCommand (Command cmd){
 		_cmd = cmd;
 	}
 	
 
 	// getters
 
-	public Command getCmdType() {
+	public Command getCmdType () {
 		return _cmdType;
 	}
-	
+	public String getName () {
+		return _name;
+	}
+	public String getDescr () {
+		return _descr;
+	}
+	public Date getStart () {
+		return _startDate.clone();
+	}
+	public Date getEnd () {
+		return _endDate.clone();
+	}
+	public Celebi.Priority getPriority () {
+		return _priority;
+	}
 
 }
