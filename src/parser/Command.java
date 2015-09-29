@@ -24,7 +24,7 @@ public class Command {
 	private final Date _startDate, _endDate;
 	private final Celebi.Priority _priority;
 	// organising (sort/filter/search)
-	private final String searchKey
+	private final String searchKey;
 
 
 	public ParsedCommand (Command cmd){
