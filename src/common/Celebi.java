@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Celebi {
 
 	// Reference for possible Celebi data fields
-	public static final enum Data {
+	public static enum Data {
 		ID, 
 		NAME, DESCRIPTION,
 		DATE_START, DATE_END,
@@ -23,7 +23,7 @@ public class Celebi {
 		SCHEDULED_DAYS
 	}
 
-	public static final enum Priority {
+	public static enum Priority {
 		LOW, NORMAL, HIGH, CRITICAL
 	}
 
@@ -65,7 +65,7 @@ public class Celebi {
 
 	// setters
 	public void setComplete(boolean isComplete) {
-		cIsComplete = isComplete;
+		cIsCompleted = isComplete;
 	}
 	
 	public void setId(int id) {
@@ -77,17 +77,17 @@ public class Celebi {
 	}	
 	
 	public void setStart(Date start) {
-		cStart = start.clone();
+		cStart = (Date)start.clone();
 	}
 	
 	public void setEnd(Date end) {
-		cEnd = end.clone();
+		cEnd = (Date)end.clone();
 	}	
 	
 	
 	//getters
 	public boolean isComplete() {
-		return cIsComplete;
+		return cIsCompleted;
 	}
 	
 	public int getId() {
@@ -99,11 +99,11 @@ public class Celebi {
 	}
 	
 	public Date getStart() {
-		return cStart.clone();
+		return (Date)cStart.clone();
 	}
 	
 	public Date getEnd() {
-		return cEnd.clone();
+		return (Date)cEnd.clone();
 	}
 	
 	

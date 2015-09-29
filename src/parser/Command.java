@@ -5,7 +5,7 @@ import common.Celebi;
 
 public class Command {
 
-	public static final enum Type {
+	public static enum Type {
 		Add,
 		Delete, Update, 
 		Sort, Search, FilterByTags, 
@@ -13,28 +13,28 @@ public class Command {
 		Quit, Invalid
 	}
 
-	static final enum Fields {
+	static enum Fields {
 		// Create/Update
 	}
 
-	private final Type _cmdType;
-	private final int _taskUID;
+	private Type _cmdType;
+	private int _taskUID;
 	// create/update fields
-	private final String _name, _descr;
-	private final Date _startDate, _endDate;
-	private final Celebi.Priority _priority;
+	private String _name, _descr;
+	private Date _startDate, _endDate;
+	private Celebi.Priority _priority;
 	// organising (sort/filter/search)
-	private final String searchKey;
+	private String searchKey;
 
 
-	public ParsedCommand (Command cmd){
-		_cmd = cmd;
+	public Command (Command.Type cmd){
+		_cmdType = cmd;
 	}
 	
 
 	// getters
 
-	public Command getCmdType () {
+	public Command.Type getCmdType () {
 		return _cmdType;
 	}
 	public String getName () {
@@ -44,10 +44,10 @@ public class Command {
 		return _descr;
 	}
 	public Date getStart () {
-		return _startDate.clone();
+		return (Date)_startDate.clone();
 	}
 	public Date getEnd () {
-		return _endDate.clone();
+		return (Date)_endDate.clone();
 	}
 	public Celebi.Priority getPriority () {
 		return _priority;

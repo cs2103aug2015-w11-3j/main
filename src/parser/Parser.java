@@ -10,13 +10,14 @@ public class Parser implements ParserInterface {
 	}
 
 	@Override
-	public ParsedCommand parseCommand(String s) {
-		ParsedCommand c = new ParsedCommand();
-		if (s.equals("quit")) {
-			c.setCmd(ParsedCommand.Command.Quit);
-			System.out.println("parser received quit");
-		}
-		return c;
+	public Command parseCommand(String s) {
+//		Command c = new Command();
+//		if (s.equals("quit")) {
+//			c.setCmd(Command.Type.Quit);
+//			System.out.println("parser received quit");
+//		}
+//		return c;
+		return null;
 	}
 
 }

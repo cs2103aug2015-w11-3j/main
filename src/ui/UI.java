@@ -7,7 +7,7 @@ import common.Common;
 import logic.IntegrityCommandException;
 import logic.Logic;
 import logic.LogicInterface;
-import parser.ParsedCommand.Command;
+import parser.Command;
 
 public class UI implements UIInterface {
 
@@ -46,7 +46,7 @@ public class UI implements UIInterface {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			switch (cmd) {
+			switch (cmd.getCmdType()) {
 			case Add:
 				CelebiBag cb = logic.getCelebiBag();
 				System.out.println("Add entered.");

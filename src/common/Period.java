@@ -42,8 +42,8 @@ public class Period {
 			throw new IllegalArgumentException(ERR_MISSING_DATE);
 		}
 
-		a = a.clone();
-		b = b.clone();
+		a = (Date)a.clone();
+		b = (Date)b.clone();
 
 		if (b.before(a)) {
 			_start = b;
@@ -60,10 +60,10 @@ public class Period {
 
 	// all getters clone the internal dates to protect from mutation.
 	public Date getStart () {
-		return _start.clone();
+		return (Date)_start.clone();
 	}
 	public Date getEnd () {
-		return _end.clone();
+		return (Date)_end.clone();
 	}
 
 	// all setters use clones of date arguments for mutate protection
@@ -71,13 +71,13 @@ public class Period {
 		if (!newStart.before(_end)) {
 			throw new IllegalArgumentException(ERR_START_AFTER_END);
 		}
-		_start = newEnd.clone();
+		_start = (Date)newStart.clone();
 	}
 	public void setEnd (Date newEnd) {
 		if (!_start.before(newEnd)) {
 			throw new IllegalArgumentException(ERR_START_AFTER_END);
 		}
-		_end = newStart.clone();
+		_end = (Date)newEnd.clone();
 	}
  
 	public boolean clashesWith (Period p) {

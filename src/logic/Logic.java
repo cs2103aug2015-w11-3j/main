@@ -1,8 +1,8 @@
 package logic;
 
+import common.Celebi;
 import common.CelebiBag;
-import parser.ParsedCommand;
-import parser.ParsedCommand.Command;
+import parser.Command;
 import parser.Parser;
 import parser.ParserInterface;
 import storage.Storage;
@@ -15,7 +15,7 @@ public class Logic implements LogicInterface {
 	CelebiBag mBag;
 
 	public Logic() {
-
+		mBag = new CelebiBag();
 	}
 
 	@Override
@@ -31,19 +31,50 @@ public class Logic implements LogicInterface {
 	}
 
 	@Override
-	public Command executeCommand(String cmd) {
-		ParsedCommand rtnCelebi = parser.parseCommand(cmd);
-		// DO things with it
-		switch (rtnCelebi.getCmd()) {
-		case Add:
-			break;
-		case Quit:
-			System.out.println("Logic received quit");
-			break;
-		default:
-			break;
+	public Command executeCommand(String cmd) throws IntegrityCommandException {
+		Command rtnCmd = parser.parseCommand(cmd);
+		Celebi rtnCelebi = null;
+		
+		try
+		{
+			verifyCommand(rtnCmd);
 		}
-		return rtnCelebi.getCmd();
+		catch(IntegrityCommandException e){
+			throw e;
+		}
+		
+		
+		switch (rtnCmd.getCmdType()) {
+			case Add:
+				rtnCelebi = createCelebi(rtnCmd);
+				storage.save(rtnCelebi);
+				break;
+				
+			case Quit:
+				System.out.println("Logic received quit");
+				break;
+			default:
+				break;
+		}
+		return rtnCmd;
+	}
+
+	private Celebi createCelebi(Command rtnCmd) {
+		// TODO Auto-generated method stub
+		Celebi tCelebi = new Celebi("PARSEDCOMMAND NOT YET IMPLEMENTED", null, null);
+		
+		if(true);	// hasDate data
+
+			
+		mBag.addCelebi(tCelebi);
+		return tCelebi;
+	}
+
+	private void verifyCommand(Command rtnCmd) throws IntegrityCommandException {
+		
+		// Check date
+		// Check
+		
 	}
 
 	@Override
