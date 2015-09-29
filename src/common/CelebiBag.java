@@ -1,12 +1,13 @@
 package common;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /*
  * Storage for Celebis
  * Provides sorting
  */
-public class CelebiBag {
+public class CelebiBag implements Iterable<Celebi> {
 	
 	public enum SortBy{
 		
@@ -24,10 +25,13 @@ public class CelebiBag {
 	
 	public Celebi addCelebi(Celebi c) {
 		// TODO
-		
-		return null;
+		celebis.add(c);
+		return c;
 	}
 	
+	public int size(){
+		return celebis.size();
+	}
 	/*
 	 * Sort will return a new container with sorted type
 	 */
@@ -35,4 +39,11 @@ public class CelebiBag {
 		CelebiBag newContainer = new CelebiBag();
 		return newContainer;
 	}
+
+	@Override
+	public Iterator<Celebi> iterator() {
+		// TODO Auto-generated method stub
+		return celebis.iterator();
+	}
+	
 }

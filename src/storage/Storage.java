@@ -27,9 +27,9 @@ public class Storage implements StorageInterface {
 
 	@Override
 	public boolean load(String s, CelebiBag c) {
-		c.addCelebi(new Celebi("test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0)));
-		c.addCelebi(new Celebi("test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0)));
-		c.addCelebi(new Celebi("test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0)));
+		c.addCelebi(new Celebi("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0)));
+		c.addCelebi(new Celebi("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0)));
+		c.addCelebi(new Celebi("storage dummy test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0)));
 		boolean loadSuccessful = true;
 		return loadSuccessful;
 	}

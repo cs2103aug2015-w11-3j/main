@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Scanner;
 
+import common.Celebi;
 import common.CelebiBag;
 import common.Common;
 import logic.IntegrityCommandException;
@@ -50,6 +51,10 @@ public class UI implements UIInterface {
 			case Add:
 				CelebiBag cb = logic.getCelebiBag();
 				System.out.println("Add entered.");
+				
+				display(cb);
+				
+				break;
 			case Quit:
 				System.out.println("Quit entered.");
 				isRunning = false;
@@ -60,5 +65,13 @@ public class UI implements UIInterface {
 		}
 
 		sc.close();
+	}
+
+	private void display(CelebiBag cb) {
+		// TODO Auto-generated method stub
+		System.out.println("No. of elements in system: " + cb.size());
+		for(Celebi c : cb){
+			System.out.println(c.getName());
+		}
 	}
 }

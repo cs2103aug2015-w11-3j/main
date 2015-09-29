@@ -1,5 +1,7 @@
 package parser;
 
+import com.sun.javafx.css.Combinator;
+
 public class Parser implements ParserInterface {
 
 	@Override
@@ -11,13 +13,23 @@ public class Parser implements ParserInterface {
 
 	@Override
 	public Command parseCommand(String s) {
-//		Command c = new Command();
-//		if (s.equals("quit")) {
-//			c.setCmd(Command.Type.Quit);
-//			System.out.println("parser received quit");
-//		}
-//		return c;
-		return null;
+		Command c;// = new Command(Command.Type.Add);
+		
+		switch(s){
+			case "add":
+				c = new Command(Command.Type.Add);
+				break;
+				
+			case "quit":
+				c = new Command(Command.Type.Quit);
+				System.out.println("parser received quit");
+				break;
+				
+			default:
+				c = new Command(Command.Type.Invalid);
+				break;
+		}
+		return c;
 	}
 
 }

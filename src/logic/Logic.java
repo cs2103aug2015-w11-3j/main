@@ -53,6 +53,10 @@ public class Logic implements LogicInterface {
 			case Quit:
 				System.out.println("Logic received quit");
 				break;
+				
+			case Invalid:
+				System.out.println("Logic received invalid type");
+				throw new IntegrityCommandException("invalid thrown from parser");
 			default:
 				break;
 		}
@@ -61,7 +65,7 @@ public class Logic implements LogicInterface {
 
 	private Celebi createCelebi(Command rtnCmd) {
 		// TODO Auto-generated method stub
-		Celebi tCelebi = new Celebi("PARSEDCOMMAND NOT YET IMPLEMENTED", null, null);
+		Celebi tCelebi = new Celebi("Logic dummy celebi", null, null);
 		
 		if(true);	// hasDate data
 
