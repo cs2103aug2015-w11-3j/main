@@ -50,13 +50,13 @@ public class UI implements UIInterface {
 			switch (cmd.getCmdType()) {
 			case Add:
 				CelebiBag cb = logic.getCelebiBag();
-				System.out.println("Add entered.");
+				System.out.println("Add entered. \n");
 				
 				display(cb);
 				
 				break;
 			case Quit:
-				System.out.println("Quit entered.");
+				System.out.println("Quit entered. \n");
 				isRunning = false;
 				break;
 			default:
