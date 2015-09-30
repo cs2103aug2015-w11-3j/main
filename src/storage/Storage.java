@@ -1,20 +1,42 @@
 package storage;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
-import common.Celebi;
-import common.CelebiBag;
+import common.*;
 
 public class Storage implements StorageInterface {
+	
+	private BufferedWriter sWriter;
 
 	public void init() {
 		System.out.println("Storage Init");
 		System.out.println("Storage Init complete");
+		try {
+			connectToFile();
+		} catch (IOException e) {
+			// do something
+		}
+		
 	}
 
 	public Storage() {
-
+		
+	}
+	
+	private void connectToFile() throws IOException {
+		Common setting = Common.getInstance();
+		String fileDir = setting.getUsrFileDirectory();
+		File file = new File(fileDir + "/task.json");
+		if(!file.exists()) {
+			file.createNewFile();
+		}
+		sWriter = new BufferedWriter(new FileWriter(file));
+		// do something
 	}
 
 
