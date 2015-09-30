@@ -8,5 +8,5 @@ public interface StorageInterface {
 
 	public boolean load(String s, CelebiBag c);
 	
-	public Celebi save(Celebi c);
+	public boolean save(Celebi c);
 }
