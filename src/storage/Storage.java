@@ -41,10 +41,11 @@ public class Storage implements StorageInterface {
 
 
 	@Override
-	public Celebi save(Celebi c) {
+	public boolean save(Celebi c) {
 		// TODO Auto-generated method stub
 		c.setId(1);
-		return c;
+		boolean saveSuccessful = true;
+		return saveSuccessful;
 	}
 
 	@Override
