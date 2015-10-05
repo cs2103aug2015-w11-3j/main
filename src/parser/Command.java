@@ -26,7 +26,9 @@ public class Command implements CommandInterface {
 	private String _name;
 	private Date _startDate, _endDate;
 
+	////////////////////////////////////////////////////////////////////////////////////	
 	// Constructor (package private)
+	////////////////////////////////////////////////////////////////////////////////////
 	Command (Command.Type cmd, String userInput) {
 		_cmdType = cmd;
 		_userInput = userInput;
