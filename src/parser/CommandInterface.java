@@ -48,6 +48,7 @@ public interface CommandInterface {
 	///////////////////////////////////////////////////
 	// Celebi field value getters
 	// Provides user-defined values corresponding to Celebi fields
+	// NULL values will be returned if those fields are not applicable.
 	///////////////////////////////////////////////////
 	
 	public String getName ();
