@@ -13,6 +13,7 @@ public class CelebiJson extends LinkedHashMap<Celebi.DataType, String>{
 	static final String DATE_FOTMAT = "yyyy-MM-dd HH:mm";
 	static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FOTMAT);
 	
+	// constructor
 	public CelebiJson (Celebi c) {
 		String id = Integer.toString(c.getId());
 		String name = c.getName();
