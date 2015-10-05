@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 
 import common.*;
 
-public class CelebiJson extends LinkedHashMap<Celebi.DataType, String>{
+public class CelebiJson extends LinkedHashMap<String, String>{
 	private static final long serialVersionUID = 1L;
 	
 	static final String DATE_FOTMAT = "yyyy-MM-dd HH:mm";
@@ -21,29 +21,32 @@ public class CelebiJson extends LinkedHashMap<Celebi.DataType, String>{
 	}
 	
 	public CelebiJson (JSONObject j) {
-		put(Celebi.DataType.ID, (String)j.get(Celebi.DataType.ID));
-		put(Celebi.DataType.NAME, (String)j.get(Celebi.DataType.ID));
-		put(Celebi.DataType.DATE_START, (String)j.get(Celebi.DataType.ID));
-		put(Celebi.DataType.DATE_END, (String)j.get(Celebi.DataType.ID));
+		put("ID", (String)j.get("ID"));
+		put("NAME", (String)j.get("NAME"));
+		put("DATE_START", (String)j.get("DATE_START"));
+		put("DATE_END", (String)j.get("DATE_END"));
 	}
 	
 	public Celebi toCelebi () {
 		String name = get(Celebi.DataType.NAME);
-		Date start = parseDate(get(Celebi.DataType.DATE_START));
-		Date end = parseDate(get(Celebi.DataType.DATE_END));
+		Date start = parseDate(get("DATE_START"));
+		Date end = parseDate(get("DATE_END"));
 		
 		Celebi c = new Celebi(name, start, end);
-		c.setId(Integer.parseInt(get(Celebi.DataType.ID)));
+		c.setId(Integer.parseInt(get("ID")));
 		
 		return c;
 	}
 	
 	public void setId (int id) {
-		put(Celebi.DataType.ID, Integer.toString(id));
+		put("ID", Integer.toString(id));
 	}
 	
-	public void update (Celebi c) {
-		setAttributes(c);
+	public void update (CelebiJson cj) {
+		put("ID", cj.get("ID"));
+		put("NAME", cj.get("NAME"));
+		put("DATE_START", cj.get("DATE_START"));
+		put("DATE_END", cj.get("DATE_END"));
 	}
 	
 	// private methods
@@ -53,6 +56,7 @@ public class CelebiJson extends LinkedHashMap<Celebi.DataType, String>{
 	
 	private Date parseDate (String s) {
 		ParsePosition pos = new ParsePosition(0);
+		System.out.println(s);
 		return formatter.parse(s, pos); 
 	}
 	
@@ -62,10 +66,10 @@ public class CelebiJson extends LinkedHashMap<Celebi.DataType, String>{
 		String start= formatDate(c.getStart());
 		String end = formatDate(c.getEnd());
 		
-		put(Celebi.DataType.ID, id);
-		put(Celebi.DataType.NAME, name);
-		put(Celebi.DataType.DATE_START, start);
-		put(Celebi.DataType.DATE_END, end);
+		put("ID", id);
+		put("NAME", name);
+		put("DATE_START", start);
+		put("DATE_END", end);
 	}
 
 }

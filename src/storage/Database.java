@@ -17,9 +17,8 @@ import org.json.simple.parser.JSONParser;
 import common.Celebi;
 
 public class Database {
-	private static BufferedWriter dbWriter;
+	private static File db;
 	private static Scanner dbReader;
-	private static JSONParser dbParser=new JSONParser();
 
 	private static List<CelebiJson> dbData;
 	private static HashMap<Integer, CelebiJson> dbIndex;
@@ -27,17 +26,16 @@ public class Database {
 	private static boolean isConnected;
 
 	static boolean connect (String path) {
-		File file = new File(path);
+		db = new File(path);
 		try {
-			if(!file.exists()) {
-				file.createNewFile();
+			if(!db.exists()) {
+				db.createNewFile();
 			}
-			dbWriter = new BufferedWriter(new FileWriter(file));
-			dbReader = new Scanner(file);
-			dbReader.useDelimiter("\\A");
+			dbReader = new Scanner(db);
+			dbReader.useDelimiter("\\Z");
+			
 			isConnected = true;
 		} catch (IOException e) {
-			dbWriter = null;
 			dbReader = null;
 			isConnected = false;
 		}
@@ -46,21 +44,44 @@ public class Database {
 	
 	static boolean load () {
 		try {
-			if (!isConnected) {
-				return false;
-			} 
-			String plainText = dbReader.next();
-			JSONArray parsedResult = (JSONArray)dbParser.parse(plainText);
+			String plainText = "";
+			if (dbReader.hasNext()) {
+				plainText = dbReader.next();
+			}
+			
+			JSONArray parsedResult = (JSONArray)JSONValue.parse(plainText);
+			
+			if (parsedResult == null) {
+				parsedResult = new JSONArray();
+			}
+						
 			dbData = new ArrayList<CelebiJson>();
+			dbIndex = new HashMap<Integer, CelebiJson>();
+			
 			for (int i = 0; i < parsedResult.size(); i ++) {
 				CelebiJson cj = new CelebiJson((JSONObject)parsedResult.get(i));
 				dbData.add(cj);
-				dbIndex.put(Integer.parseInt(cj.get(Celebi.DataType.ID)), cj);
+				dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
 			}
 			return true;
+		} catch (ClassCastException e) {
+			System.out.println("Bad file format");
+			return false;
 		} catch (Exception e) {
+			System.out.println(e);
 			return false;
 		}
+	}
+	
+	static boolean disconnect () {
+		db = null;
+		dbReader = null;
+		dbData = null;
+		dbIndex = null;
+		
+		isConnected = false;
+		
+		return true;
 	}
 	
 	static List<CelebiJson> getData () {
@@ -68,7 +89,15 @@ public class Database {
 	}
 	
 	static int insert (CelebiJson cj) {
-		int last = Integer.parseInt(dbData.get(dbData.size() - 1).get(Celebi.DataType.ID));
+		int last; 
+		int dbSize = dbData.size();
+
+		if (dbSize < 1) {
+			last = 0;
+		} else {
+			last = Integer.parseInt(dbData.get(dbSize - 1).get("ID"));
+		}
+		
 		int id = last + 1;
 		
 		cj.setId(id);
@@ -80,10 +109,9 @@ public class Database {
 		return id;
 	}
 		
-	static boolean update (Celebi c) {
-		int id = c.getId();
-		CelebiJson cj= dbIndex.get(id);
-		cj.update(c);
+	static boolean update (int id, CelebiJson cj) {
+		CelebiJson cjInDb = dbIndex.get(id);
+		cjInDb.update(cj);
 				
 		save ();
 		
@@ -103,9 +131,12 @@ public class Database {
 	
 	// private methods
 	private static boolean save () {
-		String text = JSONValue.toJSONString(dbData);
 		try {
-			dbWriter.write(text);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(db));
+			String text = JSONValue.toJSONString(dbData);
+			System.out.println(text);
+			writer.write(text);
+			writer.close();
 			return true;
 		} catch (IOException e) {
 			return false;
