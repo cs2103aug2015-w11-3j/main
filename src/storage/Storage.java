@@ -57,6 +57,11 @@ public class Storage implements StorageInterface {
 		return loadSuccessful;
 	}
 	
+	@Override
+	public boolean delete(Celebi c) {
+		return true;
+	}
+	
 	// private methods
 	private Date createDate(int year, int month, int day, int hour, int minute) {
 		Calendar calender = Calendar.getInstance();

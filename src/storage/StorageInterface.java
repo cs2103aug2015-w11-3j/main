@@ -9,4 +9,6 @@ public interface StorageInterface {
 	public boolean load(String s, CelebiBag c);
 	
 	public boolean save(Celebi c);
+	
+	public boolean delete(Celebi c);
 }
