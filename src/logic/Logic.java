@@ -72,7 +72,7 @@ public class Logic implements LogicInterface {
 		int index = Integer.parseInt(rtnCmd.getName());
 		Celebi recvCelebi = mBag.getCelebi(index);
 		
-		recvCelebi.setName(rtnCmd.getDescr());
+		recvCelebi.setName(rtnCmd.getName());
 	}
 
 	private void doDelete(Command rtnCmd) {

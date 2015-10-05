@@ -13,23 +13,7 @@ public class Parser implements ParserInterface {
 
 	@Override
 	public Command parseCommand(String s) {
-		Command c;// = new Command(Command.Type.Add);
-		
-		switch(s){
-			case "add":
-				c = new Command(Command.Type.Add);
-				break;
-				
-			case "quit":
-				c = new Command(Command.Type.Quit);
-				System.out.println("parser received quit");
-				break;
-				
-			default:
-				c = new Command(Command.Type.Invalid);
-				break;
-		}
-		return c;
+		return null;
 	}
 
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Celebi {
 
 	// Reference for possible Celebi data fields
-	public static enum Data {
+	public static enum DataType {
 		ID, 
 		NAME, DESCRIPTION,
 		DATE_START, DATE_END,
