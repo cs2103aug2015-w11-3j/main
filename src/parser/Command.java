@@ -59,30 +59,37 @@ public class Command implements CommandInterface {
 	////////////////////////////////////////////////////////////////////////////////////
 
 	// INVALID INPUT
+	@Override
 	public String getRawUserInput () {
 		return _userInput;
 	}
 	
 	// Identifiers
-	
+
+	@Override
 	public Command.Type getCmdType () {
 		return _cmdType;
 	}
+	@Override
 	public int getCelebiUID () {
 		return _taskUID;
 	}
+	@Override
 	public Celebi.DataType getCelebiField () {
 		return _taskField;
 	}
 	
 	// Field values
-	
+
+	@Override
 	public String getName () {
 		return _name;
 	}
+	@Override
 	public Date getStart () {
 		return (Date)_startDate.clone();
 	}
+	@Override
 	public Date getEnd () {
 		return (Date)_endDate.clone();
 	}
