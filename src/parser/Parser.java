@@ -4,6 +4,7 @@ import com.sun.javafx.css.Combinator;
 
 public class Parser implements ParserInterface {
 
+	
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
@@ -15,5 +16,7 @@ public class Parser implements ParserInterface {
 	public Command parseCommand(String s) {
 		return null;
 	}
+	
+	
 
 }
