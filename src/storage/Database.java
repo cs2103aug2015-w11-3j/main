@@ -67,28 +67,19 @@ public class Database {
 		return new ArrayList<CelebiJson>(dbData);
 	}
 	
-	static ArrayList<Celebi> export () {
-		ArrayList<Celebi> cs = new ArrayList<Celebi>();
-		for (int i = 0; i < dbData.size(); i ++) {
-			cs.add(dbData.get(i).toCelebi());
-		}
-		return cs;
-	}
-	
-	static boolean add (Celebi c) {
+	static int insert (CelebiJson cj) {
 		int last = Integer.parseInt(dbData.get(dbData.size() - 1).get(Celebi.DataType.ID));
 		int id = last + 1;
-		CelebiJson cj= new CelebiJson(c);
 		
-		c.setId(id);
+		cj.setId(id);
 		dbData.add(cj);
 		dbIndex.put(id, cj);
 		
 		save ();
 		
-		return true;
+		return id;
 	}
-	
+		
 	static boolean update (Celebi c) {
 		int id = c.getId();
 		CelebiJson cj= dbIndex.get(id);
@@ -99,9 +90,9 @@ public class Database {
 		return true;
 	}
 	
-	static boolean delete (Celebi c) {
-		int id = c.getId();
+	static boolean delete (int id) {
 		CelebiJson cj= dbIndex.get(id);
+		
 		dbData.remove(cj);
 		dbIndex.remove(id);
 		

@@ -38,6 +38,10 @@ public class CelebiJson extends LinkedHashMap<Celebi.DataType, String>{
 		return c;
 	}
 	
+	public void setId (int id) {
+		put(Celebi.DataType.ID, Integer.toString(id));
+	}
+	
 	public void update (Celebi c) {
 		setAttributes(c);
 	}
