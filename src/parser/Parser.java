@@ -3,11 +3,11 @@ package parser;
 import com.sun.javafx.css.Combinator;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
-import java.util.regex;
+import java.util.regex.*;
 
 public class Parser implements ParserInterface {
 
-	private static final 
+	// private static final 
 	
 	@Override
 	public void init () {
