@@ -60,26 +60,31 @@ public class UI implements UIInterface {
 		String feedback = "";
 		try {
 			cmd = logic.executeCommand(userInput);
+			
+			switch (cmd.getCommand().getCmdType()) {
+			case Add:
+				cb = logic.getCelebiBag();
+				// to change
+				feedback = "Add entered.";
+				controller.appendFeedback(feedback);
+				
+				display(cb);
+				
+				break;
+			case Delete:
+				feedback = "Delete entered.";
+			case Quit:
+				System.out.println("Quit entered.");
+				Platform.exit();
+				break;
+			default:
+				break;
+			}
 		} catch (IntegrityCommandException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		switch (cmd.getCommand().getCmdType()) {
-		case Add:
-			cb = logic.getCelebiBag();
-			// to change
-			feedback = "Add entered.";
+			//e.printStackTrace();
+			feedback = e.cMsg;
 			controller.appendFeedback(feedback);
-			
-			display(cb);
-			
-			break;
-		case Quit:
-			System.out.println("Quit entered.");
-			Platform.exit();
-			break;
-		default:
-			break;
 		}
 	}
 	
@@ -88,6 +93,8 @@ public class UI implements UIInterface {
 	 */
 	public void showWelcomeView() {
 		display(logic.getCelebiBag());
+		String feedback = "Welcome to Celebi! Is there anything that Celebi can help you?";
+		controller.appendFeedback(feedback);
 	}
 	
 	/**
