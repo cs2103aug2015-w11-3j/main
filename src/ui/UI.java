@@ -56,6 +56,8 @@ public class UI implements UIInterface {
      * @param userInput
      */
 	public void passCommand(String userInput) {
+		controller.appendFeedback("You: " + userInput);
+		
 		Feedback cmd = null;
 		String feedback = "";
 		try {
@@ -65,14 +67,16 @@ public class UI implements UIInterface {
 			case Add:
 				cb = logic.getCelebiBag();
 				// to change
-				feedback = "Add entered.";
+				feedback = "Celebi: Add entered. \n";
 				controller.appendFeedback(feedback);
 				
 				display(cb);
 				
 				break;
 			case Delete:
-				feedback = "Delete entered.";
+				feedback = "Celebi: Delete entered. \n";
+				controller.appendFeedback(feedback);
+				break;
 			case Quit:
 				System.out.println("Quit entered.");
 				Platform.exit();
@@ -84,7 +88,7 @@ public class UI implements UIInterface {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 			feedback = e.cMsg;
-			controller.appendFeedback(feedback);
+			controller.appendFeedback("Celebi: " + feedback + "\n");
 		}
 	}
 	
@@ -93,7 +97,7 @@ public class UI implements UIInterface {
 	 */
 	public void showWelcomeView() {
 		display(logic.getCelebiBag());
-		String feedback = "Welcome to Celebi! Is there anything that Celebi can help you?";
+		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you? \n";
 		controller.appendFeedback(feedback);
 	}
 	
