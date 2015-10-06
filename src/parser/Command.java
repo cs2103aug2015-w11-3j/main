@@ -50,10 +50,10 @@ public class Command implements CommandInterface {
 		_name = name;
 	}
 	void setStart (Date d) {
-		_startDate = (Date) d.clone();
+		_startDate = d == null ? null : (Date) d.clone();
 	}
 	void setEnd (Date d) {
-		_endDate = (Date) d.clone();
+		_endDate = d == null ? null : (Date) d.clone();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
@@ -89,11 +89,11 @@ public class Command implements CommandInterface {
 	}
 	@Override
 	public Date getStart () {
-		return (Date)_startDate.clone();
+		return _startDate == null ? null : (Date)_startDate.clone();
 	}
 	@Override
 	public Date getEnd () {
-		return (Date)_endDate.clone();
+		return _endDate == null ? null : (Date)_endDate.clone();
 	}
 
 }

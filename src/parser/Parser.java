@@ -36,15 +36,15 @@ public class Parser implements ParserInterface {
 	
 	// <name> 
 	private static final Pattern P_ADD_FLT = Pattern.compile(
-			"^(?<name>[.&&[^;]]++)$"
+			"^(?<name>[^;]+)$"
 			);
 	// <name>; by <end> 
 	private static final Pattern P_ADD_DL = Pattern.compile(
-			"^(?<name>[.&&[^;]]+);\\s+by\\s(?<end>.+)$"
+			"^(?<name>[^;]+);\\s+by\\s(?<end>.+)$"
 			);
 	// <name>; from <start> to <end> 
 	private static final Pattern P_ADD_EVT = Pattern.compile(
-			"^(?<name>[.&&[^;]]+);\\s+from\\s(?<start>.+)\\sto\\s(?<end>.+)$"
+			"^(?<name>[^;]+);\\s+from\\s(?<start>.+)\\sto\\s(?<end>.+)$"
 			);	
 	
 	// <uid>
@@ -79,6 +79,10 @@ public class Parser implements ParserInterface {
 	public Command parseCommand (String rawInput) {
 		userRawInput = rawInput;
 		String[] cmdAndArgs = P_WHITESPACE.split(rawInput.trim(), 2);
+		if (cmdAndArgs.length != 2) {
+			String[] temp = {cmdAndArgs[0], ""};
+			cmdAndArgs = temp;
+		}
 		Command.Type cmdType = getCmdType(cmdAndArgs[0]);
 		return parseArgs(cmdType, cmdAndArgs[1]);
 	}
@@ -116,19 +120,19 @@ public class Parser implements ParserInterface {
 
 	private Command parseArgs (Command.Type type, String args) {
 		switch (type) {
-		case Add :
-			return parseAdd(args);
-		case Delete : 
-			return parseDel(args);
-		case Update : 
-			return parseUpd(args);
-		case Quit :
-			return parseQuit(args);
-		case Invalid :
-			return makeInvalid();
-		default :
-			break;
-		}
+			case Add :
+				return parseAdd(args);
+			case Delete : 
+				return parseDel(args);
+			case Update : 
+				return parseUpd(args);
+			case Quit :
+				return parseQuit(args);
+			case Invalid :
+				return makeInvalid();
+			default :
+				break;
+			}
 		return null; // should never happen
 	}
 
@@ -152,6 +156,7 @@ public class Parser implements ParserInterface {
 					end = parseDate(m.group("end")); // throws IAE if FLT
 					start = parseDate(m.group("start")); // throws IAE if FLT/DL
 				} catch (IllegalArgumentException ie) {
+					System.out.println(ie);
 					; // nonexistent named capturing group for FLT,DL
 				} catch (Exception pe) {
 					System.out.println(pe);
@@ -297,6 +302,23 @@ public class Parser implements ParserInterface {
 	}
 	
 	public static void main(String[] args) {
-		
+		Scanner sc = new Scanner(System.in);
+		Parser p = new Parser();
+		while (true) {
+			if (true) {
+			Command c = p.parseCommand(sc.nextLine());
+			System.out.println("type: " + c.getCmdType());
+			System.out.println("raw: " + c.getRawUserInput());
+			System.out.println("uid: " + c.getCelebiUID());
+			System.out.println("fieldkey: " + c.getCelebiField());
+			System.out.println("name: " + c.getName());
+			System.out.println("start: " + c.getStart());
+			System.out.println("end: "+ c.getEnd());
+			} else {
+			Pattern pt = Pattern.compile(sc.nextLine());
+			Matcher m = pt.matcher(sc.nextLine());
+			System.out.println(m.matches());
+			}
+		}
 	}
 }
