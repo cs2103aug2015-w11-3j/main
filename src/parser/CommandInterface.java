@@ -12,7 +12,6 @@ public interface CommandInterface {
 	/** INVALID
 	 * 
 	 * Provides user's raw input string for if input string cannot be parsed into recognised command type
-	 * 
 	 * @return String
 	 */
 	public String getRawUserInput ();
@@ -24,7 +23,7 @@ public interface CommandInterface {
 	/** ALL
 	 * 
 	 * Identifies the type of command for further processing
-	 * @return Command.Type (enum)
+	 * @return Command.Type (enum), null if NA
 	 */
 	public Command.Type getCmdType ();
 	
@@ -32,24 +31,24 @@ public interface CommandInterface {
 	 * 
 	 * Identifies a specific Celebi task object by index on UI for further processing.
 	 * Uses the index as shown on the UI to the user, Logic must perform UID->real ID mapping.
-	 * 
-	 * @return Integer
+	 * @return Integer, -1 if not applicable
 	 */
 	public int getCelebiUID ();
 	
 	/** UPDATE
 	 * 
 	 * Identifies a specific field type within the Celebi object for field-level processing.
-	 * 
-	 * @return Celebi.DataType (enum)
+	 * @return Celebi.DataType (enum), null if NA
 	 */
 	public Celebi.DataType getCelebiField ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters
 	// Provides user-defined values corresponding to Celebi fields
+	//
+	// NULL values will be returned if those fields are not applicable.
+	// Mutable values will be cloned; internal fields are always safe from mutation.
 	///////////////////////////////////////////////////
-	
 	public String getName ();
 	public Date getStart ();
 	public Date getEnd ();
