@@ -1,7 +1,6 @@
 package logic;
 
 import parser.Command;
-import parser.ParserInterface;
 
 public class ParserStub {
 

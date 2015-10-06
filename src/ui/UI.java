@@ -56,30 +56,39 @@ public class UI implements UIInterface {
      * @param userInput
      */
 	public void passCommand(String userInput) {
+		controller.appendFeedback("You: " + userInput);
+		
 		Feedback cmd = null;
 		String feedback = "";
 		try {
 			cmd = logic.executeCommand(userInput);
+			
+			switch (cmd.getCommand().getCmdType()) {
+			case Add:
+				cb = logic.getCelebiBag();
+				// to change
+				feedback = "Celebi: Add entered. \n";
+				controller.appendFeedback(feedback);
+				
+				display(cb);
+				
+				break;
+			case Delete:
+				feedback = "Celebi: Delete entered. \n";
+				controller.appendFeedback(feedback);
+				break;
+			case Quit:
+				System.out.println("Quit entered.");
+				Platform.exit();
+				break;
+			default:
+				break;
+			}
 		} catch (IntegrityCommandException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		switch (cmd.getCommand().getCmdType()) {
-		case Add:
-			cb = logic.getCelebiBag();
-			// to change
-			feedback = "Add entered.";
-			controller.appendFeedback(feedback);
-			
-			display(cb);
-			
-			break;
-		case Quit:
-			System.out.println("Quit entered.");
-			Platform.exit();
-			break;
-		default:
-			break;
+			//e.printStackTrace();
+			feedback = e.cMsg;
+			controller.appendFeedback("Celebi: " + feedback + "\n");
 		}
 	}
 	
@@ -88,6 +97,8 @@ public class UI implements UIInterface {
 	 */
 	public void showWelcomeView() {
 		display(logic.getCelebiBag());
+		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you? \n";
+		controller.appendFeedback(feedback);
 	}
 	
 	/**

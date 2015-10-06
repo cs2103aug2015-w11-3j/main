@@ -3,17 +3,12 @@ package common;
 import java.util.Date;
 import java.util.Set;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
 
 /*
  * Our task object.
@@ -58,8 +53,9 @@ public class Celebi {
 		to HashMap's O(m). 
 		n = number of values, m = table size, n < m.
 	*/
+	@SuppressWarnings("unused")
 	private Set<String> cTags;
-	// Implementation: ArrayList
+	// Implementation: ArrayList	@SuppressWarnings("unused")
 	private List<Period> cBlocked;
 
 	
@@ -132,6 +128,30 @@ public class Celebi {
 	public ObjectProperty<Date> endProperty() {
         return cEnd;
     }
+
+
+
+	public StringProperty getDescription() {
+		return cDescription;
+	}
+
+
+
+	public void setDescription(StringProperty cDescription) {
+		this.cDescription = cDescription;
+	}
+
+
+
+	public Priority getPriority() {
+		return cPriority;
+	}
+
+
+
+	public void setPriority(Priority cPriority) {
+		this.cPriority = cPriority;
+	}
 	
 	// private methods
 	/*
