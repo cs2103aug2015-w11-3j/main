@@ -1,6 +1,6 @@
 package parser;
 
-import com.sun.javafx.css.Combinator;
+//import com.sun.javafx.css.Combinator;
 import common.Celebi;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
