@@ -70,7 +70,6 @@ public class Logic implements LogicInterface {
 				fb = new Feedback(rtnCmd, mBag);
 				break;
 		}
-		//fb = new Feedback(rtnCmd, )
 		return fb;
 	}
 
