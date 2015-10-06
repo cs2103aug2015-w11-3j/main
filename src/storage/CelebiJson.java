@@ -17,7 +17,15 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 	
 	// constructor
 	public CelebiJson (Celebi c) {
-		setAttributes(c);
+		String id = Integer.toString(c.getId());
+		String name = c.getName();
+		String start = formatDate(c.getStart());
+		String end = formatDate(c.getEnd());
+		
+		put("ID", id);
+		put("NAME", name);
+		put("DATE_START", start);
+		put("DATE_END", end);
 	}
 	
 	public CelebiJson (JSONObject j) {
@@ -25,12 +33,26 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 		put("NAME", (String)j.get("NAME"));
 		put("DATE_START", (String)j.get("DATE_START"));
 		put("DATE_END", (String)j.get("DATE_END"));
+		
+		// check whether the date of JSON object is valid
+		// if not, set null and rewrite next time
+		if (parseDate(get("DATE_START")) == null) {
+			put("DATE_START", "null");
+		}
+		
+		if (parseDate(get("DATE_END")) == null) {
+			put("DATE_START", "null");
+		}
 	}
 	
 	public Celebi toCelebi () {
 		String name = get("NAME");
 		Date start = parseDate(get("DATE_START"));
 		Date end = parseDate(get("DATE_END"));
+		
+		System.out.println("aaaaaaaaaaaaaaaa");
+		System.out.println(start);
+		System.out.println(end);
 		
 		Celebi c = new Celebi(name, start, end);
 		c.setId(Integer.parseInt(get("ID")));
@@ -51,25 +73,15 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 	
 	// private methods
 	private String formatDate (Date d) {
+		if (d == null) {
+			return "null";
+		}
 		return formatter.format(d);
 	}
 	
 	private Date parseDate (String s) {
 		ParsePosition pos = new ParsePosition(0);
-		System.out.println(s);
 		return formatter.parse(s, pos); 
-	}
-	
-	private void setAttributes (Celebi c) {
-		String id = Integer.toString(c.getId());
-		String name = c.getName();
-		String start= formatDate(c.getStart());
-		String end = formatDate(c.getEnd());
-		
-		put("ID", id);
-		put("NAME", name);
-		put("DATE_START", start);
-		put("DATE_END", end);
 	}
 
 }

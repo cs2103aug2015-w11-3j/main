@@ -131,7 +131,7 @@ public class Database {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(db));
 			String text = JSONValue.toJSONString(dbData);
-			System.out.println(text);
+			
 			writer.write(text);
 			writer.close();
 			return true;
