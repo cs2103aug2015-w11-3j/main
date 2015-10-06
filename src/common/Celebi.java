@@ -109,11 +109,19 @@ public class Celebi {
 	}
 	
 	public Date getStart() {
-		return (Date)cStart.get().clone();
+		if(cStart.get() == null){
+			return null;
+		} else {
+			return (Date)cStart.get().clone();
+		}
 	}
 	
 	public Date getEnd() {
-		return (Date)cEnd.get().clone();
+		if(cEnd.get() == null){
+			return null;
+		} else {
+			return (Date)cEnd.get().clone();
+		}
 	}
 	
 	// get properties

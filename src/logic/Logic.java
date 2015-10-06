@@ -44,7 +44,7 @@ public class Logic implements LogicInterface {
 		Command rtnCmd = parser.parseCommand(userString);
 		
 		// Remove this line after parser fix
-		rtnCmd = testFuncs(userString);
+		//rtnCmd = testFuncs(userString);
 		
 		Celebi rtnCelebi = null;
 		Feedback fb;
@@ -201,7 +201,7 @@ public class Logic implements LogicInterface {
 		Date startDate = rtnCmd.getStart();
 		Date endDate = rtnCmd.getEnd();
 		Celebi tCelebi = new Celebi(name, startDate, endDate);
-		
+
 		boolean addStatus = storage.save(tCelebi);
 		if(addStatus){	// Added successfully
 			mBag.addCelebi(tCelebi);
