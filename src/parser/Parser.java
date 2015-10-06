@@ -252,9 +252,13 @@ public class Parser implements ParserInterface {
 		// replace date delimiters with common token
 		token = P_DATE_DELIM.matcher(token.trim()).replaceAll(DATE_DELIM);
 		for (DateFormat df : DF_ARRAY) {
-			Date d = df.parse(token);
-			if (d != null) {
-				return d;
+			try {
+				Date d = df.parse(token);
+				if (d != null) {
+					return d;
+				}
+			} catch (ParseException e) {
+				;
 			}
 		}
 		throw new ParseException("", -1);
