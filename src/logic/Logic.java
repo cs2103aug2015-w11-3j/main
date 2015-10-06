@@ -33,28 +33,32 @@ public class Logic implements LogicInterface {
 	}
 
 	@Override
-	public Command executeCommand(String cmd) throws IntegrityCommandException {
+	public Feedback executeCommand(String cmd) throws IntegrityCommandException {
 		Command rtnCmd = parser.parseCommand(cmd);
 		Celebi rtnCelebi = null;
-				
+		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
 				rtnCelebi = createCelebi(rtnCmd);
 				storage.save(rtnCelebi);
+				fb = new Feedback(rtnCmd, mBag);
 				break;
 				
 			case Delete:
 
 				doDelete(rtnCmd);
+				fb = new Feedback(rtnCmd, mBag);
 				break;
 			
 			case Update:
 				
 				doUpdate(rtnCmd);
+				fb = new Feedback(rtnCmd, mBag);
 				break;
-				
+			
 			case Quit:
 				System.out.println("Logic received quit");
+				fb = new Feedback(rtnCmd, null);
 				break;
 				
 			case Invalid:
@@ -63,9 +67,10 @@ public class Logic implements LogicInterface {
 				
 			default:
 				assert false : rtnCmd.getCmdType();
+				fb = new Feedback(rtnCmd, mBag);
 				break;
 		}
-		return rtnCmd;
+		return fb;
 	}
 
 	private void doUpdate(Command rtnCmd) {
@@ -131,6 +136,13 @@ public class Logic implements LogicInterface {
 	public CelebiBag getCelebiBag() {
 		// TODO Auto-generated method stub
 		return mBag;
+	}
+
+	
+	public void setParser(ParserStub parserStub) {
+		// TODO Auto-generated method stub
+		System.out.println("STUB ADDED FOR PARSER");
+		parser = parserStub;
 	}
 
 }

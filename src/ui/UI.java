@@ -1,19 +1,34 @@
 package ui;
 
+import java.io.IOException;
 import java.util.Scanner;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import common.Celebi;
 import common.CelebiBag;
 import common.Common;
+import logic.Feedback;
 import logic.IntegrityCommandException;
 import logic.Logic;
 import logic.LogicInterface;
-import parser.Command;
+
+import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
 
 	LogicInterface logic;
-
+	private CelebiViewController controller;
+	private CelebiBag cb = new CelebiBag();
+	
+    
 	@Override
 	public void init() {
 		System.out.println("UI Init");
@@ -35,43 +50,65 @@ public class UI implements UIInterface {
 
 	}
 
-	public void run() {
-
-		Scanner sc = new Scanner(System.in);
-		boolean isRunning = true;
-		while (isRunning) {
-			Command cmd = null;
-			try {
-				cmd = logic.executeCommand(sc.nextLine());
-			} catch (IntegrityCommandException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			switch (cmd.getCmdType()) {
-			case Add:
-				CelebiBag cb = logic.getCelebiBag();
-				System.out.println("Add entered.");
-				
-				display(cb);
-				
-				break;
-			case Quit:
-				System.out.println("Quit entered.");
-				isRunning = false;
-				break;
-			default:
-				break;
-			}
+	
+	/**
+     * Pass the command to logic and display to user
+     * @param userInput
+     */
+	public void passCommand(String userInput) {
+		Feedback cmd = null;
+		String feedback = "";
+		try {
+			cmd = logic.executeCommand(userInput);
+		} catch (IntegrityCommandException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		sc.close();
+		switch (cmd.getCommand().getCmdType()) {
+		case Add:
+			cb = logic.getCelebiBag();
+			// to change
+			feedback = "Add entered.";
+			controller.appendFeedback(feedback);
+			
+			display(cb);
+			
+			break;
+		case Quit:
+			System.out.println("Quit entered.");
+			Platform.exit();
+			break;
+		default:
+			break;
+		}
 	}
-
+	
+	/**
+	 * Display the default table view
+	 */
+	public void showWelcomeView() {
+		display(logic.getCelebiBag());
+	}
+	
+	/**
+	 * Display the celebi bag in table view
+	 * @param cb
+	 */
 	private void display(CelebiBag cb) {
 		// TODO Auto-generated method stub
 		System.out.println("No. of elements in system: " + cb.size());
 		for(Celebi c : cb){
 			System.out.println(c.getName());
 		}
+		
+		controller.setTableItems(cb.getList());
+	}
+	
+	public ObservableList<Celebi> getCelebiList() {
+        return cb.getList();
+    }
+	
+	public void setController(CelebiViewController controller) {
+		this.controller = controller;
 	}
 }

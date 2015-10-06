@@ -1,7 +1,9 @@
 package common;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /*
  * Storage for Celebis
@@ -13,10 +15,10 @@ public class CelebiBag implements Iterable<Celebi> {
 		
 	}
 	
-	private ArrayList<Celebi> celebis;
+	private ObservableList<Celebi> celebis;
 	
 	public CelebiBag(){
-		celebis = new ArrayList<Celebi>();
+		celebis = FXCollections.observableArrayList();
 	}
 	
 	public Celebi getCelebi(int index) {		
@@ -29,7 +31,21 @@ public class CelebiBag implements Iterable<Celebi> {
 		return c;
 	}
 	
+	public int size(){
+		return celebis.size();
+	}
 	
+	public ObservableList<Celebi> getList() {
+		return celebis;
+	}
+	/*
+	 * Sort will return a new container with sorted type
+	 */
+	public CelebiBag sort(SortBy attribute){
+		CelebiBag newContainer = new CelebiBag();
+		return newContainer;
+	}
+
 	public Celebi removeCelebi(int index){
 		assert index >= 0 : index;
 		assert index < celebis.size() - 1: index;
@@ -38,22 +54,9 @@ public class CelebiBag implements Iterable<Celebi> {
 		return rtnCelebi;
 	}
 	
-	public int size(){
-		return celebis.size();
-	}
-	
-	/*
-	 * Sort will return a new container with sorted type
-	 */
-	public CelebiBag sort(SortBy attribute){
-		CelebiBag newContainer = new CelebiBag();
-		return newContainer;
-	}
-	
 	@Override
 	public Iterator<Celebi> iterator() {
 		// TODO Auto-generated method stub
 		return celebis.iterator();
 	}
-	
 }

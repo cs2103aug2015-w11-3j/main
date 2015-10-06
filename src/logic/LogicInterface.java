@@ -9,7 +9,7 @@ public interface LogicInterface {
 
 	public boolean initData(String s); // Returns true if successfully init data
 
-	public Command executeCommand(String cmd) throws IntegrityCommandException;
+	public Feedback executeCommand(String cmd) throws IntegrityCommandException;
 
 	public CelebiBag getCelebiBag();
 
