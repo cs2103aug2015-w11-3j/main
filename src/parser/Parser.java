@@ -11,7 +11,7 @@ public class Parser implements ParserInterface {
 
 	// Patterns for user command matching for substring after 
 	private static final Pattern P_ADD = Pattern.compile(
-			"(?<>)");
+			"(?<add>)");
 	private static final Pattern P_DEL = Pattern.compile(
 			"()");
 	private static final Pattern P_UPD = Pattern.compile(
