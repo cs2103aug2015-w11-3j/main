@@ -33,12 +33,18 @@ public class Logic implements LogicInterface {
 		System.out.println("Logic Init complete");
 	}
 
+	/**
+	 * Passes string param to parser then evaluates the command type
+	 * @exception IntegrityCommandException When given input violates validity
+	 * @exception InvalidCommandException When given input cannot be understood
+	 * @param userString string value entered by user
+	 */
 	@Override
-	public Feedback executeCommand(String cmd) throws IntegrityCommandException {
-		Command rtnCmd = parser.parseCommand(cmd);
+	public Feedback executeCommand(String userString) throws IntegrityCommandException {
+		Command rtnCmd = parser.parseCommand(userString);
 		
 		// Remove this line after parser fix
-		rtnCmd = testFuncs(cmd);
+		rtnCmd = testFuncs(userString);
 		
 		Celebi rtnCelebi = null;
 		Feedback fb;
@@ -78,7 +84,7 @@ public class Logic implements LogicInterface {
 		return fb;
 	}
 
-	/*
+	/**
 	 * INTEGRATION FUNCTION TO TEST OTHER IMPLEMENTATIONS
 	 * PARSER HARD TO IMPLEMENT AT START, THEREFORE BYPASSING IT FOR NOW
 	 */
@@ -95,7 +101,10 @@ public class Logic implements LogicInterface {
 			return rtnCmd;
 		} else if(cmd.contains("update")){
 			Command rtnCmd;
-			rtnCmd = parser.makeUpdate(0, DataType.DATE_END, 20);
+			Celebi c = mBag.getCelebi(0);
+			Date d = c.getEnd();
+			d.setDate(d.getDate() + 20);
+			rtnCmd = parser.makeUpdate(0, DataType.DATE_END, d);
 			return rtnCmd;
 		}else if (cmd.contains("quit")){
 			Command rtnCmd;
@@ -106,13 +115,12 @@ public class Logic implements LogicInterface {
 		}
 	}
 
-	private void doUpdate(Command rtnCmd) {
+	private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
 		
 		// verify UID
 		int UID = rtnCmd.getCelebiUID();
 		if(UID < 0 || UID > mBag.size()){
-			// throw error
-			return;
+			throw new IntegrityCommandException("invalid thrown from parser");
 		} else {
 			Celebi toBeUpdated = mBag.getCelebi(UID);
 			assert toBeUpdated != null;
@@ -124,10 +132,12 @@ public class Logic implements LogicInterface {
 			case DATE_END:
 				assert rtnCmd.getEnd() != null;
 				toBeUpdated.setEnd(rtnCmd.getEnd());
+				storage.save(toBeUpdated);
 				break;
 			case DATE_START:
 				assert rtnCmd.getStart() != null;
 				toBeUpdated.setEnd(rtnCmd.getStart());
+				storage.save(toBeUpdated);
 				break;
 			case DESCRIPTION:
 				System.out.println("Not supported yet");
@@ -141,6 +151,7 @@ public class Logic implements LogicInterface {
 			case NAME:
 				assert rtnCmd.getName() != null;
 				toBeUpdated.setName(rtnCmd.getName());
+				storage.save(toBeUpdated);
 				break;
 			case PRIORITY:
 				System.out.println("Not supported yet");
@@ -160,10 +171,10 @@ public class Logic implements LogicInterface {
 		}
 	}
 
-	private void doDelete(Command rtnCmd) {
+	private void doDelete(Command rtnCmd) throws IntegrityCommandException {
 		int UID = rtnCmd.getCelebiUID();
 		if(UID < 0 || UID > mBag.size()){
-			// throw error
+			throw new IntegrityCommandException("invalid thrown from parser");
 		}
 		Celebi recvCelebi = mBag.getCelebi(UID);
 		boolean delStatus = storage.delete(recvCelebi);
@@ -181,7 +192,7 @@ public class Logic implements LogicInterface {
 		// TODO Auto-generated method stub
 		try
 		{
-			verifyCommand(rtnCmd);
+			verifyDate(rtnCmd.getStart());
 		}
 		catch(IntegrityCommandException e){
 			throw e;
@@ -203,7 +214,7 @@ public class Logic implements LogicInterface {
 		return tCelebi;
 	}
 
-	private void verifyCommand(Command rtnCmd) throws IntegrityCommandException {
+	private void verifyDate(Date date) throws IntegrityCommandException {
 		
 		// Check date
 		// Check
