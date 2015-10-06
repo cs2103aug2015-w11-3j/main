@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
+   <children>
+      <AnchorPane prefHeight="600.0" prefWidth="800.0">
+         <children>
+            <SplitPane dividerPositions="0.7508361204013378" layoutX="330.0" layoutY="340.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                     <children>
+                        <TableView fx:id="celebiTable" layoutX="92.0" layoutY="57.0" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
+                          <columns>
+                            <TableColumn fx:id="idColumn" resizable="false" text="ID" />
+                            <TableColumn fx:id="taskNameColumn" prefWidth="216.0" resizable="false" text="Task Name" />
+                              <TableColumn fx:id="startTimeColumn" prefWidth="200.0" resizable="false" text="Start Time" />
+                              <TableColumn fx:id="endTimeColumn" prefWidth="200.0" resizable="false" text="End Time" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="173.0" prefWidth="798.0">
+                     <children>
+                        <SplitPane dividerPositions="0.7202797202797203" layoutX="334.0" layoutY="-27.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <TextArea fx:id="feedbackArea" layoutX="262.0" layoutY="-86.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                 <children>
+                                    <TextField fx:id="commandField" layoutX="219.0" layoutY="1.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
+                                 </children>
+                              </AnchorPane>
+                          </items>
+                        </SplitPane>
+                     </children>
+                  </AnchorPane>
+              </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
