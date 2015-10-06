@@ -101,9 +101,8 @@ public class Logic implements LogicInterface {
 			return rtnCmd;
 		} else if(cmd.contains("update")){
 			Command rtnCmd;
-			Celebi c = mBag.getCelebi(0);
-			Date d = c.getEnd();
-			d.setDate(d.getDate() + 20);
+			Date d = new Date();
+			d.setDate((int) (d.getDate() + Math.random()* 100));
 			rtnCmd = parser.makeUpdate(0, DataType.DATE_END, d);
 			return rtnCmd;
 		}else if (cmd.contains("quit")){
@@ -119,8 +118,8 @@ public class Logic implements LogicInterface {
 		
 		// verify UID
 		int UID = rtnCmd.getCelebiUID();
-		if(UID < 0 || UID > mBag.size()){
-			throw new IntegrityCommandException("invalid thrown from parser");
+		if(UID < 0 || UID >= mBag.size()){
+			throw new IntegrityCommandException("Given index out of bound");
 		} else {
 			Celebi toBeUpdated = mBag.getCelebi(UID);
 			assert toBeUpdated != null;
@@ -173,8 +172,8 @@ public class Logic implements LogicInterface {
 
 	private void doDelete(Command rtnCmd) throws IntegrityCommandException {
 		int UID = rtnCmd.getCelebiUID();
-		if(UID < 0 || UID > mBag.size()){
-			throw new IntegrityCommandException("invalid thrown from parser");
+		if(UID < 0 || UID >= mBag.size()){
+			throw new IntegrityCommandException("Given index out of bound");
 		}
 		Celebi recvCelebi = mBag.getCelebi(UID);
 		boolean delStatus = storage.delete(recvCelebi);
