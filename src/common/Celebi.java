@@ -2,8 +2,17 @@ package common;
 
 import java.util.Date;
 import java.util.Set;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 
 /*
@@ -13,7 +22,7 @@ import java.util.ArrayList;
 public class Celebi {
 
 	// Reference for possible Celebi data fields
-	public static enum DataType {
+	public static enum Data {
 		ID, 
 		NAME, DESCRIPTION,
 		DATE_START, DATE_END,
@@ -29,11 +38,11 @@ public class Celebi {
 
 	private int cId;
 
-	private String cName;
-	private String cDescription;
+	private StringProperty cName;
+	private StringProperty cDescription;
 
-	private Date cStart;
-	private Date cEnd;
+	private final ObjectProperty<Date> cStart;
+	private final ObjectProperty<Date> cEnd;
 
 	private Priority cPriority;
 	private boolean cIsCompleted;
@@ -54,11 +63,14 @@ public class Celebi {
 	private List<Period> cBlocked;
 
 	
-	// constructor
+	// constructor, use property instead of value
 	public Celebi (String name, Date start, Date end) {
-		cName = name;
-		cStart = start;
-		cEnd = end;
+		cName = new SimpleStringProperty(name);
+		cStart = new SimpleObjectProperty<Date>(start);
+		cEnd = new SimpleObjectProperty<Date>(end);
+		
+		//cStart = new SimpleObjectProperty<LocalDate>(localStart);
+		//cEnd = new SimpleObjectProperty<LocalDate>(localEnd);
 	}
 	
 	
@@ -73,15 +85,17 @@ public class Celebi {
 	}
 	
 	public void setName(String name) {
-		cName = name;
+		cName.set(name);
 	}	
 	
 	public void setStart(Date start) {
-		cStart = (Date)start.clone();
+		cStart.set(start);
+		//cStart.set(convertToLocalDate((Date)start.clone()));
 	}
 	
 	public void setEnd(Date end) {
-		cEnd = (Date)end.clone();
+		cEnd.set(end);
+		//cEnd.set(convertToLocalDate((Date)end.clone()));
 	}	
 	
 	
@@ -95,18 +109,52 @@ public class Celebi {
 	}
 	
 	public String getName() {
-		return cName;
+		return cName.get();
 	}
 	
 	public Date getStart() {
-		return (Date)cStart.clone();
+		return (Date)cStart.get().clone();
 	}
 	
 	public Date getEnd() {
-		return (Date)cEnd.clone();
+		return (Date)cEnd.get().clone();
 	}
 	
+	// get properties
+	public StringProperty nameProperty() {
+        return cName;
+    }
+	
+	public ObjectProperty<Date> startProperty() {
+        return cStart;
+    }
+	
+	public ObjectProperty<Date> endProperty() {
+        return cEnd;
+    }
 	
 	// private methods
+	/*
+	private LocalDate convertToLocalDate(Date date) {
+		LocalDate localDate;
+		if (date != null) {
+			localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+		else {
+			localDate = null;
+		}
+		return localDate;
+	}
 	
+	private Date convertToDate(LocalDate localDate) {
+		Date date;
+		if (localDate != null) {
+			date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		}
+		else {
+			date = null;
+		}
+		return date;
+	}
+	*/
 }
