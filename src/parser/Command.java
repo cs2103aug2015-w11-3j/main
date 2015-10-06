@@ -50,10 +50,10 @@ public class Command implements CommandInterface {
 		_name = name;
 	}
 	void setStart (Date d) {
-		_startDate = d;
+		_startDate = (Date) d.clone();
 	}
 	void setEnd (Date d) {
-		_endDate = d;
+		_endDate = (Date) d.clone();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
