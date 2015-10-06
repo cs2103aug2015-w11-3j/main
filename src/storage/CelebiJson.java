@@ -28,7 +28,7 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 	}
 	
 	public Celebi toCelebi () {
-		String name = get(Celebi.DataType.NAME);
+		String name = get("NAME");
 		Date start = parseDate(get("DATE_START"));
 		Date end = parseDate(get("DATE_END"));
 		

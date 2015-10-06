@@ -12,9 +12,6 @@ import java.util.Scanner;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-
-import common.Celebi;
 
 public class Database {
 	private static File db;
