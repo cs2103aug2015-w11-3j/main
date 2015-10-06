@@ -7,7 +7,7 @@ public interface ParserInterface {
 	public void init();
 	public Command parseCommand(String s);
 	
-	// Manually create 
+	// Manually create commands for logic testing.
 
 	public Command makeAdd (String name, Date start, Date end);
 	public Command makeUpdate (int taskUID, Celebi.DataType fieldType, Object newValue);
