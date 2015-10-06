@@ -1,7 +1,6 @@
 package logic;
 
 import common.CelebiBag;
-import parser.Command;
 
 public interface LogicInterface {
 
