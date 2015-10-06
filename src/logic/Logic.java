@@ -139,7 +139,7 @@ public class Logic implements LogicInterface {
 	}
 
 	
-	public void setParser(ParserStub parserStub) {
+	public void setParser(ParserInterface parserStub) {
 		// TODO Auto-generated method stub
 		System.out.println("STUB ADDED FOR PARSER");
 		parser = parserStub;
