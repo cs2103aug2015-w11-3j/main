@@ -5,10 +5,10 @@ import java.util.Scanner;
 import common.Celebi;
 import common.CelebiBag;
 import common.Common;
+import logic.Feedback;
 import logic.IntegrityCommandException;
 import logic.Logic;
 import logic.LogicInterface;
-import parser.Command;
 
 public class UI implements UIInterface {
 
@@ -40,14 +40,14 @@ public class UI implements UIInterface {
 		Scanner sc = new Scanner(System.in);
 		boolean isRunning = true;
 		while (isRunning) {
-			Command cmd = null;
+			Feedback fb = null;
 			try {
-				cmd = logic.executeCommand(sc.nextLine());
+				fb = logic.executeCommand(sc.nextLine());
 			} catch (IntegrityCommandException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			switch (cmd.getCmdType()) {
+			switch (fb.getCommand().getCmdType()) {
 			case Add:
 				CelebiBag cb = logic.getCelebiBag();
 				System.out.println("Add entered.");

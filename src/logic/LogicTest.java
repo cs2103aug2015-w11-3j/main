@@ -62,7 +62,7 @@ public class LogicTest {
 		
 		logic = new Logic();
 		logic.init();
-		logic.setParser(new ParserStub());
+		//logic.setParser(new ParserStub());
 	}
 	
 }
