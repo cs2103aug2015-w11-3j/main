@@ -44,7 +44,7 @@ public class Logic implements LogicInterface {
 		Command rtnCmd = parser.parseCommand(userString);
 		
 		// Remove this line after parser fix
-		rtnCmd = testFuncs(userString);
+		//rtnCmd = testFuncs(userString);
 		
 		Celebi rtnCelebi = null;
 		Feedback fb;
