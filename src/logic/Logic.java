@@ -135,7 +135,7 @@ public class Logic implements LogicInterface {
 				break;
 			case DATE_START:
 				assert rtnCmd.getStart() != null;
-				toBeUpdated.setEnd(rtnCmd.getStart());
+				toBeUpdated.setStart(rtnCmd.getStart());
 				storage.save(toBeUpdated);
 				break;
 			case DESCRIPTION:

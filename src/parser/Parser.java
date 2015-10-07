@@ -106,6 +106,7 @@ public class Parser implements ParserInterface {
 			case "u" :		// Fallthrough
 			case "upd" :	// Fallthrough
 			case "update" :	// Fallthrough
+			case "set" :	// Fallthrough
 			case "edit" :
 				return Command.Type.Update;
 				
