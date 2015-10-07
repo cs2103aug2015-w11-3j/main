@@ -38,13 +38,13 @@ public class Parser implements ParserInterface {
 	private static final Pattern P_ADD_FLT = Pattern.compile(
 			"^(?<name>[^;]+)$"
 			);
-	// <name>; by <end> 
+	// <name>; by|due <end> 
 	private static final Pattern P_ADD_DL = Pattern.compile(
-			"^(?<name>[^;]+);\\s+by\\s(?<end>.+)$"
+			"^(?<name>[^;]+);\\s+(?:by)|(?:due)\\s(?<end>.+)$"
 			);
-	// <name>; from <start> to <end> 
+	// <name>; from|start <start> end|to|till|until|due <end> 
 	private static final Pattern P_ADD_EVT = Pattern.compile(
-			"^(?<name>[^;]+);\\s+from\\s(?<start>.+)\\sto\\s(?<end>.+)$"
+			"^(?<name>[^;]+);\\s+(?:from)|(?:start)\\s(?<start>.+)\\s[(?:till)(?:to)(?:until)(?:end)(?:due)]\\s(?<end>.+)$"
 			);	
 	
 	// <uid>
@@ -92,7 +92,8 @@ public class Parser implements ParserInterface {
 		
 			case "a" :		// Fallthrough
 			case "add" :	// Fallthrough
-			case "new" :
+			case "new" :	// Fallthrough
+			case "create" :
 				return Command.Type.Add;
 				
 			case "d" : 		// Fallthrough
@@ -203,9 +204,12 @@ public class Parser implements ParserInterface {
 				return Celebi.DataType.NAME;
 				
 			case "start" :
+			case "from" :
 				return Celebi.DataType.DATE_START;
 				
 			case "end" :	// Fallthrough
+			case "till" :	// Fallthrough
+			case "until" :	// Fallthrough
 			case "due" :
 				return Celebi.DataType.DATE_END;
 				
@@ -310,6 +314,13 @@ public class Parser implements ParserInterface {
 		Parser p = new Parser();
 		while (true) {
 			if (true) {
+				try {
+					System.out.println(parseAbsDate(sc.nextLine()));
+				} catch (Exception e) {
+					System.out.println(e);
+				}
+			}
+			if (false) {
 			Command c = p.parseCommand(sc.nextLine());
 			System.out.println("type: " + c.getCmdType());
 			System.out.println("raw: " + c.getRawUserInput());
@@ -318,7 +329,7 @@ public class Parser implements ParserInterface {
 			System.out.println("name: " + c.getName());
 			System.out.println("start: " + c.getStart());
 			System.out.println("end: "+ c.getEnd());
-			} else {
+			} else if (false) {
 			Pattern pt = Pattern.compile(sc.nextLine());
 			Matcher m = pt.matcher(sc.nextLine());
 			System.out.println(m.matches());
