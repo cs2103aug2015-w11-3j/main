@@ -40,11 +40,11 @@ public class Parser implements ParserInterface {
 			);
 	// <name>; by|due <end> 
 	private static final Pattern P_ADD_DL = Pattern.compile(
-			"^(?<name>[^;]+);\\s+(?:by)|(?:due)\\s(?<end>.+)$"
+			"^(?<name>[^;]+);\\s+(?:by|due)\\s(?<end>.+)$"
 			);
 	// <name>; from|start <start> end|to|till|until|due <end> 
 	private static final Pattern P_ADD_EVT = Pattern.compile(
-			"^(?<name>[^;]+);\\s+(?:from)|(?:start)\\s(?<start>.+)\\s[(?:till)(?:to)(?:until)(?:end)(?:due)]\\s(?<end>.+)$"
+			"^(?<name>[^;]+);\\s+(?:from|start)\\s(?<start>.+)\\s(?:till|to|until|end|due)\\s(?<end>.+)$"
 			);	
 	
 	// <uid>
@@ -157,7 +157,7 @@ public class Parser implements ParserInterface {
 					end = parseDate(m.group("end")); // throws IAE if FLT
 					start = parseDate(m.group("start")); // throws IAE if FLT/DL
 				} catch (IllegalArgumentException ie) {
-					System.out.println(ie);
+					//System.out.println(ie);
 					; // nonexistent named capturing group for FLT,DL
 				} catch (Exception pe) {
 					System.out.println(pe);
@@ -313,14 +313,14 @@ public class Parser implements ParserInterface {
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
 		while (true) {
-			if (true) {
+			if (false) {
 				try {
 					System.out.println(parseAbsDate(sc.nextLine()));
 				} catch (Exception e) {
 					System.out.println(e);
 				}
 			}
-			if (false) {
+			if (true) {
 			Command c = p.parseCommand(sc.nextLine());
 			System.out.println("type: " + c.getCmdType());
 			System.out.println("raw: " + c.getRawUserInput());
@@ -329,7 +329,7 @@ public class Parser implements ParserInterface {
 			System.out.println("name: " + c.getName());
 			System.out.println("start: " + c.getStart());
 			System.out.println("end: "+ c.getEnd());
-			} else if (false) {
+			} else if (true) {
 			Pattern pt = Pattern.compile(sc.nextLine());
 			Matcher m = pt.matcher(sc.nextLine());
 			System.out.println(m.matches());
