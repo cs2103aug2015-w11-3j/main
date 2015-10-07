@@ -74,7 +74,7 @@ public class Logic implements LogicInterface {
 				
 			case Invalid:
 				System.out.println("Logic received invalid type");
-				throw new IntegrityCommandException("invalid thrown from parser");
+				throw new IntegrityCommandException("I couldn't understand you... (>.<)");
 				
 			default:
 				assert false : rtnCmd.getCmdType();
@@ -201,7 +201,7 @@ public class Logic implements LogicInterface {
 		Date startDate = rtnCmd.getStart();
 		Date endDate = rtnCmd.getEnd();
 		Celebi tCelebi = new Celebi(name, startDate, endDate);
-		
+
 		boolean addStatus = storage.save(tCelebi);
 		if(addStatus){	// Added successfully
 			mBag.addCelebi(tCelebi);
