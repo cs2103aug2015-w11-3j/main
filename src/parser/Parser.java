@@ -325,8 +325,8 @@ public class Parser implements ParserInterface {
 			Command c = p.parseCommand(sc.nextLine());
 			System.out.println("type: " + c.getCmdType());
 			System.out.println("raw: " + c.getRawUserInput());
-			System.out.println("uid: " + c.getCelebiUID());
-			System.out.println("fieldkey: " + c.getCelebiField());
+			System.out.println("uid: " + c.getTaskUID());
+			System.out.println("fieldkey: " + c.getTaskField());
 			System.out.println("name: " + c.getName());
 			System.out.println("start: " + c.getStart());
 			System.out.println("end: "+ c.getEnd());

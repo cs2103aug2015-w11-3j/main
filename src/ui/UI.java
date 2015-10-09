@@ -65,7 +65,7 @@ public class UI implements UIInterface {
 			
 			switch (cmd.getCommand().getCmdType()) {
 			case Add:
-				cb = logic.getCelebiBag();
+				cb = logic.getTaskBag();
 				// to change
 				feedback = "Celebi: Add entered. \n";
 				controller.appendFeedback(feedback);
@@ -96,7 +96,7 @@ public class UI implements UIInterface {
 	 * Display the default table view
 	 */
 	public void showWelcomeView() {
-		display(logic.getCelebiBag());
+		display(logic.getTaskBag());
 		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you? \n";
 		controller.appendFeedback(feedback);
 	}

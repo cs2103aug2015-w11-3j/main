@@ -10,6 +10,6 @@ public interface LogicInterface {
 
 	public Feedback executeCommand(String cmd) throws IntegrityCommandException;
 
-	public TasksBag getCelebiBag();
+	public TasksBag getTaskBag();
 
 }

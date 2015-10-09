@@ -46,12 +46,12 @@ public class Logic implements LogicInterface {
 		// Remove this line after parser fix
 		//rtnCmd = testFuncs(userString);
 		
-		Task rtnCelebi = null;
+		Task rtnTask = null;
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
-				rtnCelebi = createCelebi(rtnCmd);
-				storage.save(rtnCelebi);
+				rtnTask = createTask(rtnCmd);
+				storage.save(rtnTask);
 				fb = new Feedback(rtnCmd, mBag);
 				break;
 				
@@ -117,14 +117,14 @@ public class Logic implements LogicInterface {
 	private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
 		
 		// verify UID
-		int UID = rtnCmd.getCelebiUID();
+		int UID = rtnCmd.getTaskUID();
 		if(UID < 0 || UID >= mBag.size()){
 			throw new IntegrityCommandException("Given index out of bound");
 		} else {
-			Task toBeUpdated = mBag.getCelebi(UID);
+			Task toBeUpdated = mBag.getTask(UID);
 			assert toBeUpdated != null;
 			
-			switch(rtnCmd.getCelebiField()){
+			switch(rtnCmd.getTaskField()){
 			case BLOCKED_PERIODS:
 				System.out.println("Not supported yet");
 				break;
@@ -162,7 +162,7 @@ public class Logic implements LogicInterface {
 				System.out.println("Not supported yet");
 				break;
 			default:
-				assert false : rtnCmd.getCelebiField();
+				assert false : rtnCmd.getTaskField();
 				System.out.println("Invalid field type");	// Should be marked as invalid command in parser
 				break;
 			
@@ -171,23 +171,23 @@ public class Logic implements LogicInterface {
 	}
 
 	private void doDelete(Command rtnCmd) throws IntegrityCommandException {
-		int UID = rtnCmd.getCelebiUID();
+		int UID = rtnCmd.getTaskUID();
 		if(UID < 0 || UID >= mBag.size()){
 			throw new IntegrityCommandException("Given index out of bound");
 		}
-		Task recvCelebi = mBag.getCelebi(UID);
-		boolean delStatus = storage.delete(recvCelebi);
+		Task recvTask = mBag.getTask(UID);
+		boolean delStatus = storage.delete(recvTask);
 		
 		if(delStatus){	// Removed successfully
-			mBag.removeCelebi(UID);
-			System.out.println("Removed celebi successfully");
+			mBag.removeTask(UID);
+			System.out.println("Removed task successfully");
 		}else{
 			// Throw error?
 		}
 		
 	}
 
-	private Task createCelebi(Command rtnCmd) throws IntegrityCommandException {
+	private Task createTask(Command rtnCmd) throws IntegrityCommandException {
 		// TODO Auto-generated method stub
 		try
 		{
@@ -200,17 +200,17 @@ public class Logic implements LogicInterface {
 		String name = rtnCmd.getName();
 		Date startDate = rtnCmd.getStart();
 		Date endDate = rtnCmd.getEnd();
-		Task tCelebi = new Task(name, startDate, endDate);
+		Task tTask = new Task(name, startDate, endDate);
 
-		boolean addStatus = storage.save(tCelebi);
+		boolean addStatus = storage.save(tTask);
 		if(addStatus){	// Added successfully
-			mBag.addCelebi(tCelebi);
+			mBag.addTask(tTask);
 		}else{
 			// Throw?
 		}
 			
 		
-		return tCelebi;
+		return tTask;
 	}
 
 	private void verifyDate(Date date) throws IntegrityCommandException {
@@ -227,7 +227,7 @@ public class Logic implements LogicInterface {
 	}
 
 	@Override
-	public TasksBag getCelebiBag() {
+	public TasksBag getTaskBag() {
 		// TODO Auto-generated method stub
 		return mBag;
 	}

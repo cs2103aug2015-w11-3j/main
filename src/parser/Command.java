@@ -73,11 +73,11 @@ public class Command implements CommandInterface {
 		return _cmdType;
 	}
 	@Override
-	public int getCelebiUID () {
+	public int getTaskUID () {
 		return _taskUID;
 	}
 	@Override
-	public Task.DataType getCelebiField () {
+	public Task.DataType getTaskField () {
 		return _taskField;
 	}
 	

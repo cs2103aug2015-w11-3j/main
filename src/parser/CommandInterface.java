@@ -33,14 +33,14 @@ public interface CommandInterface {
 	 * Uses the index as shown on the UI to the user, Logic must perform UID->real ID mapping.
 	 * @return Integer, -1 if not applicable
 	 */
-	public int getCelebiUID ();
+	public int getTaskUID ();
 	
 	/** UPDATE
 	 * 
 	 * Identifies a specific field type within the Celebi object for field-level processing.
 	 * @return Celebi.DataType (enum), null if NA
 	 */
-	public Task.DataType getCelebiField ();
+	public Task.DataType getTaskField ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters

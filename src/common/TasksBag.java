@@ -15,28 +15,28 @@ public class TasksBag implements Iterable<Task> {
 		
 	}
 	
-	private ObservableList<Task> celebis;
+	private ObservableList<Task> tasks;
 	
 	public TasksBag(){
-		celebis = FXCollections.observableArrayList();
+		tasks = FXCollections.observableArrayList();
 	}
 	
-	public Task getCelebi(int index) {		
-		return celebis.get(index);
+	public Task getTask(int index) {		
+		return tasks.get(index);
 	}
 	
-	public Task addCelebi(Task c) {
+	public Task addTask(Task c) {
 		// TODO
-		celebis.add(c);
+		tasks.add(c);
 		return c;
 	}
 	
 	public int size(){
-		return celebis.size();
+		return tasks.size();
 	}
 	
 	public ObservableList<Task> getList() {
-		return celebis;
+		return tasks;
 	}
 	/*
 	 * Sort will return a new container with sorted type
@@ -46,17 +46,17 @@ public class TasksBag implements Iterable<Task> {
 		return newContainer;
 	}
 
-	public Task removeCelebi(int index){
+	public Task removeTask(int index){
 		assert index >= 0 : index;
-		assert index < celebis.size() - 1: index;
+		assert index < tasks.size() - 1: index;
 		
-		Task rtnCelebi = celebis.remove(index);
+		Task rtnCelebi = tasks.remove(index);
 		return rtnCelebi;
 	}
 	
 	@Override
 	public Iterator<Task> iterator() {
 		// TODO Auto-generated method stub
-		return celebis.iterator();
+		return tasks.iterator();
 	}
 }
