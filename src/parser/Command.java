@@ -1,7 +1,7 @@
 package parser;
 
 import java.util.Date;
-import common.Celebi;
+import common.Task;
 
 public class Command implements CommandInterface {
 
@@ -20,7 +20,7 @@ public class Command implements CommandInterface {
 	
 	// identifiers
 	private int _taskUID;
-	private Celebi.DataType _taskField;
+	private Task.DataType _taskField;
 	
 	// field values
 	private String _name;
@@ -42,7 +42,7 @@ public class Command implements CommandInterface {
 	void setTaskUID (int uid) {
 		_taskUID = uid;
 	}
-	void setTaskField (Celebi.DataType f) {
+	void setTaskField (Task.DataType f) {
 		_taskField = f;
 	}
 	
@@ -77,7 +77,7 @@ public class Command implements CommandInterface {
 		return _taskUID;
 	}
 	@Override
-	public Celebi.DataType getCelebiField () {
+	public Task.DataType getCelebiField () {
 		return _taskField;
 	}
 	

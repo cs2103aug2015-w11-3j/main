@@ -16,7 +16,7 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 	static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FOTMAT);
 	
 	// constructor
-	public CelebiJson (Celebi c) {
+	public CelebiJson (Task c) {
 		String id = Integer.toString(c.getId());
 		String name = c.getName();
 		String start = formatDate(c.getStart());
@@ -45,7 +45,7 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 		}
 	}
 	
-	public Celebi toCelebi () {
+	public Task toCelebi () {
 		String name = get("NAME");
 		Date start = parseDate(get("DATE_START"));
 		Date end = parseDate(get("DATE_END"));
@@ -54,7 +54,7 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 		System.out.println(start);
 		System.out.println(end);
 		
-		Celebi c = new Celebi(name, start, end);
+		Task c = new Task(name, start, end);
 		c.setId(Integer.parseInt(get("ID")));
 		
 		return c;

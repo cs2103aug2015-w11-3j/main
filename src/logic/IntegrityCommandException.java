@@ -1,5 +1,8 @@
 package logic;
 
+/* 
+ * ASD
+ */
 public class IntegrityCommandException extends Exception {
 	/**
 	 * 

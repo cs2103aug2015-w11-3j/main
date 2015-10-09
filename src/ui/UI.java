@@ -12,8 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import common.Celebi;
-import common.CelebiBag;
+import common.Task;
+import common.TasksBag;
 import common.Common;
 import logic.Feedback;
 import logic.IntegrityCommandException;
@@ -26,7 +26,7 @@ public class UI implements UIInterface {
 
 	LogicInterface logic;
 	private CelebiViewController controller;
-	private CelebiBag cb = new CelebiBag();
+	private TasksBag cb = new TasksBag();
 	
     
 	@Override
@@ -105,17 +105,17 @@ public class UI implements UIInterface {
 	 * Display the celebi bag in table view
 	 * @param cb
 	 */
-	private void display(CelebiBag cb) {
+	private void display(TasksBag cb) {
 		// TODO Auto-generated method stub
 		System.out.println("No. of elements in system: " + cb.size());
-		for(Celebi c : cb){
+		for(Task c : cb){
 			System.out.println(c.getName());
 		}
 		
 		controller.setTableItems(cb.getList());
 	}
 	
-	public ObservableList<Celebi> getCelebiList() {
+	public ObservableList<Task> getCelebiList() {
         return cb.getList();
     }
 	

@@ -36,7 +36,7 @@ public class Storage implements StorageInterface {
 	}
 
 	@Override
-	public boolean save(Celebi c) {
+	public boolean save(Task c) {
 		CelebiJson cj = new CelebiJson(c);
 		int id = c.getId();
 		if (id <= 0) {
@@ -52,7 +52,7 @@ public class Storage implements StorageInterface {
 	}
 
 	@Override
-	public boolean load(String s, CelebiBag c) {
+	public boolean load(String s, TasksBag c) {
 		List<CelebiJson> data = Database.getData();
 		for (int i = 0; i < data.size(); i ++) {
 			c.addCelebi(data.get(i).toCelebi());
@@ -63,7 +63,7 @@ public class Storage implements StorageInterface {
 	}
 	
 	@Override
-	public boolean delete(Celebi c) {
+	public boolean delete(Task c) {
 		Database.delete(c.getId());
 		return true;
 	}
@@ -80,9 +80,9 @@ public class Storage implements StorageInterface {
 	public static void main (String[] args) {
 		Storage s = new Storage();
 		s.init();
-		Celebi c1 = new Celebi("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0));
-		Celebi c2 = new Celebi("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0));
-		Celebi c3 = new Celebi("storage dummy test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0));
+		Task c1 = new Task("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0));
+		Task c2 = new Task("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0));
+		Task c3 = new Task("storage dummy test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0));
 		
 		s.save(c1);
 		s.save(c2);
@@ -92,7 +92,7 @@ public class Storage implements StorageInterface {
 		s.save(c1);
 		s.delete(c2);
 		
-		CelebiBag cb = new CelebiBag();
+		TasksBag cb = new TasksBag();
 		
 		s.load("", cb);
 		System.out.println(cb.size());

@@ -1,6 +1,6 @@
 package logic;
 
-import common.CelebiBag;
+import common.TasksBag;
 
 public interface LogicInterface {
 
@@ -10,6 +10,6 @@ public interface LogicInterface {
 
 	public Feedback executeCommand(String cmd) throws IntegrityCommandException;
 
-	public CelebiBag getCelebiBag();
+	public TasksBag getCelebiBag();
 
 }

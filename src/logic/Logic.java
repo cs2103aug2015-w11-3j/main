@@ -2,9 +2,9 @@ package logic;
 
 import java.util.Date;
 
-import common.Celebi;
-import common.Celebi.DataType;
-import common.CelebiBag;
+import common.Task;
+import common.Task.DataType;
+import common.TasksBag;
 import parser.Command;
 import parser.Parser;
 import parser.ParserInterface;
@@ -15,10 +15,10 @@ public class Logic implements LogicInterface {
 
 	StorageInterface storage;
 	ParserInterface parser;
-	CelebiBag mBag;
+	TasksBag mBag;
 
 	public Logic() {
-		mBag = new CelebiBag();
+		mBag = new TasksBag();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class Logic implements LogicInterface {
 		// Remove this line after parser fix
 		//rtnCmd = testFuncs(userString);
 		
-		Celebi rtnCelebi = null;
+		Task rtnCelebi = null;
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
@@ -121,7 +121,7 @@ public class Logic implements LogicInterface {
 		if(UID < 0 || UID >= mBag.size()){
 			throw new IntegrityCommandException("Given index out of bound");
 		} else {
-			Celebi toBeUpdated = mBag.getCelebi(UID);
+			Task toBeUpdated = mBag.getCelebi(UID);
 			assert toBeUpdated != null;
 			
 			switch(rtnCmd.getCelebiField()){
@@ -175,7 +175,7 @@ public class Logic implements LogicInterface {
 		if(UID < 0 || UID >= mBag.size()){
 			throw new IntegrityCommandException("Given index out of bound");
 		}
-		Celebi recvCelebi = mBag.getCelebi(UID);
+		Task recvCelebi = mBag.getCelebi(UID);
 		boolean delStatus = storage.delete(recvCelebi);
 		
 		if(delStatus){	// Removed successfully
@@ -187,7 +187,7 @@ public class Logic implements LogicInterface {
 		
 	}
 
-	private Celebi createCelebi(Command rtnCmd) throws IntegrityCommandException {
+	private Task createCelebi(Command rtnCmd) throws IntegrityCommandException {
 		// TODO Auto-generated method stub
 		try
 		{
@@ -200,7 +200,7 @@ public class Logic implements LogicInterface {
 		String name = rtnCmd.getName();
 		Date startDate = rtnCmd.getStart();
 		Date endDate = rtnCmd.getEnd();
-		Celebi tCelebi = new Celebi(name, startDate, endDate);
+		Task tCelebi = new Task(name, startDate, endDate);
 
 		boolean addStatus = storage.save(tCelebi);
 		if(addStatus){	// Added successfully
@@ -227,7 +227,7 @@ public class Logic implements LogicInterface {
 	}
 
 	@Override
-	public CelebiBag getCelebiBag() {
+	public TasksBag getCelebiBag() {
 		// TODO Auto-generated method stub
 		return mBag;
 	}

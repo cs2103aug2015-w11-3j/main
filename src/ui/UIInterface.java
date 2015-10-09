@@ -1,14 +1,14 @@
 package ui;
 
 import javafx.collections.ObservableList;
-import common.Celebi;
+import common.Task;
 import ui.view.CelebiViewController;
 
 public interface UIInterface {
 	public void init();
 
 	public void passCommand(String userInput);
-	public ObservableList<Celebi> getCelebiList();
+	public ObservableList<Task> getCelebiList();
 	public void setController(CelebiViewController controller);
 	public void showWelcomeView();
 	// main loop.

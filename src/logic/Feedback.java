@@ -1,6 +1,6 @@
 package logic;
 
-import common.CelebiBag;
+import common.TasksBag;
 import parser.Command;
 
 /*
@@ -8,13 +8,13 @@ import parser.Command;
  * CelebiBag for UI
  */
 public class Feedback {
-	CelebiBag cBag;
+	TasksBag cBag;
 	Command cCommand;
 	
 	/*
 	 * No setter, should never be set individually
 	 */
-	public CelebiBag getcBag() {
+	public TasksBag getcBag() {
 		return cBag;
 	}
 
@@ -23,7 +23,7 @@ public class Feedback {
 	}
 	
 	
-	public Feedback(Command comd, CelebiBag bag){
+	public Feedback(Command comd, TasksBag bag){
 		
 		cBag = bag;
 		cCommand = comd;

@@ -19,8 +19,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import common.Celebi;
-import common.CelebiBag;
+import common.Task;
+import common.TasksBag;
 import ui.Main;
 import ui.UIInterface;
 
@@ -29,15 +29,15 @@ public class CelebiViewController {
 	UIInterface ui;
 	
     @FXML
-    private TableView<Celebi> celebiTable;
+    private TableView<Task> celebiTable;
     @FXML
-    private TableColumn<Celebi, Number> idColumn;
+    private TableColumn<Task, Number> idColumn;
     @FXML
-    private TableColumn<Celebi, String> taskNameColumn;
+    private TableColumn<Task, String> taskNameColumn;
     @FXML
-    private TableColumn<Celebi, Date> startTimeColumn;
+    private TableColumn<Task, Date> startTimeColumn;
     @FXML
-    private TableColumn<Celebi, Date> endTimeColumn;
+    private TableColumn<Task, Date> endTimeColumn;
     
     @FXML
     private TextArea feedbackArea;
@@ -69,9 +69,9 @@ public class CelebiViewController {
      * Initialize the date column with text
      * @param column
      */
-    private void initializeDateColumn(TableColumn<Celebi, Date> column) {
+    private void initializeDateColumn(TableColumn<Task, Date> column) {
     	column.setCellFactory(col -> {
-    		return new TableCell<Celebi, Date>(){
+    		return new TableCell<Task, Date>(){
     	        @Override
     	        protected void updateItem(Date item, boolean empty) {
     	            super.updateItem(item, empty);
@@ -127,7 +127,7 @@ public class CelebiViewController {
 		this.ui = ui;
 	}
 	
-	public void setTableItems(ObservableList<Celebi> celebiList) {
+	public void setTableItems(ObservableList<Task> celebiList) {
 		celebiTable.setItems(celebiList);
 	}
 	

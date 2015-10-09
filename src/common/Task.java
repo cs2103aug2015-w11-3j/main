@@ -14,7 +14,7 @@ import java.util.List;
  * Our task object.
  * Stores task data
  */
-public class Celebi {
+public class Task {
 
 	// Reference for possible Celebi data fields
 	public static enum DataType {
@@ -60,7 +60,7 @@ public class Celebi {
 
 	
 	// constructor, use property instead of value
-	public Celebi (String name, Date start, Date end) {
+	public Task (String name, Date start, Date end) {
 		cName = new SimpleStringProperty(name);
 		cStart = new SimpleObjectProperty<Date>(start);
 		cEnd = new SimpleObjectProperty<Date>(end);

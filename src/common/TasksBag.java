@@ -6,26 +6,26 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /*
- * Storage for Celebis
+ * Storage for Tasks
  * Provides sorting
  */
-public class CelebiBag implements Iterable<Celebi> {
+public class TasksBag implements Iterable<Task> {
 	
 	public enum SortBy{
 		
 	}
 	
-	private ObservableList<Celebi> celebis;
+	private ObservableList<Task> celebis;
 	
-	public CelebiBag(){
+	public TasksBag(){
 		celebis = FXCollections.observableArrayList();
 	}
 	
-	public Celebi getCelebi(int index) {		
+	public Task getCelebi(int index) {		
 		return celebis.get(index);
 	}
 	
-	public Celebi addCelebi(Celebi c) {
+	public Task addCelebi(Task c) {
 		// TODO
 		celebis.add(c);
 		return c;
@@ -35,27 +35,27 @@ public class CelebiBag implements Iterable<Celebi> {
 		return celebis.size();
 	}
 	
-	public ObservableList<Celebi> getList() {
+	public ObservableList<Task> getList() {
 		return celebis;
 	}
 	/*
 	 * Sort will return a new container with sorted type
 	 */
-	public CelebiBag sort(SortBy attribute){
-		CelebiBag newContainer = new CelebiBag();
+	public TasksBag sort(SortBy attribute){
+		TasksBag newContainer = new TasksBag();
 		return newContainer;
 	}
 
-	public Celebi removeCelebi(int index){
+	public Task removeCelebi(int index){
 		assert index >= 0 : index;
 		assert index < celebis.size() - 1: index;
 		
-		Celebi rtnCelebi = celebis.remove(index);
+		Task rtnCelebi = celebis.remove(index);
 		return rtnCelebi;
 	}
 	
 	@Override
-	public Iterator<Celebi> iterator() {
+	public Iterator<Task> iterator() {
 		// TODO Auto-generated method stub
 		return celebis.iterator();
 	}

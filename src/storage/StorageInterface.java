@@ -1,14 +1,14 @@
 package storage;
 
-import common.Celebi;
-import common.CelebiBag;
+import common.Task;
+import common.TasksBag;
 
 public interface StorageInterface {
 	public void init();
 
-	public boolean load(String s, CelebiBag c);
+	public boolean load(String s, TasksBag c);
 	
-	public boolean save(Celebi c);
+	public boolean save(Task c);
 	
-	public boolean delete(Celebi c);
+	public boolean delete(Task c);
 }

@@ -1,7 +1,7 @@
 package parser;
 
 //import com.sun.javafx.css.Combinator;
-import common.Celebi;
+import common.Task;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -186,7 +186,7 @@ public class Parser implements ParserInterface {
 		if (m.matches()) {
 			try {
 				int uid = Integer.parseInt(m.group("uid"));
-				Celebi.DataType field = parseFieldKey(m.group("field"));
+				Task.DataType field = parseFieldKey(m.group("field"));
 				Object newval = parseFieldValue(field, m.group("newval"));
 				return makeUpdate(uid, field, newval);
 			} catch (Exception e) {
@@ -199,26 +199,26 @@ public class Parser implements ParserInterface {
 		return makeQuit();
 	}
 	
-	private static Celebi.DataType parseFieldKey (String token) throws ParseException {
+	private static Task.DataType parseFieldKey (String token) throws ParseException {
 		switch (token.toLowerCase()) {
 			case "name" :
-				return Celebi.DataType.NAME;
+				return Task.DataType.NAME;
 				
 			case "start" :
 			case "from" :
-				return Celebi.DataType.DATE_START;
+				return Task.DataType.DATE_START;
 				
 			case "end" :	// Fallthrough
 			case "till" :	// Fallthrough
 			case "until" :	// Fallthrough
 			case "due" :
-				return Celebi.DataType.DATE_END;
+				return Task.DataType.DATE_END;
 				
 			default:
 				throw new ParseException("", -1);
 		}	
 	}
-	private static Object parseFieldValue (Celebi.DataType key, String valStr) throws ParseException, IllegalArgumentException {
+	private static Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
 		switch (key) {
 		case NAME : 
 			return parseText(valStr);
@@ -276,7 +276,7 @@ public class Parser implements ParserInterface {
 		cmd.setName(name);
 		return cmd;
 	}
-	public Command makeUpdate (int taskUID, Celebi.DataType fieldType, Object newValue) throws IllegalArgumentException {
+	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue) throws IllegalArgumentException {
 		Command cmd = new Command(Command.Type.Update, userRawInput);
 		cmd.setTaskField(fieldType);
 		cmd.setTaskUID(taskUID);

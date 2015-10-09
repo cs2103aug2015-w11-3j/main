@@ -1,6 +1,6 @@
 package parser;
 
-import common.Celebi;
+import common.Task;
 import java.util.Date;
 
 public interface CommandInterface {
@@ -40,7 +40,7 @@ public interface CommandInterface {
 	 * Identifies a specific field type within the Celebi object for field-level processing.
 	 * @return Celebi.DataType (enum), null if NA
 	 */
-	public Celebi.DataType getCelebiField ();
+	public Task.DataType getCelebiField ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters
