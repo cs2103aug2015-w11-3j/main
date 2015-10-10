@@ -114,6 +114,9 @@ public class Logic implements LogicInterface {
 		}
 	}
 
+	private void doSort(Command rtnCmd){
+		// Requires command to contain sortType
+	}
 	private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
 		
 		// verify UID
