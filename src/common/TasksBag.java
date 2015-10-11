@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
  * Storage for Tasks
  * Provides sorting
  */
-public class TasksBag implements Iterable<Task> {
+public class TasksBag implements Iterable<Task>, Cloneable {
 	
 	public enum SortBy{
 		
@@ -53,10 +53,15 @@ public class TasksBag implements Iterable<Task> {
 		Task rtnCelebi = tasks.remove(index);
 		return rtnCelebi;
 	}
-	
+	public boolean removeTask(Task t){
+		assert t != null : "Null task";
+		
+		return tasks.remove(t);
+	}
 	@Override
 	public Iterator<Task> iterator() {
 		// TODO Auto-generated method stub
 		return tasks.iterator();
 	}
+	
 }

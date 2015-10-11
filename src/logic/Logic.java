@@ -18,9 +18,10 @@ public class Logic implements LogicInterface {
 	StorageInterface storage;
 	ParserInterface parser;
 	TasksBag mBag;
-	
+	ActionInvoker cInvoker;
 	public Logic() {
 		mBag = new TasksBag();
+		cInvoker = new ActionInvoker();
 	}
 
 	@Override
@@ -47,14 +48,21 @@ public class Logic implements LogicInterface {
 		
 		// Remove this line after parser fix
 		//rtnCmd = testFuncs(userString);
-		
+		if(userString.equals("undo")){
+			cInvoker.undoAction();
+			return new Feedback(parser.makeDelete(-1), mBag);
+		}
 		Task rtnTask = null;
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
+				
+				fb = cInvoker.placeAction(new AddAction(rtnCmd, mBag, storage));
+				/*
 				rtnTask = createTask(rtnCmd);
 				storage.save(rtnTask);
 				fb = new Feedback(rtnCmd, mBag);
+				*/
 				break;
 				
 			case Delete:

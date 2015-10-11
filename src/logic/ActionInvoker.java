@@ -22,14 +22,14 @@ public class ActionInvoker {
 		cRedo = new ArrayList<Action>();
 	}
 	
-	public void placeAction(Action act){
+	public Feedback placeAction(Action act){
 		assert cUndo != null : "Undo arraylist is null";
 		
 		if(act instanceof UndoableAction){
 			cUndo.add(act);
 		}
 		
-		act.execute();
+		return act.execute();
 	}
 	
 	public void undoAction() throws NoUndoActionException{
@@ -37,7 +37,7 @@ public class ActionInvoker {
 		if(cUndo.size() == 0){
 			throw new NoUndoActionException(MSG_NO_UNDO);
 		}
-		UndoableAction undoAction = (UndoableAction) cUndo.get(0);
+		UndoableAction undoAction = (UndoableAction) cUndo.remove(cUndo.size()-1);
 
 		undoAction.undo();
 	}
