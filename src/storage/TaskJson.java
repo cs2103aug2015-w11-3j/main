@@ -9,14 +9,14 @@ import org.json.simple.JSONObject;
 
 import common.*;
 
-public class CelebiJson extends LinkedHashMap<String, String>{
+public class TaskJson extends LinkedHashMap<String, String>{
 	private static final long serialVersionUID = 1L;
 	
 	static final String DATE_FOTMAT = "yyyy-MM-dd HH:mm";
 	static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FOTMAT);
 	
 	// constructor
-	public CelebiJson (Task c) {
+	public TaskJson (Task c) {
 		String id = Integer.toString(c.getId());
 		String name = c.getName();
 		String start = formatDate(c.getStart());
@@ -28,7 +28,7 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 		put("DATE_END", end);
 	}
 	
-	public CelebiJson (JSONObject j) {
+	public TaskJson (JSONObject j) {
 		put("ID", (String)j.get("ID"));
 		put("NAME", (String)j.get("NAME"));
 		put("DATE_START", (String)j.get("DATE_START"));
@@ -50,10 +50,6 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 		Date start = parseDate(get("DATE_START"));
 		Date end = parseDate(get("DATE_END"));
 		
-		System.out.println("aaaaaaaaaaaaaaaa");
-		System.out.println(start);
-		System.out.println(end);
-		
 		Task c = new Task(name, start, end);
 		c.setId(Integer.parseInt(get("ID")));
 		
@@ -64,7 +60,7 @@ public class CelebiJson extends LinkedHashMap<String, String>{
 		put("ID", Integer.toString(id));
 	}
 	
-	public void update (CelebiJson cj) {
+	public void update (TaskJson cj) {
 		put("ID", cj.get("ID"));
 		put("NAME", cj.get("NAME"));
 		put("DATE_START", cj.get("DATE_START"));

@@ -37,14 +37,15 @@ public class Storage implements StorageInterface {
 
 	@Override
 	public boolean save(Task c) {
-		CelebiJson cj = new CelebiJson(c);
+		TaskJson cj = new TaskJson(c);
 		int id = c.getId();
 		if (id <= 0) {
-			// new
 			id = Database.insert(cj);
 			c.setId(id);
-		} else {
+		} else if (Database.exists(id)) {
 			Database.update(id, cj);
+		} else {
+			Database.restore(cj);
 		}
 		
 		boolean saveSuccessful = true;
@@ -53,7 +54,7 @@ public class Storage implements StorageInterface {
 
 	@Override
 	public boolean load(String s, TasksBag c) {
-		List<CelebiJson> data = Database.getData();
+		List<TaskJson> data = Database.getData();
 		for (int i = 0; i < data.size(); i ++) {
 			c.addTask(data.get(i).toCelebi());
 		}

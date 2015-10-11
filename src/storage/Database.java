@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -17,8 +18,8 @@ public class Database {
 	private static File db;
 	private static Scanner dbReader;
 
-	private static List<CelebiJson> dbData;
-	private static HashMap<Integer, CelebiJson> dbIndex;
+	private static List<TaskJson> dbData;
+	private static HashMap<Integer, TaskJson> dbIndex;
 	
 	private static boolean isConnected;
 
@@ -52,11 +53,11 @@ public class Database {
 				parsedResult = new JSONArray();
 			}
 						
-			dbData = new ArrayList<CelebiJson>();
-			dbIndex = new HashMap<Integer, CelebiJson>();
+			dbData = new ArrayList<TaskJson>();
+			dbIndex = new HashMap<Integer, TaskJson>();
 			
 			for (int i = 0; i < parsedResult.size(); i ++) {
-				CelebiJson cj = new CelebiJson((JSONObject)parsedResult.get(i));
+				TaskJson cj = new TaskJson((JSONObject)parsedResult.get(i));
 				dbData.add(cj);
 				dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
 			}
@@ -81,11 +82,11 @@ public class Database {
 		return true;
 	}
 	
-	static List<CelebiJson> getData () {
-		return new ArrayList<CelebiJson>(dbData);
+	static List<TaskJson> getData () {
+		return new ArrayList<TaskJson>(dbData);
 	}
 	
-	static int insert (CelebiJson cj) {
+	static int insert (TaskJson cj) {
 		int last; 
 		int dbSize = dbData.size();
 
@@ -106,8 +107,8 @@ public class Database {
 		return id;
 	}
 		
-	static boolean update (int id, CelebiJson cj) {
-		CelebiJson cjInDb = dbIndex.get(id);
+	static boolean update (int id, TaskJson cj) {
+		TaskJson cjInDb = dbIndex.get(id);
 		assert cjInDb != null;
 		assert cj != null;
 		cjInDb.update(cj);
@@ -118,13 +119,26 @@ public class Database {
 	}
 	
 	static boolean delete (int id) {
-		CelebiJson cj= dbIndex.get(id);
+		TaskJson cj= dbIndex.get(id);
 		
 		dbData.remove(cj);
 		dbIndex.remove(id);
 		
 		save ();
 
+		return true;
+	}
+	
+	static boolean exists (int id) {
+		return dbIndex.get(id) != null;
+	}
+	
+	static boolean restore (TaskJson cj) {
+		dbData.add(cj);
+		sortData();
+		
+		save ();
+		
 		return true;
 	}
 	
@@ -140,5 +154,9 @@ public class Database {
 		} catch (IOException e) {
 			return false;
 		}
+	}
+	
+	private static void sortData () {
+		Collections.sort(dbData, new TaskJsonComparator());
 	}
 }
