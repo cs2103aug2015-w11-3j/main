@@ -42,8 +42,8 @@ public class Storage implements StorageInterface {
 		if (id <= 0) {
 			id = Database.insert(cj);
 			c.setId(id);
-		} else if (Database.select(id) != null) {
-			Database.update(id, cj);
+		} else if (Database.selectById(id) != null) {
+			Database.update(cj);
 		} else {
 			Database.restore(cj);
 		}
@@ -54,7 +54,7 @@ public class Storage implements StorageInterface {
 
 	@Override
 	public boolean load(String s, TasksBag c) {
-		List<TaskJson> data = Database.getData();
+		List<TaskJson> data = Database.selectAll();
 		for (int i = 0; i < data.size(); i ++) {
 			c.addTask(data.get(i).toCelebi());
 		}

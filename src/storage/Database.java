@@ -82,8 +82,12 @@ class Database {
 		return true;
 	}
 	
-	static List<TaskJson> getData () {
+	static List<TaskJson> selectAll () {
 		return new ArrayList<TaskJson>(dbData);
+	}
+	
+	static TaskJson selectById (int id) {
+		return dbIndex.get(id);
 	}
 	
 	static int insert (TaskJson cj) {
@@ -107,10 +111,8 @@ class Database {
 		return id;
 	}
 		
-	static boolean update (int id, TaskJson cj) {
-		TaskJson cjInDb = dbIndex.get(id);
-		assert cjInDb != null;
-		assert cj != null;
+	static boolean update (TaskJson cj) {
+		TaskJson cjInDb = dbIndex.get(cj.getId());
 		cjInDb.update(cj);
 				
 		save ();
@@ -127,10 +129,6 @@ class Database {
 		save ();
 
 		return true;
-	}
-	
-	static TaskJson select (int id) {
-		return dbIndex.get(id);
 	}
 	
 	static boolean restore (TaskJson cj) {
