@@ -1,25 +1,15 @@
 package ui;
 
-import java.io.IOException;
-import java.util.Scanner;
-
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import common.Task;
 import common.TasksBag;
 import common.Common;
 import logic.Feedback;
-import logic.IntegrityCommandException;
 import logic.Logic;
 import logic.LogicInterface;
-
+import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.LogicException;
 import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
@@ -84,7 +74,7 @@ public class UI implements UIInterface {
 			default:
 				break;
 			}
-		} catch (IntegrityCommandException e) {
+		} catch (LogicException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 			feedback = e.cMsg;

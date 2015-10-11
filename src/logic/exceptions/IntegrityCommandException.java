@@ -1,16 +1,12 @@
-package logic;
+package logic.exceptions;
 
-/* 
- * ASD
- */
-public class IntegrityCommandException extends Exception {
+public class IntegrityCommandException extends LogicException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7658067372077628329L;
-	public String cMsg;
 	
 	public IntegrityCommandException(String msg){
-		cMsg = msg;
+		super(msg);
 	}
 }

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import common.Task;
 import common.Task.DataType;
+import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.LogicException;
 import common.TasksBag;
 import parser.Command;
 import parser.Parser;
@@ -16,7 +18,7 @@ public class Logic implements LogicInterface {
 	StorageInterface storage;
 	ParserInterface parser;
 	TasksBag mBag;
-
+	
 	public Logic() {
 		mBag = new TasksBag();
 	}
@@ -40,7 +42,7 @@ public class Logic implements LogicInterface {
 	 * @param userString string value entered by user
 	 */
 	@Override
-	public Feedback executeCommand(String userString) throws IntegrityCommandException {
+	public Feedback executeCommand(String userString) throws LogicException {
 		Command rtnCmd = parser.parseCommand(userString);
 		
 		// Remove this line after parser fix
