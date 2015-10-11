@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
 
 import common.*;
 
-public class TaskJson extends LinkedHashMap<String, String>{
+class TaskJson extends LinkedHashMap<String, String>{
 	private static final long serialVersionUID = 1L;
 	
 	static final String DATE_FOTMAT = "yyyy-MM-dd HH:mm";
@@ -58,6 +58,15 @@ public class TaskJson extends LinkedHashMap<String, String>{
 	
 	public void setId (int id) {
 		put("ID", Integer.toString(id));
+	}
+	
+	public int getId () {
+		String id = get("ID");
+		if (id == null) {
+			return 0;
+		} else {
+			return Integer.parseInt(get("ID"));
+		}
 	}
 	
 	public void update (TaskJson cj) {

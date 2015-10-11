@@ -14,7 +14,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-public class Database {
+class Database {
 	private static File db;
 	private static Scanner dbReader;
 
@@ -129,13 +129,14 @@ public class Database {
 		return true;
 	}
 	
-	static boolean exists (int id) {
-		return dbIndex.get(id) != null;
+	static TaskJson select (int id) {
+		return dbIndex.get(id);
 	}
 	
 	static boolean restore (TaskJson cj) {
 		dbData.add(cj);
-		sortData();
+		dbIndex.put(cj.getId(), cj);
+		orderById();
 		
 		save ();
 		
@@ -156,7 +157,7 @@ public class Database {
 		}
 	}
 	
-	private static void sortData () {
+	private static void orderById () {
 		Collections.sort(dbData, new TaskJsonComparator());
 	}
 }

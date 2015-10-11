@@ -42,7 +42,7 @@ public class Storage implements StorageInterface {
 		if (id <= 0) {
 			id = Database.insert(cj);
 			c.setId(id);
-		} else if (Database.exists(id)) {
+		} else if (Database.select(id) != null) {
 			Database.update(id, cj);
 		} else {
 			Database.restore(cj);
