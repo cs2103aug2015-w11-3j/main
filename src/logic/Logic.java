@@ -52,6 +52,10 @@ public class Logic implements LogicInterface {
 			cInvoker.undoAction();
 			return new Feedback(parser.makeDelete(-1), mBag);
 		}
+		if(userString.equals("redo")){
+			cInvoker.redoAction();
+			return new Feedback(parser.makeDelete(-1), mBag);
+		}
 		Task rtnTask = null;
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {

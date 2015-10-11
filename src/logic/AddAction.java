@@ -42,9 +42,13 @@ public class AddAction implements UndoableAction{
 
 	@Override
 	public void undo() {
-		// TODO Auto-generated method stub
 		cStore.delete(cCreatedTask);
 		System.out.println(cBag.removeTask(cCreatedTask));
 	}
+	@Override
+	public void redo(){
+		execute();
+	}
+	
 
 }

@@ -2,6 +2,7 @@ package logic;
 
 import java.util.ArrayList;
 
+import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
 
 /*
@@ -14,6 +15,7 @@ import logic.exceptions.NoUndoActionException;
 public class ActionInvoker {
 	
 	private final String MSG_NO_UNDO = "No undoable actions found."; 
+	private final String MSG_NO_REDO = "No redoable actions found."; 
 	ArrayList<Action> cUndo, cRedo;
 	
 	public ActionInvoker(){
@@ -27,6 +29,9 @@ public class ActionInvoker {
 		
 		if(act instanceof UndoableAction){
 			cUndo.add(act);
+			cRedo.clear();			// Clearing redo list, 
+									// should not have redo possible 
+									// if new actions executed
 		}
 		
 		return act.execute();
@@ -38,7 +43,17 @@ public class ActionInvoker {
 			throw new NoUndoActionException(MSG_NO_UNDO);
 		}
 		UndoableAction undoAction = (UndoableAction) cUndo.remove(cUndo.size()-1);
-
+		cRedo.add(undoAction);
 		undoAction.undo();
+	}
+	
+	public void redoAction() throws NoRedoActionException{
+		assert cRedo != null : "Redo arraylist is null";
+		if(cRedo.size() == 0){
+			throw new NoRedoActionException(MSG_NO_REDO);
+		}
+		UndoableAction redoAction = (UndoableAction) cRedo.remove(cRedo.size()-1);
+		cUndo.add(redoAction);
+		redoAction.redo();
 	}
 }
