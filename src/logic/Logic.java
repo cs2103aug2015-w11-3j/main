@@ -194,7 +194,7 @@ public class Logic implements LogicInterface {
 		// TODO Auto-generated method stub
 		try
 		{
-			verifyDate(rtnCmd.getStart());
+			verifyDate(rtnCmd.getStart(), rtnCmd.getEnd());
 		}
 		catch(IntegrityCommandException e){
 			throw e;
@@ -216,10 +216,38 @@ public class Logic implements LogicInterface {
 		return tTask;
 	}
 
-	private void verifyDate(Date date) throws IntegrityCommandException {
+	/*
+	 * Ensures that
+	 * - start date and end date must be after current time
+	 * - end date must be after start date
+	 */
+	private boolean verifyDate(Date dateStart, Date dateEnd) throws IntegrityCommandException {
 		
-		// Check date
-		// Check
+		if(dateStart == null && dateEnd == null){
+			assert false : "both start and end dates are null";
+			return false;
+		} else if(dateStart == null){
+			
+		}
+			
+			
+			
+		if(dateStart != null && dateEnd == null){	
+			return dateStart.after(new Date());
+			
+		} else if(dateStart == null && dateEnd != null){
+			return dateEnd.after(new Date());
+			
+		} else if(dateStart != null && dateEnd != null){
+			if(dateStart.after(dateEnd)){
+				throw new IntegrityCommandException("End date is earlier than start date!");
+			}
+			return true;
+			
+		} else {	
+			assert false : "both start and end dates are null";
+			return false;
+		}
 		
 	}
 
