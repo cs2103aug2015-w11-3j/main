@@ -48,7 +48,7 @@ public class TasksBag implements Iterable<Task>, Cloneable {
 
 	public Task removeTask(int index){
 		assert index >= 0 : index;
-		assert index < tasks.size() - 1: index;
+		assert index <= tasks.size() - 1: index;
 		
 		Task rtnCelebi = tasks.remove(index);
 		return rtnCelebi;

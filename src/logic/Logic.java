@@ -62,17 +62,13 @@ public class Logic implements LogicInterface {
 			case Add:
 				
 				fb = cInvoker.placeAction(new AddAction(rtnCmd, mBag, storage));
-				/*
-				rtnTask = createTask(rtnCmd);
-				storage.save(rtnTask);
-				fb = new Feedback(rtnCmd, mBag);
-				*/
 				break;
 				
 			case Delete:
 
-				doDelete(rtnCmd);
-				fb = new Feedback(rtnCmd, mBag);
+				//doDelete(rtnCmd);
+				//fb = new Feedback(rtnCmd, mBag);
+				fb = cInvoker.placeAction(new DeleteAction(rtnCmd, mBag, storage));
 				break;
 			
 			case Update:
@@ -188,19 +184,7 @@ public class Logic implements LogicInterface {
 	}
 
 	private void doDelete(Command rtnCmd) throws IntegrityCommandException {
-		int UID = rtnCmd.getTaskUID();
-		if(UID < 0 || UID >= mBag.size()){
-			throw new IntegrityCommandException("Given index out of bound");
-		}
-		Task recvTask = mBag.getTask(UID);
-		boolean delStatus = storage.delete(recvTask);
 		
-		if(delStatus){	// Removed successfully
-			mBag.removeTask(UID);
-			System.out.println("Removed task successfully");
-		}else{
-			// Throw error?
-		}
 		
 	}
 
@@ -273,13 +257,11 @@ public class Logic implements LogicInterface {
 
 	@Override
 	public TasksBag getTaskBag() {
-		// TODO Auto-generated method stub
 		return mBag;
 	}
 
 	
 	public void setParser(ParserInterface parserStub) {
-		// TODO Auto-generated method stub
 		System.out.println("STUB ADDED FOR PARSER");
 		parser = parserStub;
 	}

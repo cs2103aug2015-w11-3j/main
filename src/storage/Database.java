@@ -108,6 +108,8 @@ public class Database {
 		
 	static boolean update (int id, CelebiJson cj) {
 		CelebiJson cjInDb = dbIndex.get(id);
+		assert cjInDb != null;
+		assert cj != null;
 		cjInDb.update(cj);
 				
 		save ();

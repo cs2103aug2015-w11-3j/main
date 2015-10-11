@@ -2,6 +2,9 @@ package logic;
 
 import java.util.ArrayList;
 
+import logic.exceptions.IllegalAccessCommandException;
+import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.LogicException;
 import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
 
@@ -24,7 +27,7 @@ public class ActionInvoker {
 		cRedo = new ArrayList<Action>();
 	}
 	
-	public Feedback placeAction(Action act){
+	public Feedback placeAction(Action act) throws LogicException {
 		assert cUndo != null : "Undo arraylist is null";
 		
 		if(act instanceof UndoableAction){
