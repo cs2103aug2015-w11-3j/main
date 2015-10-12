@@ -60,14 +60,10 @@ public class Logic implements LogicInterface {
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
-				
 				fb = cInvoker.placeAction(new AddAction(rtnCmd, mBag, storage));
 				break;
 				
 			case Delete:
-
-				//doDelete(rtnCmd);
-				//fb = new Feedback(rtnCmd, mBag);
 				fb = cInvoker.placeAction(new DeleteAction(rtnCmd, mBag, storage));
 				break;
 			

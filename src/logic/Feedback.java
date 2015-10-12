@@ -8,9 +8,14 @@ import parser.Command;
  * CelebiBag for UI
  */
 public class Feedback {
-	TasksBag cBag;
-	Command cCommand;
+	private final TasksBag cBag;
+	private final Command cCommand;
 	
+	public Feedback(Command comd, TasksBag bag){
+		cBag = bag;
+		cCommand = comd;
+	}
+
 	/*
 	 * No setter, should never be set individually
 	 */
@@ -23,9 +28,5 @@ public class Feedback {
 	}
 	
 	
-	public Feedback(Command comd, TasksBag bag){
-		
-		cBag = bag;
-		cCommand = comd;
-	}
+	
 }

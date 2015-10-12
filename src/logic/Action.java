@@ -1,6 +1,5 @@
 package logic;
 
-import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 
 public interface Action {
