@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,9 +15,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-class Database {
+abstract class Database {
 	private static File db;
 	private static Scanner dbReader;
+	private static Writer dbWriter;
 
 	private static List<TaskJson> dbData;
 	private static HashMap<Integer, TaskJson> dbIndex;
@@ -144,11 +146,12 @@ class Database {
 	// private methods
 	private static boolean save () {
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(db));
+			dbWriter = new BufferedWriter(new FileWriter(db));
 			String text = JSONValue.toJSONString(dbData);
 			
-			writer.write(text);
-			writer.close();
+			dbWriter.write(text);
+			dbWriter.close();
+			dbWriter = null;
 			return true;
 		} catch (IOException e) {
 			return false;
