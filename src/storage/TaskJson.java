@@ -12,6 +12,16 @@ import common.*;
 class TaskJson extends LinkedHashMap<String, String>{
 	private static final long serialVersionUID = 1L;
 	
+	static final String KEY_NAME_ID = "ID";
+	static final String KEY_NAME_NAME = "NAME";
+	static final String KEY_NAME_DATE_START = "DATE_START";
+	static final String KEY_NAME_DATE_END = "DATE_END";
+	static final String KEY_NAME_IS_COMPLETED = "IS_COMPLETED";
+	
+	static final String VALUE_NULL = "null";
+	static final String VALUE_TRUE = "true";
+	static final String VALUE_FALSE = "false";
+	
 	static final String DATE_FOTMAT = "yyyy-MM-dd HH:mm";
 	static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FOTMAT);
 	
@@ -21,65 +31,72 @@ class TaskJson extends LinkedHashMap<String, String>{
 		String name = c.getName();
 		String start = formatDate(c.getStart());
 		String end = formatDate(c.getEnd());
+		String isCompleted = c.isComplete() ? VALUE_TRUE : VALUE_FALSE;
 		
-		put("ID", id);
-		put("NAME", name);
-		put("DATE_START", start);
-		put("DATE_END", end);
+		put(KEY_NAME_ID, id);
+		put(KEY_NAME_NAME, name);
+		put(KEY_NAME_DATE_START, start);
+		put(KEY_NAME_DATE_END, end);
+		put(KEY_NAME_IS_COMPLETED, isCompleted);
 	}
 	
 	public TaskJson (JSONObject j) {
-		put("ID", (String)j.get("ID"));
-		put("NAME", (String)j.get("NAME"));
-		put("DATE_START", (String)j.get("DATE_START"));
-		put("DATE_END", (String)j.get("DATE_END"));
+		put(KEY_NAME_ID, (String)j.get(KEY_NAME_ID));
+		put(KEY_NAME_NAME, (String)j.get(KEY_NAME_NAME));
+		put(KEY_NAME_DATE_START, (String)j.get(KEY_NAME_DATE_START));
+		put(KEY_NAME_DATE_END, (String)j.get(KEY_NAME_DATE_END));
+		put(KEY_NAME_IS_COMPLETED, (String)j.get(KEY_NAME_IS_COMPLETED));
 		
 		// check whether the date of JSON object is valid
 		// if not, set null and rewrite next time
-		if (parseDate(get("DATE_START")) == null) {
-			put("DATE_START", "null");
+		if (parseDate(get(KEY_NAME_DATE_START)) == null) {
+			put(KEY_NAME_DATE_START, VALUE_NULL);
 		}
 		
-		if (parseDate(get("DATE_END")) == null) {
-			put("DATE_START", "null");
+		if (parseDate(get(KEY_NAME_DATE_END)) == null) {
+			put(KEY_NAME_DATE_END, VALUE_NULL);
 		}
 	}
 	
 	public Task toCelebi () {
-		String name = get("NAME");
-		Date start = parseDate(get("DATE_START"));
-		Date end = parseDate(get("DATE_END"));
+		int id = Integer.parseInt(get(KEY_NAME_ID));
+		String name = get(KEY_NAME_NAME);
+		Date start = parseDate(get(KEY_NAME_DATE_START));
+		Date end = parseDate(get(KEY_NAME_DATE_END));
+		boolean isCompleted = get(KEY_NAME_IS_COMPLETED).equals(VALUE_TRUE);
 		
 		Task c = new Task(name, start, end);
-		c.setId(Integer.parseInt(get("ID")));
+		c.setId(id);
+		c.setComplete(isCompleted);
 		
 		return c;
 	}
 	
 	public void setId (int id) {
-		put("ID", Integer.toString(id));
+		put(KEY_NAME_ID, Integer.toString(id));
 	}
 	
 	public int getId () {
-		String id = get("ID");
+		String id = get(KEY_NAME_ID);
 		if (id == null) {
 			return 0;
 		} else {
-			return Integer.parseInt(get("ID"));
+			return Integer.parseInt(get(KEY_NAME_ID));
 		}
 	}
 	
 	public void update (TaskJson cj) {
-		put("ID", cj.get("ID"));
-		put("NAME", cj.get("NAME"));
-		put("DATE_START", cj.get("DATE_START"));
-		put("DATE_END", cj.get("DATE_END"));
+		put(KEY_NAME_ID, cj.get(KEY_NAME_ID));
+		put(KEY_NAME_NAME, cj.get(KEY_NAME_NAME));
+		put(KEY_NAME_DATE_START, cj.get(KEY_NAME_DATE_START));
+		put(KEY_NAME_DATE_END, cj.get(KEY_NAME_DATE_END));
+		put(KEY_NAME_IS_COMPLETED, cj.get(KEY_NAME_IS_COMPLETED));
 	}
 	
 	// private methods
 	private String formatDate (Date d) {
 		if (d == null) {
-			return "null";
+			return VALUE_NULL;
 		}
 		return formatter.format(d);
 	}
