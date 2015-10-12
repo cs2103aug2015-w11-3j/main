@@ -3,9 +3,9 @@ package logic;
 import java.util.Date;
 
 import common.Task;
-import common.Task.DataType;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
+import logic.exceptions.UnknownCommandException;
 import common.TasksBag;
 import parser.Command;
 import parser.Parser;
@@ -56,7 +56,7 @@ public class Logic implements LogicInterface {
 			cInvoker.redoAction();
 			return new Feedback(parser.makeDelete(-1), mBag);
 		}
-		Task rtnTask = null;
+
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
@@ -80,7 +80,7 @@ public class Logic implements LogicInterface {
 				
 			case Invalid:
 				System.out.println("Logic received invalid type");
-				throw new IntegrityCommandException("I couldn't understand you... (>.<)");
+				throw new UnknownCommandException("I couldn't understand you... (>.<)");
 				
 			default:
 				assert false : rtnCmd.getCmdType();
@@ -89,40 +89,7 @@ public class Logic implements LogicInterface {
 		}
 		return fb;
 	}
-
-	/**
-	 * INTEGRATION FUNCTION TO TEST OTHER IMPLEMENTATIONS
-	 * PARSER HARD TO IMPLEMENT AT START, THEREFORE BYPASSING IT FOR NOW
-	 */
-	private Command testFuncs(String cmd) {
-		if(cmd.contains("add")){
-			Command rtnCmd;
-			Date d = new Date();
-			d.setDate( new Date().getDate() + 1);		
-			rtnCmd = parser.makeAdd("HELLO", new Date(), d);
-			return rtnCmd;
-		} else if (cmd.contains("delete")) {
-			Command rtnCmd;
-			rtnCmd = parser.makeDelete(0);
-			return rtnCmd;
-		} else if(cmd.contains("update")){
-			Command rtnCmd;
-			Date d = new Date();
-			d.setDate((int) (d.getDate() + Math.random()* 100));
-			rtnCmd = parser.makeUpdate(0, DataType.DATE_END, d);
-			return rtnCmd;
-		}else if (cmd.contains("quit")){
-			Command rtnCmd;
-			rtnCmd = parser.makeQuit();
-			return rtnCmd;
-		} else {
-			return parser.makeInvalid();
-		}
-	}
-
-	private void doSort(Command rtnCmd){
-		// Requires command to contain sortType
-	}
+	
 	private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
 		
 		// verify UID
@@ -179,71 +146,7 @@ public class Logic implements LogicInterface {
 		}
 	}
 
-	private void doDelete(Command rtnCmd) throws IntegrityCommandException {
-		
-		
-	}
-
-	private Task createTask(Command rtnCmd) throws IntegrityCommandException {
-		// TODO Auto-generated method stub
-		try
-		{
-			verifyDate(rtnCmd.getStart(), rtnCmd.getEnd());
-		}
-		catch(IntegrityCommandException e){
-			throw e;
-		}
-		
-		String name = rtnCmd.getName();
-		Date startDate = rtnCmd.getStart();
-		Date endDate = rtnCmd.getEnd();
-		Task tTask = new Task(name, startDate, endDate);
-
-		boolean addStatus = storage.save(tTask);
-		if(addStatus){	// Added successfully
-			mBag.addTask(tTask);
-		}else{
-			// Throw?
-		}
-			
-		
-		return tTask;
-	}
-
-	/*
-	 * Ensures that
-	 * - start date and end date must be after current time
-	 * - end date must be after start date
-	 */
-	private boolean verifyDate(Date dateStart, Date dateEnd) throws IntegrityCommandException {
-		
-		if(dateStart == null && dateEnd == null){
-			assert false : "both start and end dates are null";
-			return false;
-		} else if(dateStart == null){
-			
-		}
-			
-			
-			
-		if(dateStart != null && dateEnd == null){	
-			return dateStart.after(new Date());
-			
-		} else if(dateStart == null && dateEnd != null){
-			return dateEnd.after(new Date());
-			
-		} else if(dateStart != null && dateEnd != null){
-			if(dateStart.after(dateEnd)){
-				throw new IntegrityCommandException("End date is earlier than start date!");
-			}
-			return true;
-			
-		} else {	
-			assert false : "both start and end dates are null";
-			return false;
-		}
-		
-	}
+	
 
 	@Override
 	public boolean initData(String s) {

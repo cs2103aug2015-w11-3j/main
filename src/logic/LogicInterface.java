@@ -1,7 +1,6 @@
 package logic;
 
 import common.TasksBag;
-import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 
 public interface LogicInterface {

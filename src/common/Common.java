@@ -1,5 +1,9 @@
 package common;
 
+import java.util.Date;
+
+import logic.exceptions.IntegrityCommandException;
+
 public class Common {
 
 	static Common instance;
@@ -29,4 +33,16 @@ public class Common {
 		return usrFileDirectory;
 	}
 
+	/*
+	 * Ensures that end date must be after start date
+	 */
+	public static boolean verifyDate(Date dateStart, Date dateEnd) throws IntegrityCommandException {
+
+		if (dateStart != null && dateEnd != null) {
+			if (dateStart.after(dateEnd)) {
+				throw new IntegrityCommandException("End date is earlier than start date!");
+			}
+		}
+		return true;
+	}
 }

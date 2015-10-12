@@ -8,7 +8,6 @@ import common.Common;
 import logic.Feedback;
 import logic.Logic;
 import logic.LogicInterface;
-import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import ui.view.CelebiViewController;
 
