@@ -13,6 +13,7 @@ public class DeleteAction implements UndoableAction {
 	StorageInterface cStore;
 	Task cDeletedTask;
 	boolean isSuccessful;
+	int cPosition;
 	
 	public DeleteAction(Command command, TasksBag bag, StorageInterface stor){
 		cCommand = command;
@@ -25,7 +26,7 @@ public class DeleteAction implements UndoableAction {
 	public Feedback execute() throws IntegrityCommandException {
 		
 		int UID = cCommand.getTaskUID();
-		assert UID > 0 : UID;
+		assert UID >= 0 : UID;
 		
 		if(UID >= cBag.size()){
 			throw new IntegrityCommandException("Given index out of bound");
@@ -35,7 +36,8 @@ public class DeleteAction implements UndoableAction {
 		isSuccessful = cStore.delete(cDeletedTask);
 		
 		if(isSuccessful){
-			cBag.removeTask(UID);
+			cPosition = cBag.removeTask(cDeletedTask);
+			
 		}else{
 			// Throw error?
 		}
@@ -46,7 +48,7 @@ public class DeleteAction implements UndoableAction {
 	@Override
 	public void undo() {
 		// TODO Auto-generated method stub
-		cBag.addTask(cDeletedTask);
+		cBag.addTask(cPosition, cDeletedTask);
 		cStore.save(cDeletedTask);
 	}
 	@Override

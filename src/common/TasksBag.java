@@ -21,16 +21,24 @@ public class TasksBag implements Iterable<Task>, Cloneable {
 		tasks = FXCollections.observableArrayList();
 	}
 	
-	public Task getTask(int index) {		
+	public Task getTask(int index) {	
+		assert index < tasks.size() : index;
 		return tasks.get(index);
 	}
 	
 	public Task addTask(Task c) {
-		// TODO
+		assert c != null : c;
+		
 		tasks.add(c);
 		return c;
 	}
 	
+	public void addTask(int index, Task c){
+		assert c != null : c;
+		assert index >= 0 : index;
+		
+		tasks.add(index, c);
+	}
 	public int size(){
 		return tasks.size();
 	}
@@ -53,10 +61,16 @@ public class TasksBag implements Iterable<Task>, Cloneable {
 		Task rtnCelebi = tasks.remove(index);
 		return rtnCelebi;
 	}
-	public boolean removeTask(Task t){
+	
+	public int removeTask(Task t){
 		assert t != null : "Null task";
 		
-		return tasks.remove(t);
+		int rtnIndex = tasks.indexOf(t);
+		assert rtnIndex >= 0 : rtnIndex;
+		
+		tasks.remove(rtnIndex);
+		
+		return rtnIndex;
 	}
 	@Override
 	public Iterator<Task> iterator() {

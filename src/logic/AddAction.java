@@ -43,7 +43,7 @@ public class AddAction implements UndoableAction{
 	@Override
 	public void undo() {
 		cStore.delete(cCreatedTask);
-		System.out.println(cBag.removeTask(cCreatedTask));
+		cBag.removeTask(cCreatedTask);
 	}
 	@Override
 	public void redo(){
