@@ -2,6 +2,7 @@ package storage;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
@@ -93,6 +94,10 @@ class TaskJson extends LinkedHashMap<String, String>{
 		put(KEY_NAME_IS_COMPLETED, cj.get(KEY_NAME_IS_COMPLETED));
 	}
 	
+	public static TJComparator getComparator () {
+		return new TJComparator();
+	}
+	
 	// private methods
 	private String formatDate (Date d) {
 		if (d == null) {
@@ -104,6 +109,24 @@ class TaskJson extends LinkedHashMap<String, String>{
 	private Date parseDate (String s) {
 		ParsePosition pos = new ParsePosition(0);
 		return formatter.parse(s, pos); 
+	}
+	
+	static class TJComparator implements Comparator<TaskJson> {
+		@Override
+		public int compare(TaskJson tj1, TaskJson tj2) {
+			int id1 = tj1.getId();
+			int id2 = tj2.getId();
+			
+			if (id1 <= 0 || id2 <= 0) {
+				throw new IllegalArgumentException("Trying to compare TaskJson without ID");
+			} else if (id1 < id2) {
+				return -1;
+			} else if (id1 == id2) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
 	}
 
 }

@@ -159,6 +159,6 @@ abstract class Database {
 	}
 	
 	private static void orderById () {
-		Collections.sort(dbData, new TaskJsonComparator());
+		Collections.sort(dbData, TaskJson.getComparator());
 	}
 }
