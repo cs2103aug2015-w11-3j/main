@@ -13,22 +13,23 @@ public class Storage implements StorageInterface {
 	}
 	
 	public void init() {
-		System.out.println("Storage Init");
-		System.out.println("Storage Init complete");
+		Log.log("Storage Init");
+		Log.log("Storage Init complete");
 		try {
 			connectToDatabase();
 		} catch (IOException e) {
 			// do something
+		} catch (BadFileContentException e) {
+			// do something
 		}
-		
 	}
 	
 	public void close() {
-		System.out.println("Storage closed");
+		Log.log("Storage closed");
 		Database.disconnect();
 	}
 	
-	private void connectToDatabase() throws IOException {
+	private void connectToDatabase() throws IOException, BadFileContentException {
 		Common setting = Common.getInstance();
 		String fileDir = setting.getUsrFileDirectory();
 		Database.connect("tasks.json");

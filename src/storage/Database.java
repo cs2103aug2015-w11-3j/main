@@ -42,7 +42,11 @@ abstract class Database {
 		return isConnected;
 	}
 	
-	static boolean load () {
+	static boolean load () throws BadFileContentException {
+		if (!isConnected) {
+			return false;
+		} 
+		
 		try {
 			String plainText = "";
 			if (dbReader.hasNext()) {
@@ -65,8 +69,7 @@ abstract class Database {
 			}
 			return true;
 		} catch (ClassCastException e) {
-			System.out.println("Bad file format");
-			return false;
+			throw new BadFileContentException("Bad file format");
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
