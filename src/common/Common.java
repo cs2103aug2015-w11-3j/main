@@ -26,6 +26,7 @@ public class Common {
 	public String getUsrFileDirectory() {
 		if (usrFileDirectory == null) {
 		}
+		Log.log("usr file is " + usrFileDirectory, this.getClass());
 		return usrFileDirectory;
 	}
 }
