@@ -11,6 +11,8 @@ import java.util.Scanner;
 
 public class Parser implements ParserInterface {
 
+	private static Parser parserInstance;
+	
 	/////////////////////////////////////////////////////////////////
 	// Date Formats
 	/////////////////////////////////////////////////////////////////
@@ -65,8 +67,15 @@ public class Parser implements ParserInterface {
 
 	/////////////////////////////////////////////////////////////////
 	
-	public Parser () {
+	private Parser () {
 		userRawInput = "no user input received";
+	}
+	// singleton access
+	public static Parser getParser () {
+		if (parserInstance == null) {
+			parserInstance = new Parser();
+		}
+		return parserInstance;
 	}
 	
 	@Override
@@ -77,6 +86,9 @@ public class Parser implements ParserInterface {
 
 	@Override
 	public Command parseCommand (String rawInput) {
+		
+		assert(rawInput != null);
+		
 		userRawInput = rawInput;
 		String[] cmdAndArgs = P_WHITESPACE.split(rawInput.trim(), 2);
 		if (cmdAndArgs.length != 2) {
@@ -88,6 +100,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	private Command.Type getCmdType (String firstToken) {
+		assert(firstToken != null);
 		switch (firstToken.toLowerCase()) {
 		
 			case "a" :		// Fallthrough
@@ -121,6 +134,7 @@ public class Parser implements ParserInterface {
 	}
 
 	private Command parseArgs (Command.Type type, String args) {
+		assert(type != null && args != null);
 		switch (type) {
 			case Add :
 				return parseAdd(args);
@@ -139,6 +153,7 @@ public class Parser implements ParserInterface {
 	}
 
 	private Command parseAdd (String args) {
+		assert(args != null);
 		Matcher m;
 		Date start, end;
 		String name;
@@ -170,6 +185,7 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	private Command parseDel (String args) {
+		assert(args != null);
 		Matcher m = P_DEL.matcher(args);
 		if (m.matches()) {
 			try {
@@ -182,6 +198,7 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	private Command parseUpd (String args) {
+		assert(args != null);
 		Matcher m = P_UPD.matcher(args);
 		if (m.matches()) {
 			try {
@@ -196,10 +213,12 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	private Command parseQuit (String args) {
+		assert(args != null);
 		return makeQuit();
 	}
 	
 	private static Task.DataType parseFieldKey (String token) throws ParseException {
+		assert(token != null);
 		switch (token.toLowerCase()) {
 			case "name" :
 				return Task.DataType.NAME;
@@ -219,20 +238,23 @@ public class Parser implements ParserInterface {
 		}	
 	}
 	private static Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
+		assert(key != null && valStr != null);
 		switch (key) {
-		case NAME : 
-			return parseText(valStr);
-		case DATE_START :	// Fallthrough
-		case DATE_END : 
-			return parseDate(valStr);
-		default :
-			throw new IllegalArgumentException("key must be amongst : NAME, DATE_START, DATE_END");
+			case NAME : 
+				return parseText(valStr);
+			case DATE_START :	// Fallthrough
+			case DATE_END : 
+				return parseDate(valStr);
+			default :
+				throw new IllegalArgumentException("key must be amongst : NAME, DATE_START, DATE_END");
 		}
 	}
 	private static String parseText (String token) {
+		assert(token != null);
 		return token.trim();
 	}
 	private static Date parseDate (String token) throws ParseException {
+		assert(token != null);
 		token = token.trim().toLowerCase();
 		switch (token) {
 		
@@ -255,6 +277,7 @@ public class Parser implements ParserInterface {
 	}
 	private static Date parseAbsDate (String token) throws ParseException {
 		// replace date delimiters with common token
+		assert(token != null);
 		token = P_DATE_DELIM.matcher(token.trim()).replaceAll(DATE_DELIM);
 		for (DateFormat df : DF_ARRAY) {
 			try {
@@ -313,7 +336,10 @@ public class Parser implements ParserInterface {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
-		while (true) {
+		assert(false);
+		System.out.println("wot");
+		
+		/*while (true) {
 			if (false) {
 				try {
 					System.out.println(parseAbsDate(sc.nextLine()));
@@ -335,6 +361,6 @@ public class Parser implements ParserInterface {
 			Matcher m = pt.matcher(sc.nextLine());
 			System.out.println(m.matches());
 			}
-		}
+		}*/
 	}
 }

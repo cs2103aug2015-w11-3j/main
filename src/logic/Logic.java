@@ -31,7 +31,7 @@ public class Logic implements LogicInterface {
 		
 		storage = new Storage();
 		storage.init();
-		parser = new Parser();
+		parser = Parser.getParser();
 		parser.init();
 		
 		System.out.println("Logic Init complete");
