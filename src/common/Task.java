@@ -56,7 +56,7 @@ public class Task {
 	@SuppressWarnings("unused")
 	private Set<String> cTags;
 	// Implementation: ArrayList	@SuppressWarnings("unused")
-	private List<Period> cBlocked;
+	private List<Period> cBlocked; 
 
 	
 	// constructor, use property instead of value

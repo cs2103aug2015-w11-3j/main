@@ -363,4 +363,15 @@ public class Parser implements ParserInterface {
 			}
 		}*/
 	}
+	@Override // Logic test function	// By Ken
+	public Command makeSort() {
+		Command cmd = new Command(Command.Type.Sort, "");
+		return cmd;
+	}
+	
+	// Logic test function	// By Ken
+	@Override
+	public Command makeType(Command.Type type){
+		return new Command(type, "");
+	}
 }

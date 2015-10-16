@@ -8,8 +8,10 @@ public class Command implements CommandInterface {
 	public static enum Type {
 		Add,
 		Delete, Update, 
-		//Sort, Search, FilterByTags, 
+		Sort, Search, //FilterByTags, 
 		//Tag,
+		Undo,
+		Redo,
 		Quit, 
 		Invalid
 	}

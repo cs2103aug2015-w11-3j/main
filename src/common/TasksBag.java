@@ -1,5 +1,8 @@
 package common;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 
 import javafx.collections.FXCollections;
@@ -12,7 +15,8 @@ import javafx.collections.ObservableList;
 public class TasksBag implements Iterable<Task> {
 
 	public enum SortBy {
-
+		START_DATE,
+		END_DATE
 	}
 
 	private ObservableList<Task> tasks;
@@ -21,6 +25,11 @@ public class TasksBag implements Iterable<Task> {
 		tasks = FXCollections.observableArrayList();
 	}
 
+	public TasksBag(ObservableList<Task> t){
+		tasks = t;
+	}
+	
+	
 	public Task getTask(int index) {
 		assert index < tasks.size() : index;
 		return tasks.get(index);
@@ -52,8 +61,25 @@ public class TasksBag implements Iterable<Task> {
 	 * Sort will return a new container as specified by sorted type
 	 */
 	public TasksBag sort(SortBy attribute) {
-		TasksBag newContainer = new TasksBag();
-		return newContainer;
+		//assert attribute != null;
+		
+		ObservableList<Task> newContainer = TasksBag.copy(tasks);
+		/*
+		switch(attribute){
+		case END_DATE:
+			//Collections.sort(newContainer, (Task t1, Task t2)-> t2.getId() - t1.getId());
+			break;
+		case START_DATE:
+			break;
+		default:
+			break;
+		}
+		*/
+		Collections.sort(newContainer, (Task t1, Task t2)-> t2.getId() - t1.getId());
+		newContainer.forEach( 
+				t -> System.out.println(t.getId())
+				);
+		return new TasksBag(newContainer);
 	}
 
 	public Task removeTask(int index) {
@@ -80,4 +106,15 @@ public class TasksBag implements Iterable<Task> {
 		return tasks.iterator();
 	}
 
+	/**
+	 * Makes a copy of the all the tasks reference
+	 * @param t
+	 * @return
+	 */
+	public static ObservableList<Task> copy(ObservableList<Task> t){
+		ObservableList<Task> rtn = FXCollections.observableArrayList();
+		
+		t.forEach(e -> rtn.add(e));
+		return rtn;
+	}
 }

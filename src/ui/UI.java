@@ -54,7 +54,8 @@ public class UI implements UIInterface {
 			
 			switch (cmd.getCommand().getCmdType()) {
 			case Add:
-				cb = logic.getTaskBag();
+				//cb = logic.getTaskBag();	// Ken remove
+				cb = cmd.getcBag();
 				// to change
 				feedback = "Celebi: Add entered. \n";
 				controller.appendFeedback(feedback);
@@ -64,6 +65,16 @@ public class UI implements UIInterface {
 				break;
 			case Delete:
 				feedback = "Celebi: Delete entered. \n";
+				
+				cb = cmd.getcBag();		// Ken added
+				display(cb);			// Ken added
+				controller.appendFeedback(feedback);
+				
+				break;
+			case Sort: // Ken added
+				cb = cmd.getcBag();		
+				display(cb);
+				feedback = "Celebi: sort entered. \n";
 				controller.appendFeedback(feedback);
 				break;
 			case Quit:

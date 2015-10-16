@@ -3,6 +3,7 @@ package logic;
 import java.util.logging.Logger;
 
 import common.Task;
+import common.Task.DataType;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
@@ -50,12 +51,15 @@ public class Logic implements LogicInterface {
 		log.info("executing " + userString);
 		
 		if(userString.equals("undo")){
-			cInvoker.undoAction();
-			return new Feedback(parser.makeDelete(-1), mBag);
+			//cInvoker.undoAction();
+			rtnCmd = parser.makeType(Command.Type.Undo);
 		}
 		if(userString.equals("redo")){
-			cInvoker.redoAction();
-			return new Feedback(parser.makeDelete(-1), mBag);
+			//cInvoker.redoAction();
+			rtnCmd = parser.makeType(Command.Type.Redo);
+		}
+		if(userString.equals("sort")){
+			rtnCmd = parser.makeSort();
 		}
 
 		Feedback fb;
@@ -67,13 +71,25 @@ public class Logic implements LogicInterface {
 			case Delete:
 				fb = cInvoker.placeAction(new DeleteAction(rtnCmd, mBag, storage));
 				break;
-			
+			case Sort:	// Not done
+				//fb = cInvoker
+				TasksBag bg = mBag.sort(null);
+				fb = new Feedback(parser.makeSort(), bg);
+				break;
 			case Update:
-				
+				// Not command pattern yet
 				doUpdate(rtnCmd);
 				fb = new Feedback(rtnCmd, mBag);
 				break;
-			
+			case Undo:
+				cInvoker.undoAction();
+				fb = new Feedback(rtnCmd, mBag);
+				break;
+				
+			case Redo:
+				cInvoker.redoAction();
+				fb = new Feedback(rtnCmd, mBag);
+				break;
 			case Quit:
 				log.info("recevied quit");
 				fb = new Feedback(rtnCmd, null);
