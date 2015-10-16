@@ -1,8 +1,7 @@
 package logic;
 
-import java.util.Date;
+import java.util.logging.Logger;
 
-import common.Log;
 import common.Task;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
@@ -20,14 +19,15 @@ public class Logic implements LogicInterface {
 	ParserInterface parser;
 	TasksBag mBag;
 	ActionInvoker cInvoker;
+	Logger log;
 	public Logic() {
 		mBag = new TasksBag();
 		cInvoker = new ActionInvoker();
+		log = Logger.getLogger("Logic");
 	}
 
 	@Override
 	public void init() {
-		Log.log("Logic Init", this.getClass());
 		
 		storage = new Storage();
 		storage.init();
@@ -47,7 +47,7 @@ public class Logic implements LogicInterface {
 	public Feedback executeCommand(String userString) throws LogicException {
 		Command rtnCmd = parser.parseCommand(userString);
 		
-		Log.log("executing " + userString, this.getClass());
+		log.info("executing " + userString);
 		
 		if(userString.equals("undo")){
 			cInvoker.undoAction();
@@ -75,12 +75,12 @@ public class Logic implements LogicInterface {
 				break;
 			
 			case Quit:
-				Log.log("recevied quit", this.getClass());
+				log.info("recevied quit");
 				fb = new Feedback(rtnCmd, null);
 				break;
 				
 			case Invalid:
-				Log.log("recevied invalid type", this.getClass());
+				log.info("recevied invalid type");
 				throw new UnknownCommandException("I couldn't understand you... (>.<)");
 				
 			default:
