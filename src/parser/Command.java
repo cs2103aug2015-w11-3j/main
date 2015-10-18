@@ -6,12 +6,12 @@ import common.Task;
 public class Command implements CommandInterface {
 
 	public static enum Type {
-		Add,
-		Delete, Update, 
-		Sort, Search, //FilterByTags, 
+		Add, Delete, Update, 
+		Sort, ShowAll,
+		//Search, FilterByTags, 
 		//Tag,
-		Undo,
-		Redo,
+		Undo,Redo,
+		Mark, Unmark,
 		Quit, 
 		Invalid
 	}

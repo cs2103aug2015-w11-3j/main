@@ -15,8 +15,9 @@ import javafx.collections.ObservableList;
 public class TasksBag implements Iterable<Task> {
 
 	public enum SortBy {
-		START_DATE,
-		END_DATE
+		DATE,
+		MARK, UNMARK,
+		NONE
 	}
 
 	private ObservableList<Task> tasks;
@@ -63,23 +64,49 @@ public class TasksBag implements Iterable<Task> {
 	public TasksBag sort(SortBy attribute) {
 		//assert attribute != null;
 		
-		ObservableList<Task> newContainer = TasksBag.copy(tasks);
-		/*
+		ObservableList<Task>  newContainer = null; 
+		
 		switch(attribute){
-		case END_DATE:
-			//Collections.sort(newContainer, (Task t1, Task t2)-> t2.getId() - t1.getId());
+		case DATE:
+			// Reverse sorting with earliest on top
+			newContainer = TasksBag.copy(tasks);
+			Collections.sort(newContainer, 
+					(Task t1, Task t2) -> 
+					compareDate(t2,t1)			
+				);	
 			break;
-		case START_DATE:
+		case NONE:
+			// No sorting required
+			newContainer = TasksBag.copy(tasks);
+			break;
+		case MARK:
+			newContainer = FXCollections.observableArrayList();
+			for(int i = 0; i < tasks.size(); i++){
+				if(tasks.get(i).isComplete()){
+					newContainer.add(tasks.get(i));
+				}
+			}
+			break;
+		case UNMARK:
+			newContainer = FXCollections.observableArrayList();
+			for(int i = 0; i < tasks.size(); i++){
+				if(tasks.get(i).isComplete() == false){
+					newContainer.add(tasks.get(i));
+				}
+			}
 			break;
 		default:
+			assert false;
 			break;
 		}
-		*/
+		/*
 		Collections.sort(newContainer, (Task t1, Task t2)-> t2.getId() - t1.getId());
 		newContainer.forEach( 
 				t -> System.out.println(t.getId())
 				);
-		return new TasksBag(newContainer);
+		*/
+
+		return new TasksBag(newContainer);		
 	}
 
 	public Task removeTask(int index) {
@@ -101,6 +128,36 @@ public class TasksBag implements Iterable<Task> {
 		return rtnIndex;
 	}
 
+	private int compareDate(Task t1, Task t2){
+		assert t1 != null;
+		assert t2 != null;
+		
+		Date firstCom, secCom;
+		
+		firstCom = getAnyDate(t1);
+		secCom = getAnyDate(t2);
+		
+		if(firstCom == null && secCom == null){
+			return 0;
+		} else if (secCom == null){
+			return 1;
+		} else if (firstCom == null){
+			return -1;
+		} else {
+			return firstCom.compareTo(secCom);
+		}
+	}
+
+	private Date getAnyDate(Task t1) {
+		Date date = null;
+		if(t1.getStart() != null){
+			date = t1.getStart();
+		} else if (t1.getEnd() != null){
+			date = t1.getEnd();
+		}
+		return date;
+	}
+	
 	@Override
 	public Iterator<Task> iterator() {
 		return tasks.iterator();

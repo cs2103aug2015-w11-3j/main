@@ -77,6 +77,12 @@ public class UI implements UIInterface {
 				feedback = "Celebi: sort entered. \n";
 				controller.appendFeedback(feedback);
 				break;
+			case ShowAll: // Ken added
+				cb = cmd.getcBag();		
+				display(cb);
+				feedback = "Celebi: sort entered. \n";
+				controller.appendFeedback(feedback);
+				break;
 			case Quit:
 				System.out.println("Quit entered.");
 				Platform.exit();
