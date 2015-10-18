@@ -16,10 +16,13 @@
                      <children>
                         <TableView fx:id="celebiTable" layoutX="92.0" layoutY="57.0" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
                           <columns>
-                            <TableColumn fx:id="idColumn" resizable="false" text="ID" />
-                            <TableColumn fx:id="taskNameColumn" prefWidth="216.0" resizable="false" text="Task Name" />
-                              <TableColumn fx:id="startTimeColumn" prefWidth="200.0" resizable="false" text="Start Time" />
-                              <TableColumn fx:id="endTimeColumn" prefWidth="200.0" resizable="false" text="End Time" />
+                            <TableColumn fx:id="idColumn" prefWidth="40.0" resizable="false" text="ID" />
+                              <TableColumn fx:id="tagColumn" resizable="false" text="Tag" />
+                            <TableColumn fx:id="taskNameColumn" prefWidth="271.0" resizable="false" text="Task Name" />
+                              <TableColumn fx:id="firstPrepColumn" prefWidth="40.0" resizable="false" text="From" />
+                              <TableColumn fx:id="startTimeColumn" prefWidth="120.0" resizable="false" text="Start Time" />
+                              <TableColumn fx:id="secondPrepColumn" prefWidth="25.0" resizable="false" text="To" />
+                              <TableColumn fx:id="endTimeColumn" prefWidth="120.0" resizable="false" text="End Time" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

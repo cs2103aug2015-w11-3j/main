@@ -30,6 +30,10 @@ public class Task {
 	public static enum Priority {
 		LOW, NORMAL, HIGH, CRITICAL
 	}
+	
+	public static enum Type {
+		FLOATING, NOEND, DEADLINE, EVENT
+	}
 
 	private int cId;
 
@@ -38,6 +42,8 @@ public class Task {
 
 	private final ObjectProperty<Date> cStart;
 	private final ObjectProperty<Date> cEnd;
+	
+	private ObjectProperty<Type> cType;
 
 	private Priority cPriority;
 	private boolean cIsCompleted;
@@ -64,6 +70,8 @@ public class Task {
 		cName = new SimpleStringProperty(name);
 		cStart = new SimpleObjectProperty<Date>(start);
 		cEnd = new SimpleObjectProperty<Date>(end);
+		cType = new SimpleObjectProperty<Type>(Type.FLOATING);
+		updateType();
 		
 		//cStart = new SimpleObjectProperty<LocalDate>(localStart);
 		//cEnd = new SimpleObjectProperty<LocalDate>(localEnd);
@@ -86,11 +94,13 @@ public class Task {
 	
 	public void setStart(Date start) {
 		cStart.set(start);
+		updateType();
 		//cStart.set(convertToLocalDate((Date)start.clone()));
 	}
 	
 	public void setEnd(Date end) {
 		cEnd.set(end);
+		updateType();
 		//cEnd.set(convertToLocalDate((Date)end.clone()));
 	}	
 	
@@ -124,6 +134,10 @@ public class Task {
 		}
 	}
 	
+	public Type getType() {
+		return cType.get();
+	}
+	
 	// get properties
 	public StringProperty nameProperty() {
         return cName;
@@ -136,6 +150,11 @@ public class Task {
 	public ObjectProperty<Date> endProperty() {
         return cEnd;
     }
+	
+	public ObjectProperty<Type> typeProperty() {
+		updateType();
+		return cType;
+	}
 
 
 
@@ -159,6 +178,23 @@ public class Task {
 
 	public void setPriority(Priority cPriority) {
 		this.cPriority = cPriority;
+	}
+	
+	
+	
+	private void updateType() {
+		if(cStart.get() == null && cEnd.get() == null) {
+			cType.set(Type.FLOATING);
+		}
+		else if(cStart.get() != null && cEnd.get() == null) {
+			cType.set(Type.NOEND);
+		}
+		else if(cStart.get() == null && cEnd.get() != null) {
+			cType.set(Type.DEADLINE);
+		}
+		else {
+			cType.set(Type.EVENT);
+		}
 	}
 	
 	// private methods

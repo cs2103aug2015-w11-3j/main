@@ -33,6 +33,12 @@ public class CelebiViewController {
     private TableColumn<Task, Date> startTimeColumn;
     @FXML
     private TableColumn<Task, Date> endTimeColumn;
+    @FXML
+    private TableColumn<Task, String> tagColumn;
+    @FXML
+    private TableColumn<Task, Task.Type> firstPrepColumn;
+    @FXML
+    private TableColumn<Task, Task.Type> secondPrepColumn;
     
     @FXML
     private TextArea feedbackArea;
@@ -45,7 +51,7 @@ public class CelebiViewController {
      */
     @FXML
     private void initialize() {
-        // Initialize the celebi table with the four columns.
+        // Initialize the celebi table with the six columns.
     	idColumn.setSortable(false);
     	idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue())));
         
@@ -55,6 +61,11 @@ public class CelebiViewController {
     	initializeDateColumn(startTimeColumn);
     	endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().endProperty());
     	initializeDateColumn(endTimeColumn);
+    	
+    	firstPrepColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
+    	initializeFirstPrepColumn(firstPrepColumn);
+    	secondPrepColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
+    	initializeSecondPrepColumn(secondPrepColumn);
     	
     	initializeCommandField();
     	initializeFeedbackArea();
@@ -81,6 +92,54 @@ public class CelebiViewController {
     	            }
     	        }
     	    };
+    	});
+    }
+    
+    private void initializeFirstPrepColumn(TableColumn<Task, Task.Type> column) {
+    	column.setCellFactory(col -> {
+    		return new TableCell<Task, Task.Type>(){
+    			@Override
+    			protected void updateItem(Task.Type item, boolean empty) {
+    				super.updateItem(item, empty);
+    				
+    				if (item == Task.Type.FLOATING) {
+    					setText(null);
+    				}
+    				else if (item == Task.Type.NOEND) {
+    					setText("from");
+    				}
+    				else if (item == Task.Type.DEADLINE) {
+    					setText(null);
+    				}
+    				else if (item == Task.Type.EVENT) {
+    					setText("from");
+    				}
+    			}
+    		};
+    	});
+    }
+    
+    private void initializeSecondPrepColumn(TableColumn<Task, Task.Type> column) {
+    	column.setCellFactory(col -> {
+    		return new TableCell<Task, Task.Type>(){
+    			@Override
+    			protected void updateItem(Task.Type item, boolean empty) {
+    				super.updateItem(item, empty);
+    				
+    				if (item == Task.Type.FLOATING) {
+    					setText(null);
+    				}
+    				else if (item == Task.Type.NOEND) {
+    					setText(null);
+    				}
+    				else if (item == Task.Type.DEADLINE) {
+    					setText("due");
+    				}
+    				else if (item == Task.Type.EVENT) {
+    					setText("to");
+    				}
+    			}
+    		};
     	});
     }
     
