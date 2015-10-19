@@ -50,7 +50,7 @@ public class ActionInvoker {
 		undoAction.undo();
 	}
 	
-	public void redoAction() throws NoRedoActionException{
+	public void redoAction() throws NoRedoActionException, LogicException{
 		assert cRedo != null : "Redo arraylist is null";
 		
 		if(cRedo.size() == 0){

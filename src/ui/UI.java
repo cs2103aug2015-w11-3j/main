@@ -9,6 +9,7 @@ import logic.Feedback;
 import logic.Logic;
 import logic.LogicInterface;
 import logic.exceptions.LogicException;
+import parser.Command;
 import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
@@ -51,12 +52,19 @@ public class UI implements UIInterface {
 		String feedback = "";
 		try {
 			cmd = logic.executeCommand(userInput);
-			
+			if(cmd.getCommand().getCmdType() == Command.Type.Quit){
+				System.out.println("Quit entered.");
+				Platform.exit();
+			} else {
+				cb = cmd.getcBag();
+				display(cb);
+				feedback = cmd.getMsg(); //"Celebi: Add entered. \n";
+				controller.appendFeedback(feedback);
+			}
+			/*
 			switch (cmd.getCommand().getCmdType()) {
 			case Add:
-				//cb = logic.getTaskBag();	// Ken remove
 				cb = cmd.getcBag();
-				// to change
 				feedback = "Celebi: Add entered. \n";
 				controller.appendFeedback(feedback);
 				
@@ -80,16 +88,21 @@ public class UI implements UIInterface {
 			case ShowAll: // Ken added
 				cb = cmd.getcBag();		
 				display(cb);
-				feedback = "Celebi: sort entered. \n";
+				feedback = "Celebi: show all entered. \n";
 				controller.appendFeedback(feedback);
 				break;
 			case Quit:
 				System.out.println("Quit entered.");
 				Platform.exit();
 				break;
-			default:
+			default: // Ken added to resolve issues when new switch cases are implemented but not yet configured
+				cb = cmd.getcBag();		
+				display(cb);
+				feedback = cmd.getCommand() + " type entered but not captured. \n";
+				controller.appendFeedback(feedback);
 				break;
 			}
+			*/
 		} catch (LogicException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();

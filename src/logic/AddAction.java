@@ -4,11 +4,20 @@ import java.util.Date;
 
 import common.Task;
 import common.TasksBag;
+import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
 
+/**
+ * 
+ * @author MonoChrome
+ * Adds tasks into internal bag
+ * Undo removes the task
+ */
 public class AddAction implements UndoableAction {
-
+	
+	private static final String USR_MSG_ADD_ERROR = "Failed to store to storage";
+	private static final String USR_MSG_ADD_OK = "Added!";
 	private Command cCommand;
 	private TasksBag cBag;
 	private StorageInterface cStore;
@@ -21,25 +30,27 @@ public class AddAction implements UndoableAction {
 	}
 
 	@Override
-	public Feedback execute() {
+	public Feedback execute() throws LogicException {
 		assert cCommand.getCmdType() == Command.Type.Add : cCommand.getCmdType();
-
+		
+		Feedback fb;
+		
 		String name = cCommand.getName();
 		Date startDate = cCommand.getStart();
 		Date endDate = cCommand.getEnd();
-
+			
 		cCreatedTask = new Task(name, startDate, endDate);
 
 		boolean addStatus = cStore.save(cCreatedTask);
 
 		if (addStatus) {
-			// Added successfully
 			cBag.addTask(cCreatedTask);
+			fb = new Feedback(cCommand, cBag, USR_MSG_ADD_OK);
 		} else {
-			// Throw?
+			throw new LogicException(USR_MSG_ADD_ERROR);
 		}
 
-		Feedback fb = new Feedback(cCommand, cBag);
+		
 		return fb;
 	}
 
@@ -50,7 +61,7 @@ public class AddAction implements UndoableAction {
 	}
 
 	@Override
-	public void redo() {
+	public void redo() throws LogicException{
 		execute();
 	}
 

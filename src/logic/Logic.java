@@ -17,6 +17,8 @@ import storage.StorageInterface;
 
 public class Logic implements LogicInterface {
 
+	
+	
 	StorageInterface storage;
 	ParserInterface parser;
 	TasksBag cInternalBag, cShowBag;
@@ -76,18 +78,18 @@ public class Logic implements LogicInterface {
 		if (userString.equals("show")) {
 			rtnCmd = parser.makeType(Command.Type.ShowAll);
 		}
+		
+		
 		Feedback fb;
 		switch (rtnCmd.getCmdType()) {
 			case Add:
-				fb = cInvoker.placeAction(new AddAction(rtnCmd, cShowBag, storage));
+				fb = cInvoker.placeAction(new AddAction(rtnCmd, cInternalBag, storage));
 				break;
 			case Delete:
-				fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cShowBag, storage));
+				fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, storage));
 				break;
 			case Sort:
-				// initData();
-				cShowBag = cInternalBag.sort(TasksBag.SortBy.MARK);
-				fb = new Feedback(rtnCmd, cShowBag);
+				fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.SortBy.MARK));
 				break;
 			case Update:
 				// Not command pattern yet
@@ -95,28 +97,35 @@ public class Logic implements LogicInterface {
 				fb = new Feedback(rtnCmd, cInternalBag);
 				break;
 			case ShowAll:
-				// Not command pattern yet
-				cShowBag = cInternalBag.sort(TasksBag.SortBy.NONE);
-				fb = new Feedback(rtnCmd, cShowBag);
-				break;
-			case Undo:
-				cInvoker.undoAction();
-				fb = new Feedback(rtnCmd, cShowBag);
+				fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.SortBy.NONE));
 				break;
 			case Mark:
 				// Half completed, does not mark any
-				Task t = cShowBag.getTask(0);
-				t.setComplete(true);
-				fb = new Feedback(rtnCmd, cShowBag);
+				if(cInternalBag.getSorted().isEmpty()){
+					throw new IntegrityCommandException("Provided index not on list.");
+				} else {
+					Task t = cInternalBag.getSorted().getTask(0);
+					t.setComplete(true);
+				}
+				fb = new Feedback(rtnCmd, cInternalBag);
 				break;
 			case Unmark:
-				Task t2 = cShowBag.getTask(0);
-				t2.setComplete(true);
-				fb = new Feedback(rtnCmd, cShowBag);
+				// Half completed, does not mark any
+				if(cInternalBag.getSorted().isEmpty()){
+					throw new IntegrityCommandException("Provided index not on list.");
+				} else {
+					Task t2 = cInternalBag.getSorted().getTask(0);
+					t2.setComplete(false);
+				}
+				fb = new Feedback(rtnCmd, cInternalBag);
+				break;
+			case Undo:
+				cInvoker.undoAction();
+				fb = new Feedback(rtnCmd, cInternalBag);
 				break;
 			case Redo:
 				cInvoker.redoAction();
-				fb = new Feedback(rtnCmd, cShowBag);
+				fb = new Feedback(rtnCmd, cInternalBag);
 				break;
 			case Quit:
 				log.info("recevied quit");

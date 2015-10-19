@@ -1,5 +1,8 @@
 package logic;
 
+import java.util.logging.Logger;
+
+import common.Log;
 import common.Task;
 import common.TasksBag;
 import logic.exceptions.IntegrityCommandException;
@@ -8,25 +11,31 @@ import storage.StorageInterface;
 
 public class DeleteAction implements UndoableAction {
 
+	private static final String USR_MSG_DELETE_OOB = "Provided index not on list.";
+	private static final String USR_MSG_DELETE_OK = "Removed!";
 	private Command cCommand;
-	private TasksBag cBag;
+	private TasksBag cCurBag, cIntBag;
 	private StorageInterface cStore;
 	private Task cDeletedTask;
 	private boolean isSuccessful;
-	private int cPosition;
-
+	private int cPosition;		// Position of internal bag
+	Logger log;
 	/**
-	 * Returns a Delete Action object with the current status of the system
+	 * Returns a Delete Action object in the internal bag.
+	 * References the curBag to get the actual internalbag task
 	 *
 	 * @param command 	Command of the action
-	 * @param bag		Current bag status
+	 * @param curBag	Current bag status
+	 * 		  internalBag Internal bag 
 	 * @param stor		Storage pointer
 	 */
-	public DeleteAction(Command command, TasksBag bag, StorageInterface stor) {
+	public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) {
 		cCommand = command;
-		cBag = bag;
+		cCurBag = internalBag.getSorted();
+		cIntBag = internalBag;
 		cStore = stor;
 		isSuccessful = false;
+		log = Logger.getLogger("DeleteAction");
 	}
 
 	/**
@@ -37,36 +46,41 @@ public class DeleteAction implements UndoableAction {
 	 */
 	@Override
 	public Feedback execute() throws IntegrityCommandException {
-
+		assert cCurBag != null;
+		assert cIntBag != null;
+		assert cStore != null;
+		
 		int UID = cCommand.getTaskUID();
-		assert UID >= 0 : UID;
-
-		if (UID >= cBag.size()) {
-			throw new IntegrityCommandException("Given index out of bound");
+		
+		if( UID <= 0){
+			throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
 		}
 
-		cDeletedTask = cBag.getTask(UID);
+		if (UID > cCurBag.size()) {
+			log.warning("Exceeded size" + UID + " " + cCurBag.size());
+			throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
+		}
+
+		cDeletedTask = cCurBag.getTask(UID - 1);
 		isSuccessful = cStore.delete(cDeletedTask);
 
 		if (isSuccessful) {
-			cPosition = cBag.removeTask(cDeletedTask);
-
+			cPosition = cIntBag.removeTask(cDeletedTask);
 		} else {
 			// Throw error?
 		}
 
-		Feedback fb = new Feedback(cCommand, cBag);
+		Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_DELETE_OK);
 		return fb;
 	}
 
 	/**
-	 * Insert task back into bag at removed position
+	 * Insert task back into internal bag at removed position
 	 * Saves task back into storage
 	 */
 	@Override
 	public void undo() {
-		// TODO Auto-generated method stub
-		cBag.addTask(cPosition, cDeletedTask);
+		cIntBag.addTask(cPosition, cDeletedTask);
 		cStore.save(cDeletedTask);
 	}
 
@@ -75,10 +89,9 @@ public class DeleteAction implements UndoableAction {
 	 * Deletes task at storage
 	 */
 	@Override
-	public void redo() {
+	public void redo() throws IntegrityCommandException{
 		if (isSuccessful) {
-			cBag.removeTask(cDeletedTask);
-			cStore.delete(cDeletedTask);
+			execute();
 		}
 	}
 }

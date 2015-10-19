@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
+import common.TasksBag.SortBy;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,7 +20,7 @@ public class TasksBag implements Iterable<Task> {
 		MARK, UNMARK,
 		NONE
 	}
-
+	private SortBy cSortState = SortBy.NONE;
 	private ObservableList<Task> tasks;
 
 	public TasksBag() {
@@ -58,15 +59,20 @@ public class TasksBag implements Iterable<Task> {
 		return tasks;
 	}
 
+	public void setSortState(SortBy attribute){
+		assert attribute != null;
+		cSortState = attribute;
+	}
+	
 	/**
-	 * Sort will return a new container as specified by sorted type
+	 * Sort will return a new container as specified by current sorted state
 	 */
-	public TasksBag sort(SortBy attribute) {
+	public TasksBag getSorted() {
 		//assert attribute != null;
 		
 		ObservableList<Task>  newContainer = null; 
 		
-		switch(attribute){
+		switch(cSortState){
 		case DATE:
 			// Reverse sorting with earliest on top
 			newContainer = TasksBag.copy(tasks);
@@ -173,5 +179,13 @@ public class TasksBag implements Iterable<Task> {
 		
 		t.forEach(e -> rtn.add(e));
 		return rtn;
+	}
+
+	public SortBy getState() {
+		return cSortState;
+	}
+
+	public boolean isEmpty() {
+		return tasks.size() == 0;
 	}
 }
