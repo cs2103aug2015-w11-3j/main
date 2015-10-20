@@ -2,6 +2,7 @@ package storage;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -144,6 +145,25 @@ abstract class Database {
 		save ();
 		
 		return true;
+	}
+	
+	static boolean moveTo(String destination) throws FileNotFoundException {
+		File oldDb = db;
+		db = new File(destination);
+		try {
+			db.createNewFile();
+			dbReader = new Scanner(db);
+			dbReader.useDelimiter("\\Z");
+			
+			save();
+			oldDb.delete();
+			return true;
+		} catch (Exception e) {
+			db = oldDb;
+			dbReader = new Scanner(db);
+			dbReader.useDelimiter("\\Z");
+			return false;
+		}
 	}
 	
 	// private methods

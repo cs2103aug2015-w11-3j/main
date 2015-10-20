@@ -11,4 +11,6 @@ public interface StorageInterface {
 	public boolean save(Task c);
 	
 	public boolean delete(Task c);
+	
+	public boolean moveFileTo(String destination);
 }

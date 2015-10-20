@@ -13,7 +13,8 @@ public class Command implements CommandInterface {
 		UNDO,REDO,
 		MARK, UNMARK,
 		QUIT, 
-		INVALID
+		INVALID,
+		MOVE_FILE
 	}
 
 	// Immutable, every command has these

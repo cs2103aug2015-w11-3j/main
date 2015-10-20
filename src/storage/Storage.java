@@ -1,5 +1,6 @@
 package storage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,6 +69,16 @@ public class Storage implements StorageInterface {
 	public boolean delete(Task c) {
 		Database.delete(c.getId());
 		return true;
+	}
+	
+	@Override
+	public boolean moveFileTo(String destination) {
+		try {
+			return Database.moveTo(destination);
+		} catch (FileNotFoundException e) {
+			return false;
+		}
+		
 	}
 	
 	

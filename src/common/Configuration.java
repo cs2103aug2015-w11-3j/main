@@ -35,6 +35,19 @@ public class Configuration {
 		}
 		return instance;
 	}
+	
+	public String getUsrFileDirectory() {
+		Log.log("usr file is " + configStorageLocation, this.getClass());
+		return configStorageLocation;
+	}
+	
+	public void setUsrFileDirector(String newDir) throws IOException {
+		configStorageLocation = newDir;
+	
+		// write to the configuration file
+		writeBack();
+		Log.log("usr file moved to " + newDir, this.getClass());
+	}
 
 	private Configuration() {
 		try {
@@ -87,7 +100,7 @@ public class Configuration {
 		// set all properties to default value
 		configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
 		
-		// write to the configuartion file
+		// write to the configuration file
 		writeBack();
 	}
 	
@@ -101,10 +114,5 @@ public class Configuration {
 		configWriter.write(text);
 		configWriter.close();
 		configWriter = null;
-	}
-	
-	public String getUsrFileDirectory() {
-		Log.log("usr file is " + configStorageLocation, this.getClass());
-		return configStorageLocation;
 	}
 }
