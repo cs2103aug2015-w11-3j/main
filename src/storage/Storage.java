@@ -32,7 +32,7 @@ public class Storage implements StorageInterface {
 	private void connectToDatabase() throws IOException, BadFileContentException {
 		Configuration setting = Configuration.getInstance();
 		String fileDir = setting.getUsrFileDirectory();
-		Database.connect("tasks.json");
+		Database.connect(fileDir);
 		Database.load();
 	}
 

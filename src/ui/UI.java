@@ -2,9 +2,7 @@ package ui;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import common.Task;
-import common.TasksBag;
-import common.Common;
+import common.*;
 import logic.Feedback;
 import logic.Logic;
 import logic.LogicInterface;
@@ -25,7 +23,7 @@ public class UI implements UIInterface {
 		logic = new Logic();
 		logic.init();
 
-		String s = Common.getInstance().getUsrFileDirectory();
+		String s = Configuration.getInstance().getUsrFileDirectory();
 
 		while (logic.initData(s) == false) {
 			// Failed to load data, query user to give filename
