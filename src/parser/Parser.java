@@ -107,44 +107,44 @@ public class Parser implements ParserInterface {
 			case "add" :	// Fallthrough
 			case "new" :	// Fallthrough
 			case "create" :
-				return Command.Type.Add;
+				return Command.Type.ADD;
 				
 			case "d" : 		// Fallthrough
 			case "del" : 	// Fallthrough
 			case "delete" :	// Fallthrough
 			case "rm" :		// Fallthrough
 			case "remove" :
-				return Command.Type.Delete;
+				return Command.Type.DELETE;
 				
 			case "u" :		// Fallthrough
 			case "upd" :	// Fallthrough
 			case "update" :	// Fallthrough
 			case "set" :	// Fallthrough
 			case "edit" :
-				return Command.Type.Update;
+				return Command.Type.UPDATE;
 				
 			case "q" :		// Fallthrough
 			case "quit" :	// Fallthrough
 			case "exit" :	
-				return Command.Type.Quit;
+				return Command.Type.QUIT;
 				
 			default :
-				return Command.Type.Invalid;
+				return Command.Type.INVALID;
 		}
 	}
 
 	private Command parseArgs (Command.Type type, String args) {
 		assert(type != null && args != null);
 		switch (type) {
-			case Add :
+			case ADD :
 				return parseAdd(args);
-			case Delete : 
+			case DELETE : 
 				return parseDel(args);
-			case Update : 
+			case UPDATE : 
 				return parseUpd(args);
-			case Quit :
+			case QUIT :
 				return parseQuit(args);
-			case Invalid :
+			case INVALID :
 				return makeInvalid();
 			default :
 				break;
@@ -293,14 +293,14 @@ public class Parser implements ParserInterface {
 	}
 	
 	public Command makeAdd (String name, Date start, Date end) {
-		Command cmd = new Command(Command.Type.Add, userRawInput);
+		Command cmd = new Command(Command.Type.ADD, userRawInput);
 		cmd.setEnd(end);
 		cmd.setStart(start);
 		cmd.setName(name);
 		return cmd;
 	}
 	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue) throws IllegalArgumentException {
-		Command cmd = new Command(Command.Type.Update, userRawInput);
+		Command cmd = new Command(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(fieldType);
 		cmd.setTaskUID(taskUID);
 		switch (fieldType) {
@@ -320,16 +320,16 @@ public class Parser implements ParserInterface {
 		return cmd;	
 	}
 	public Command makeDelete (int taskUID) {
-		Command cmd = new Command(Command.Type.Delete, userRawInput);
+		Command cmd = new Command(Command.Type.DELETE, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	public Command makeQuit () {
-		Command cmd = new Command(Command.Type.Quit, userRawInput);
+		Command cmd = new Command(Command.Type.QUIT, userRawInput);
 		return cmd;
 	}
 	public Command makeInvalid () {
-		Command cmd = new Command(Command.Type.Invalid, userRawInput);
+		Command cmd = new Command(Command.Type.INVALID, userRawInput);
 		return cmd;
 	}
 	
@@ -365,7 +365,7 @@ public class Parser implements ParserInterface {
 	}
 	@Override // Logic test function	// By Ken
 	public Command makeSort() {
-		Command cmd = new Command(Command.Type.Sort, "");
+		Command cmd = new Command(Command.Type.SHOW_ALL, "");
 		return cmd;
 	}
 	

@@ -3,7 +3,6 @@ package logic;
 import java.util.logging.Logger;
 
 import common.Task;
-import common.Task.DataType;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
@@ -11,215 +10,204 @@ import common.TasksBag;
 import parser.Command;
 import parser.Parser;
 import parser.ParserInterface;
-import parser.SortType;
 import storage.Storage;
 import storage.StorageInterface;
 
 public class Logic implements LogicInterface {
 
-	
-	
-	StorageInterface storage;
-	ParserInterface parser;
-	TasksBag cInternalBag, cShowBag;
-	ActionInvoker cInvoker;
-	Logger log;
+    private StorageInterface cStorage;
+    private ParserInterface cParser;
+    private TasksBag cInternalBag;
+    private ActionInvoker cInvoker;
+    private Logger log;
 
-	public Logic() {
-		cInternalBag = new TasksBag();
-		cInvoker = new ActionInvoker();
-		log = Logger.getLogger("Logic");
-	}
+    public Logic() {
+        cInternalBag = new TasksBag();
+        cInvoker = new ActionInvoker();
+        log = Logger.getLogger("Logic");
+    }
 
-	@Override
-	public void init() {
+    @Override
+    public void init() {
 
-		storage = new Storage();
-		storage.init();
-		parser = Parser.getParser();
-		parser.init();
+        cStorage = new Storage();
+        cStorage.init();
+        cParser = Parser.getParser();
+        cParser.init();
 
-		System.out.println("Logic Init complete");
-	}
+        System.out.println("Logic Init complete");
+    }
 
-	/**
-	 * Passes string param to parser then evaluates the command type
-	 * 
-	 * @exception IntegrityCommandException
-	 *                When given input violates validity
-	 * @exception InvalidCommandException
-	 *                When given input cannot be understood
-	 * @param userString
-	 *            string value entered by user
-	 */
-	@Override
-	public Feedback executeCommand(String userString) throws LogicException {
-		Command rtnCmd = parser.parseCommand(userString);
+    /**
+     * Passes string param to parser then evaluates the command type
+     * 
+     * @exception IntegrityCommandException
+     *                When given input violates validity
+     * @exception InvalidCommandException
+     *                When given input cannot be understood
+     * @param userString
+     *            string value entered by user
+     */
+    @Override
+    public Feedback executeCommand(String userString) throws LogicException {
+        Command rtnCmd = cParser.parseCommand(userString);
 
-		log.info("executing " + userString);
+        log.info("executing " + userString);
 
-		if (userString.equals("undo")) {
-			// cInvoker.undoAction();
-			rtnCmd = parser.makeType(Command.Type.Undo);
-		}
-		if (userString.equals("redo")) {
-			// cInvoker.redoAction();
-			rtnCmd = parser.makeType(Command.Type.Redo);
-		}
-		if (userString.equals("sort")) {
-			rtnCmd = parser.makeSort();
-		}
-		if (userString.equals("mark")) {
-			rtnCmd = parser.makeType(Command.Type.Mark);
-		}
-		if (userString.equals("unmark")) {
-			rtnCmd = parser.makeType(Command.Type.Unmark);
-		}
-		if (userString.equals("show")) {
-			rtnCmd = parser.makeType(Command.Type.ShowAll);
-		}
-		
-		
-		Feedback fb;
-		switch (rtnCmd.getCmdType()) {
-			case Add:
-				fb = cInvoker.placeAction(new AddAction(rtnCmd, cInternalBag, storage));
-				break;
-			case Delete:
-				fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, storage));
-				break;
-			case Sort:
-				fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.SortBy.MARK));
-				break;
-			case Update:
-				// Not command pattern yet
-				doUpdate(rtnCmd);
-				fb = new Feedback(rtnCmd, cInternalBag);
-				break;
-			case ShowAll:
-				fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.SortBy.NONE));
-				break;
-			case Mark:
-				// Half completed, does not mark any
-				if(cInternalBag.getSorted().isEmpty()){
-					throw new IntegrityCommandException("Provided index not on list.");
-				} else {
-					Task t = cInternalBag.getSorted().getTask(0);
-					t.setComplete(true);
-				}
-				fb = new Feedback(rtnCmd, cInternalBag);
-				break;
-			case Unmark:
-				// Half completed, does not mark any
-				if(cInternalBag.getSorted().isEmpty()){
-					throw new IntegrityCommandException("Provided index not on list.");
-				} else {
-					Task t2 = cInternalBag.getSorted().getTask(0);
-					t2.setComplete(false);
-				}
-				fb = new Feedback(rtnCmd, cInternalBag);
-				break;
-			case Undo:
-				cInvoker.undoAction();
-				fb = new Feedback(rtnCmd, cInternalBag);
-				break;
-			case Redo:
-				cInvoker.redoAction();
-				fb = new Feedback(rtnCmd, cInternalBag);
-				break;
-			case Quit:
-				log.info("recevied quit");
-				fb = new Feedback(rtnCmd, null);
-				break;
-			case Invalid:
-				log.info("recevied invalid type");
-				throw new UnknownCommandException("I couldn't understand you... (>.<)");
+        if (userString.equals("undo")) {
+            rtnCmd = cParser.makeType(Command.Type.UNDO);
+        }
+        if (userString.equals("redo")) {
+            rtnCmd = cParser.makeType(Command.Type.REDO);
+        }
+        if (userString.equals("sort")) {
+            rtnCmd = cParser.makeSort();
+        }
+        if (userString.equals("mark")) {
+            rtnCmd = cParser.makeType(Command.Type.MARK);
+        }
+        if (userString.equals("unmark")) {
+            rtnCmd = cParser.makeType(Command.Type.UNMARK);
+        }
+        if (userString.equals("show uc")) {
+            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
+        }
+        if (userString.equals("show c")) {
+            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
+        }
 
-			default:
-				assert false : rtnCmd.getCmdType();
-				fb = new Feedback(rtnCmd, cInternalBag);
-				break;
-		}
-		return fb;
-	}
+        Feedback fb;
+        switch (rtnCmd.getCmdType()) {
+            case ADD:
+                fb = cInvoker.placeAction(new AddAction(rtnCmd, cInternalBag, cStorage));
+                break;
+            case DELETE:
+                fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
+                break;
+            case SHOW_ALL:
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.COMPLETE_SHOWS));
+                break;
+            case UPDATE:
+                // Not command pattern yet
+                doUpdate(rtnCmd);
+                fb = new Feedback(rtnCmd, cInternalBag);
+                break;
+            case SHOW_INCOMPLETE:
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.NONE));
+                break;
+            case MARK:
+                fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
+                break;
+            case UNMARK:
+                // Half completed, does not mark any
+                if (cInternalBag.getFlitered().isEmpty()) {
+                    throw new IntegrityCommandException("Provided index not on list.");
+                } else {
+                    Task t2 = cInternalBag.getFlitered().getTask(0);
+                    t2.setComplete(false);
+                }
+                fb = new Feedback(rtnCmd, cInternalBag);
+                break;
+            case UNDO:
+                cInvoker.undoAction();
+                fb = new Feedback(rtnCmd, cInternalBag);
+                break;
+            case REDO:
+                cInvoker.redoAction();
+                fb = new Feedback(rtnCmd, cInternalBag);
+                break;
+            case QUIT:
+                log.info("recevied quit");
+                fb = new Feedback(rtnCmd, null);
+                break;
+            case INVALID:
+                log.info("recevied invalid type");
+                throw new UnknownCommandException("I couldn't understand you... (>.<)");
 
-	private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
+            default:
+                assert false : rtnCmd.getCmdType();
+                fb = new Feedback(rtnCmd, cInternalBag);
+                break;
+        }
+        return fb;
+    }
 
-		// verify UID
-		int UID = rtnCmd.getTaskUID();
-		if (UID < 0 || UID >= cInternalBag.size()) {
-			throw new IntegrityCommandException("Given index out of bound");
-		} else {
-			Task toBeUpdated = cInternalBag.getTask(UID);
-			assert toBeUpdated != null;
+    private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
 
-			switch (rtnCmd.getTaskField()) {
-				case BLOCKED_PERIODS:
-					System.out.println("Not supported yet");
-					break;
-				case DATE_END:
-					assert rtnCmd.getEnd() != null;
-					toBeUpdated.setEnd(rtnCmd.getEnd());
-					storage.save(toBeUpdated);
-					break;
-				case DATE_START:
-					assert rtnCmd.getStart() != null;
-					toBeUpdated.setStart(rtnCmd.getStart());
-					storage.save(toBeUpdated);
-					break;
-				case DESCRIPTION:
-					System.out.println("Not supporting");
-					break;
-				case ID:
-					System.out.println("Not supporting"); // Should never be
-																// ran?
-					break;
-				case IS_COMPLETED:
-					System.out.println("Not use mark/unmark?");
-					break;
-				case NAME:
-					assert rtnCmd.getName() != null;
-					toBeUpdated.setName(rtnCmd.getName());
-					storage.save(toBeUpdated);
-					break;
-				case PRIORITY:
-					System.out.println("Not supported yet");
-					break;
-				case SCHEDULED_DAYS:
-					System.out.println("Not supporting");
-					break;
-				case TAGS:
-					System.out.println("Not supporting");
-					break;
-				default:
-					assert false : rtnCmd.getTaskField();
-					System.out.println("Invalid field type"); // Should be
-																// marked as
-																// invalid
-																// command
-																// in parser
-					break;
+        // verify UID
+        int UID = rtnCmd.getTaskUID();
+        if (UID < 0 || UID >= cInternalBag.size()) {
+            throw new IntegrityCommandException("Given index out of bound");
+        } else {
+            Task toBeUpdated = cInternalBag.getTask(UID);
+            assert toBeUpdated != null;
 
-			}
-		}
-	}
+            switch (rtnCmd.getTaskField()) {
+                case BLOCKED_PERIODS:
+                    System.out.println("Not supported yet");
+                    break;
+                case DATE_END:
+                    assert rtnCmd.getEnd() != null;
+                    toBeUpdated.setEnd(rtnCmd.getEnd());
+                    cStorage.save(toBeUpdated);
+                    break;
+                case DATE_START:
+                    assert rtnCmd.getStart() != null;
+                    toBeUpdated.setStart(rtnCmd.getStart());
+                    cStorage.save(toBeUpdated);
+                    break;
+                case DESCRIPTION:
+                    System.out.println("Not supporting");
+                    break;
+                case ID:
+                    System.out.println("Not supporting"); // Should never be
+                                                          // ran?
+                    break;
+                case IS_COMPLETED:
+                    System.out.println("Not use mark/unmark?");
+                    break;
+                case NAME:
+                    assert rtnCmd.getName() != null;
+                    toBeUpdated.setName(rtnCmd.getName());
+                    cStorage.save(toBeUpdated);
+                    break;
+                case PRIORITY:
+                    System.out.println("Not supported yet");
+                    break;
+                case SCHEDULED_DAYS:
+                    System.out.println("Not supporting");
+                    break;
+                case TAGS:
+                    System.out.println("Not supporting");
+                    break;
+                default:
+                    assert false : rtnCmd.getTaskField();
+                    System.out.println("Invalid field type"); // Should be
+                                                              // marked as
+                                                              // invalid
+                                                              // command
+                                                              // in parser
+                    break;
 
-	@Override
-	public boolean initData(String s) {
+            }
+        }
+    }
 
-		boolean rtnVal = storage.load(s, cInternalBag);
-		cShowBag = cInternalBag;
-		return rtnVal;
-	}
+    @Override
+    public boolean initData(String s) {
 
-	@Override
-	public TasksBag getTaskBag() {
-		return cInternalBag;
-	}
+        boolean rtnVal = cStorage.load(s, cInternalBag);
+        return rtnVal;
+    }
 
-	public void setParser(ParserInterface parserStub) {
-		System.out.println("STUB ADDED FOR PARSER");
-		parser = parserStub;
-	}
+    @Override
+    public TasksBag getTaskBag() {
+        return cInternalBag;
+    }
+
+    public void setParser(ParserInterface parserStub) {
+        System.out.println("STUB ADDED FOR PARSER");
+        cParser = parserStub;
+    }
 
 }

@@ -53,7 +53,7 @@ public class UI implements UIInterface {
 		String feedback = "";
 		try {
 			cmd = logic.executeCommand(userInput);
-			if(cmd.getCommand().getCmdType() == Command.Type.Quit){
+			if(cmd.getCommand().getCmdType() == Command.Type.QUIT){
 				System.out.println("Quit entered.");
 				Platform.exit();
 			} else {
