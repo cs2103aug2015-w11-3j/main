@@ -30,4 +30,10 @@ public class StorageStub implements StorageInterface {
         return true;
     }
 
+	@Override
+	public boolean moveFileTo(String destination) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }
