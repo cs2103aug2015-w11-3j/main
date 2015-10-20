@@ -18,9 +18,9 @@ public class Storage implements StorageInterface {
 		try {
 			connectToDatabase();
 		} catch (IOException e) {
-			// do something
+			Log.log("Storage Init Fail");
 		} catch (BadFileContentException e) {
-			// do something
+			Log.log("Storage Init Fail");
 		}
 	}
 	
@@ -30,7 +30,7 @@ public class Storage implements StorageInterface {
 	}
 	
 	private void connectToDatabase() throws IOException, BadFileContentException {
-		Common setting = Common.getInstance();
+		Configuration setting = Configuration.getInstance();
 		String fileDir = setting.getUsrFileDirectory();
 		Database.connect("tasks.json");
 		Database.load();
