@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import common.Task;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
+import logic.exceptions.NoRedoActionException;
+import logic.exceptions.NoUndoActionException;
 import logic.exceptions.UnknownCommandException;
 import common.TasksBag;
 import parser.Command;
@@ -73,9 +75,14 @@ public class Logic implements LogicInterface {
             rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
         }
         if (userString.equals("show c")) {
-            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
+            rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
         }
 
+        return executeParsed(rtnCmd);
+    }
+
+    private Feedback executeParsed(Command rtnCmd) throws LogicException {
+        
         Feedback fb;
         switch (rtnCmd.getCmdType()) {
             case ADD:
@@ -84,8 +91,8 @@ public class Logic implements LogicInterface {
             case DELETE:
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
-            case SHOW_ALL:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.COMPLETE_SHOWS));
+            case SHOW_COMPLETE:
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.COMPLETE_TASKS));
                 break;
             case UPDATE:
                 // Not command pattern yet
@@ -93,13 +100,13 @@ public class Logic implements LogicInterface {
                 fb = new Feedback(rtnCmd, cInternalBag);
                 break;
             case SHOW_INCOMPLETE:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.NONE));
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.INCOMPLETE_TASKS));
                 break;
             case MARK:
                 fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case UNMARK:
-                // Half completed, does not mark any
+                // Not yet command action
                 if (cInternalBag.getFlitered().isEmpty()) {
                     throw new IntegrityCommandException("Provided index not on list.");
                 } else {
@@ -205,6 +212,10 @@ public class Logic implements LogicInterface {
         return cInternalBag;
     }
 
+    public void setStorage(StorageInterface storageStub){
+        System.out.println("Stub added for storage");
+        cStorage = storageStub;
+    }
     public void setParser(ParserInterface parserStub) {
         System.out.println("STUB ADDED FOR PARSER");
         cParser = parserStub;

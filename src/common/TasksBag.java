@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
 public class TasksBag implements Iterable<Task> {
 
     public enum FliterBy {
-        COMPLETE_SHOWS, INCOMPLETE_TASKS, NONE
+        COMPLETE_TASKS, INCOMPLETE_TASKS, NONE
     }
 
     private FliterBy cFliterState = FliterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
@@ -81,7 +81,7 @@ public class TasksBag implements Iterable<Task> {
                 // Showing all to user
                 newContainer = TasksBag.copy(tasks);
                 break;
-            case COMPLETE_SHOWS:
+            case COMPLETE_TASKS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
                     if (tasks.get(i).isComplete()) {
