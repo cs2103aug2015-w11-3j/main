@@ -30,7 +30,7 @@ public class AddAction implements UndoableAction {
 
     @Override
     public Feedback execute() throws LogicException {
-        assert cCommand.getCmdType() == Command.Type.Add : cCommand.getCmdType();
+        assert cCommand.getCmdType() == Command.Type.ADD : cCommand.getCmdType();
 
         Feedback fb;
 
@@ -54,6 +54,8 @@ public class AddAction implements UndoableAction {
 
     @Override
     public void undo() {
+        assert cCreatedTask != null;
+        
         cStore.delete(cCreatedTask);
         cBag.removeTask(cCreatedTask);
     }

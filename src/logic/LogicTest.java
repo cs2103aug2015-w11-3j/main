@@ -1,34 +1,46 @@
 package logic;
 
-import static org.junit.Assert.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import common.TasksBag;
+import logic.exceptions.LogicException;
 
 public class LogicTest {
 
-    private static BufferedReader brIn, brOut;
+    static Logic logic;
 
-    Logic logic;
-
-    @Test
-    public void test() {
-        // System.out.println("1");
+    @BeforeClass
+    public static void initTest() {
         init();
-        // System.out.println("2");
-        runTest();
-        // System.out.println("yess");
     }
 
-    private void runTest() {
-        System.out.println("complete");
+    
+    @Test
+    public void testAdd(){
+        TasksBag temp;
+        try {
+            // Boundary for success 1 input  
+            logic.executeCommand("add name");
+            temp = logic.getTaskBag();
+            temp.forEach( s -> s.getName());
+        } catch (LogicException e) {
+            e.printStackTrace();
+            Assert.fail(e.toString());
+        }
     }
-
-    private void init() {
+    
+    @Test 
+    public void testDelete(){
+        
+    }
+    
+    
+    private static void init() {
         logic = new Logic();
         logic.init();
+        
         // logic.setParser(new ParserStub());
     }
 

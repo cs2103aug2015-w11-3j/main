@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
-import common.TasksBag.SortBy;
+import common.TasksBag.FliterBy;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,11 +14,11 @@ import javafx.collections.ObservableList;
  */
 public class TasksBag implements Iterable<Task> {
 
-    public enum SortBy {
-        DATE, MARK, UNMARK, NONE
+    public enum FliterBy {
+        COMPLETE_SHOWS, INCOMPLETE_TASKS, NONE
     }
 
-    private SortBy cSortState = SortBy.NONE;
+    private FliterBy cFliterState = FliterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
     private ObservableList<Task> tasks;
 
     public TasksBag() {
@@ -56,30 +56,32 @@ public class TasksBag implements Iterable<Task> {
         return tasks;
     }
 
-    public void setSortState(SortBy attribute) {
+    public void setSortState(FliterBy attribute) {
         assert attribute != null;
-        cSortState = attribute;
+        cFliterState = attribute;
     }
 
     /**
      * Sort will return a new container as specified by current sorted state
      */
-    public TasksBag getSorted() {
+    public TasksBag getFlitered() {
         // assert attribute != null;
 
         ObservableList<Task> newContainer = null;
 
-        switch (cSortState) {
-            case DATE:
+        switch (cFliterState) {
+                /* Not support date flitering
+                case DATE:
                 // Reverse sorting with earliest on top
                 newContainer = TasksBag.copy(tasks);
                 Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t2, t1));
                 break;
+                */
             case NONE:
-                // No sorting required
+                // Showing all to user
                 newContainer = TasksBag.copy(tasks);
                 break;
-            case MARK:
+            case COMPLETE_SHOWS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
                     if (tasks.get(i).isComplete()) {
@@ -87,7 +89,7 @@ public class TasksBag implements Iterable<Task> {
                     }
                 }
                 break;
-            case UNMARK:
+            case INCOMPLETE_TASKS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
                     if (tasks.get(i).isComplete() == false) {
@@ -104,7 +106,8 @@ public class TasksBag implements Iterable<Task> {
          * t1.getId()); newContainer.forEach( t -> System.out.println(t.getId())
          * );
          */
-
+        // Sorting by date before returning
+        Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t2, t1));
         return new TasksBag(newContainer);
     }
 
@@ -175,8 +178,8 @@ public class TasksBag implements Iterable<Task> {
         return rtn;
     }
 
-    public SortBy getState() {
-        return cSortState;
+    public FliterBy getState() {
+        return cFliterState;
     }
 
     public boolean isEmpty() {
