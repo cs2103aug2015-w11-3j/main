@@ -3,7 +3,7 @@ package ui.view;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -35,10 +35,12 @@ public class CelebiViewController {
     private TableColumn<Task, Date> endTimeColumn;
     @FXML
     private TableColumn<Task, String> tagColumn;
+    /*
     @FXML
     private TableColumn<Task, Task.Type> firstPrepColumn;
     @FXML
     private TableColumn<Task, Task.Type> secondPrepColumn;
+    */
     
     @FXML
     private TextArea feedbackArea;
@@ -53,7 +55,7 @@ public class CelebiViewController {
     private void initialize() {
         // Initialize the celebi table with the six columns.
     	idColumn.setSortable(false);
-    	idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue())));
+    	idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue())+1));
         
     	taskNameColumn.setCellValueFactory(
                 cellData -> cellData.getValue().nameProperty());
@@ -62,13 +64,24 @@ public class CelebiViewController {
     	endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().endProperty());
     	initializeDateColumn(endTimeColumn);
     	
+    	/*
     	firstPrepColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
     	initializeFirstPrepColumn(firstPrepColumn);
     	secondPrepColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
     	initializeSecondPrepColumn(secondPrepColumn);
+    	*/
+    	
+    	celebiTable.setMouseTransparent(true);
     	
     	initializeCommandField();
     	initializeFeedbackArea();
+    	
+    	Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                commandField.requestFocus();
+            }
+        });
     }
     
     /**
@@ -158,6 +171,7 @@ public class CelebiViewController {
     	        }
     	    }
     	});
+    	commandField.requestFocus();
     }
     
     /**
@@ -187,5 +201,9 @@ public class CelebiViewController {
 	
 	public void appendFeedback(String newFeedback) {
 		feedbackArea.appendText("\n" + newFeedback);
+	}
+	
+	public void clearFeedback() {
+		feedbackArea.setText("");
 	}
 }

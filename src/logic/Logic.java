@@ -3,22 +3,22 @@ package logic;
 import java.util.logging.Logger;
 
 import common.Task;
-import common.Task.DataType;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
+import logic.exceptions.NoRedoActionException;
+import logic.exceptions.NoUndoActionException;
 import logic.exceptions.UnknownCommandException;
 import common.TasksBag;
 import parser.Command;
 import parser.Parser;
 import parser.ParserInterface;
-import parser.SortType;
 import storage.Storage;
 import storage.StorageInterface;
 
 public class Logic implements LogicInterface {
 
-    private StorageInterface storage;
-    private ParserInterface parser;
+    private StorageInterface cStorage;
+    private ParserInterface cParser;
     private TasksBag cInternalBag;
     private ActionInvoker cInvoker;
     private Logger log;
@@ -32,10 +32,10 @@ public class Logic implements LogicInterface {
     @Override
     public void init() {
 
-        storage = new Storage();
-        storage.init();
-        parser = Parser.getParser();
-        parser.init();
+        cStorage = new Storage();
+        cStorage.init();
+        cParser = Parser.getParser();
+        cParser.init();
 
         System.out.println("Logic Init complete");
     }
@@ -52,83 +52,82 @@ public class Logic implements LogicInterface {
      */
     @Override
     public Feedback executeCommand(String userString) throws LogicException {
-        Command rtnCmd = parser.parseCommand(userString);
+        Command rtnCmd = cParser.parseCommand(userString);
 
         log.info("executing " + userString);
 
         if (userString.equals("undo")) {
-            // cInvoker.undoAction();
-            rtnCmd = parser.makeType(Command.Type.Undo);
+            rtnCmd = cParser.makeType(Command.Type.UNDO);
         }
         if (userString.equals("redo")) {
-            // cInvoker.redoAction();
-            rtnCmd = parser.makeType(Command.Type.Redo);
+            rtnCmd = cParser.makeType(Command.Type.REDO);
         }
         if (userString.equals("sort")) {
-            rtnCmd = parser.makeSort();
+            rtnCmd = cParser.makeSort();
         }
         if (userString.equals("mark")) {
-            rtnCmd = parser.makeType(Command.Type.Mark);
+            rtnCmd = cParser.makeType(Command.Type.MARK);
         }
         if (userString.equals("unmark")) {
-            rtnCmd = parser.makeType(Command.Type.Unmark);
+            rtnCmd = cParser.makeType(Command.Type.UNMARK);
         }
-        if (userString.equals("show")) {
-            rtnCmd = parser.makeType(Command.Type.ShowAll);
+        if (userString.equals("show uc")) {
+            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
+        }
+        if (userString.equals("show c")) {
+            rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
         }
 
+        return executeParsed(rtnCmd);
+    }
+
+    private Feedback executeParsed(Command rtnCmd) throws LogicException {
+        
         Feedback fb;
         switch (rtnCmd.getCmdType()) {
-            case Add:
-                fb = cInvoker.placeAction(new AddAction(rtnCmd, cInternalBag, storage));
+            case ADD:
+                fb = cInvoker.placeAction(new AddAction(rtnCmd, cInternalBag, cStorage));
                 break;
-            case Delete:
-                fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, storage));
+            case DELETE:
+                fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
-            case Sort:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.SortBy.MARK));
+            case SHOW_COMPLETE:
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.COMPLETE_TASKS));
                 break;
-            case Update:
+            case UPDATE:
                 // Not command pattern yet
                 doUpdate(rtnCmd);
                 fb = new Feedback(rtnCmd, cInternalBag);
                 break;
-            case ShowAll:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.SortBy.NONE));
+            case SHOW_INCOMPLETE:
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.INCOMPLETE_TASKS));
                 break;
-            case Mark:
-                // Half completed, does not mark any
-                if (cInternalBag.getSorted().isEmpty()) {
+            case MARK:
+                fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
+                break;
+            case UNMARK:
+                // Not yet command action
+                if (cInternalBag.getFlitered().isEmpty()) {
                     throw new IntegrityCommandException("Provided index not on list.");
                 } else {
-                    Task t = cInternalBag.getSorted().getTask(0);
-                    t.setComplete(true);
-                }
-                fb = new Feedback(rtnCmd, cInternalBag);
-                break;
-            case Unmark:
-                // Half completed, does not mark any
-                if (cInternalBag.getSorted().isEmpty()) {
-                    throw new IntegrityCommandException("Provided index not on list.");
-                } else {
-                    Task t2 = cInternalBag.getSorted().getTask(0);
+                    Task t2 = cInternalBag.getFlitered().getTask(0);
                     t2.setComplete(false);
                 }
                 fb = new Feedback(rtnCmd, cInternalBag);
                 break;
-            case Undo:
+            case UNDO:
                 cInvoker.undoAction();
                 fb = new Feedback(rtnCmd, cInternalBag);
                 break;
-            case Redo:
+            case REDO:
                 cInvoker.redoAction();
                 fb = new Feedback(rtnCmd, cInternalBag);
                 break;
-            case Quit:
+            case QUIT:
                 log.info("recevied quit");
                 fb = new Feedback(rtnCmd, null);
                 break;
-            case Invalid:
+            case INVALID:
                 log.info("recevied invalid type");
                 throw new UnknownCommandException("I couldn't understand you... (>.<)");
 
@@ -157,12 +156,12 @@ public class Logic implements LogicInterface {
                 case DATE_END:
                     assert rtnCmd.getEnd() != null;
                     toBeUpdated.setEnd(rtnCmd.getEnd());
-                    storage.save(toBeUpdated);
+                    cStorage.save(toBeUpdated);
                     break;
                 case DATE_START:
                     assert rtnCmd.getStart() != null;
                     toBeUpdated.setStart(rtnCmd.getStart());
-                    storage.save(toBeUpdated);
+                    cStorage.save(toBeUpdated);
                     break;
                 case DESCRIPTION:
                     System.out.println("Not supporting");
@@ -177,7 +176,7 @@ public class Logic implements LogicInterface {
                 case NAME:
                     assert rtnCmd.getName() != null;
                     toBeUpdated.setName(rtnCmd.getName());
-                    storage.save(toBeUpdated);
+                    cStorage.save(toBeUpdated);
                     break;
                 case PRIORITY:
                     System.out.println("Not supported yet");
@@ -204,7 +203,7 @@ public class Logic implements LogicInterface {
     @Override
     public boolean initData(String s) {
 
-        boolean rtnVal = storage.load(s, cInternalBag);
+        boolean rtnVal = cStorage.load(s, cInternalBag);
         return rtnVal;
     }
 
@@ -213,9 +212,13 @@ public class Logic implements LogicInterface {
         return cInternalBag;
     }
 
+    public void setStorage(StorageInterface storageStub){
+        System.out.println("Stub added for storage");
+        cStorage = storageStub;
+    }
     public void setParser(ParserInterface parserStub) {
         System.out.println("STUB ADDED FOR PARSER");
-        parser = parserStub;
+        cParser = parserStub;
     }
 
 }

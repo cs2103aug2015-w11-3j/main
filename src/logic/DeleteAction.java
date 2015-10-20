@@ -35,7 +35,7 @@ public class DeleteAction implements UndoableAction {
      */
     public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) {
         cCommand = command;
-        cCurBag = internalBag.getSorted();
+        cCurBag = internalBag.getFlitered();
         cIntBag = internalBag;
         cStore = stor;
         isSuccessful = false;

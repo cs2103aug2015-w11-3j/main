@@ -1,7 +1,7 @@
 package logic;
 
 import common.TasksBag;
-import common.TasksBag.SortBy;
+import common.TasksBag.FliterBy;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -14,10 +14,10 @@ import parser.Command;
 public class SortAction implements UndoableAction {
 	private Command cCommand;
 	private TasksBag cBag;
-	private SortBy cSortBy;
-	private SortBy cPrevSortBy;
+	private FliterBy cSortBy;
+	private FliterBy cPrevSortBy;
 	
-	public SortAction(Command command, TasksBag internalBag, SortBy sortBy){
+	public SortAction(Command command, TasksBag internalBag, FliterBy sortBy){
 		cCommand = command;
 		cBag = internalBag;
 		cSortBy = sortBy;		

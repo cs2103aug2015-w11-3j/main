@@ -44,13 +44,14 @@ public class UI implements UIInterface {
      * @param userInput
      */
 	public void passCommand(String userInput) {
+		controller.clearFeedback();
 		controller.appendFeedback("You: " + userInput);
 		
 		Feedback cmd = null;
 		String feedback = "";
 		try {
 			cmd = logic.executeCommand(userInput);
-			if(cmd.getCommand().getCmdType() == Command.Type.Quit){
+			if(cmd.getCommand().getCmdType() == Command.Type.QUIT){
 				System.out.println("Quit entered.");
 				Platform.exit();
 			} else {
