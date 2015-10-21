@@ -6,9 +6,14 @@ import logic.exceptions.LogicException;
 import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
 
-/**
+/***
  * Invoker part of Command Pattern Deals with keeping track of what actions have
- * been done, Undo/Redo support
+ * been done, Undo/Redo support.
+ * 
+ * Note the issue when redo-ing on a "switched" filter on the bag. Might cause
+ * unintended side effects
+ * 
+ * @author MonoChrome
  */
 
 public class ActionInvoker {
@@ -25,17 +30,17 @@ public class ActionInvoker {
 
     public Feedback placeAction(Action act) throws LogicException {
         assert cUndo != null : "Undo arraylist is null";
-        
+
         // execute may throw exceptions
         Feedback fb = act.execute();
-        
+
         // If execution passes, then we add into undo queue
         if (act instanceof UndoableAction) {
             cUndo.add(act);
-            
+
             // Clearing redo list, should not have redo possible
             // if new actions executed
-            cRedo.clear(); 
+            cRedo.clear();
         }
         return fb;
     }

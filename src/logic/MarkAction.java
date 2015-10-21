@@ -20,22 +20,18 @@ public class MarkAction implements UndoableAction {
     private TasksBag cCurBag;    
     private TasksBag cIntBag;
     private StorageInterface cStore;
-    private Task cModifiedTask;
+    private Task cWhichTask;
     
     private Logger log;
     
-    public MarkAction(Command command, TasksBag internalBag, StorageInterface stor) {
+    public MarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
+        
         cCommand = command;
         cCurBag = internalBag.getFlitered();
         cIntBag = internalBag;
         cStore = stor;
         log = Logger.getLogger("MarkAction");
-    }
-
-    @Override
-    public Feedback execute() throws LogicException {
-        assert cCommand.getCmdType() == Command.Type.MARK : cCommand.getCmdType();
-
+        
         int UID = cCommand.getTaskUID();
 
         if (UID <= 0) {
@@ -50,16 +46,19 @@ public class MarkAction implements UndoableAction {
         // UID - 1 to get  array index
         UID -= 1;
         
-        cModifiedTask = cIntBag.getFlitered().getTask(UID);
-        assert cModifiedTask != null;
+        cWhichTask = cCurBag.getTask(UID);
+    }
+
+    @Override
+    public Feedback execute() throws LogicException {
         
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
-        if(cModifiedTask.isComplete()){ 
+        if(cWhichTask.isComplete()){ 
             throw new AlreadyMarkedException(USR_MSG_MARK_FAIL);
         } else { 
-            cModifiedTask.setComplete(true);
-            cStore.save(cModifiedTask);
+            cWhichTask.setComplete(true);
+            cStore.save(cWhichTask);
         }
 
         Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_MARK_OK);
@@ -69,11 +68,11 @@ public class MarkAction implements UndoableAction {
 
     @Override
     public Feedback undo() {
-        assert cModifiedTask != null;
+        assert cWhichTask != null;
 
-        cModifiedTask.setComplete(false);
-        cStore.save(cModifiedTask);
-        return new Feedback(cCommand, cCurBag, USR_MSG_MARK_UNDO);
+        cWhichTask.setComplete(false);
+        cStore.save(cWhichTask);
+        return new Feedback(cCommand, cIntBag, USR_MSG_MARK_UNDO);
     }
 
     @Override

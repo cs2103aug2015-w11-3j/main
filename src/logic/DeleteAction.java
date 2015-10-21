@@ -10,6 +10,12 @@ import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
 
+/***
+ * Note that due to execute being called again when redo-ing. The task to be
+ * deleted has to be decided at INIT/Constructor time. Not at execution time.
+ * 
+ * @author MonoChrome
+ */
 public class DeleteAction implements UndoableAction {
 
     private static final String USR_MSG_DELETE_OOB = "Provided index not on list.";
@@ -35,21 +41,21 @@ public class DeleteAction implements UndoableAction {
      *            Current bag status internalBag Internal bag
      * @param stor
      *            Storage pointer
-     * @throws IntegrityCommandException 
-     *            When provided with an index that will access OOB values
+     * @throws IntegrityCommandException
+     *             When provided with an index that will access OOB values
      */
-    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException{
+    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
         assert internalBag != null;
         assert stor != null;
         assert command != null;
-        
+
         cCommand = command;
         cCurBag = internalBag.getFlitered();
         cIntBag = internalBag;
         cStore = stor;
         isSuccessful = false;
         log = Logger.getLogger("DeleteAction");
-        
+
         // Find the offending command and lock it at init time
         int UID = cCommand.getTaskUID();
 
@@ -76,7 +82,7 @@ public class DeleteAction implements UndoableAction {
     @Override
     public Feedback execute() throws LogicException {
         String usrMsg;
-        
+
         isSuccessful = cStore.delete(cWhichTask);
 
         if (isSuccessful) {
@@ -87,7 +93,7 @@ public class DeleteAction implements UndoableAction {
         }
         usrMsg = String.format(USR_MSG_DELETE_OK, cWhichTask.getName());
         Feedback fb = new Feedback(cCommand, cIntBag, usrMsg);
-        
+
         return fb;
     }
 
@@ -99,7 +105,7 @@ public class DeleteAction implements UndoableAction {
     public Feedback undo() {
         String usrMsg;
         usrMsg = String.format(USR_MSG_DELETE_UNDO, cWhichTask.getName());
-        
+
         cIntBag.addTask(cPosition, cWhichTask);
         cStore.save(cWhichTask);
         return new Feedback(cCommand, cIntBag, usrMsg);
