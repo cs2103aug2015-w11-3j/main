@@ -63,7 +63,7 @@ public class Parser implements ParserInterface {
 	// instance fields
 	/////////////////////////////////////////////////////////////////
 	
-	String userRawInput;
+	private String userRawInput;
 
 	/////////////////////////////////////////////////////////////////
 	
@@ -128,6 +128,25 @@ public class Parser implements ParserInterface {
 			case "exit" :	
 				return Command.Type.QUIT;
 				
+			case "mark" :
+			case "complete" :
+				return Command.Type.MARK;
+				
+			case "unmark" :
+			case "reopen" :
+				return Command.Type.UNMARK;
+				
+			case "undo" :
+			case "un" :
+				return Command.Type.UNDO;
+				
+			case "redo" :
+			case "re" :
+				return Command.Type.REDO;
+				
+			case "show" :
+				return Command.Type.show_temp; // temp value, change later
+				
 			default :
 				return Command.Type.INVALID;
 		}
@@ -146,6 +165,16 @@ public class Parser implements ParserInterface {
 				return parseQuit(args);
 			case INVALID :
 				return makeInvalid();
+			case show_temp :
+				return parseShow(args);
+			case REDO :
+				return parseRedo(args);
+			case UNDO :
+				return parseUndo(args);
+			case MARK :
+				return parseMark(args);
+			case UNMARK :
+				return parseUnmark(args);
 			default :
 				break;
 			}
@@ -216,6 +245,45 @@ public class Parser implements ParserInterface {
 		assert(args != null);
 		return makeQuit();
 	}
+	private Command parseShow (String args) {
+		assert(args != null);
+		if (args.length() == 0) {
+			return makeShow(Command.Type.SHOW_INCOMPLETE);
+		}
+		switch (args) {
+			case "done" :
+			case "completed" :
+				return makeShow(Command.Type.SHOW_COMPLETE);
+			default :
+		}
+		return makeInvalid();
+	}
+	private Command parseRedo (String args) {
+		assert(args != null);
+		return makeRedo();
+	}
+	private Command parseUndo (String args) {
+		assert(args != null);
+		return makeUndo();
+	}
+	private Command parseMark (String args) {
+		assert(args != null);
+		try {
+			return makeMark(Integer.parseInt(args));
+		} catch (NumberFormatException e) {
+			return makeInvalid();
+		}
+	}
+	private Command parseUnmark (String args) {
+		assert(args != null);
+		try {
+			return makeUnmark(Integer.parseInt(args));
+		} catch (NumberFormatException e) {
+			return makeInvalid();
+		}
+		
+	}
+	
 	
 	private static Task.DataType parseFieldKey (String token) throws ParseException {
 		assert(token != null);
@@ -332,6 +400,30 @@ public class Parser implements ParserInterface {
 		Command cmd = new Command(Command.Type.INVALID, userRawInput);
 		return cmd;
 	}
+	public Command makeShow (Command.Type showtype) {
+		Command cmd = new Command(showtype, userRawInput);
+		return cmd;		
+	}
+	public Command makeRedo () {
+		Command cmd = new Command(Command.Type.REDO, userRawInput);
+		return cmd;
+	}
+	public Command makeUndo () {
+		Command cmd = new Command(Command.Type.UNDO, userRawInput);
+		return cmd;
+		
+	}
+	public Command makeMark (int taskUID) {
+		Command cmd = new Command(Command.Type.MARK, userRawInput);
+		cmd.setTaskUID(taskUID);
+		return cmd;
+	}
+	public Command makeUnmark (int taskUID) {
+		Command cmd = new Command(Command.Type.UNMARK, userRawInput);
+		cmd.setTaskUID(taskUID);
+		return cmd;
+		
+	}
 	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -363,12 +455,12 @@ public class Parser implements ParserInterface {
 			}
 		}*/
 	}
-	@Override // Logic test function	// By Ken
-	public Command makeSort() {
-		Command cmd = new Command(Command.Type.SHOW_ALL, "");
-		return cmd;
-	}
-	
+//	@Override // Logic test function	// By Ken
+//	public Command makeSort() {
+//		Command cmd = new Command(Command.Type.SHOW_ALL, "");
+//		return cmd;
+//	}
+//	
 	// Logic test function	// By Ken
 	@Override
 	public Command makeType(Command.Type type){

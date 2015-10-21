@@ -12,7 +12,7 @@ public interface ParserInterface {
 	public Command makeAdd (String name, Date start, Date end);
 	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue);
 	public Command makeDelete (int taskUID);
-	public Command makeSort();
+	//public Command makeSort();
 	public Command makeQuit ();
 	public Command makeInvalid ();
 	public Command makeType(Command.Type type);

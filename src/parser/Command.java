@@ -7,7 +7,7 @@ public class Command implements CommandInterface {
 
 	public static enum Type {
 		ADD, DELETE, UPDATE, 
-		SHOW_ALL, SHOW_INCOMPLETE, SHOW_COMPLETE,
+		show_temp, SHOW_ALL, SHOW_INCOMPLETE, SHOW_COMPLETE,
 		//Search, FilterByTags, 
 		//Tag,
 		UNDO,REDO,

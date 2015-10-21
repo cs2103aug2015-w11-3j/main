@@ -56,27 +56,27 @@ public class Logic implements LogicInterface {
 
         log.info("executing " + userString);
 
-        if (userString.equals("undo")) {
-            rtnCmd = cParser.makeType(Command.Type.UNDO);
-        }
-        if (userString.equals("redo")) {
-            rtnCmd = cParser.makeType(Command.Type.REDO);
-        }
-        if (userString.equals("sort")) {
-            rtnCmd = cParser.makeSort();
-        }
-        if (userString.equals("mark")) {
-            rtnCmd = cParser.makeType(Command.Type.MARK);
-        }
-        if (userString.equals("unmark")) {
-            rtnCmd = cParser.makeType(Command.Type.UNMARK);
-        }
-        if (userString.equals("show uc")) {
-            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
-        }
-        if (userString.equals("show c")) {
-            rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
-        }
+//        if (userString.equals("undo")) {
+//            rtnCmd = cParser.makeType(Command.Type.UNDO);
+//        }
+//        if (userString.equals("redo")) {
+//            rtnCmd = cParser.makeType(Command.Type.REDO);
+//        }
+//        if (userString.equals("sort")) {
+//            rtnCmd = cParser.makeSort();
+//        }
+//        if (userString.equals("mark")) {
+//            rtnCmd = cParser.makeType(Command.Type.MARK);
+//        }
+//        if (userString.equals("unmark")) {
+//            rtnCmd = cParser.makeType(Command.Type.UNMARK);
+//        }
+//        if (userString.equals("show uc")) {
+//            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
+//        }
+//        if (userString.equals("show c")) {
+//            rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
+//        }
 
         return executeParsed(rtnCmd);
     }
