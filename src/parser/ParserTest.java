@@ -47,11 +47,13 @@ public class ParserTest {
 			testInput = new StringBuilder(randInvalidCmdToken());
 			testInput.append(' ');
 			testInput.append(randInputString());
+			System.out.println(testInput);
 			// testInput now holds a random command token + a space + random data
 			cmd = P.parseCommand(testInput.toString());
 			
 			if (cmd.getCmdType() != Command.Type.INVALID) {
-				fail("invalid command token string does not correctly return INVALID");
+				Parser.printCmd(cmd);
+				fail("invalid command token string does not correctly return INVALID\n");
 			}
 		}		
 	}
@@ -76,10 +78,10 @@ public class ParserTest {
 	private boolean isValidCmdToken (String testee) {
 		for (String validCmdToken : VALID_CMD_TOKENS) {
 			if (testee.equals(validCmdToken)) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	private String randInputString () {
 		byte[] bytes = new byte[RNG.nextInt(MAX_RANDOM_GENERATED_BYTES)];
