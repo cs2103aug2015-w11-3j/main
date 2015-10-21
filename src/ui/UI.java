@@ -114,7 +114,7 @@ public class UI implements UIInterface {
 	 * Display the default table view
 	 */
 	public void showWelcomeView() {
-		display(logic.getTaskBag());
+		display(logic.getDefaultBag());    // Get default view
 		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you? \n";
 		controller.appendFeedback(feedback);
 	}

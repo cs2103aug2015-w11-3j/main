@@ -5,10 +5,9 @@ import java.util.logging.Logger;
 import common.Task;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
-import logic.exceptions.NoRedoActionException;
-import logic.exceptions.NoUndoActionException;
 import logic.exceptions.UnknownCommandException;
 import common.TasksBag;
+import common.TasksBag.FliterBy;
 import parser.Command;
 import parser.Parser;
 import parser.ParserInterface;
@@ -16,6 +15,9 @@ import storage.Storage;
 import storage.StorageInterface;
 
 public class Logic implements LogicInterface {
+
+    // The default view when UI first query the bag
+    private static final FliterBy DEFAULT_UI_VIEW = TasksBag.FliterBy.INCOMPLETE_TASKS;
 
     private StorageInterface cStorage;
     private ParserInterface cParser;
@@ -56,33 +58,33 @@ public class Logic implements LogicInterface {
 
         log.info("executing " + userString);
 
-//        if (userString.equals("undo")) {
-//            rtnCmd = cParser.makeType(Command.Type.UNDO);
-//        }
-//        if (userString.equals("redo")) {
-//            rtnCmd = cParser.makeType(Command.Type.REDO);
-//        }
-//        if (userString.equals("sort")) {
-//            rtnCmd = cParser.makeSort();
-//        }
-//        if (userString.equals("mark")) {
-//            rtnCmd = cParser.makeType(Command.Type.MARK);
-//        }
-//        if (userString.equals("unmark")) {
-//            rtnCmd = cParser.makeType(Command.Type.UNMARK);
-//        }
-//        if (userString.equals("show uc")) {
-//            rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
-//        }
-//        if (userString.equals("show c")) {
-//            rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
-//        }
+        // if (userString.equals("undo")) {
+        // rtnCmd = cParser.makeType(Command.Type.UNDO);
+        // }
+        // if (userString.equals("redo")) {
+        // rtnCmd = cParser.makeType(Command.Type.REDO);
+        // }
+        // if (userString.equals("sort")) {
+        // rtnCmd = cParser.makeSort();
+        // }
+        // if (userString.equals("mark")) {
+        // rtnCmd = cParser.makeType(Command.Type.MARK);
+        // }
+        // if (userString.equals("unmark")) {
+        // rtnCmd = cParser.makeType(Command.Type.UNMARK);
+        // }
+        // if (userString.equals("show uc")) {
+        // rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
+        // }
+        // if (userString.equals("show c")) {
+        // rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
+        // }
 
         return executeParsed(rtnCmd);
     }
 
     private Feedback executeParsed(Command rtnCmd) throws LogicException {
-        
+
         Feedback fb;
         switch (rtnCmd.getCmdType()) {
             case ADD:
@@ -100,7 +102,7 @@ public class Logic implements LogicInterface {
                 fb = new Feedback(rtnCmd, cInternalBag);
                 break;
             case SHOW_INCOMPLETE:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.INCOMPLETE_TASKS));
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
                 break;
             case MARK:
                 fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
@@ -212,13 +214,20 @@ public class Logic implements LogicInterface {
         return cInternalBag;
     }
 
-    public void setStorage(StorageInterface storageStub){
+    public void setStorage(StorageInterface storageStub) {
         System.out.println("Stub added for storage");
         cStorage = storageStub;
     }
+
     public void setParser(ParserInterface parserStub) {
         System.out.println("STUB ADDED FOR PARSER");
         cParser = parserStub;
+    }
+
+    @Override
+    public TasksBag getDefaultBag() {
+        cInternalBag.setSortState(DEFAULT_UI_VIEW);
+        return cInternalBag.getFlitered();
     }
 
 }
