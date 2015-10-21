@@ -9,32 +9,32 @@ import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
 
-public class MarkAction implements UndoableAction {
+public class UnmarkAction implements UndoableAction {
 
     private static final String USR_MSG_INDEX_ERR = "Provided index not on list.";
-    private static final String USR_MSG_MARK_OK = "Marked %1$s!";
-    private static final String USR_MSG_MARK_FAIL = "Already marked %1$s!";
-    private static final String USR_MSG_MARK_UNDO = "Undo mark %1$s";
-    
+    private static final String USR_MSG_UNMARK_OK = "Unmarked!";
+    private static final String USR_MSG_UNMARK_FAIL = "Already unmarked!";
+    private static final String USR_MSG_UNMARK_UNDO = "Undo unmarked";
+
     private Command cCommand;
-    private TasksBag cCurBag;    
+    private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cModifiedTask;
-    
+
     private Logger log;
-    
-    public MarkAction(Command command, TasksBag internalBag, StorageInterface stor) {
+
+    public UnmarkAction(Command command, TasksBag internalBag, StorageInterface stor) {
         cCommand = command;
         cCurBag = internalBag.getFlitered();
         cIntBag = internalBag;
         cStore = stor;
-        log = Logger.getLogger("MarkAction");
+        log = Logger.getLogger("UnmarkAction");
     }
 
     @Override
     public Feedback execute() throws LogicException {
-        assert cCommand.getCmdType() == Command.Type.MARK : cCommand.getCmdType();
+        assert cCommand.getCmdType() == Command.Type.UNMARK : cCommand.getCmdType();
 
         int UID = cCommand.getTaskUID();
 
@@ -47,22 +47,22 @@ public class MarkAction implements UndoableAction {
             throw new IntegrityCommandException(USR_MSG_INDEX_ERR);
         }
 
-        // UID - 1 to get  array index
+        // UID - 1 to get array index
         UID -= 1;
-        
+
         cModifiedTask = cIntBag.getFlitered().getTask(UID);
         assert cModifiedTask != null;
-        
-        // Should not mark again if it is already marked.
-        // Does not go into undo queue if already marked.
-        if(cModifiedTask.isComplete()){ 
-            throw new AlreadyMarkedException(USR_MSG_MARK_FAIL);
-        } else { 
-            cModifiedTask.setComplete(true);
+
+        // Should not unmark again if it is already unmarked.
+        // Does not go into undo queue if already unmarked.
+        if (cModifiedTask.isComplete() == false) {
+            throw new AlreadyUnmarkedException(USR_MSG_UNMARK_FAIL);
+        } else {
+            cModifiedTask.setComplete(false);
             cStore.save(cModifiedTask);
         }
 
-        Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_MARK_OK);
+        Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_UNMARK_OK);
 
         return fb;
     }
@@ -71,9 +71,9 @@ public class MarkAction implements UndoableAction {
     public Feedback undo() {
         assert cModifiedTask != null;
 
-        cModifiedTask.setComplete(false);
+        cModifiedTask.setComplete(true);
         cStore.save(cModifiedTask);
-        return new Feedback(cCommand, cCurBag, USR_MSG_MARK_UNDO);
+        return new Feedback(cCommand, cIntBag, USR_MSG_UNMARK_UNDO);
     }
 
     @Override

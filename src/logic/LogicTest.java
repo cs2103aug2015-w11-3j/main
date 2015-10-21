@@ -72,17 +72,24 @@ public class LogicTest {
     public void testUnmark() {
         // Boundary for 0 entry but trying to unmark
         Task t;
-        testFailIntegrity("unmark 1");
+        testFailIntegrity("unmark 0");
 
         testPass("add one");
-        testPass("unmark 1");
+        testFailAlreadyUnmarked("unmark 1");
 
         t = logic.getTaskBag().getTask(0);
         Assert.assertEquals(false, t.isComplete());
 
-        // Unmark twice onto same object. Should remain as unmarked
-        testPass("unmark 1");
+        // Unmark twice onto same object. Should throw exception
+        testFailAlreadyUnmarked("unmark 1");
+        
         t = logic.getTaskBag().getTask(0);
+        Assert.assertEquals(false, t.isComplete());
+        
+        // Mark and unmarking
+        testPass("mark 1");
+        testPass("show done");
+        testPass("unmark 1");
         Assert.assertEquals(false, t.isComplete());
     }
 
@@ -103,6 +110,18 @@ public class LogicTest {
         }
         Assert.fail("Should have thrown Already Marked Exception for: " + failCommand);
     }
+    
+    private void testFailAlreadyUnmarked(String failCommand){
+        try {
+            logic.executeCommand(failCommand);
+        } catch (AlreadyUnmarkedException e) {
+            return;
+        } catch (LogicException e) {
+            Assert.fail("Should have thrown Already Unmarked Exception for: " + failCommand);
+        }
+        Assert.fail("Should have thrown Already Unmarked Exception for: " + failCommand);
+    }
+    
     
     // Will return if it actually fails the integrity test
     private void testFailIntegrity(String failCommand) {

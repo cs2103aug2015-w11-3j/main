@@ -108,22 +108,13 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case UNMARK:
-                // Not yet command action
-                if (cInternalBag.getFlitered().isEmpty()) {
-                    throw new IntegrityCommandException("Provided index not on list.");
-                } else {
-                    Task t2 = cInternalBag.getFlitered().getTask(0);
-                    t2.setComplete(false);
-                }
-                fb = new Feedback(rtnCmd, cInternalBag);
+                fb = cInvoker.placeAction(new UnmarkAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case UNDO:
-                cInvoker.undoAction();
-                fb = new Feedback(rtnCmd, cInternalBag);
+                fb = cInvoker.undoAction();
                 break;
             case REDO:
-                cInvoker.redoAction();
-                fb = new Feedback(rtnCmd, cInternalBag);
+                fb = cInvoker.redoAction();
                 break;
             case QUIT:
                 log.info("recevied quit");

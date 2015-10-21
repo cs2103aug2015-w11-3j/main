@@ -4,7 +4,7 @@ import logic.exceptions.LogicException;
 
 public interface UndoableAction extends Action {
     
-    public void undo();
+    public Feedback undo();
 
-    public void redo() throws LogicException;
+    public Feedback redo() throws LogicException;
 }

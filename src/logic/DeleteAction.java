@@ -6,18 +6,21 @@ import common.Log;
 import common.Task;
 import common.TasksBag;
 import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
 
 public class DeleteAction implements UndoableAction {
 
     private static final String USR_MSG_DELETE_OOB = "Provided index not on list.";
-    private static final String USR_MSG_DELETE_OK = "Removed!";
+    private static final String USR_MSG_DELETE_OK = "Removed %1$s!";
+    private static final String USR_MSG_DELETE_UNDO = "Undoing delete %1$s";
+
     private Command cCommand;
-    private TasksBag cCurBag;    
+    private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
-    private Task cDeletedTask;
+    private Task cWhichTask; // The task to be modified
     private boolean isSuccessful;
     private int cPosition; // Position of internal bag
     Logger log;
@@ -32,14 +35,36 @@ public class DeleteAction implements UndoableAction {
      *            Current bag status internalBag Internal bag
      * @param stor
      *            Storage pointer
+     * @throws IntegrityCommandException 
+     *            When provided with an index that will access OOB values
      */
-    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) {
+    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException{
+        assert internalBag != null;
+        assert stor != null;
+        assert command != null;
+        
         cCommand = command;
         cCurBag = internalBag.getFlitered();
         cIntBag = internalBag;
         cStore = stor;
         isSuccessful = false;
         log = Logger.getLogger("DeleteAction");
+        
+        // Find the offending command and lock it at init time
+        int UID = cCommand.getTaskUID();
+
+        if (UID <= 0) {
+            throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
+        }
+
+        if (UID > cCurBag.size()) {
+            throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
+        }
+
+        // UID - 1 to get array index
+        UID -= 1;
+
+        cWhichTask = cCurBag.getTask(UID);
     }
 
     /**
@@ -49,35 +74,20 @@ public class DeleteAction implements UndoableAction {
      *             If deleting out of bound
      */
     @Override
-    public Feedback execute() throws IntegrityCommandException {
-        assert cCurBag != null;
-        assert cIntBag != null;
-        assert cStore != null;
-
-        int UID = cCommand.getTaskUID();
-
-        if (UID <= 0) {
-            throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
-        }
-
-        if (UID > cCurBag.size()) {
-            log.warning("Exceeded size" + UID + " " + cCurBag.size());
-            throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
-        }
-
-        // UID - 1 to get  array index
-        UID -= 1;
+    public Feedback execute() throws LogicException {
+        String usrMsg;
         
-        cDeletedTask = cCurBag.getTask(UID);
-        isSuccessful = cStore.delete(cDeletedTask);
+        isSuccessful = cStore.delete(cWhichTask);
 
         if (isSuccessful) {
-            cPosition = cIntBag.removeTask(cDeletedTask);
+            // Used when adding back into task bag
+            cPosition = cIntBag.removeTask(cWhichTask);
         } else {
-            // Throw error?
+            throw new LogicException("Storage failed to delete task");
         }
-
-        Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_DELETE_OK);
+        usrMsg = String.format(USR_MSG_DELETE_OK, cWhichTask.getName());
+        Feedback fb = new Feedback(cCommand, cIntBag, usrMsg);
+        
         return fb;
     }
 
@@ -86,18 +96,20 @@ public class DeleteAction implements UndoableAction {
      * into storage
      */
     @Override
-    public void undo() {
-        cIntBag.addTask(cPosition, cDeletedTask);
-        cStore.save(cDeletedTask);
+    public Feedback undo() {
+        String usrMsg;
+        usrMsg = String.format(USR_MSG_DELETE_UNDO, cWhichTask.getName());
+        
+        cIntBag.addTask(cPosition, cWhichTask);
+        cStore.save(cWhichTask);
+        return new Feedback(cCommand, cIntBag, usrMsg);
     }
 
     /**
      * Remove task object from bag Deletes task at storage
      */
     @Override
-    public void redo() throws IntegrityCommandException {
-        if (isSuccessful) {
-            execute();
-        }
+    public Feedback redo() throws LogicException {
+        return execute();
     }
 }

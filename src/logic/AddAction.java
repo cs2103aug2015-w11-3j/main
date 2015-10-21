@@ -16,6 +16,7 @@ public class AddAction implements UndoableAction {
 
     private static final String USR_MSG_ADD_ERROR = "Failed to store to storage";
     private static final String USR_MSG_ADD_OK = "Added!";
+    private static final String USR_MSG_ADD_UNDO = "Undo adding";
     
     private Command cCommand;
     private TasksBag cBag;
@@ -53,16 +54,17 @@ public class AddAction implements UndoableAction {
     }
 
     @Override
-    public void undo() {
+    public Feedback undo() {
         assert cCreatedTask != null;
         
         cStore.delete(cCreatedTask);
         cBag.removeTask(cCreatedTask);
+        return new Feedback(cCommand, cBag, USR_MSG_ADD_UNDO);
     }
 
     @Override
-    public void redo() throws LogicException {
-        execute();
+    public Feedback redo() throws LogicException {
+        return execute();
     }
 
 }

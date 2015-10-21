@@ -40,7 +40,7 @@ public class ActionInvoker {
         return fb;
     }
 
-    public void undoAction() throws NoUndoActionException {
+    public Feedback undoAction() throws NoUndoActionException {
         assert cUndo != null : "Undo arraylist is null";
 
         if (cUndo.size() == 0) {
@@ -50,10 +50,10 @@ public class ActionInvoker {
         UndoableAction undoAction = (UndoableAction) cUndo.remove(cUndo.size() - 1);
         cRedo.add(undoAction);
 
-        undoAction.undo();
+        return undoAction.undo();
     }
 
-    public void redoAction() throws NoRedoActionException, LogicException {
+    public Feedback redoAction() throws NoRedoActionException, LogicException {
         assert cRedo != null : "Redo arraylist is null";
 
         if (cRedo.size() == 0) {
@@ -63,6 +63,6 @@ public class ActionInvoker {
         UndoableAction redoAction = (UndoableAction) cRedo.remove(cRedo.size() - 1);
         cUndo.add(redoAction);
 
-        redoAction.redo();
+        return redoAction.redo();
     }
 }
