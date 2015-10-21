@@ -65,7 +65,10 @@ public class DeleteAction implements UndoableAction {
             throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
         }
 
-        cDeletedTask = cCurBag.getTask(UID - 1);
+        // UID - 1 to get  array index
+        UID -= 1;
+        
+        cDeletedTask = cCurBag.getTask(UID);
         isSuccessful = cStore.delete(cDeletedTask);
 
         if (isSuccessful) {

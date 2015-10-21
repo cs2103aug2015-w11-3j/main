@@ -25,15 +25,19 @@ public class ActionInvoker {
 
     public Feedback placeAction(Action act) throws LogicException {
         assert cUndo != null : "Undo arraylist is null";
-
+        
+        // execute may throw exceptions
+        Feedback fb = act.execute();
+        
+        // If execution passes, then we add into undo queue
         if (act instanceof UndoableAction) {
             cUndo.add(act);
-            cRedo.clear(); // Clearing redo list,
-                           // should not have redo possible
-                           // if new actions executed
+            
+            // Clearing redo list, should not have redo possible
+            // if new actions executed
+            cRedo.clear(); 
         }
-
-        return act.execute();
+        return fb;
     }
 
     public void undoAction() throws NoUndoActionException {

@@ -48,18 +48,20 @@ public class LogicTest {
     public void testMark() {
         Task t;
         // Boundary for 0 entry but trying to mark
-        testFailIntegrity("mark");
+        testFailIntegrity("mark 0");
 
         testPass("add one");
-        testPass("mark");
+        testPass("mark 1");
 
         t = logic.getTaskBag().getTask(0);
         Assert.assertEquals(true, t.isComplete());
 
         // fail test under INCOMPLETE(default) filter of tasksbag
-        testFailIntegrity("mark");
+        testFailIntegrity("mark 1");
         
         logic.getTaskBag().setSortState(TasksBag.FliterBy.COMPLETE_TASKS);
+        
+        testFailAlreadyMarked("mark 1");
         
         // Can access task bag due to COMPLETE filter now
         t = logic.getTaskBag().getTask(0);
@@ -70,16 +72,16 @@ public class LogicTest {
     public void testUnmark() {
         // Boundary for 0 entry but trying to unmark
         Task t;
-        testFailIntegrity("unmark");
+        testFailIntegrity("unmark 1");
 
         testPass("add one");
-        testPass("unmark");
+        testPass("unmark 1");
 
         t = logic.getTaskBag().getTask(0);
         Assert.assertEquals(false, t.isComplete());
 
         // Unmark twice onto same object. Should remain as unmarked
-        testPass("unmark");
+        testPass("unmark 1");
         t = logic.getTaskBag().getTask(0);
         Assert.assertEquals(false, t.isComplete());
     }
@@ -91,7 +93,17 @@ public class LogicTest {
             Assert.fail("Should not thrown Exception for: " + passCommand + e.toString());
         }
     }
-
+    private void testFailAlreadyMarked(String failCommand){
+        try {
+            logic.executeCommand(failCommand);
+        } catch (AlreadyMarkedException e) {
+            return;
+        } catch (LogicException e) {
+            Assert.fail("Should have thrown Already Marked Exception for: " + failCommand);
+        }
+        Assert.fail("Should have thrown Already Marked Exception for: " + failCommand);
+    }
+    
     // Will return if it actually fails the integrity test
     private void testFailIntegrity(String failCommand) {
         try {

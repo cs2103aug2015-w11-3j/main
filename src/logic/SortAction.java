@@ -11,11 +11,11 @@ import parser.Command;
  * Changes the state of the internal taskbags to given sort state
  * Undo sets the internal bag state to previous state
  */
-public class SortAction implements UndoableAction {
+public class SortAction implements Action {
 	private Command cCommand;
 	private TasksBag cBag;
 	private FliterBy cSortBy;
-	private FliterBy cPrevSortBy;
+	//private FliterBy cPrevSortBy;
 	
 	public SortAction(Command command, TasksBag internalBag, FliterBy sortBy){
 		cCommand = command;
@@ -26,11 +26,12 @@ public class SortAction implements UndoableAction {
 	@Override
 	public Feedback execute() throws LogicException {
 		// TODO Auto-generated method stub
-		cPrevSortBy = cBag.getState();
+		//cPrevSortBy = cBag.getState();
 		cBag.setSortState(cSortBy);
 		return new Feedback(cCommand, cBag);
 	}
 
+	/*
 	@Override
 	public void undo() {
 		cBag.setSortState(cPrevSortBy);
@@ -40,5 +41,6 @@ public class SortAction implements UndoableAction {
 	public void redo() throws LogicException {
 		execute();
 	}
+	*/
 
 }
