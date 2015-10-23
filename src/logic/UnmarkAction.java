@@ -20,21 +20,16 @@ public class UnmarkAction implements UndoableAction {
     private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
-    private Task cModifiedTask;
+    private Task cWhichTask;
 
     private Logger log;
 
-    public UnmarkAction(Command command, TasksBag internalBag, StorageInterface stor) {
+    public UnmarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
         cCommand = command;
         cCurBag = internalBag.getFlitered();
         cIntBag = internalBag;
         cStore = stor;
         log = Logger.getLogger("UnmarkAction");
-    }
-
-    @Override
-    public Feedback execute() throws LogicException {
-        assert cCommand.getCmdType() == Command.Type.UNMARK : cCommand.getCmdType();
 
         int UID = cCommand.getTaskUID();
 
@@ -50,16 +45,19 @@ public class UnmarkAction implements UndoableAction {
         // UID - 1 to get array index
         UID -= 1;
 
-        cModifiedTask = cIntBag.getFlitered().getTask(UID);
-        assert cModifiedTask != null;
+        cWhichTask = cCurBag.getTask(UID);
+    }
+
+    @Override
+    public Feedback execute() throws LogicException {
 
         // Should not unmark again if it is already unmarked.
         // Does not go into undo queue if already unmarked.
-        if (cModifiedTask.isComplete() == false) {
+        if (cWhichTask.isComplete() == false) {
             throw new AlreadyUnmarkedException(USR_MSG_UNMARK_FAIL);
         } else {
-            cModifiedTask.setComplete(false);
-            cStore.save(cModifiedTask);
+            cWhichTask.setComplete(false);
+            cStore.save(cWhichTask);
         }
 
         Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_UNMARK_OK);
@@ -69,10 +67,10 @@ public class UnmarkAction implements UndoableAction {
 
     @Override
     public Feedback undo() {
-        assert cModifiedTask != null;
+        assert cWhichTask != null;
 
-        cModifiedTask.setComplete(true);
-        cStore.save(cModifiedTask);
+        cWhichTask.setComplete(true);
+        cStore.save(cWhichTask);
         return new Feedback(cCommand, cIntBag, USR_MSG_UNMARK_UNDO);
     }
 
