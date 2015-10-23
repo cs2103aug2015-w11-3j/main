@@ -19,18 +19,12 @@ public class Task {
 	// Reference for possible Celebi data fields
 	public static enum DataType {
 		ID, 
-		NAME, DESCRIPTION,
+		NAME,
 		DATE_START, DATE_END,
 		TAGS, PRIORITY, 
-		IS_COMPLETED,
-		BLOCKED_PERIODS,
-		SCHEDULED_DAYS
+		IS_COMPLETED
 	}
 
-	public static enum Priority {
-		LOW, NORMAL, HIGH, CRITICAL
-	}
-	
 	public static enum Type {
 		FLOATING, NOEND, DEADLINE, EVENT
 	}
@@ -38,14 +32,13 @@ public class Task {
 	private int cId;
 
 	private StringProperty cName;
-	private StringProperty cDescription;
 
 	private final ObjectProperty<Date> cStart;
 	private final ObjectProperty<Date> cEnd;
 	
 	private ObjectProperty<Type> cType;
 
-	private Priority cPriority;
+	private boolean cIsPriority;
 	private boolean cIsCompleted;
 
 	/*
@@ -59,10 +52,7 @@ public class Task {
 		to HashMap's O(m). 
 		n = number of values, m = table size, n < m.
 	*/
-	@SuppressWarnings("unused")
-	private Set<String> cTags;
-	// Implementation: ArrayList	@SuppressWarnings("unused")
-	private List<Period> cBlocked; 
+	
 
 	
 	// constructor, use property instead of value
@@ -158,26 +148,16 @@ public class Task {
 
 
 
-	public StringProperty getDescription() {
-		return cDescription;
+
+
+	public Boolean getPriority() {
+		return cIsPriority;
 	}
 
 
 
-	public void setDescription(StringProperty cDescription) {
-		this.cDescription = cDescription;
-	}
-
-
-
-	public Priority getPriority() {
-		return cPriority;
-	}
-
-
-
-	public void setPriority(Priority cPriority) {
-		this.cPriority = cPriority;
+	public void setPriority(Boolean cPriority) {
+		this.cIsPriority = cPriority;
 	}
 	
 	

@@ -143,9 +143,6 @@ public class Logic implements LogicInterface {
             assert toBeUpdated != null;
 
             switch (rtnCmd.getTaskField()) {
-                case BLOCKED_PERIODS:
-                    System.out.println("Not supported yet");
-                    break;
                 case DATE_END:
                     assert rtnCmd.getEnd() != null;
                     toBeUpdated.setEnd(rtnCmd.getEnd());
@@ -156,12 +153,8 @@ public class Logic implements LogicInterface {
                     toBeUpdated.setStart(rtnCmd.getStart());
                     cStorage.save(toBeUpdated);
                     break;
-                case DESCRIPTION:
-                    System.out.println("Not supporting");
-                    break;
                 case ID:
-                    System.out.println("Not supporting"); // Should never be
-                                                          // ran?
+                    assert false : "should never be here";
                     break;
                 case IS_COMPLETED:
                     System.out.println("Not use mark/unmark?");
@@ -172,13 +165,7 @@ public class Logic implements LogicInterface {
                     cStorage.save(toBeUpdated);
                     break;
                 case PRIORITY:
-                    System.out.println("Not supported yet");
-                    break;
-                case SCHEDULED_DAYS:
-                    System.out.println("Not supporting");
-                    break;
-                case TAGS:
-                    System.out.println("Not supporting");
+                    System.out.println("Not done yet");
                     break;
                 default:
                     assert false : rtnCmd.getTaskField();
