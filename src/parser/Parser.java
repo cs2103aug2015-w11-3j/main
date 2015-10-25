@@ -12,19 +12,7 @@ import java.util.Scanner;
 public class Parser implements ParserInterface {
 
 	private static Parser parserInstance;
-	
-	/////////////////////////////////////////////////////////////////
-	// Date Formats
-	/////////////////////////////////////////////////////////////////
-	
-	// matching characters . / - _ \\ : <space>
-	private static final String REGEX_DATE_DELIM = 
-			"[\\Q-_/.\\ :\\E]+";
-	private final Pattern P_DATE_DELIM;
-	private static final String DATE_DELIM = "*";
-	
-	private final DateFormat FULL_DF;
-	private final DateFormat PART_DF;
+	private final DateParser DATE_PARSER;
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -71,9 +59,7 @@ public class Parser implements ParserInterface {
 	private Parser () {
 		userRawInput = "no user input received";
 		
-		P_DATE_DELIM = Pattern.compile(REGEX_DATE_DELIM);
-		FULL_DF = new FullDateFormat();
-		PART_DF = new PartialDateFormat();
+		DATE_PARSER = new DateParser();
 		
 		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
 		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT);
@@ -299,7 +285,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	
-	private Task.DataType parseFieldKey (String token) throws ParseException {
+	Task.DataType parseFieldKey (String token) throws ParseException {
 		assert(token != null);
 		switch (token.toLowerCase()) {
 			case "name" :
@@ -319,7 +305,7 @@ public class Parser implements ParserInterface {
 				throw new ParseException("", -1);
 		}	
 	}
-	private Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
+	Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
 		assert(key != null && valStr != null);
 		switch (key) {
 			case NAME : 
@@ -331,54 +317,15 @@ public class Parser implements ParserInterface {
 				throw new IllegalArgumentException("key must be amongst : NAME, DATE_START, DATE_END");
 		}
 	}
-	private String parseText (String token) {
+	String parseText (String token) {
 		assert(token != null);
 		return token.trim();
 	}
-	private Date parseDate (String token) throws ParseException {
+	Date parseDate (String token) throws ParseException {
 		assert(token != null);
-		token = token.trim().toLowerCase();
-		switch (token) {
-		
-			// current time
-			case "now" :
-				return new Date();
-				
-			// +24h
-			case "tmr" :		// Fallthrough
-			case "tomorrow" :
-				return new Date(1000*60*60*24 + (new Date()).getTime());
-				
-			// +24*7h
-			case "next week" :
-				return new Date(1000*60*60*24*7 + (new Date()).getTime());
-				
-			default :
-				return parseAbsDate(token);
-		}
+		return DATE_PARSER.parseDate(token);
 	}
-	private Date parseAbsDate (String token) throws ParseException {
-		
-		// replace date delimiters with common token
-		assert(token != null);
-		token = P_DATE_DELIM.matcher(token.trim()).replaceAll(DATE_DELIM);
-		
-		// try parsing dates without all calendar fields filled.
-		try { 
-			return PART_DF.parse(token);
-		} catch (ParseException pePart) {
-			;
-		}
-		
-		// final try: parse with full info, down to minute resolution.
-		try { 
-			return FULL_DF.parse(token);
-		} catch (ParseException peFull) {
-			;
-		}
-		
-		throw new ParseException("Date cannot be formatted", -1);
-	}
+	
 	
 	public Command makeAdd (String name, Date start, Date end) {
 		Command cmd = new Command(Command.Type.ADD, userRawInput);
