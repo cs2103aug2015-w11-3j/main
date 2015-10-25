@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class Parser implements ParserInterface {
 
 	private static Parser parserInstance;
-	private final DateParser DATE_PARSER;
+	private final DateFormatter DATE_PARSER;
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -59,7 +59,7 @@ public class Parser implements ParserInterface {
 	private Parser () {
 		userRawInput = "no user input received";
 		
-		DATE_PARSER = new DateParser();
+		DATE_PARSER = new DateFormatter();
 		
 		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
 		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT);

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import java.util.Date;
 import java.text.ParseException;
 
-public class DateParser {
+public class DateFormatter implements CelebiDateFormatter {
 	
 	/////////////////////////////////////////////////////////////////
 	// Preprocess datestring
@@ -25,13 +25,13 @@ public class DateParser {
 	public static final String DATETIME_DELIM = "*";
 	public static final String DATETIME_SEP = "|";
 	
-	private final DateFormat FULL_DF;
-	private final DateFormat PART_DF;
+	private final DateParsingFormat FULL_DF;
+	private final DateParsingFormat PART_DF;
 
-	DateParser() {
+	DateFormatter() {
 		P_DATETIME_DELIM = Pattern.compile(REGEX_DATETIME_DELIM);
 		P_DATETIME_SEP = Pattern.compile(REGEX_DATETIME_SEP);
-		FULL_DF = new CelebiFullDateFormat();
+		FULL_DF = new FullDateFormat();
 		//PART_DF = new PartialDateFormat();
 		PART_DF = null;
 	}
@@ -81,5 +81,10 @@ public class DateParser {
 		}
 		
 		throw new ParseException("Date cannot be formatted", -1);
+	}
+	
+	public String formatDate (Date d) {
+		// TODO
+		return null;
 	}
 }
