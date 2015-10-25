@@ -7,7 +7,7 @@ import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
 import common.TasksBag;
-import common.TasksBag.FliterBy;
+import common.TasksBag.FilterBy;
 import parser.Command;
 import parser.Parser;
 import parser.ParserInterface;
@@ -17,7 +17,7 @@ import storage.StorageInterface;
 public class Logic implements LogicInterface {
 
     // The default view when UI first query the bag
-    private static final FliterBy DEFAULT_UI_VIEW = TasksBag.FliterBy.INCOMPLETE_TASKS;
+    private static final FilterBy DEFAULT_UI_VIEW = TasksBag.FilterBy.INCOMPLETE_TASKS;
 
     private StorageInterface cStorage;
     private ParserInterface cParser;
@@ -94,7 +94,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW_COMPLETE:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FliterBy.COMPLETE_TASKS));
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FilterBy.COMPLETE_TASKS));
                 break;
             case UPDATE:
                 // Not command pattern yet
@@ -205,7 +205,7 @@ public class Logic implements LogicInterface {
     @Override
     public TasksBag getDefaultBag() {
         cInternalBag.setSortState(DEFAULT_UI_VIEW);
-        return cInternalBag.getFlitered();
+        return cInternalBag.getFiltered();
     }
 
 }

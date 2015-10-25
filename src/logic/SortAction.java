@@ -1,7 +1,7 @@
 package logic;
 
 import common.TasksBag;
-import common.TasksBag.FliterBy;
+import common.TasksBag.FilterBy;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -16,10 +16,10 @@ public class SortAction implements Action {
 
     private Command cCommand;
     private TasksBag cBag;
-    private FliterBy cSortBy;
+    private FilterBy cSortBy;
     // private FliterBy cPrevSortBy;
 
-    public SortAction(Command command, TasksBag internalBag, FliterBy sortBy) throws LogicException {
+    public SortAction(Command command, TasksBag internalBag, FilterBy sortBy) throws LogicException {
         cCommand = command;
         cBag = internalBag;
         cSortBy = sortBy;

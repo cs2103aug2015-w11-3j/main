@@ -115,7 +115,8 @@ public class UI implements UIInterface {
 	 */
 	public void showWelcomeView() {
 		display(logic.getDefaultBag());    // Get default view
-		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you? \n";
+		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
+		controller.clearFeedback();
 		controller.appendFeedback(feedback);
 	}
 	

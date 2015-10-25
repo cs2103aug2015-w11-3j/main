@@ -59,7 +59,7 @@ public class LogicTest {
         // fail test under INCOMPLETE(default) filter of tasksbag
         testFailIntegrity("mark 1");
         
-        logic.getTaskBag().setSortState(TasksBag.FliterBy.COMPLETE_TASKS);
+        logic.getTaskBag().setSortState(TasksBag.FilterBy.COMPLETE_TASKS);
         
         testFailAlreadyMarked("mark 1");
         

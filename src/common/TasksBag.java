@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
-import common.TasksBag.FliterBy;
+import common.TasksBag.FilterBy;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -14,11 +14,11 @@ import javafx.collections.ObservableList;
  */
 public class TasksBag implements Iterable<Task> {
 
-    public enum FliterBy {
+    public enum FilterBy {
         COMPLETE_TASKS, INCOMPLETE_TASKS, NONE
     }
 
-    private FliterBy cFliterState = FliterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
+    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
     private ObservableList<Task> tasks;
 
     public TasksBag() {
@@ -56,7 +56,7 @@ public class TasksBag implements Iterable<Task> {
         return tasks;
     }
 
-    public void setSortState(FliterBy attribute) {
+    public void setSortState(FilterBy attribute) {
         assert attribute != null;
         cFliterState = attribute;
     }
@@ -64,7 +64,7 @@ public class TasksBag implements Iterable<Task> {
     /**
      * Sort will return a new container as specified by current sorted state
      */
-    public TasksBag getFlitered() {
+    public TasksBag getFiltered() {
         // assert attribute != null;
 
         ObservableList<Task> newContainer = null;
@@ -178,7 +178,7 @@ public class TasksBag implements Iterable<Task> {
         return rtn;
     }
 
-    public FliterBy getState() {
+    public FilterBy getState() {
         return cFliterState;
     }
 

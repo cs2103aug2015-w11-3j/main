@@ -8,6 +8,9 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -35,6 +38,8 @@ public class CelebiViewController {
     private TableColumn<Task, Date> endTimeColumn;
     @FXML
     private TableColumn<Task, String> tagColumn;
+    @FXML
+    private TabPane statePane;
     /*
     @FXML
     private TableColumn<Task, Task.Type> firstPrepColumn;
@@ -180,7 +185,7 @@ public class CelebiViewController {
     private void initializeFeedbackArea() {
     	// set the feedback area to be uneditable and set it to be always at the bottom
     	feedbackArea.setEditable(false);
-    	feedbackArea.textProperty().addListener((observable, oldValue, newValue) -> feedbackArea.setScrollTop(Double.MAX_VALUE));
+    	feedbackArea.textProperty().addListener((observable, oldValue, newValue) -> feedbackArea.setScrollTop(Double.MIN_VALUE));
     }
 	
 	public void setMainApp(Main mainApp) {
@@ -205,5 +210,10 @@ public class CelebiViewController {
 	
 	public void clearFeedback() {
 		feedbackArea.setText("");
+	}
+	
+	public void refreshSelection(ObservableList<Task> celebiList) {
+		SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
+		
 	}
 }

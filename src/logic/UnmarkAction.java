@@ -26,7 +26,7 @@ public class UnmarkAction implements UndoableAction {
 
     public UnmarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
         cCommand = command;
-        cCurBag = internalBag.getFlitered();
+        cCurBag = internalBag.getFiltered();
         cIntBag = internalBag;
         cStore = stor;
         log = Logger.getLogger("UnmarkAction");
