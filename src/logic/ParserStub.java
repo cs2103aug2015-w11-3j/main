@@ -7,8 +7,8 @@ import parser.Command;
 import parser.Command.Type;
 import parser.ParserInterface;
 
-public class ParserStub implements ParserInterface{
-
+public class ParserStub /*implements ParserInterface*/{
+/*
 	//@Override
 	public void init() {
 		// TODO Auto-generated method stub
@@ -61,6 +61,6 @@ public class ParserStub implements ParserInterface{
     public Command makeType(Type type) {
         // TODO Auto-generated method stub
         return null;
-    }
+    }*/
 
 }

@@ -25,6 +25,7 @@ public class DateFormatter implements CelebiDateFormatter {
 	public static final String DATETIME_DELIM = "*";
 	public static final String DATETIME_SEP = "|";
 	
+	private final DateParsingFormat CONV_DF;
 	private final DateParsingFormat FULL_DF;
 	private final DateParsingFormat PART_DF;
 
@@ -32,8 +33,8 @@ public class DateFormatter implements CelebiDateFormatter {
 		P_DATETIME_DELIM = Pattern.compile(REGEX_DATETIME_DELIM);
 		P_DATETIME_SEP = Pattern.compile(REGEX_DATETIME_SEP);
 		FULL_DF = new FullDateFormat();
-		//PART_DF = new PartialDateFormat();
-		PART_DF = null;
+		PART_DF = new PartialDateFormat();
+		CONV_DF = new ConvenienceDateFormat();
 	}
 
 	public Date parseDate (String token) throws ParseException {

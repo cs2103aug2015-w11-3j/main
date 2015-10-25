@@ -79,12 +79,6 @@ public class FullDateFormat implements DateParsingFormat {
 		
 	}
 	
-	@Override
-	public String format (Date d) {
-		// TODO
-		return null;
-	}
-	
 	private String removeNumSuffixes (String s) {
 		return P_NUM_SUFFIX.matcher(s).replaceAll("$1");
 	}
