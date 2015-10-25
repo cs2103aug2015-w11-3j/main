@@ -59,7 +59,7 @@ public class UI implements UIInterface {
 				cb = cmd.getcBag();
 				display(cb);
 				feedback = cmd.getMsg(); //"Celebi: Add entered. \n";
-				controller.appendFeedback(feedback);
+				controller.appendFeedback("celebi: "+feedback);
 			}
 			/*
 			switch (cmd.getCommand().getCmdType()) {
@@ -116,7 +116,7 @@ public class UI implements UIInterface {
 	 */
 	public void showWelcomeView() {
 		display(logic.getDefaultBag());    // Get default view
-		String feedback = "Celebi: Welcome to Celebi! \nIs there anything that Celebi can help you?";
+		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
 		controller.clearFeedback();
 		controller.appendFeedback(feedback);
 	}

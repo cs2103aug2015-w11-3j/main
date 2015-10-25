@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import common.Task;
 import common.TasksBag;
+import common.Utilities;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -55,14 +56,14 @@ public class MarkAction implements UndoableAction {
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
         if(cWhichTask.isComplete()){ 
-            formattedString = formatString(USR_MSG_MARK_FAIL, cWhichTask);
+            formattedString = Utilities.formatString(USR_MSG_MARK_FAIL, cWhichTask);
             throw new AlreadyMarkedException(formattedString);
         } else { 
             cWhichTask.setComplete(true);
             cStore.save(cWhichTask);
         }
         
-        formattedString =  formatString(USR_MSG_MARK_OK, cWhichTask);
+        formattedString =  Utilities.formatString(USR_MSG_MARK_OK, cWhichTask);
         Feedback fb = new Feedback(cCommand, cIntBag, formattedString);
 
         return fb;
@@ -75,16 +76,12 @@ public class MarkAction implements UndoableAction {
         cWhichTask.setComplete(false);
         cStore.save(cWhichTask);
         
-        String formattedString =  formatString(USR_MSG_MARK_UNDO, cWhichTask);
+        String formattedString =  Utilities.formatString(USR_MSG_MARK_UNDO, cWhichTask);
         return new Feedback(cCommand, cIntBag, formattedString);
     }
 
     @Override
     public Feedback redo() throws LogicException {
         return execute();
-    }
-
-    private String formatString(String which, Task t){
-        return String.format(which, t.getName());
     }
 }
