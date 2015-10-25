@@ -131,6 +131,7 @@ public class UI implements UIInterface {
 			System.out.println(c.getName());
 		}
 		
+		controller.refreshSelection(cb);
 		controller.setTableItems(cb.getList());
 	}
 	

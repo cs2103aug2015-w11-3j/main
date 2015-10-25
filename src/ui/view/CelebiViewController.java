@@ -19,6 +19,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import common.Task;
+import common.TasksBag;
+import common.TasksBag.FilterBy;
 import ui.Main;
 import ui.UIInterface;
 
@@ -212,8 +214,17 @@ public class CelebiViewController {
 		feedbackArea.setText("");
 	}
 	
-	public void refreshSelection(ObservableList<Task> celebiList) {
+	public void refreshSelection(TasksBag bag) {
+		System.out.printf("I'm here");
 		SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
-		
+		FilterBy state = bag.getState();
+		if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
+			System.out.printf("complete");
+			selectionModel.select(1);
+		}
+		else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
+			System.out.printf("incomplete");
+			selectionModel.select(0);
+		}
 	}
 }
