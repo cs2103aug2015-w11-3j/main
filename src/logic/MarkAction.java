@@ -14,7 +14,7 @@ public class MarkAction implements UndoableAction {
     private static final String USR_MSG_INDEX_ERR = "Provided index not on list.";
     private static final String USR_MSG_MARK_OK = "Marked %1$s!";
     private static final String USR_MSG_MARK_FAIL = "Already marked %1$s!";
-    private static final String USR_MSG_MARK_UNDO = "Undo mark %1$s";
+    private static final String USR_MSG_MARK_UNDO = "Undo mark %1$s!";
     
     private Command cCommand;
     private TasksBag cCurBag;    
@@ -51,17 +51,19 @@ public class MarkAction implements UndoableAction {
 
     @Override
     public Feedback execute() throws LogicException {
-        
+        String formattedString;
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
         if(cWhichTask.isComplete()){ 
-            throw new AlreadyMarkedException(USR_MSG_MARK_FAIL);
+            formattedString = formatString(USR_MSG_MARK_FAIL, cWhichTask);
+            throw new AlreadyMarkedException(formattedString);
         } else { 
             cWhichTask.setComplete(true);
             cStore.save(cWhichTask);
         }
-
-        Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_MARK_OK);
+        
+        formattedString =  formatString(USR_MSG_MARK_OK, cWhichTask);
+        Feedback fb = new Feedback(cCommand, cIntBag, formattedString);
 
         return fb;
     }
@@ -72,7 +74,9 @@ public class MarkAction implements UndoableAction {
 
         cWhichTask.setComplete(false);
         cStore.save(cWhichTask);
-        return new Feedback(cCommand, cIntBag, USR_MSG_MARK_UNDO);
+        
+        String formatted =  formatString(USR_MSG_MARK_UNDO, cWhichTask);
+        return new Feedback(cCommand, cIntBag, formatted);
     }
 
     @Override
@@ -80,4 +84,7 @@ public class MarkAction implements UndoableAction {
         return execute();
     }
 
+    private String formatString(String which, Task t){
+        return String.format(which, t.getName());
+    }
 }
