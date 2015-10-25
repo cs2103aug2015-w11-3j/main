@@ -38,6 +38,11 @@ public class ParserTest {
 		P = Parser.getParser();
 	}
 	
+	
+	/** Tests invalid command tokens in input string
+	 * no boundary cases 
+	 * 
+	 */
 	@Test
 	public void testInvalidCmdToken () {
 		StringBuilder testInput;

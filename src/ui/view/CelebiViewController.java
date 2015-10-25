@@ -260,7 +260,7 @@ public class CelebiViewController {
 	}
 	
 	public void appendFeedback(String newFeedback) {
-		feedbackArea.appendText("\n" + newFeedback);
+		feedbackArea.appendText(newFeedback);
 	}
 	
 	public void clearFeedback() {

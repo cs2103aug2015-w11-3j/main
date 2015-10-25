@@ -14,7 +14,7 @@ import javafx.collections.ObservableList;
  */
 public class TasksBag implements Iterable<Task> {
 
-    public enum FilterBy {
+    public static enum FilterBy {
         COMPLETE_TASKS, INCOMPLETE_TASKS, NONE
     }
 
