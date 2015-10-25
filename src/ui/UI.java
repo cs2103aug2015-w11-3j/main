@@ -45,7 +45,7 @@ public class UI implements UIInterface {
      */
 	public void passCommand(String userInput) {
 		controller.clearFeedback();
-		controller.appendFeedback("You: " + userInput);
+		controller.appendFeedback("You: " + userInput + "\n");
 		
 		Feedback cmd = null;
 		String feedback = "";
