@@ -108,7 +108,12 @@ public class TasksBag implements Iterable<Task> {
          */
         // Sorting by date before returning
         Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t2, t1));
-        return new TasksBag(newContainer);
+        
+        // Transfer the current state to the new bag
+        // UI uses the sort state to identify current tab
+        TasksBag rtnBag = new TasksBag(newContainer);
+        rtnBag.setSortState(cFliterState);
+        return rtnBag; 
     }
 
     public Task removeTask(int index) {
