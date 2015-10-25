@@ -12,9 +12,9 @@ import storage.StorageInterface;
 public class UnmarkAction implements UndoableAction {
 
     private static final String USR_MSG_INDEX_ERR = "Provided index not on list.";
-    private static final String USR_MSG_UNMARK_OK = "Unmarked!";
-    private static final String USR_MSG_UNMARK_FAIL = "Already unmarked!";
-    private static final String USR_MSG_UNMARK_UNDO = "Undo unmarked";
+    private static final String USR_MSG_UNMARK_OK = "Unmarked %1$s!";
+    private static final String USR_MSG_UNMARK_FAIL = "Already unmarked %1$s!";
+    private static final String USR_MSG_UNMARK_UNDO = "Undo unmarked %1$s!";
 
     private Command cCommand;
     private TasksBag cCurBag;
@@ -50,17 +50,20 @@ public class UnmarkAction implements UndoableAction {
 
     @Override
     public Feedback execute() throws LogicException {
-
+        String formattedString;
+        
         // Should not unmark again if it is already unmarked.
         // Does not go into undo queue if already unmarked.
         if (cWhichTask.isComplete() == false) {
-            throw new AlreadyUnmarkedException(USR_MSG_UNMARK_FAIL);
+            formattedString = formatString(USR_MSG_UNMARK_FAIL, cWhichTask);
+            throw new AlreadyUnmarkedException(formattedString);
         } else {
             cWhichTask.setComplete(false);
             cStore.save(cWhichTask);
         }
-
-        Feedback fb = new Feedback(cCommand, cIntBag, USR_MSG_UNMARK_OK);
+        
+        formattedString = formatString(USR_MSG_UNMARK_OK, cWhichTask);
+        Feedback fb = new Feedback(cCommand, cIntBag, formattedString);
 
         return fb;
     }
@@ -71,12 +74,16 @@ public class UnmarkAction implements UndoableAction {
 
         cWhichTask.setComplete(true);
         cStore.save(cWhichTask);
-        return new Feedback(cCommand, cIntBag, USR_MSG_UNMARK_UNDO);
+        String formattedString = formatString(USR_MSG_UNMARK_UNDO, cWhichTask);
+        return new Feedback(cCommand, cIntBag, formattedString);
     }
 
     @Override
     public Feedback redo() throws LogicException {
         return execute();
     }
-
+    
+    private String formatString(String which, Task t){
+        return String.format(which, t.getName());
+    }
 }
