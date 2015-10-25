@@ -56,14 +56,14 @@ public class MarkAction implements UndoableAction {
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
         if(cWhichTask.isComplete()){ 
-            formattedString = Utilities.formatString(USR_MSG_MARK_FAIL, cWhichTask);
+            formattedString = Utilities.formatString(USR_MSG_MARK_FAIL, cWhichTask.getName());
             throw new AlreadyMarkedException(formattedString);
         } else { 
             cWhichTask.setComplete(true);
             cStore.save(cWhichTask);
         }
         
-        formattedString =  Utilities.formatString(USR_MSG_MARK_OK, cWhichTask);
+        formattedString =  Utilities.formatString(USR_MSG_MARK_OK, cWhichTask.getName());
         Feedback fb = new Feedback(cCommand, cIntBag, formattedString);
 
         return fb;
@@ -76,7 +76,7 @@ public class MarkAction implements UndoableAction {
         cWhichTask.setComplete(false);
         cStore.save(cWhichTask);
         
-        String formattedString =  Utilities.formatString(USR_MSG_MARK_UNDO, cWhichTask);
+        String formattedString =  Utilities.formatString(USR_MSG_MARK_UNDO, cWhichTask.getName());
         return new Feedback(cCommand, cIntBag, formattedString);
     }
 
