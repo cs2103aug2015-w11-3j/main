@@ -19,6 +19,7 @@ import storage.StorageInterface;
 public class DeleteAction implements UndoableAction {
 
     private static final String USR_MSG_DELETE_OOB = "Provided index not on list.";
+    private static final String USR_MSG_DELETE_ERROR = "Failed to delete from storage";
     private static final String USR_MSG_DELETE_OK = "Removed %1$s!";
     private static final String USR_MSG_DELETE_UNDO = "Undoing delete %1$s";
 
@@ -81,20 +82,23 @@ public class DeleteAction implements UndoableAction {
      */
     @Override
     public Feedback execute() throws LogicException {
-        String usrMsg;
-
+        String formattedString;
+        Feedback fb;
         isSuccessful = cStore.delete(cWhichTask);
 
         if (isSuccessful) {
-            // Used when adding back into task bag
+            // Used when undo delete to position back into task bag
             cPosition = cIntBag.removeTask(cWhichTask);
-        } else {
-            throw new LogicException("Storage failed to delete task");
-        }
-        usrMsg = String.format(USR_MSG_DELETE_OK, cWhichTask.getName());
-        Feedback fb = new Feedback(cCommand, cIntBag, usrMsg);
 
-        return fb;
+            formattedString = formatString(USR_MSG_DELETE_OK, cWhichTask);
+            fb = new Feedback(cCommand, cIntBag, formattedString);
+
+            return fb;
+        } else {
+            formattedString = formatString(USR_MSG_DELETE_ERROR, cWhichTask);
+
+            throw new LogicException(formattedString);
+        }
     }
 
     /**
@@ -103,12 +107,13 @@ public class DeleteAction implements UndoableAction {
      */
     @Override
     public Feedback undo() {
-        String usrMsg;
-        usrMsg = String.format(USR_MSG_DELETE_UNDO, cWhichTask.getName());
+        String formattedString;
+        formattedString = formatString(USR_MSG_DELETE_UNDO, cWhichTask);
 
         cIntBag.addTask(cPosition, cWhichTask);
         cStore.save(cWhichTask);
-        return new Feedback(cCommand, cIntBag, usrMsg);
+        
+        return new Feedback(cCommand, cIntBag, formattedString);
     }
 
     /**
@@ -117,5 +122,9 @@ public class DeleteAction implements UndoableAction {
     @Override
     public Feedback redo() throws LogicException {
         return execute();
+    }
+
+    private String formatString(String which, Task t) {
+        return String.format(which, t.getName());
     }
 }

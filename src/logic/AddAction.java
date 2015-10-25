@@ -15,51 +15,55 @@ import storage.StorageInterface;
 public class AddAction implements UndoableAction {
 
     private static final String USR_MSG_ADD_ERROR = "Failed to store to storage";
-    private static final String USR_MSG_ADD_OK = "Added!";
-    private static final String USR_MSG_ADD_UNDO = "Undo adding";
+    private static final String USR_MSG_ADD_OK = "Added %1$s!";
+    private static final String USR_MSG_ADD_UNDO = "Undo adding %1$s!";
     
     private Command cCommand;
     private TasksBag cBag;
     private StorageInterface cStore;
-    private Task cCreatedTask;
+    private Task cWhichTask;
 
     public AddAction(Command command, TasksBag bag, StorageInterface stor) {
         cCommand = command;
         cBag = bag;
         cStore = stor;
-    }
-
-    @Override
-    public Feedback execute() throws LogicException {
-        assert cCommand.getCmdType() == Command.Type.ADD : cCommand.getCmdType();
-
-        Feedback fb;
 
         String name = cCommand.getName();
         Date startDate = cCommand.getStart();
         Date endDate = cCommand.getEnd();
 
-        cCreatedTask = new Task(name, startDate, endDate);
-
-        boolean addStatus = cStore.save(cCreatedTask);
-
-        if (addStatus) {
-            cBag.addTask(cCreatedTask);
-            fb = new Feedback(cCommand, cBag, USR_MSG_ADD_OK);
-        } else {
-            throw new LogicException(USR_MSG_ADD_ERROR);
+        cWhichTask = new Task(name, startDate, endDate);
         }
 
-        return fb;
+    @Override
+    public Feedback execute() throws LogicException {
+        String formattedString;
+        Feedback fb;
+
+        boolean addStatus = cStore.save(cWhichTask);
+        
+        if (addStatus) {
+            cBag.addTask(cWhichTask);
+            
+            formattedString =  formatString(USR_MSG_ADD_OK, cWhichTask);
+            fb = new Feedback(cCommand, cBag, formattedString);
+            
+            return fb;
+        } else {
+            formattedString =  formatString(USR_MSG_ADD_ERROR, cWhichTask);
+            
+            throw new LogicException(formattedString);
+        }
     }
 
     @Override
     public Feedback undo() {
-        assert cCreatedTask != null;
+        assert cWhichTask != null;
         
-        cStore.delete(cCreatedTask);
-        cBag.removeTask(cCreatedTask);
-        return new Feedback(cCommand, cBag, USR_MSG_ADD_UNDO);
+        cStore.delete(cWhichTask);
+        cBag.removeTask(cWhichTask);
+        String formatted =  formatString(USR_MSG_ADD_UNDO, cWhichTask);
+        return new Feedback(cCommand, cBag, formatted);
     }
 
     @Override
@@ -67,4 +71,7 @@ public class AddAction implements UndoableAction {
         return execute();
     }
 
+    private String formatString(String which, Task t){
+        return String.format(which, t.getName());
+    }
 }
