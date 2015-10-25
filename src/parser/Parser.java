@@ -17,47 +17,48 @@ public class Parser implements ParserInterface {
 	// Date Formats
 	/////////////////////////////////////////////////////////////////
 	
-	// matching characters . / - _ <space>
-	private static final Pattern P_DATE_DELIM = Pattern.compile("[\\Q-_/. \\E]");
+	// matching characters . / - _ \\ : <space>
+	private static final String REGEX_DATE_DELIM = 
+			"[\\Q-_/.\\ :\\E]+";
+	private final Pattern P_DATE_DELIM;
 	private static final String DATE_DELIM = "*";
 	
-	private static final DateFormat DF_A = new SimpleDateFormat("hh:mm*a*dd*MM*yyyy");
-	private static final DateFormat DF_B = new SimpleDateFormat("HH:mm*dd*MM*yyyy");
-	
-	private static final DateFormat[] DF_ARRAY = {
-				DF_A,
-				DF_B
-			};
+	private final DateFormat FULL_DF;
+	private final DateFormat PART_DF;
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
 	/////////////////////////////////////////////////////////////////
 
 	// for whitespace work
-	private static final Pattern P_WHITESPACE = Pattern.compile("\\s+");
+	private static final String REGEX_WHITESPACE = 
+			"\\s+";
+	private final Pattern P_WHITESPACE;
 	
-	// <name> 
-	private static final Pattern P_ADD_FLT = Pattern.compile(
-			"^(?<name>[^;]+)$"
-			);
-	// <name>; by|due <end> 
-	private static final Pattern P_ADD_DL = Pattern.compile(
-			"^(?<name>[^;]+);\\s+(?:by|due)\\s(?<end>.+)$"
-			);
-	// <name>; from|start <start> end|to|till|until|due <end> 
-	private static final Pattern P_ADD_EVT = Pattern.compile(
-			"^(?<name>[^;]+);\\s+(?:from|start)\\s(?<start>.+)\\s(?:till|to|until|end|due)\\s(?<end>.+)$"
-			);	
+	// <name>
+	private static final String REGEX_ADD_FLT = 
+			"^(?<name>[^;]+)$";
+	private final Pattern P_ADD_FLT;
+	
+	// <name>; by|due <end>
+	private static final String REGEX_ADD_DL = 
+			"^(?<name>[^;]+);\\s+(?:by|due)\\s(?<end>.+)$";
+	private final Pattern P_ADD_DL;
+	
+	// <name>; from|start <start> end|to|till|until|due <end>
+	private static final String REGEX_ADD_EVT = 
+			"^(?<name>[^;]+);\\s+(?:from|start)\\s(?<start>.+)\\s(?:till|to|until|end|due)\\s(?<end>.+)$";
+	private final Pattern P_ADD_EVT;	
 	
 	// <uid>
-	private static final Pattern P_DEL = Pattern.compile(
-			"^(?<uid>\\d++)$"
-			);
+	private static final String REGEX_DEL = 
+			"^(?<uid>\\d++)$";
+	private final Pattern P_DEL;
 	
 	// <field> <uid> <newval>
-	private static final Pattern P_UPD = Pattern.compile(
-			"^(?<field>\\w+)\\s(?<uid>\\d+)\\s(?<newval>.+)$"
-			);
+	private static final String REGEX_UPD = 
+			"^(?<uid>\\d+)\\s(?<field>\\w+)\\s(?<newval>.+)$";
+	private final Pattern P_UPD;
 
 	/////////////////////////////////////////////////////////////////
 	// instance fields
@@ -69,7 +70,19 @@ public class Parser implements ParserInterface {
 	
 	private Parser () {
 		userRawInput = "no user input received";
+		
+		P_DATE_DELIM = Pattern.compile(REGEX_DATE_DELIM);
+		FULL_DF = new FullDateFormat();
+		PART_DF = new PartialDateFormat();
+		
+		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
+		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT);
+		P_ADD_DL = Pattern.compile(REGEX_ADD_DL);
+		P_ADD_EVT = Pattern.compile(REGEX_ADD_EVT);
+		P_DEL = Pattern.compile(REGEX_DEL);
+		P_UPD = Pattern.compile(REGEX_UPD);
 	}
+	
 	// singleton access
 	public static Parser getParser () {
 		if (parserInstance == null) {
@@ -286,7 +299,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	
-	private static Task.DataType parseFieldKey (String token) throws ParseException {
+	private Task.DataType parseFieldKey (String token) throws ParseException {
 		assert(token != null);
 		switch (token.toLowerCase()) {
 			case "name" :
@@ -306,7 +319,7 @@ public class Parser implements ParserInterface {
 				throw new ParseException("", -1);
 		}	
 	}
-	private static Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
+	private Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
 		assert(key != null && valStr != null);
 		switch (key) {
 			case NAME : 
@@ -318,11 +331,11 @@ public class Parser implements ParserInterface {
 				throw new IllegalArgumentException("key must be amongst : NAME, DATE_START, DATE_END");
 		}
 	}
-	private static String parseText (String token) {
+	private String parseText (String token) {
 		assert(token != null);
 		return token.trim();
 	}
-	private static Date parseDate (String token) throws ParseException {
+	private Date parseDate (String token) throws ParseException {
 		assert(token != null);
 		token = token.trim().toLowerCase();
 		switch (token) {
@@ -344,21 +357,27 @@ public class Parser implements ParserInterface {
 				return parseAbsDate(token);
 		}
 	}
-	private static Date parseAbsDate (String token) throws ParseException {
+	private Date parseAbsDate (String token) throws ParseException {
+		
 		// replace date delimiters with common token
 		assert(token != null);
 		token = P_DATE_DELIM.matcher(token.trim()).replaceAll(DATE_DELIM);
-		for (DateFormat df : DF_ARRAY) {
-			try {
-				Date d = df.parse(token);
-				if (d != null) {
-					return d;
-				}
-			} catch (ParseException e) {
-				;
-			}
+		
+		// try parsing dates without all calendar fields filled.
+		try { 
+			return PART_DF.parse(token);
+		} catch (ParseException pePart) {
+			;
 		}
-		throw new ParseException("", -1);
+		
+		// final try: parse with full info, down to minute resolution.
+		try { 
+			return FULL_DF.parse(token);
+		} catch (ParseException peFull) {
+			;
+		}
+		
+		throw new ParseException("Date cannot be formatted", -1);
 	}
 	
 	public Command makeAdd (String name, Date start, Date end) {
@@ -436,11 +455,17 @@ public class Parser implements ParserInterface {
 		System.out.println("end: "+ c.getEnd());
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
-		assert(false);
-		System.out.println("wot");
+		Date d = new Date(Long.MAX_VALUE);
+		DateFormat df = new SimpleDateFormat("hh-mma");
+		System.out.println(df.parse("9-20pm"));
+//		System.out.println(d);
+//		d = new Date();
+//		System.out.println(d);
+//		assert(false);
+//		System.out.println("wot");
 		
 		/*while (true) {
 			if (false) {

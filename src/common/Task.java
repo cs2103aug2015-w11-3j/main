@@ -20,8 +20,8 @@ public class Task {
 	public static enum DataType {
 		ID, 
 		NAME,
-		DATE_START, DATE_END,
-		TAGS, PRIORITY, 
+		DATE_START, DATE_END, 
+		IMPORTANCE, 
 		IS_COMPLETED
 	}
 
@@ -38,7 +38,7 @@ public class Task {
 	
 	private ObjectProperty<Type> cType;
 
-	private boolean cIsPriority;
+	private boolean cIsImportant;
 	private boolean cIsCompleted;
 
 	/*
@@ -150,14 +150,14 @@ public class Task {
 
 
 
-	public Boolean getPriority() {
-		return cIsPriority;
+	public boolean isImportant() {
+		return cIsImportant;
 	}
 
 
 
-	public void setPriority(Boolean cPriority) {
-		this.cIsPriority = cPriority;
+	public void setImportant(Boolean impt) {
+		this.cIsImportant = impt;
 	}
 	
 	

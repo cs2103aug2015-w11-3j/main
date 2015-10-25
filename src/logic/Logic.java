@@ -164,7 +164,7 @@ public class Logic implements LogicInterface {
                     toBeUpdated.setName(rtnCmd.getName());
                     cStorage.save(toBeUpdated);
                     break;
-                case PRIORITY:
+                case IMPORTANCE:
                     System.out.println("Not done yet");
                     break;
                 default:
