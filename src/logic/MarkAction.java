@@ -75,8 +75,8 @@ public class MarkAction implements UndoableAction {
         cWhichTask.setComplete(false);
         cStore.save(cWhichTask);
         
-        String formatted =  formatString(USR_MSG_MARK_UNDO, cWhichTask);
-        return new Feedback(cCommand, cIntBag, formatted);
+        String formattedString =  formatString(USR_MSG_MARK_UNDO, cWhichTask);
+        return new Feedback(cCommand, cIntBag, formattedString);
     }
 
     @Override
