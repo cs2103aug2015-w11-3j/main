@@ -1,7 +1,10 @@
 package ui.view;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import org.fxmisc.richtext.InlineCssTextArea;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -18,6 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
@@ -48,11 +52,16 @@ public class CelebiViewController {
     @FXML
     private TableColumn<Task, Task.Type> secondPrepColumn;
     */
-    
+    @FXML
+    private AnchorPane commandFieldPane;
     @FXML
     private TextArea feedbackArea;
-    @FXML
-    private TextField commandField;
+    
+    private InlineCssTextArea commandArea;
+    
+    private String[] commandKeywords = {"a", "add", "new", "create", "d", "del", "delete", 
+    		"rm", "remove", "u", "upd", "update", "set", "edit", "q", "quit", "exit", 
+    		"mark", "complete", "unmark", "reopen", "undo", "un", "redo", "re", "show"};
 	
     /**
      * Initializes the controller class. This method is automatically called
@@ -80,13 +89,14 @@ public class CelebiViewController {
     	
     	celebiTable.setMouseTransparent(true);
     	
+    	initializeCommandPane();
     	initializeCommandField();
     	initializeFeedbackArea();
     	
     	Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                commandField.requestFocus();
+                commandArea.requestFocus();
             }
         });
     }
@@ -163,22 +173,61 @@ public class CelebiViewController {
     	});
     }
     
+    private void initializeCommandPane() {
+    	commandArea = new InlineCssTextArea();
+    	AnchorPane.setTopAnchor(commandArea, 5.0);
+    	AnchorPane.setBottomAnchor(commandArea, 15.0);
+    	AnchorPane.setLeftAnchor(commandArea, 10.0);
+    	AnchorPane.setRightAnchor(commandArea, 10.0);
+    	commandFieldPane.getChildren().add(commandArea);
+    }
+    
     /**
      * Initialize command field with enter action
      */
     private void initializeCommandField() {
-    	commandField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+    	commandArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
     	    @Override
     	    public void handle(KeyEvent keyEvent) {
-    	        if (keyEvent.getCode() == KeyCode.ENTER)  {
+    	        KeyCode code = keyEvent.getCode();
+    	    	if (code == KeyCode.ENTER)  {
     	            // when enter is hit, pass the user input to UI
-    	        	String text = commandField.getText();
+    	        	String text = commandArea.getText();
     	            ui.passCommand(text);
-    	            commandField.setText("");
+    	            commandArea.clear();
+    	            keyEvent.consume();
     	        }
     	    }
     	});
-    	commandField.requestFocus();
+    	
+    	commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
+    		String firstWord;
+    		int i = newValue.indexOf(' ');
+    		if (i == -1) {
+    			firstWord = newValue;
+    		}
+    		else {
+    			firstWord = newValue.substring(0, i);
+    		}
+    		
+    		boolean found = false;
+    		for (int j=0; j<commandKeywords.length; j++) {
+    			if(firstWord.equals(commandKeywords[j])) {
+    				found = true;
+    			}
+    		}
+    		if (found) {
+    			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: #529228;");
+    			if (newValue.length() > firstWord.length()) {
+    				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal;");
+    			}
+    		}
+    		else {
+    			commandArea.setStyle(0, newValue.length(),"-fx-font-weight: normal;");
+    		}
+    	});
+    	
+    	commandArea.requestFocus();
     }
     
     /**
@@ -206,6 +255,10 @@ public class CelebiViewController {
 		celebiTable.setItems(celebiList);
 	}
 	
+	public void clearCommand() {
+		commandArea.clear();
+	}
+	
 	public void appendFeedback(String newFeedback) {
 		feedbackArea.appendText("\n" + newFeedback);
 	}
@@ -215,15 +268,12 @@ public class CelebiViewController {
 	}
 	
 	public void refreshSelection(TasksBag bag) {
-		System.out.printf("I'm here");
 		SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
 		FilterBy state = bag.getState();
 		if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
-			System.out.printf("complete");
 			selectionModel.select(1);
 		}
 		else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
-			System.out.printf("incomplete");
 			selectionModel.select(0);
 		}
 	}

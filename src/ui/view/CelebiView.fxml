@@ -57,11 +57,7 @@
                                     <TextArea fx:id="feedbackArea" layoutX="262.0" layoutY="-86.0" prefHeight="200.0" prefWidth="780.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
                                  </children>
                               </AnchorPane>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                 <children>
-                                    <TextField fx:id="commandField" layoutX="219.0" layoutY="1.0" prefColumnCount="1" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0" />
-                                 </children>
-                              </AnchorPane>
+                            <AnchorPane fx:id="commandFieldPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                           </items>
                         </SplitPane>
                      </children>
