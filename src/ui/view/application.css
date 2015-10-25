@@ -150,3 +150,17 @@
 .text-field {
     -fx-padding: 0px;
 }
+
+#feedback-area {
+    -fx-background-color: #e4f2d4;
+    -fx-fill: #7eb758;
+    -fx-padding: 10 6 10 6;
+}
+
+#feedback-area .text {
+	-fx-fill: black;
+}
+
+#command-area {
+    -fx-padding: 2 6 2 6;
+}

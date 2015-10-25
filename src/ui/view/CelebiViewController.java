@@ -22,6 +22,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Region;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
@@ -55,9 +59,10 @@ public class CelebiViewController {
     @FXML
     private AnchorPane commandFieldPane;
     @FXML
-    private TextArea feedbackArea;
+    private AnchorPane feedbackPane;
     
     private InlineCssTextArea commandArea;
+    private InlineCssTextArea feedbackA;
     
     private String[] commandKeywords = {"a", "add", "new", "create", "d", "del", "delete", 
     		"rm", "remove", "u", "upd", "update", "set", "edit", "q", "quit", "exit", 
@@ -91,6 +96,7 @@ public class CelebiViewController {
     	
     	initializeCommandPane();
     	initializeCommandField();
+    	initializeFeedbackPane();
     	initializeFeedbackArea();
     	
     	Platform.runLater(new Runnable() {
@@ -176,9 +182,9 @@ public class CelebiViewController {
     private void initializeCommandPane() {
     	commandArea = new InlineCssTextArea();
     	AnchorPane.setTopAnchor(commandArea, 5.0);
-    	AnchorPane.setBottomAnchor(commandArea, 15.0);
-    	AnchorPane.setLeftAnchor(commandArea, 10.0);
-    	AnchorPane.setRightAnchor(commandArea, 10.0);
+    	AnchorPane.setBottomAnchor(commandArea, 10.0);
+    	AnchorPane.setLeftAnchor(commandArea, 50.0);
+    	AnchorPane.setRightAnchor(commandArea, 50.0);
     	commandFieldPane.getChildren().add(commandArea);
     }
     
@@ -228,6 +234,17 @@ public class CelebiViewController {
     	});
     	
     	commandArea.requestFocus();
+    	commandArea.setId("command-area");
+    }
+    
+    
+    private void initializeFeedbackPane() {
+    	feedbackA = new InlineCssTextArea();
+    	AnchorPane.setTopAnchor(feedbackA, 5.0);
+    	AnchorPane.setBottomAnchor(feedbackA, 0.0);
+    	AnchorPane.setLeftAnchor(feedbackA, 50.0);
+    	AnchorPane.setRightAnchor(feedbackA, 50.0);
+    	feedbackPane.getChildren().add(feedbackA);
     }
     
     /**
@@ -235,8 +252,9 @@ public class CelebiViewController {
      */
     private void initializeFeedbackArea() {
     	// set the feedback area to be uneditable and set it to be always at the bottom
-    	feedbackArea.setEditable(false);
-    	feedbackArea.textProperty().addListener((observable, oldValue, newValue) -> feedbackArea.setScrollTop(Double.MIN_VALUE));
+    	feedbackA.setEditable(false);
+    	feedbackA.setId("feedback-area");
+    	//feedbackA.textProperty().addListener((observable, oldValue, newValue) -> feedbackA.setScrollTop(Double.MIN_VALUE));
     }
 	
 	public void setMainApp(Main mainApp) {
@@ -260,11 +278,19 @@ public class CelebiViewController {
 	}
 	
 	public void appendFeedback(String newFeedback) {
-		feedbackArea.appendText(newFeedback);
+		if(feedbackA.getText().equals("")) {
+			feedbackA.appendText(newFeedback);
+			feedbackA.setStyle(0, "-fx-fill: #7eb758;");
+		}
+		else {
+			feedbackA.appendText(newFeedback);
+			feedbackA.setStyle(0, "-fx-fill: black;");
+			feedbackA.setStyle(1, "-fx-fill: #7eb758;");
+		}
 	}
 	
 	public void clearFeedback() {
-		feedbackArea.setText("");
+		feedbackA.clear();;
 	}
 	
 	public void refreshSelection(TasksBag bag) {
