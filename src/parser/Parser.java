@@ -391,6 +391,22 @@ public class Parser implements ParserInterface {
 		return cmd;
 		
 	}
+	public Command makeSearch (String searchKey) {
+		Command cmd = new Command(Command.Type.SEARCH, userRawInput);
+		cmd.setName(searchKey);
+		return cmd;
+	}
+	public Command makeFilterByDate (Date rangeStart, Date rangeEnd) {
+		Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
+		cmd.setStart(rangeStart);
+		cmd.setEnd(rangeEnd);
+		return cmd;
+	}
+	public Command makeChangeSaveLoc (String newPath) {
+		Command cmd = new Command(Command.Type.CHANGE_SAVE_LOC, userRawInput);
+		cmd.setName(newPath);
+		return cmd;
+	}
 	
 	public static void printCmd (Command c) {
 		System.out.println("type: " + c.getCmdType());
@@ -445,7 +461,6 @@ public class Parser implements ParserInterface {
 //	}
 //	
 	// Logic test function	// By Ken
-	@Override
 	public Command makeType(Command.Type type){
 		return new Command(type, "");
 	}

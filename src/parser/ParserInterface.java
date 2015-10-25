@@ -8,15 +8,19 @@ public interface ParserInterface {
 	public Command parseCommand(String s);
 	
 	// Manually create commands for logic testing.
-
 	public Command makeAdd (String name, Date start, Date end);
-	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue);
+	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue) throws IllegalArgumentException;
 	public Command makeDelete (int taskUID);
-	//public Command makeSort();
 	public Command makeQuit ();
 	public Command makeInvalid ();
-	public Command makeType(Command.Type type);
-	
+	public Command makeShow (Command.Type showtype);
+	public Command makeRedo ();
+	public Command makeUndo ();
+	public Command makeMark (int taskUID);
+	public Command makeUnmark (int taskUID);
+	public Command makeSearch (String searchKey);
+	public Command makeFilterByDate (Date rangeStart, Date rangeEnd);
+	public Command makeChangeSaveLoc (String newPath);
 	
 	// to debug command
 	public static void printCmd (Command c) {
