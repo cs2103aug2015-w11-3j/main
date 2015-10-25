@@ -106,7 +106,7 @@ public class UI implements UIInterface {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 			feedback = e.cMsg;
-			controller.appendFeedback("Celebi: " + feedback + "\n");
+			controller.appendFeedback("Celebi: " + feedback);
 		}
 	}
 	
@@ -115,7 +115,7 @@ public class UI implements UIInterface {
 	 */
 	public void showWelcomeView() {
 		display(logic.getDefaultBag());    // Get default view
-		String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
+		String feedback = "Celebi: Welcome to Celebi! \nIs there anything that Celebi can help you?";
 		controller.clearFeedback();
 		controller.appendFeedback(feedback);
 	}
