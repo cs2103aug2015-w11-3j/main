@@ -98,10 +98,6 @@ public class Logic implements LogicInterface {
                 //fb = cInvoker.placeAction(new FilterDateAction(rtnCmd, cInternalBag, cStorage));
                 fb = new Feedback(rtnCmd, null, "Not implemented yet.");
                 break;
-            case SEARCH:
-                // TODO Search implementation
-                fb = new Feedback(rtnCmd, null, "Not implemented yet.");
-                break;
             case MOVE_FILE:
                 // TODO Check implementation of user specified location. No idea which function to call yet
                 fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, null, cStorage));

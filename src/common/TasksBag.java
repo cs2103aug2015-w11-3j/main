@@ -68,6 +68,7 @@ public class TasksBag implements Iterable<Task> {
 
     /**
      * Sort will return a new container as specified by current sorted state
+     * Then sort by rev date
      */
     public TasksBag getFiltered() {
         // assert attribute != null;
@@ -119,7 +120,7 @@ public class TasksBag implements Iterable<Task> {
          * );
          */
         // Sorting by date before returning
-        Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t2, t1));
+        Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t1, t2));
         
         // Transfer the current state to the new bag
         // UI uses the sort state to identify current tab
@@ -159,9 +160,9 @@ public class TasksBag implements Iterable<Task> {
         if (firstCom == null && secCom == null) {
             return 0;
         } else if (secCom == null) {
-            return 1;
-        } else if (firstCom == null) {
             return -1;
+        } else if (firstCom == null) {
+            return 1;
         } else {
             return firstCom.compareTo(secCom);
         }
