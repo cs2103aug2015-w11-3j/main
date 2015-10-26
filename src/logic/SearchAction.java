@@ -15,7 +15,7 @@ public class SearchAction implements Action {
     public SearchAction(Command command, TasksBag internalBag) throws LogicException {
         cCommand = command;
         cBag = internalBag;
-        cKeyword = command.getSearchKeyword();
+        cKeyword = command.getText();
     }
 
     @Override

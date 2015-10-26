@@ -29,7 +29,7 @@ public class AddAction implements UndoableAction {
         cBag = bag;
         cStore = stor;
 
-        String name = cCommand.getName();
+        String name = cCommand.getText();
         Date startDate = cCommand.getStart();
         Date endDate = cCommand.getEnd();
 

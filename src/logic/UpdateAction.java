@@ -70,8 +70,8 @@ public class UpdateAction implements UndoableAction {
 
                 return fb;
             case NAME:
-                assert cCommand.getName() != null;
-                toBeUpdated.setName(cCommand.getName());
+                assert cCommand.getText() != null;
+                toBeUpdated.setName(cCommand.getText());
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_NAME_OK, toBeUpdated.getName());
