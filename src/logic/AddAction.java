@@ -4,6 +4,7 @@ import java.util.Date;
 
 import common.Task;
 import common.TasksBag;
+import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
@@ -45,12 +46,12 @@ public class AddAction implements UndoableAction {
         if (addStatus) {
             cBag.addTask(cWhichTask);
             
-            formattedString =  formatString(USR_MSG_ADD_OK, cWhichTask);
+            formattedString =  Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
             fb = new Feedback(cCommand, cBag, formattedString);
             
             return fb;
         } else {
-            formattedString =  formatString(USR_MSG_ADD_ERROR, cWhichTask);
+            formattedString =  Utilities.formatString(USR_MSG_ADD_ERROR, cWhichTask.getName());
             
             throw new LogicException(formattedString);
         }
@@ -62,16 +63,12 @@ public class AddAction implements UndoableAction {
         
         cStore.delete(cWhichTask);
         cBag.removeTask(cWhichTask);
-        String formatted =  formatString(USR_MSG_ADD_UNDO, cWhichTask);
+        String formatted =  Utilities.formatString(USR_MSG_ADD_UNDO, cWhichTask.getName());
         return new Feedback(cCommand, cBag, formatted);
     }
 
     @Override
     public Feedback redo() throws LogicException {
         return execute();
-    }
-
-    private String formatString(String which, Task t){
-        return String.format(which, t.getName());
     }
 }

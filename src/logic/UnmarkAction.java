@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import common.Task;
 import common.TasksBag;
+import common.Utilities;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -55,14 +56,14 @@ public class UnmarkAction implements UndoableAction {
         // Should not unmark again if it is already unmarked.
         // Does not go into undo queue if already unmarked.
         if (cWhichTask.isComplete() == false) {
-            formattedString = formatString(USR_MSG_UNMARK_FAIL, cWhichTask);
+            formattedString = Utilities.formatString(USR_MSG_UNMARK_FAIL, cWhichTask.getName());
             throw new AlreadyUnmarkedException(formattedString);
         } else {
             cWhichTask.setComplete(false);
             cStore.save(cWhichTask);
         }
         
-        formattedString = formatString(USR_MSG_UNMARK_OK, cWhichTask);
+        formattedString = Utilities.formatString(USR_MSG_UNMARK_OK, cWhichTask.getName());
         Feedback fb = new Feedback(cCommand, cIntBag, formattedString);
 
         return fb;
@@ -74,16 +75,13 @@ public class UnmarkAction implements UndoableAction {
 
         cWhichTask.setComplete(true);
         cStore.save(cWhichTask);
-        String formattedString = formatString(USR_MSG_UNMARK_UNDO, cWhichTask);
+        
+        String formattedString = Utilities.formatString(USR_MSG_UNMARK_UNDO, cWhichTask.getName());
         return new Feedback(cCommand, cIntBag, formattedString);
     }
 
     @Override
     public Feedback redo() throws LogicException {
         return execute();
-    }
-    
-    private String formatString(String which, Task t){
-        return String.format(which, t.getName());
     }
 }

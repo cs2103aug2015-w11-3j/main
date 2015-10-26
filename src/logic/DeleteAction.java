@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import common.Log;
 import common.Task;
 import common.TasksBag;
+import common.Utilities;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -90,12 +91,12 @@ public class DeleteAction implements UndoableAction {
             // Used when undo delete to position back into task bag
             cPosition = cIntBag.removeTask(cWhichTask);
 
-            formattedString = formatString(USR_MSG_DELETE_OK, cWhichTask);
+            formattedString = Utilities.formatString(USR_MSG_DELETE_OK, cWhichTask.getName());
             fb = new Feedback(cCommand, cIntBag, formattedString);
 
             return fb;
         } else {
-            formattedString = formatString(USR_MSG_DELETE_ERROR, cWhichTask);
+            formattedString = Utilities.formatString(USR_MSG_DELETE_ERROR, cWhichTask.getName());
 
             throw new LogicException(formattedString);
         }
@@ -108,7 +109,7 @@ public class DeleteAction implements UndoableAction {
     @Override
     public Feedback undo() {
         String formattedString;
-        formattedString = formatString(USR_MSG_DELETE_UNDO, cWhichTask);
+        formattedString = Utilities.formatString(USR_MSG_DELETE_UNDO, cWhichTask.getName());
 
         cIntBag.addTask(cPosition, cWhichTask);
         cStore.save(cWhichTask);
@@ -122,9 +123,5 @@ public class DeleteAction implements UndoableAction {
     @Override
     public Feedback redo() throws LogicException {
         return execute();
-    }
-
-    private String formatString(String which, Task t) {
-        return String.format(which, t.getName());
     }
 }

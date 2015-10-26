@@ -160,7 +160,13 @@ public class Task {
 		this.cIsPriority = cPriority;
 	}
 	
-	
+	public boolean hasKeyword(String keyword) {
+		if (keyword == null) {
+			return true;
+		} else {
+			return cName.get().toLowerCase().contains(keyword.toLowerCase()); 
+		}
+	}
 	
 	private void updateType() {
 		if(cStart.get() == null && cEnd.get() == null) {
