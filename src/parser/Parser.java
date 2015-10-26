@@ -146,6 +146,10 @@ public class Parser implements ParserInterface {
 				
 			case "show" :
 				return Command.Type.show_temp; // temp value, change later
+	
+			case "search" :
+			case "find" :
+				return Command.Type.SEARCH; 
 				
 			default :
 				return Command.Type.INVALID;
@@ -175,6 +179,8 @@ public class Parser implements ParserInterface {
 				return parseMark(args);
 			case UNMARK :
 				return parseUnmark(args);
+			case SEARCH :
+				return parseSearch(args);
 			default :
 				break;
 			}
@@ -283,6 +289,10 @@ public class Parser implements ParserInterface {
 			return makeInvalid();
 		}
 		
+	}
+	private Command parseSearch (String args) {
+		assert(args != null);
+		return makeSearch(args);
 	}
 	
 	
@@ -423,7 +433,11 @@ public class Parser implements ParserInterface {
 		Command cmd = new Command(Command.Type.UNMARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
-		
+	}
+	public Command makeSearch (String keyword) {
+		Command cmd = new Command(Command.Type.SEARCH, userRawInput);
+		cmd.setKeyword(keyword);
+		return cmd;
 	}
 	
 	public static void printCmd (Command c) {
