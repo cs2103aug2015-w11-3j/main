@@ -1,9 +1,12 @@
 package parser;
 
-import java.text.DateFormat;
-import java.util.regex.Pattern;
-import java.util.Date;
 import java.text.ParseException;
+import java.util.Calendar;
+import static java.util.Calendar.*;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class DateFormatter implements CelebiDateFormatter {
 	
@@ -40,6 +43,7 @@ public class DateFormatter implements CelebiDateFormatter {
 	public Date parseDate (String token) throws ParseException {
 		assert(token != null);
 		token = token.trim().toLowerCase();
+		Calendar cal = new GregorianCalendar();
 		switch (token) {
 		
 			// current time
@@ -55,19 +59,65 @@ public class DateFormatter implements CelebiDateFormatter {
 			case "next week" :
 				return new Date(1000*60*60*24*7 + (new Date()).getTime());
 				
+			case "next mon" :
+			case "next monday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, MONDAY);
+				return cal.getTime();
+				
+			case "next tue" :
+			case "next tues" :
+			case "next tuesday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, TUESDAY);
+				return cal.getTime();
+				
+			case "next wed" :
+			case "next wednesday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, WEDNESDAY);
+				return cal.getTime();
+				
+			case "next thu" :
+			case "next thur" :
+			case "next thursday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, THURSDAY);
+				return cal.getTime();
+				
+			case "next fri" :
+			case "next friday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, FRIDAY);
+				return cal.getTime();
+
+			case "next sat" :
+			case "next saturday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, SATURDAY);
+				return cal.getTime();
+
+			case "next sun" :
+			case "next sunday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, SUNDAY);
+				return cal.getTime();
+				
 			default :
 				return parseAbsDate(token);
 		}
 	}
 	Date parseAbsDate (String token) throws ParseException {
+		assert(token != null);
+		
+		
 		
 		// replace date delimiters with common token
-		assert(token != null);
 		token = token.trim();
 		token = P_DATETIME_DELIM.matcher(token).replaceAll(DATETIME_DELIM); // process token delims
 		token = P_DATETIME_SEP.matcher(token).replaceAll(DATETIME_SEP); // process date-time seperator
 		
-		// try parsing dates without all calendar fields filled.
+		// try parsing partial dates (without all calendar fields filled).
 //		try { 
 //			return PART_DF.parse(token);
 //		} catch (ParseException pePart) {
@@ -78,14 +128,24 @@ public class DateFormatter implements CelebiDateFormatter {
 		try { 
 			return FULL_DF.parse(token);
 		} catch (ParseException peFull) {
-			;
+			throw peFull;
 		}
-		
-		throw new ParseException("Date cannot be formatted", -1);
 	}
 	
 	public String formatDate (Date d) {
 		// TODO
 		return null;
+	}
+	
+	public static void main (String[] args) {
+		DateFormatter df = new DateFormatter();
+		Scanner in = new Scanner(System.in);
+		while (true) {
+			try {
+				System.out.println(df.parseDate(in.nextLine()));
+			} catch (ParseException pe) {
+				System.out.println(pe);
+			}
+		}
 	}
 }

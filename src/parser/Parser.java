@@ -2,6 +2,7 @@ package parser;
 
 //import com.sun.javafx.css.Combinator;
 import common.Task;
+import static java.util.regex.Pattern.*;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,7 +13,7 @@ import java.util.Scanner;
 public class Parser implements ParserInterface {
 
 	private static Parser parserInstance;
-	private final DateFormatter DATE_PARSER;
+	private final CelebiDateFormatter DATE_FORMATTER;
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -47,7 +48,18 @@ public class Parser implements ParserInterface {
 	private static final String REGEX_UPD = 
 			"^(?<uid>\\d+)\\s(?<field>\\w+)\\s(?<newval>.+)$";
 	private final Pattern P_UPD;
+	
+	private static final String REGEX_FILTER_BEF = 
+			"^(?:before|bef)\\s+(?<key>.+)$";
+	private final Pattern P_FILTER_BEF;
 
+	private static final String REGEX_FILTER_AFT = 
+			"^(?:after|aft)\\s+(?<key>.+)$";
+	private final Pattern P_FILTER_AFT;
+
+	private static final String REGEX_FILTER_BTW = 
+			"^(?:between|b/w|btw|from|start)\\s+(?<key1>.+)\\s+(?:and|to|till|until|end)\\s+(?<key2>.+)$";
+	private final Pattern P_FILTER_BTW;
 	/////////////////////////////////////////////////////////////////
 	// instance fields
 	/////////////////////////////////////////////////////////////////
@@ -59,14 +71,17 @@ public class Parser implements ParserInterface {
 	private Parser () {
 		userRawInput = "no user input received";
 		
-		DATE_PARSER = new DateFormatter();
+		DATE_FORMATTER = new DateFormatter();
 		
 		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
-		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT);
-		P_ADD_DL = Pattern.compile(REGEX_ADD_DL);
-		P_ADD_EVT = Pattern.compile(REGEX_ADD_EVT);
+		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT, CASE_INSENSITIVE);
+		P_ADD_DL = Pattern.compile(REGEX_ADD_DL, CASE_INSENSITIVE);
+		P_ADD_EVT = Pattern.compile(REGEX_ADD_EVT, CASE_INSENSITIVE);
 		P_DEL = Pattern.compile(REGEX_DEL);
 		P_UPD = Pattern.compile(REGEX_UPD);
+		P_FILTER_BEF = Pattern.compile(REGEX_FILTER_BEF, CASE_INSENSITIVE);
+		P_FILTER_AFT = Pattern.compile(REGEX_FILTER_AFT, CASE_INSENSITIVE);
+		P_FILTER_BTW = Pattern.compile(REGEX_FILTER_BTW, CASE_INSENSITIVE);
 	}
 	
 	// singleton access
@@ -95,7 +110,7 @@ public class Parser implements ParserInterface {
 			cmdAndArgs = temp;
 		}
 		Command.Type cmdType = getCmdType(cmdAndArgs[0]);
-		return parseArgs(cmdType, cmdAndArgs[1]);
+		return passArgs(cmdType, cmdAndArgs[1]);
 	}
 	
 	private Command.Type getCmdType (String firstToken) {
@@ -150,12 +165,15 @@ public class Parser implements ParserInterface {
 			case "find" :
 				return Command.Type.SEARCH; 
 				
+			case "filter" :
+				return Command.Type.FILTER_DATE;
+				
 			default :
 				return Command.Type.INVALID;
 		}
 	}
 
-	private Command parseArgs (Command.Type type, String args) {
+	private Command passArgs (Command.Type type, String args) {
 		assert(type != null && args != null);
 		switch (type) {
 			case ADD :
@@ -180,6 +198,8 @@ public class Parser implements ParserInterface {
 				return parseUnmark(args);
 			case SEARCH :
 				return parseSearch(args);
+			case FILTER_DATE :
+				return parseFilterDate(args);
 			default :
 				break;
 			}
@@ -258,6 +278,7 @@ public class Parser implements ParserInterface {
 		}
 		switch (args) {
 			case "done" :
+			case "complete" :
 			case "completed" :
 				return makeShow(Command.Type.SHOW_COMPLETE);
 			default :
@@ -287,17 +308,52 @@ public class Parser implements ParserInterface {
 		} catch (NumberFormatException e) {
 			return makeInvalid();
 		}
-		
 	}
 	private Command parseSearch (String args) {
 		assert(args != null);
-		if (args != "") {
+		if (args.length() != 0) {
 			return makeSearch(args);
-		} else {
-			return makeInvalid();
 		}
+		return makeInvalid();
 	}
-	
+	private Command parseFilterDate (String args) {
+		assert(args != null);
+		Matcher m;
+		Date start, end;
+
+		if ((m = P_FILTER_BEF.matcher(args)).matches()) {
+			try {
+				end = parseDate(m.group("key"));
+				start = new Date(0);
+				return makeFilterDate(start, end);
+			} catch (ParseException pe) {
+				;
+			}
+		} else if ((m = P_FILTER_AFT.matcher(args)).matches()) {
+			try {
+				start = parseDate(m.group("key"));
+				end = new Date(Long.MAX_VALUE);
+				return makeFilterDate(start, end);
+			} catch (ParseException pe) {
+				;
+			}
+		} else if ((m = P_FILTER_BTW.matcher(args)).matches()) {
+			try {
+				start = parseDate(m.group("key1"));
+				end = parseDate(m.group("key2"));
+				if (start.after(end)) {
+					Date temp = end;
+					end = start;
+					start = temp;
+				}
+				return makeFilterDate(start, end);
+			} catch (ParseException pe) {
+				;
+			}
+		}
+		
+		return makeInvalid();
+	}
 	
 	Task.DataType parseFieldKey (String token) throws ParseException {
 		assert(token != null);
@@ -337,7 +393,7 @@ public class Parser implements ParserInterface {
 	}
 	Date parseDate (String token) throws ParseException {
 		assert(token != null);
-		return DATE_PARSER.parseDate(token);
+		return DATE_FORMATTER.parseDate(token);
 	}
 	
 	
@@ -345,7 +401,7 @@ public class Parser implements ParserInterface {
 		Command cmd = new Command(Command.Type.ADD, userRawInput);
 		cmd.setEnd(end);
 		cmd.setStart(start);
-		cmd.setName(name);
+		cmd.setText(name);
 		return cmd;
 	}
 	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue) throws IllegalArgumentException {
@@ -354,7 +410,7 @@ public class Parser implements ParserInterface {
 		cmd.setTaskUID(taskUID);
 		switch (fieldType) {
 		case NAME : 
-			cmd.setName((String) newValue);
+			cmd.setText((String) newValue);
 			break;
 		case DATE_START :
 			cmd.setStart((Date) newValue);
@@ -406,10 +462,10 @@ public class Parser implements ParserInterface {
 	}
 	public Command makeSearch (String keyword) {
 		Command cmd = new Command(Command.Type.SEARCH, userRawInput);
-		cmd.setKeyword(keyword);
+		cmd.setText(keyword);
 		return cmd;
 	}
-	public Command makeFilterByDate (Date rangeStart, Date rangeEnd) {
+	public Command makeFilterDate (Date rangeStart, Date rangeEnd) {
 		Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
 		cmd.setStart(rangeStart);
 		cmd.setEnd(rangeEnd);
@@ -417,7 +473,7 @@ public class Parser implements ParserInterface {
 	}
 	public Command makeChangeSaveLoc (String newPath) {
 		Command cmd = new Command(Command.Type.CHANGE_SAVE_LOC, userRawInput);
-		cmd.setName(newPath);
+		cmd.setText(newPath);
 		return cmd;
 	}
 	
@@ -426,7 +482,7 @@ public class Parser implements ParserInterface {
 		System.out.println("raw: " + c.getRawUserInput());
 		System.out.println("uid: " + c.getTaskUID());
 		System.out.println("fieldkey: " + c.getTaskField());
-		System.out.println("name: " + c.getName());
+		System.out.println("name: " + c.getText());
 		System.out.println("start: " + c.getStart());
 		System.out.println("end: "+ c.getEnd());
 	}
@@ -434,38 +490,9 @@ public class Parser implements ParserInterface {
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
-		Date d = new Date(Long.MAX_VALUE);
-		DateFormat df = new SimpleDateFormat("hh-mma");
-		System.out.println(df.parse("9-20pm"));
-//		System.out.println(d);
-//		d = new Date();
-//		System.out.println(d);
-//		assert(false);
-//		System.out.println("wot");
-		
-		/*while (true) {
-			if (false) {
-				try {
-					System.out.println(parseAbsDate(sc.nextLine()));
-				} catch (Exception e) {
-					System.out.println(e);
-				}
-			}
-			if (true) {
-			Command c = p.parseCommand(sc.nextLine());
-			System.out.println("type: " + c.getCmdType());
-			System.out.println("raw: " + c.getRawUserInput());
-			System.out.println("uid: " + c.getTaskUID());
-			System.out.println("fieldkey: " + c.getTaskField());
-			System.out.println("name: " + c.getName());
-			System.out.println("start: " + c.getStart());
-			System.out.println("end: "+ c.getEnd());
-			} else if (true) {
-			Pattern pt = Pattern.compile(sc.nextLine());
-			Matcher m = pt.matcher(sc.nextLine());
-			System.out.println(m.matches());
-			}
-		}*/
+		while (true) {
+			printCmd(p.parseCommand(sc.nextLine()));
+		}
 	}
 //	@Override // Logic test function	// By Ken
 //	public Command makeSort() {

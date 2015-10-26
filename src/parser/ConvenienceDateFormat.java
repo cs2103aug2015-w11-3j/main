@@ -5,7 +5,9 @@ import java.util.Date;
 
 public class ConvenienceDateFormat implements DateParsingFormat {
 
-	public ConvenienceDateFormat() {
+	private static final String[] k = {};
+	
+	public ConvenienceDateFormat () {
 		// TODO Auto-generated constructor stub
 	}
 

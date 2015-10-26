@@ -23,18 +23,18 @@ public class FullDateFormat implements DateParsingFormat {
 	
 	// parse for time section
 	private static final String[] REGEX_TIMES = {
-			String.format("hh%Smma", DELIM), 	// no delim b/w digits and meridian
-			String.format("hh%Smm%<Sa", DELIM),	// delim b/w digits and meridian
-			String.format("HH%Smm", DELIM)		// no meridian, 24h
+			//String.format("hh%smm%<sa", DELIM),	// delim b/w digits and meridian
+			String.format("hh%smma", DELIM), 	// no delim b/w digits and meridian
+			String.format("HH%smm", DELIM)		// no meridian, 24h
 	};
 	private final DateFormat[] TIME_DFS;
 	
 	// parse for date section (cal day)
 	private static final String[] REGEX_DATES = {
-			String.format("dd%SMM%<Syy", DELIM), 	// for handling numbered monthS
-			String.format("dd%SMMM%<Syy", DELIM), 	// for handling text monthS
-			String.format("yy%SMM%<Sdd", DELIM), 	// yy/mm/dd iS lower in prio than dd/mm/yy
-			String.format("yy%SMMM%<Sdd", DELIM)	// ditto, for text monthS
+			String.format("dd%sM%<syy", DELIM), 	// for handling numbered months
+			String.format("dd%sMMM%<syy", DELIM), 	// for handling text months
+			String.format("yy%sM%<sdd", DELIM), 	// yy/mm/dd is lower in prio than dd/mm/yy
+			String.format("yy%sMMM%<sdd", DELIM)	// ditto, for text months
 	};
 	private final DateFormat[] DATE_DFS;
 
@@ -78,19 +78,18 @@ public class FullDateFormat implements DateParsingFormat {
 			throw new ParseException("datestring cannot be split into 2 parts (time and date)", -1);
 		}
 		
-		boolean firstPartIsTime;
 		Date timeD, dateD;
-		timeD = parseBy(split[0], TIME_DFS); // try parse first half as time segment
-		
-		if (timeD == null) { 	// first half cannot be parsed as time
-			dateD = parseBy(split[0], DATE_DFS);
-			timeD = parseBy(split[1], TIME_DFS);
-		} else { 				// first half successfully parsed as time
+		dateD = parseBy(split[0], DATE_DFS); // try parse first half as time segment
+		if (dateD == null) { 	// first half cannot be parsed as time
 			dateD = parseBy(split[1], DATE_DFS);
+			timeD = parseBy(split[0], TIME_DFS);
+		} else { 				// first half successfully parsed as time
+			timeD = parseBy(split[1], TIME_DFS);
 		}
 		
 		if (timeD == null || dateD == null) {
 			//System.out.println(split);
+			System.out.println("time: " + timeD + "\ndate: " + dateD);
 			throw new ParseException("datestring cannot be parsed as full absolute date", -1);
 		}
 		
@@ -122,9 +121,12 @@ public class FullDateFormat implements DateParsingFormat {
 	public static void main (String[] args) throws Exception {
 		Scanner in = new Scanner(System.in);
 		DateParsingFormat fdf = new FullDateFormat();
+		DateFormat df;
 		System.out.println(SEP);
 		while (true) {
 			try {
+				//df = new SimpleDateFormat(in.nextLine());
+				//System.out.println(df.parse(in.nextLine()));
 			System.out.println(fdf.parse(in.nextLine()));
 			} catch (ParseException e) {
 				System.out.println(e);

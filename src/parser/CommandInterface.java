@@ -50,13 +50,13 @@ public interface CommandInterface {
 	// Mutable values will be cloned; internal fields are always safe from mutation.
 	///////////////////////////////////////////////////
 	
-	// also represents substring to search for
-	public String getName ();
+	// represents name or substring to search for
+	public String getText ();
 	// also represents start of date range for filtering by date
 	public Date getStart ();
 	// also represents end of date range for filtering by date
 	public Date getEnd ();
 	
-	// For search
-	public String getSearchKeyword ();
+	// For search {{ use getText }}
+	//public String getSearchKeyword ();
 }

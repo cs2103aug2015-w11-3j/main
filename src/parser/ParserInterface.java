@@ -19,7 +19,7 @@ public interface ParserInterface {
 	public Command makeMark (int taskUID);
 	public Command makeUnmark (int taskUID);
 	public Command makeSearch (String searchKey);
-	public Command makeFilterByDate (Date rangeStart, Date rangeEnd);
+	public Command makeFilterDate (Date rangeStart, Date rangeEnd);
 	public Command makeChangeSaveLoc (String newPath);
 	
 	// to debug command
@@ -28,7 +28,7 @@ public interface ParserInterface {
 		System.out.println("raw: " + c.getRawUserInput());
 		System.out.println("uid: " + c.getTaskUID());
 		System.out.println("fieldkey: " + c.getTaskField());
-		System.out.println("name: " + c.getName());
+		System.out.println("name: " + c.getText());
 		System.out.println("start: " + c.getStart());
 		System.out.println("end: "+ c.getEnd());
 	}

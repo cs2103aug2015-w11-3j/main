@@ -27,7 +27,7 @@ public class Command implements CommandInterface {
 	// field values
 	private String _name;
 	private Date _startDate, _endDate;
-	private String _keyword;
+//	private String _keyword;
 
 	////////////////////////////////////////////////////////////////////////////////////	
 	// Constructor (package private)
@@ -49,7 +49,7 @@ public class Command implements CommandInterface {
 		_taskField = f;
 	}
 	
-	void setName (String name) {
+	void setText (String name) {
 		_name = name;
 	}
 	void setStart (Date d) {
@@ -58,9 +58,9 @@ public class Command implements CommandInterface {
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
 	}
-	void setKeyword (String keyword) {
-		_keyword = keyword;
-	}
+//	void setKeyword (String keyword) {
+//		_keyword = keyword;
+//	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
 	// GETTERS
@@ -90,7 +90,7 @@ public class Command implements CommandInterface {
 	// Field values
 
 	@Override
-	public String getName () {
+	public String getText () {
 		return _name;
 	}
 	@Override
@@ -102,9 +102,9 @@ public class Command implements CommandInterface {
 		return _endDate == null ? null : (Date)_endDate.clone();
 	}
 
-	@Override
-	public String getSearchKeyword() {
-		return _keyword;
-	}
+//	@Override
+//	public String getSearchKeyword() {
+//		return _keyword;
+//	}
 
 }
