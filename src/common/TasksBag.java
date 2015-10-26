@@ -19,6 +19,7 @@ public class TasksBag implements Iterable<Task> {
     }
 
     private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
+    private String cSearchState = null;
     private ObservableList<Task> tasks;
 
     public TasksBag() {
@@ -60,6 +61,10 @@ public class TasksBag implements Iterable<Task> {
         assert attribute != null;
         cFliterState = attribute;
     }
+    
+    public void setSearchState(String keyword) {
+    	cSearchState = keyword;
+    }
 
     /**
      * Sort will return a new container as specified by current sorted state
@@ -70,7 +75,7 @@ public class TasksBag implements Iterable<Task> {
         ObservableList<Task> newContainer = null;
 
         switch (cFliterState) {
-                /* Not support date flitering
+                /* Not support date filtering
                 case DATE:
                 // Reverse sorting with earliest on top
                 newContainer = TasksBag.copy(tasks);
