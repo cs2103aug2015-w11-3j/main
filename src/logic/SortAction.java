@@ -44,6 +44,7 @@ public class SortAction implements Action {
             
         }
         cBag.setSortState(cSortBy);
+        cBag.setSearchState(null);
         return new Feedback(cCommand, cBag, msg);
     }
 
