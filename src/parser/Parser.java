@@ -292,7 +292,11 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseSearch (String args) {
 		assert(args != null);
-		return makeSearch(args);
+		if (args != "") {
+			return makeSearch(args);
+		} else {
+			return makeInvalid();
+		}
 	}
 	
 	
