@@ -160,7 +160,9 @@ public class Task {
 		this.cIsImportant = impt;
 	}
 	
-	
+	public boolean hasKeyword(String keyword) {
+		return keyword == null || cName.get().toLowerCase().contains(keyword.toLowerCase()); 
+	}
 	
 	private void updateType() {
 		if(cStart.get() == null && cEnd.get() == null) {

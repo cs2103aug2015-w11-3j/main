@@ -120,6 +120,9 @@ public class Logic implements LogicInterface {
                 log.info("recevied quit");
                 fb = new Feedback(rtnCmd, null);
                 break;
+            case SEARCH:
+            	fb = cInvoker.placeAction(new SearchAction(rtnCmd, cInternalBag));
+                break;
             case INVALID:
                 log.info("recevied invalid type");
                 throw new UnknownCommandException("I couldn't understand you... (>.<)");

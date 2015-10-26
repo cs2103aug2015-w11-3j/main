@@ -19,6 +19,7 @@ public class TasksBag implements Iterable<Task> {
     }
 
     private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
+    private String cSearchState = null;
     private ObservableList<Task> tasks;
 
     public TasksBag() {
@@ -60,6 +61,10 @@ public class TasksBag implements Iterable<Task> {
         assert attribute != null;
         cFliterState = attribute;
     }
+    
+    public void setSearchState(String keyword) {
+    	cSearchState = keyword;
+    }
 
     /**
      * Sort will return a new container as specified by current sorted state
@@ -70,7 +75,7 @@ public class TasksBag implements Iterable<Task> {
         ObservableList<Task> newContainer = null;
 
         switch (cFliterState) {
-                /* Not support date flitering
+                /* Not support date filtering
                 case DATE:
                 // Reverse sorting with earliest on top
                 newContainer = TasksBag.copy(tasks);
@@ -78,22 +83,29 @@ public class TasksBag implements Iterable<Task> {
                 break;
                 */
             case NONE:
-                // Showing all to user
-                newContainer = TasksBag.copy(tasks);
+            	newContainer = FXCollections.observableArrayList();
+                for (int i = 0; i < tasks.size(); i++) {
+                	Task curTask = tasks.get(i);
+                    if (curTask.hasKeyword(cSearchState)) {
+                        newContainer.add(curTask);
+                    }
+                }
                 break;
             case COMPLETE_TASKS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
-                    if (tasks.get(i).isComplete()) {
-                        newContainer.add(tasks.get(i));
+                	Task curTask = tasks.get(i);
+                    if (curTask.isComplete() && curTask.hasKeyword(cSearchState)) {
+                        newContainer.add(curTask);
                     }
                 }
                 break;
             case INCOMPLETE_TASKS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
-                    if (tasks.get(i).isComplete() == false) {
-                        newContainer.add(tasks.get(i));
+                	Task curTask = tasks.get(i);
+                    if (!curTask.isComplete() && curTask.hasKeyword(cSearchState)) {
+                        newContainer.add(curTask);
                     }
                 }
                 break;

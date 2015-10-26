@@ -57,4 +57,6 @@ public interface CommandInterface {
 	// also represents end of date range for filtering by date
 	public Date getEnd ();
 	
+	// For search
+	public String getSearchKeyword ();
 }

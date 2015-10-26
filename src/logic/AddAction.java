@@ -46,12 +46,12 @@ public class AddAction implements UndoableAction {
         if (addStatus) {
             cBag.addTask(cWhichTask);
             
-            formattedString =  Utilities.formatString(USR_MSG_ADD_OK, cWhichTask);
+            formattedString =  Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
             fb = new Feedback(cCommand, cBag, formattedString);
             
             return fb;
         } else {
-            formattedString =  Utilities.formatString(USR_MSG_ADD_ERROR, cWhichTask);
+            formattedString =  Utilities.formatString(USR_MSG_ADD_ERROR, cWhichTask.getName());
             
             throw new LogicException(formattedString);
         }

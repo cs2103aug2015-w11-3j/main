@@ -66,7 +66,8 @@ public class CelebiViewController {
     
     private String[] commandKeywords = {"a", "add", "new", "create", "d", "del", "delete", 
     		"rm", "remove", "u", "upd", "update", "set", "edit", "q", "quit", "exit", 
-    		"mark", "complete", "unmark", "reopen", "undo", "un", "redo", "re", "show"};
+    		"mark", "complete", "unmark", "reopen", "undo", "un", "redo", "re", "show",
+    		"search", "find"};
 	
     /**
      * Initializes the controller class. This method is automatically called
