@@ -95,7 +95,7 @@ public class TasksBag implements Iterable<Task> {
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
                 	Task curTask = tasks.get(i);
-                    if (curTask.isComplete() || curTask.hasKeyword(cSearchState)) {
+                    if (curTask.isComplete() && curTask.hasKeyword(cSearchState)) {
                         newContainer.add(curTask);
                     }
                 }
@@ -104,7 +104,7 @@ public class TasksBag implements Iterable<Task> {
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
                 	Task curTask = tasks.get(i);
-                    if (!curTask.isComplete() || curTask.hasKeyword(cSearchState)) {
+                    if (!curTask.isComplete() && curTask.hasKeyword(cSearchState)) {
                         newContainer.add(curTask);
                     }
                 }
