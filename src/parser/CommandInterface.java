@@ -53,4 +53,6 @@ public interface CommandInterface {
 	public Date getStart ();
 	public Date getEnd ();
 	
+	// For search
+	public String getSearchKeyword ();
 }
