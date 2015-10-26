@@ -1,3 +1,8 @@
+.root{
+    -fx-font-size: 9.5pt;
+    -fx-font-family: "Helvetica Bold";
+}
+
 .background {
     -fx-background-color: #ffffff;
 }
@@ -38,7 +43,7 @@
         #b7e67e
         #b7e67e
         #b7e67e;
-    -fx-padding: 1.5;
+    -fx-padding: 1;
 }
 
 .table-view > .virtual-flow > .scroll-bar:vertical{
@@ -103,13 +108,17 @@
 }
 
 .table-row-cell {
-	-fx-cell-size: 25.7px;
+	-fx-cell-size: 26.2px;
 	-fx-background-color: #ffffff;
 	-fx-text-fill: #347150;
 }
 
 .table-row-cell:odd {
 	-fx-background-color: #ECF0F1;
+}
+
+.table-view > .virtual-flow > .scroll-bar:disabled {
+    -fx-opacity: 0;
 }
 
 .split-pane:vertical > .split-pane-divider {
@@ -193,6 +202,14 @@
 	-fx-fill: black;
 }
 
+#feedback-area .text-area .scroll-bar:vertical:disabled {
+    -fx-opacity: 0;
+}
+
 #command-area {
     -fx-padding: 2 6 2 6;
+}
+
+#command-area .text-area .scroll-bar:vertical:disabled {
+    -fx-opacity: 0;
 }

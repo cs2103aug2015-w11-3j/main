@@ -63,7 +63,7 @@ public class CelebiViewController {
     private AnchorPane feedbackPane;
     
     private InlineCssTextArea commandArea;
-    private InlineCssTextArea feedbackA;
+    private InlineCssTextArea feedbackArea;
     
     private String[] commandKeywords = {"a", "add", "new", "create", "d", "del", "delete", 
     		"rm", "remove", "u", "upd", "update", "set", "edit", "q", "quit", "exit", 
@@ -241,12 +241,13 @@ public class CelebiViewController {
     
     
     private void initializeFeedbackPane() {
-    	feedbackA = new InlineCssTextArea();
-    	AnchorPane.setTopAnchor(feedbackA, 5.0);
-    	AnchorPane.setBottomAnchor(feedbackA, 0.0);
-    	AnchorPane.setLeftAnchor(feedbackA, 50.0);
-    	AnchorPane.setRightAnchor(feedbackA, 50.0);
-    	feedbackPane.getChildren().add(feedbackA);
+    	feedbackArea = new InlineCssTextArea();
+    	feedbackArea.setWrapText(true);
+    	AnchorPane.setTopAnchor(feedbackArea, 5.0);
+    	AnchorPane.setBottomAnchor(feedbackArea, 0.0);
+    	AnchorPane.setLeftAnchor(feedbackArea, 50.0);
+    	AnchorPane.setRightAnchor(feedbackArea, 50.0);
+    	feedbackPane.getChildren().add(feedbackArea);
     }
     
     /**
@@ -254,8 +255,8 @@ public class CelebiViewController {
      */
     private void initializeFeedbackArea() {
     	// set the feedback area to be uneditable and set it to be always at the bottom
-    	feedbackA.setEditable(false);
-    	feedbackA.setId("feedback-area");
+    	feedbackArea.setEditable(false);
+    	feedbackArea.setId("feedback-area");
     	//feedbackA.textProperty().addListener((observable, oldValue, newValue) -> feedbackA.setScrollTop(Double.MIN_VALUE));
     }
 	
@@ -280,19 +281,19 @@ public class CelebiViewController {
 	}
 	
 	public void appendFeedback(String newFeedback) {
-		if(feedbackA.getText().equals("")) {
-			feedbackA.appendText(newFeedback);
-			feedbackA.setStyle(0, "-fx-fill: #7eb758;");
+		if(feedbackArea.getText().equals("")) {
+			feedbackArea.appendText(newFeedback);
+			feedbackArea.setStyle(0, "-fx-fill: #7eb758;");
 		}
 		else {
-			feedbackA.appendText(newFeedback);
-			feedbackA.setStyle(0, "-fx-fill: black;");
-			feedbackA.setStyle(1, "-fx-fill: #7eb758;");
+			feedbackArea.appendText(newFeedback);
+			feedbackArea.setStyle(0, "-fx-fill: black;");
+			feedbackArea.setStyle(1, "-fx-fill: #7eb758;");
 		}
 	}
 	
 	public void clearFeedback() {
-		feedbackA.clear();;
+		feedbackArea.clear();;
 	}
 	
 	public void refreshSelection(TasksBag bag) {
