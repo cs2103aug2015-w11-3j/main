@@ -409,11 +409,6 @@ public class Parser implements ParserInterface {
 		cmd.setKeyword(keyword);
 		return cmd;
 	}
-	public Command makeSearch (String searchKey) {
-		Command cmd = new Command(Command.Type.SEARCH, userRawInput);
-		cmd.setName(searchKey);
-		return cmd;
-	}
 	public Command makeFilterByDate (Date rangeStart, Date rangeEnd) {
 		Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
 		cmd.setStart(rangeStart);

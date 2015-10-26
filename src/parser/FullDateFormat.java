@@ -10,6 +10,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.GregorianCalendar;
+import static java.util.Calendar.*;
 
 public class FullDateFormat implements DateParsingFormat {
 	
@@ -22,20 +23,20 @@ public class FullDateFormat implements DateParsingFormat {
 	
 	// parse for time section
 	private static final String[] REGEX_TIMES = {
-			String.format("hh%smma", DELIM), 	// no delim b/w digits and meridian
-			String.format("hh%smm%<sa", DELIM),	// delim b/w digits and meridian
-			String.format("HH%smm", DELIM)		// no meridian, 24h
+			String.format("hh%Smma", DELIM), 	// no delim b/w digits and meridian
+			String.format("hh%Smm%<Sa", DELIM),	// delim b/w digits and meridian
+			String.format("HH%Smm", DELIM)		// no meridian, 24h
 	};
-	private final DateFormat[] TIME_DF_ARRAY;
+	private final DateFormat[] TIME_DFS;
 	
 	// parse for date section (cal day)
 	private static final String[] REGEX_DATES = {
-			String.format("dd%sMM%<syy", DELIM), 	// for handling numbered months
-			String.format("dd%sMMM%<syy", DELIM), 	// for handling text months
-			String.format("yy%sMM%<sdd", DELIM), 	// yy/mm/dd is lower in prio than dd/mm/yy
-			String.format("yy%sMMM%<sdd", DELIM)	// ditto, for text months
+			String.format("dd%SMM%<Syy", DELIM), 	// for handling numbered monthS
+			String.format("dd%SMMM%<Syy", DELIM), 	// for handling text monthS
+			String.format("yy%SMM%<Sdd", DELIM), 	// yy/mm/dd iS lower in prio than dd/mm/yy
+			String.format("yy%SMMM%<Sdd", DELIM)	// ditto, for text monthS
 	};
-	private final DateFormat[] DATE_DF_ARRAY;
+	private final DateFormat[] DATE_DFS;
 
 	private GregorianCalendar cal;
 	
@@ -44,19 +45,19 @@ public class FullDateFormat implements DateParsingFormat {
 		P_NUM_SUFFIX = Pattern.compile(REGEX_NUM_SUFFIX);
 		
 		// Time parsing setup
-		TIME_DF_ARRAY = new DateFormat[REGEX_TIMES.length];
+		TIME_DFS = new DateFormat[REGEX_TIMES.length];
 		for (int i = 0; i < REGEX_TIMES.length; i++) {
-			TIME_DF_ARRAY[i] = new SimpleDateFormat(REGEX_TIMES[i]);
-			TIME_DF_ARRAY[i].setLenient(false);
+			TIME_DFS[i] = new SimpleDateFormat(REGEX_TIMES[i]);
+			TIME_DFS[i].setLenient(false);
 		}
 		
 		// Date (day) parsing setup
-		DATE_DF_ARRAY = new DateFormat[REGEX_DATES.length];
+		DATE_DFS = new DateFormat[REGEX_DATES.length];
 		final Date twoDigitYearStart = new Date(0); // Sets 2 digit year parsing to begin from 1970
 		for (int i = 0; i < REGEX_DATES.length; i++) {
-			DATE_DF_ARRAY[i] = new SimpleDateFormat(REGEX_DATES[i]);
-			DATE_DF_ARRAY[i].setLenient(false);
-			((SimpleDateFormat)DATE_DF_ARRAY[i]).set2DigitYearStart(twoDigitYearStart);
+			DATE_DFS[i] = new SimpleDateFormat(REGEX_DATES[i]);
+			DATE_DFS[i].setLenient(false);
+			((SimpleDateFormat)DATE_DFS[i]).set2DigitYearStart(twoDigitYearStart);
 		}
 		
 	}
@@ -64,19 +65,53 @@ public class FullDateFormat implements DateParsingFormat {
 	// Takes in datestring preprocessed by DateParser to handle all seperators and delimiters
 	@Override
 	public Date parse (String token) throws ParseException {
+
+		cal = new GregorianCalendar();
 		
 		// removes all num suffixes
 		token = removeNumSuffixes(token);
 		
 		// split datestring into date and time parts
-		String[] split = token.split(SEP);
+		String[] split = token.split("\\Q"+SEP+"\\E");
 		if (split.length != 2) {
-			throw new ParseException("datestring cannot be split into time and date parts", -1);
+			//System.out.println(split.length);
+			throw new ParseException("datestring cannot be split into 2 parts (time and date)", -1);
 		}
 		
 		boolean firstPartIsTime;
+		Date timeD, dateD;
+		timeD = parseBy(split[0], TIME_DFS); // try parse first half as time segment
 		
+		if (timeD == null) { 	// first half cannot be parsed as time
+			dateD = parseBy(split[0], DATE_DFS);
+			timeD = parseBy(split[1], TIME_DFS);
+		} else { 				// first half successfully parsed as time
+			dateD = parseBy(split[1], DATE_DFS);
+		}
 		
+		if (timeD == null || dateD == null) {
+			//System.out.println(split);
+			throw new ParseException("datestring cannot be parsed as full absolute date", -1);
+		}
+		
+		cal.setTime(dateD);
+		GregorianCalendar timeCal = new GregorianCalendar();
+		timeCal.setTime(timeD);
+		cal.set(HOUR_OF_DAY, timeCal.get(HOUR_OF_DAY)); // load hour
+		cal.set(MINUTE, timeCal.get(MINUTE)); 			// load minute
+		
+		return cal.getTime();
+	}
+	
+	private Date parseBy (String token, DateFormat[] dfs) {
+		for (DateFormat df : dfs) {
+			try {
+				return df.parse(token);
+			} catch (ParseException pe) {
+				;
+			}
+		}
+		return null;
 	}
 	
 	private String removeNumSuffixes (String s) {
@@ -86,17 +121,14 @@ public class FullDateFormat implements DateParsingFormat {
 	// Expl testing
 	public static void main (String[] args) throws Exception {
 		Scanner in = new Scanner(System.in);
-		Pattern p = Pattern.compile("(\\d)(?:st|nd|rd|th)");
+		DateParsingFormat fdf = new FullDateFormat();
+		System.out.println(SEP);
 		while (true) {
-//			try {
-//			System.out.println(
-//					dp.parseAbsDate(in.nextLine())
-//					);
-//			} catch (ParseException e) {
-//				System.out.println(e);
-//			}
-			Matcher m = p.matcher(in.nextLine());
-			System.out.println(m.replaceAll("$1"));
+			try {
+			System.out.println(fdf.parse(in.nextLine()));
+			} catch (ParseException e) {
+				System.out.println(e);
+			}
 		}
 //		System.out.println((new SimpleDateFormat()).getCalendar() instanceof GregorianCalendar);
 	}
