@@ -159,7 +159,11 @@ public class Task {
 	}
 	
 	public boolean hasKeyword(String keyword) {
-		return keyword == null || cName.get().toLowerCase().contains(keyword.toLowerCase()); 
+		if (keyword == null) {
+			return true;
+		} else {
+			return cName.get().toLowerCase().contains(keyword.toLowerCase()); 
+		}
 	}
 	
 	private void updateType() {
