@@ -16,9 +16,8 @@ import java.util.List;
  */
 public class Task {
 
-	// Reference for possible Celebi data fields
+	// Reference for possible updatable Celebi data fields
 	public static enum DataType {
-		ID, 
 		NAME,
 		DATE_START, DATE_END, 
 		IMPORTANCE, 
@@ -161,7 +160,11 @@ public class Task {
 	}
 	
 	public boolean hasKeyword(String keyword) {
-		return keyword == null || cName.get().toLowerCase().contains(keyword.toLowerCase()); 
+		if (keyword == null) {
+			return true;
+		} else {
+			return cName.get().toLowerCase().contains(keyword.toLowerCase()); 
+		}
 	}
 	
 	private void updateType() {

@@ -43,6 +43,6 @@ public class MoveFileAction implements Action {
             return fb;
         } catch (Exception e) {
         	throw new LogicException(USR_MSG_MOVE_ERROR);
-        }   
+        }
     }
 }
