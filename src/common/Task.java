@@ -16,13 +16,11 @@ import java.util.List;
  */
 public class Task {
 
-	// Reference for possible Celebi data fields
+	// Reference for possible updatable Celebi data fields
 	public static enum DataType {
-		ID, 
 		NAME,
 		DATE_START, DATE_END,
-		TAGS, PRIORITY, 
-		IS_COMPLETED
+		PRIORITY
 	}
 
 	public static enum Type {

@@ -57,29 +57,6 @@ public class Logic implements LogicInterface {
         Command rtnCmd = cParser.parseCommand(userString);
 
         log.info("executing " + userString);
-
-        // if (userString.equals("undo")) {
-        // rtnCmd = cParser.makeType(Command.Type.UNDO);
-        // }
-        // if (userString.equals("redo")) {
-        // rtnCmd = cParser.makeType(Command.Type.REDO);
-        // }
-        // if (userString.equals("sort")) {
-        // rtnCmd = cParser.makeSort();
-        // }
-        // if (userString.equals("mark")) {
-        // rtnCmd = cParser.makeType(Command.Type.MARK);
-        // }
-        // if (userString.equals("unmark")) {
-        // rtnCmd = cParser.makeType(Command.Type.UNMARK);
-        // }
-        // if (userString.equals("show uc")) {
-        // rtnCmd = cParser.makeType(Command.Type.SHOW_INCOMPLETE);
-        // }
-        // if (userString.equals("show c")) {
-        // rtnCmd = cParser.makeType(Command.Type.SHOW_COMPLETE);
-        // }
-
         return executeParsed(rtnCmd);
     }
 
@@ -97,9 +74,9 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FilterBy.COMPLETE_TASKS));
                 break;
             case UPDATE:
-                // Not command pattern yet
-                doUpdate(rtnCmd);
-                fb = new Feedback(rtnCmd, cInternalBag);
+                // doUpdate(rtnCmd);
+                fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
+                        //new Feedback(rtnCmd, cInternalBag);
                 break;
             case SHOW_INCOMPLETE:
                 fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
@@ -116,6 +93,14 @@ public class Logic implements LogicInterface {
             case REDO:
                 fb = cInvoker.redoAction();
                 break;
+            case FILTER_DATE:
+                // TODO Filter date implementation
+                //fb = cInvoker.placeAction(new FilterDateAction(rtnCmd, cInternalBag, cStorage));
+                fb = new Feedback(rtnCmd, null, "Not implemented yet.");
+                break;
+            case MOVE_FILE:
+                // TODO Check implementation of user specified location. No idea which function to call yet
+                fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, null, cStorage));
             case QUIT:
                 log.info("recevied quit");
                 fb = new Feedback(rtnCmd, null);
@@ -135,53 +120,6 @@ public class Logic implements LogicInterface {
         return fb;
     }
 
-    private void doUpdate(Command rtnCmd) throws IntegrityCommandException {
-
-        // verify UID
-        int UID = rtnCmd.getTaskUID();
-        if (UID < 0 || UID >= cInternalBag.size()) {
-            throw new IntegrityCommandException("Given index out of bound");
-        } else {
-            Task toBeUpdated = cInternalBag.getTask(UID);
-            assert toBeUpdated != null;
-
-            switch (rtnCmd.getTaskField()) {
-                case DATE_END:
-                    assert rtnCmd.getEnd() != null;
-                    toBeUpdated.setEnd(rtnCmd.getEnd());
-                    cStorage.save(toBeUpdated);
-                    break;
-                case DATE_START:
-                    assert rtnCmd.getStart() != null;
-                    toBeUpdated.setStart(rtnCmd.getStart());
-                    cStorage.save(toBeUpdated);
-                    break;
-                case ID:
-                    assert false : "should never be here";
-                    break;
-                case IS_COMPLETED:
-                    System.out.println("Not use mark/unmark?");
-                    break;
-                case NAME:
-                    assert rtnCmd.getName() != null;
-                    toBeUpdated.setName(rtnCmd.getName());
-                    cStorage.save(toBeUpdated);
-                    break;
-                case PRIORITY:
-                    System.out.println("Not done yet");
-                    break;
-                default:
-                    assert false : rtnCmd.getTaskField();
-                    System.out.println("Invalid field type"); // Should be
-                                                              // marked as
-                                                              // invalid
-                                                              // command
-                                                              // in parser
-                    break;
-
-            }
-        }
-    }
 
     @Override
     public boolean initData(String s) {

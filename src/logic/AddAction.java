@@ -18,7 +18,7 @@ public class AddAction implements UndoableAction {
     private static final String USR_MSG_ADD_ERROR = "Failed to store to storage";
     private static final String USR_MSG_ADD_OK = "Added %1$s!";
     private static final String USR_MSG_ADD_UNDO = "Undo adding %1$s!";
-    
+
     private Command cCommand;
     private TasksBag cBag;
     private StorageInterface cStore;
@@ -34,7 +34,7 @@ public class AddAction implements UndoableAction {
         Date endDate = cCommand.getEnd();
 
         cWhichTask = new Task(name, startDate, endDate);
-        }
+    }
 
     @Override
     public Feedback execute() throws LogicException {
@@ -42,17 +42,17 @@ public class AddAction implements UndoableAction {
         Feedback fb;
 
         boolean addStatus = cStore.save(cWhichTask);
-        
+
         if (addStatus) {
             cBag.addTask(cWhichTask);
-            
-            formattedString =  Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
+
+            formattedString = Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
             fb = new Feedback(cCommand, cBag, formattedString);
-            
+
             return fb;
         } else {
-            formattedString =  Utilities.formatString(USR_MSG_ADD_ERROR, cWhichTask.getName());
-            
+            formattedString = Utilities.formatString(USR_MSG_ADD_ERROR, cWhichTask.getName());
+
             throw new LogicException(formattedString);
         }
     }
@@ -60,10 +60,10 @@ public class AddAction implements UndoableAction {
     @Override
     public Feedback undo() {
         assert cWhichTask != null;
-        
+
         cStore.delete(cWhichTask);
         cBag.removeTask(cWhichTask);
-        String formatted =  Utilities.formatString(USR_MSG_ADD_UNDO, cWhichTask.getName());
+        String formatted = Utilities.formatString(USR_MSG_ADD_UNDO, cWhichTask.getName());
         return new Feedback(cCommand, cBag, formatted);
     }
 
