@@ -38,7 +38,7 @@
                                   <TableColumn fx:id="taskNameColumn" editable="false" prefWidth="310.0" resizable="false" sortable="false" text="Task Name" />
                                     <TableColumn fx:id="startTimeColumn" editable="false" prefWidth="140.0" resizable="false" sortable="false" text="Start Time" />
                                     <TableColumn fx:id="endTimeColumn" editable="false" prefWidth="140.0" resizable="false" sortable="false" text="End Time" />
-                                    <TableColumn fx:id="tagColumn" editable="false" resizable="false" sortable="false" text="Tag" />
+                                    <TableColumn fx:id="tagColumn" editable="false" prefWidth="65.0" resizable="false" sortable="false" text="Tag" />
                                 </columns>
                                  <columnResizePolicy>
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

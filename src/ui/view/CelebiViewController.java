@@ -11,6 +11,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -74,7 +75,7 @@ public class CelebiViewController {
      */
     @FXML
     private void initialize() {
-        // Initialize the celebi table with the six columns.
+    	// Initialize the celebi table with the six columns.
     	idColumn.setSortable(false);
     	idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue())+1));
         
