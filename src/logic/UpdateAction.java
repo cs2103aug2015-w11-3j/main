@@ -14,7 +14,7 @@ public class UpdateAction implements UndoableAction {
     private static final String USR_MSG_UPDATE_STARTDATE_OK = "Updated start date of %1$s!";
     private static final String USR_MSG_UPDATE_ENDDATE_OK = "Updated end date of %1$s!";
     private static final String USR_MSG_UPDATE_NAME_OK = "Updated name of %1$s!";
-    private static final String USR_MSG_UPDATE_UNDO = "Undo adding %1$s!";
+    private static final String USR_MSG_UPDATE_UNDO = "FAKE: Undo update %1$s!";
 
     private Command cCommand;
     private TasksBag cCurBag;    
