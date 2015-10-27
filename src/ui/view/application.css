@@ -108,7 +108,7 @@
 }
 
 .table-row-cell {
-	-fx-cell-size: 26.2px;
+	/*-fx-fixed-cell-size: 100px;*/
 	-fx-background-color: #ffffff;
 	-fx-text-fill: #347150;
 }
@@ -142,6 +142,8 @@
 .tab-pane
 {
     -fx-tab-min-width:90px;
+    -fx-tab-min-height: 25px;
+    -fx-tab-max-height: 25px;
     /*
     -fx-border-width: 0 1.3 1.3 1.3;
     -fx-border-color: 

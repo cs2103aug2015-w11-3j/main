@@ -73,6 +73,7 @@ public class CelebiViewController {
      */
     @FXML
     private void initialize() {
+    	celebiTable.setFixedCellSize(26.2);
     	// Initialize the celebi table with the six columns.
     	idColumn.setSortable(false);
     	idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue())+1));
