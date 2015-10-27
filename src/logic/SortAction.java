@@ -44,7 +44,10 @@ public class SortAction implements Action {
             
         }
         cBag.setSortState(cSortBy);
+        
+        // both search string and filter date will be reset
         cBag.setSearchState(null);
+        cBag.setFilterDateState(null, null);
         return new Feedback(cCommand, cBag, msg);
     }
 
