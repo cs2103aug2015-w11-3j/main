@@ -12,6 +12,73 @@ import java.util.Scanner;
 
 public class Parser implements ParserInterface {
 
+	public static final String[] TOKENS_ADD = {
+			"a",
+			"add",
+			"new",
+			"create"
+	};
+	public static final String[] TOKENS_DEL = {
+			"d",
+			"del",
+			"delete",
+			"rm",
+			"remove"
+	};
+	public static final String[] TOKENS_UPD = {
+			"u",	
+			"upd",
+			"update",
+			"set",
+			"edit"
+	};
+	public static final String[] TOKENS_QUIT = {
+			"q",	
+			"quit",
+			"exit"
+	};
+	public static final String[] TOKENS_MARK = {
+			"mark",
+			"complete"
+	};
+	public static final String[] TOKENS_UNMARK = {
+			"unmark",
+			"reopen" 
+	};
+	public static final String[] TOKENS_UNDO = {
+			"undo",
+			"un" 
+	};
+	public static final String[] TOKENS_REDO = {
+			"redo",
+			"re" 
+	};
+	public static final String[] TOKENS_SHOW = {
+			"show",
+			"view"
+	};
+	public static final String[] TOKENS_SEARCH = {
+			"search",
+			"find"
+	};
+	public static final String[] TOKENS_FILTER = {
+			"fil",
+			"filter"
+	};
+	public static final String[][] TOKENS = {
+			TOKENS_ADD,
+			TOKENS_DEL,
+			TOKENS_UPD,
+			TOKENS_QUIT,
+			TOKENS_MARK,
+			TOKENS_UNMARK,
+			TOKENS_UNDO,
+			TOKENS_REDO,
+			TOKENS_SHOW,
+			TOKENS_SEARCH,
+			TOKENS_FILTER
+	};
+	
 	private static Parser parserInstance;
 	private final CelebiDateFormatter DATE_FORMATTER;
 	
@@ -20,46 +87,50 @@ public class Parser implements ParserInterface {
 	/////////////////////////////////////////////////////////////////
 
 	// for whitespace work
+	private final Pattern P_WHITESPACE;
 	private static final String REGEX_WHITESPACE = 
 			"\\s+";
-	private final Pattern P_WHITESPACE;
 	
 	// <name>
+	private final Pattern P_ADD_FLT;
 	private static final String REGEX_ADD_FLT = 
 			"^(?<name>[^;]+)$";
-	private final Pattern P_ADD_FLT;
 	
 	// <name>; by|due <end>
+	private final Pattern P_ADD_DL;
 	private static final String REGEX_ADD_DL = 
 			"^(?<name>[^;]+);\\s+(?:by|due)\\s(?<end>.+)$";
-	private final Pattern P_ADD_DL;
 	
 	// <name>; from|start <start> end|to|till|until|due <end>
+	private final Pattern P_ADD_EVT;
 	private static final String REGEX_ADD_EVT = 
 			"^(?<name>[^;]+);\\s+(?:from|start)\\s(?<start>.+)\\s(?:till|to|until|end|due)\\s(?<end>.+)$";
-	private final Pattern P_ADD_EVT;	
 	
 	// <uid>
+	private final Pattern P_DEL;
 	private static final String REGEX_DEL = 
 			"^(?<uid>\\d++)$";
-	private final Pattern P_DEL;
 	
 	// <field> <uid> <newval>
+	private final Pattern P_UPD;
 	private static final String REGEX_UPD = 
 			"^(?<uid>\\d+)\\s(?<field>\\w+)\\s(?<newval>.+)$";
-	private final Pattern P_UPD;
-	
+
+	// before|bef <key(date)>
+	private final Pattern P_FILTER_BEF;
 	private static final String REGEX_FILTER_BEF = 
 			"^(?:before|bef)\\s+(?<key>.+)$";
-	private final Pattern P_FILTER_BEF;
 
+	// after|aft <key(date)>
+	private final Pattern P_FILTER_AFT;
 	private static final String REGEX_FILTER_AFT = 
 			"^(?:after|aft)\\s+(?<key>.+)$";
-	private final Pattern P_FILTER_AFT;
 
+	// between|b/w|btw|from|start <key1(date)> and|to|till|until|end <key2(date)>
+	private final Pattern P_FILTER_BTW;
 	private static final String REGEX_FILTER_BTW = 
 			"^(?:between|b/w|btw|from|start)\\s+(?<key1>.+)\\s+(?:and|to|till|until|end)\\s+(?<key2>.+)$";
-	private final Pattern P_FILTER_BTW;
+	
 	/////////////////////////////////////////////////////////////////
 	// instance fields
 	/////////////////////////////////////////////////////////////////
@@ -113,64 +184,45 @@ public class Parser implements ParserInterface {
 		return passArgs(cmdType, cmdAndArgs[1]);
 	}
 	
-	private Command.Type getCmdType (String firstToken) {
-		assert(firstToken != null);
-		switch (firstToken.toLowerCase()) {
+	private Command.Type getCmdType (String token) {
+		assert(token != null);
+		token = token.toLowerCase();
 		
-			case "a" :		// Fallthrough
-			case "add" :	// Fallthrough
-			case "new" :	// Fallthrough
-			case "create" :
-				return Command.Type.ADD;
-				
-			case "d" : 		// Fallthrough
-			case "del" : 	// Fallthrough
-			case "delete" :	// Fallthrough
-			case "rm" :		// Fallthrough
-			case "remove" :
-				return Command.Type.DELETE;
-				
-			case "u" :		// Fallthrough
-			case "upd" :	// Fallthrough
-			case "update" :	// Fallthrough
-			case "set" :	// Fallthrough
-			case "edit" :
-				return Command.Type.UPDATE;
-				
-			case "q" :		// Fallthrough
-			case "quit" :	// Fallthrough
-			case "exit" :	
-				return Command.Type.QUIT;
-				
-			case "mark" :
-			case "complete" :
-				return Command.Type.MARK;
-				
-			case "unmark" :
-			case "reopen" :
-				return Command.Type.UNMARK;
-				
-			case "undo" :
-			case "un" :
-				return Command.Type.UNDO;
-				
-			case "redo" :
-			case "re" :
-				return Command.Type.REDO;
-				
-			case "show" :
-				return Command.Type.show_temp; // temp value, change later
-	
-			case "search" :
-			case "find" :
-				return Command.Type.SEARCH; 
-				
-			case "filter" :
-				return Command.Type.FILTER_DATE;
-				
-			default :
-				return Command.Type.INVALID;
+		if (arrayContains(TOKENS_ADD, token)) {
+			return Command.Type.ADD;
 		}
+		if (arrayContains(TOKENS_DEL, token)) {
+			return Command.Type.DELETE;
+		}
+		if (arrayContains(TOKENS_UPD, token)) {
+			return Command.Type.UPDATE;
+		}
+		if (arrayContains(TOKENS_QUIT, token)) {
+			return Command.Type.QUIT;	
+		}
+		if (arrayContains(TOKENS_MARK, token)) {
+			return Command.Type.MARK;
+		}
+		if (arrayContains(TOKENS_UNMARK, token)) {
+			return Command.Type.UNMARK;
+		}
+		if (arrayContains(TOKENS_UNDO, token)) {
+			return Command.Type.UNDO;
+		}
+		if (arrayContains(TOKENS_REDO, token)) {
+			return Command.Type.REDO;			
+		}
+		if (arrayContains(TOKENS_SHOW, token)) {
+			return Command.Type.show_temp;			
+		}
+		if (arrayContains(TOKENS_SEARCH, token)) {
+			return Command.Type.SEARCH;			
+		}
+		if (arrayContains(TOKENS_FILTER, token)) {
+			return Command.Type.FILTER_DATE;
+		}
+		
+		return Command.Type.INVALID;
 	}
 
 	private Command passArgs (Command.Type type, String args) {
@@ -487,6 +539,16 @@ public class Parser implements ParserInterface {
 		System.out.println("end: "+ c.getEnd());
 	}
 	
+	private static final <T> boolean arrayContains (T[] arr, T key) {
+		assert(arr != null && key != null);
+		for (T item : arr) {
+			if (key.equals(item)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
@@ -494,12 +556,7 @@ public class Parser implements ParserInterface {
 			printCmd(p.parseCommand(sc.nextLine()));
 		}
 	}
-//	@Override // Logic test function	// By Ken
-//	public Command makeSort() {
-//		Command cmd = new Command(Command.Type.SHOW_ALL, "");
-//		return cmd;
-//	}
-//	
+
 	// Logic test function	// By Ken
 	public Command makeType(Command.Type type){
 		return new Command(type, "");

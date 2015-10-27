@@ -74,9 +74,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FilterBy.COMPLETE_TASKS));
                 break;
             case UPDATE:
-                // doUpdate(rtnCmd);
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
-                        //new Feedback(rtnCmd, cInternalBag);
                 break;
             case SHOW_INCOMPLETE:
                 fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
@@ -94,9 +92,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.redoAction();
                 break;
             case FILTER_DATE:
-                // TODO Filter date implementation
-                //fb = cInvoker.placeAction(new FilterDateAction(rtnCmd, cInternalBag, cStorage));
-                fb = new Feedback(rtnCmd, null, "Not implemented yet.");
+                fb = cInvoker.placeAction(new FilterDateAction(rtnCmd, cInternalBag));
                 break;
             case CHANGE_SAVE_LOC:
                 // TODO Check implementation of user specified location. No idea which function to call yet

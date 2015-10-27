@@ -3,6 +3,7 @@ package parser;
 import java.text.ParseException;
 import java.util.Date;
 
+import java.util.zip.CRC32;
 public class ConvenienceDateFormat implements DateParsingFormat {
 
 	private static final String[] k = {};
@@ -16,5 +17,5 @@ public class ConvenienceDateFormat implements DateParsingFormat {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 }

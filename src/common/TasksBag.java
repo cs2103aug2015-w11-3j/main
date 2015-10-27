@@ -18,9 +18,14 @@ public class TasksBag implements Iterable<Task> {
         COMPLETE_TASKS, INCOMPLETE_TASKS, NONE
     }
 
-    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS;  // Should be showing unmarked version
+    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS; // Should be
+                                                               // showing
+                                                               // unmarked
+                                                               // version
     private String cSearchState = null;
     private ObservableList<Task> tasks;
+    private Date cFilterDateStart;
+    private Date cFilterDateEnd;
 
     public TasksBag() {
         tasks = FXCollections.observableArrayList();
@@ -61,9 +66,9 @@ public class TasksBag implements Iterable<Task> {
         assert attribute != null;
         cFliterState = attribute;
     }
-    
+
     public void setSearchState(String keyword) {
-    	cSearchState = keyword;
+        cSearchState = keyword;
     }
 
     /**
@@ -76,18 +81,17 @@ public class TasksBag implements Iterable<Task> {
         ObservableList<Task> newContainer = null;
 
         switch (cFliterState) {
-                /* Not support date filtering
-                case DATE:
-                // Reverse sorting with earliest on top
-                newContainer = TasksBag.copy(tasks);
-                Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t2, t1));
-                break;
-                */
+            /*
+             * Not support date filtering case DATE: // Reverse sorting with
+             * earliest on top newContainer = TasksBag.copy(tasks);
+             * Collections.sort(newContainer, (Task t1, Task t2) ->
+             * compareDate(t2, t1)); break;
+             */
             case NONE:
-            	newContainer = FXCollections.observableArrayList();
+                newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
-                	Task curTask = tasks.get(i);
-                    if (curTask.hasKeyword(cSearchState)) {
+                    Task curTask = tasks.get(i);
+                    if (curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
                         newContainer.add(curTask);
                     }
                 }
@@ -95,8 +99,8 @@ public class TasksBag implements Iterable<Task> {
             case COMPLETE_TASKS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
-                	Task curTask = tasks.get(i);
-                    if (curTask.isComplete() && curTask.hasKeyword(cSearchState)) {
+                    Task curTask = tasks.get(i);
+                    if (curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
                         newContainer.add(curTask);
                     }
                 }
@@ -104,8 +108,8 @@ public class TasksBag implements Iterable<Task> {
             case INCOMPLETE_TASKS:
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
-                	Task curTask = tasks.get(i);
-                    if (!curTask.isComplete() && curTask.hasKeyword(cSearchState)) {
+                    Task curTask = tasks.get(i);
+                    if (!curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
                         newContainer.add(curTask);
                     }
                 }
@@ -121,12 +125,20 @@ public class TasksBag implements Iterable<Task> {
          */
         // Sorting by date before returning
         Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t1, t2));
-        
+
         // Transfer the current state to the new bag
         // UI uses the sort state to identify current tab
         TasksBag rtnBag = new TasksBag(newContainer);
         rtnBag.setSortState(cFliterState);
-        return rtnBag; 
+        return rtnBag;
+    }
+
+    private boolean checkDate(Task curTask) {
+        if (cFilterDateEnd == null || cFilterDateStart == null) {
+            return true;
+        } else {
+            return curTask.isWithinDate(cFilterDateStart, cFilterDateEnd);
+        }
     }
 
     public Task removeTask(int index) {
@@ -202,5 +214,14 @@ public class TasksBag implements Iterable<Task> {
 
     public boolean isEmpty() {
         return tasks.size() == 0;
+    }
+
+    public void filterDate(Date start, Date end) {
+
+    }
+
+    public void setFilterDateState(Date start, Date end) {
+        cFilterDateStart = start;
+        cFilterDateEnd = end;
     }
 }

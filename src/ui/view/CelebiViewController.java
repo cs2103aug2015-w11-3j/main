@@ -32,8 +32,10 @@ import common.TasksBag;
 import common.TasksBag.FilterBy;
 import ui.Main;
 import ui.UIInterface;
+import parser.Parser;
 
 public class CelebiViewController {
+	//@@author TODO
 	Main mainApp;
 	UIInterface ui;
 	
@@ -64,11 +66,6 @@ public class CelebiViewController {
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    
-    private String[] commandKeywords = {"a", "add", "new", "create", "d", "del", "delete", 
-    		"rm", "remove", "u", "upd", "update", "set", "edit", "q", "quit", "exit", 
-    		"mark", "complete", "unmark", "reopen", "undo", "un", "redo", "re", "show",
-    		"search", "find"};
 	
     /**
      * Initializes the controller class. This method is automatically called
@@ -219,13 +216,16 @@ public class CelebiViewController {
     			firstWord = newValue.substring(0, i);
     		}
     		
-    		boolean found = false;
-    		for (int j=0; j<commandKeywords.length; j++) {
+    		// (yijin) see the isCmdToken method i made below.
+    		/*
+    		 boolean found = false;
+    		 for (int j=0; j<commandKeywords.length; j++) {
     			if(firstWord.equals(commandKeywords[j])) {
     				found = true;
     			}
-    		}
-    		if (found) {
+    		}*/
+    		
+    		if (isCmdToken(firstWord)) {
     			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: #529228;");
     			if (newValue.length() > firstWord.length()) {
     				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal;");
@@ -239,7 +239,23 @@ public class CelebiViewController {
     	commandArea.requestFocus();
     	commandArea.setId("command-area");
     }
-    
+
+    //@@author A0131891E
+    // Helped you link the highlighting check to my parser's token string array.
+    // Next time if I change the accepted token strings, it will automatically reflect in the UI.
+	private boolean isCmdToken(String firstWord) {
+		assert(firstWord != null);
+		firstWord = firstWord.toLowerCase();
+		for (String[] tokens : Parser.TOKENS) {
+			for (String token : tokens) {
+				if (firstWord.equals(token)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+    //@@author TODO
     
     private void initializeFeedbackPane() {
     	feedbackArea = new InlineCssTextArea();
