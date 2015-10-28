@@ -23,7 +23,7 @@ public class FullDateFormat implements DateParsingFormat {
 	
 	// parse for time section
 	private static final String[] REGEX_TIMES = {
-			//String.format("hh%smm%<sa", DELIM),	// delim b/w digits and meridian
+			String.format("hh%smm%<sa", DELIM),	// delim b/w digits and meridian
 			String.format("hh%smma", DELIM), 	// no delim b/w digits and meridian
 			String.format("HH%smm", DELIM)		// no meridian, 24h
 	};
@@ -40,26 +40,23 @@ public class FullDateFormat implements DateParsingFormat {
 
 	private GregorianCalendar cal;
 	
-	public FullDateFormat () {
+	FullDateFormat () {
 		
 		P_NUM_SUFFIX = Pattern.compile(REGEX_NUM_SUFFIX);
 		
-		// Time parsing setup
-		TIME_DFS = new DateFormat[REGEX_TIMES.length];
-		for (int i = 0; i < REGEX_TIMES.length; i++) {
-			TIME_DFS[i] = new SimpleDateFormat(REGEX_TIMES[i]);
-			TIME_DFS[i].setLenient(false);
-		}
+		TIME_DFS = regexesToDFs(REGEX_TIMES); // Time parsing setup
+		DATE_DFS = regexesToDFs(REGEX_DATES); // Date (day) parsing setup
 		
-		// Date (day) parsing setup
-		DATE_DFS = new DateFormat[REGEX_DATES.length];
+	}
+	private DateFormat[] regexesToDFs (String[] regexes) {
 		final Date twoDigitYearStart = new Date(0); // Sets 2 digit year parsing to begin from 1970
-		for (int i = 0; i < REGEX_DATES.length; i++) {
-			DATE_DFS[i] = new SimpleDateFormat(REGEX_DATES[i]);
-			DATE_DFS[i].setLenient(false);
-			((SimpleDateFormat)DATE_DFS[i]).set2DigitYearStart(twoDigitYearStart);
+		final DateFormat[] dfs = new DateFormat[regexes.length];
+		for (int i = 0; i < dfs.length; i++) {
+			dfs[i] = new SimpleDateFormat(regexes[i]);
+			dfs[i].setLenient(false);
+			((SimpleDateFormat)dfs[i]).set2DigitYearStart(twoDigitYearStart);
 		}
-		
+		return dfs;
 	}
 	
 	// Takes in datestring preprocessed by DateParser to handle all seperators and delimiters
@@ -79,17 +76,17 @@ public class FullDateFormat implements DateParsingFormat {
 		}
 		
 		Date timeD, dateD;
-		dateD = parseBy(split[0], DATE_DFS); // try parse first half as time segment
+		dateD = dfParse(split[0], DATE_DFS); // try parse first half as time segment
 		if (dateD == null) { 	// first half cannot be parsed as time
-			dateD = parseBy(split[1], DATE_DFS);
-			timeD = parseBy(split[0], TIME_DFS);
+			dateD = dfParse(split[1], DATE_DFS);
+			timeD = dfParse(split[0], TIME_DFS);
 		} else { 				// first half successfully parsed as time
-			timeD = parseBy(split[1], TIME_DFS);
+			timeD = dfParse(split[1], TIME_DFS);
 		}
 		
 		if (timeD == null || dateD == null) {
 			//System.out.println(split);
-			System.out.println("time: " + timeD + "\ndate: " + dateD);
+			//System.out.println("time: " + timeD + "\ndate: " + dateD);
 			throw new ParseException("datestring cannot be parsed as full absolute date", -1);
 		}
 		
@@ -102,7 +99,7 @@ public class FullDateFormat implements DateParsingFormat {
 		return cal.getTime();
 	}
 	
-	private Date parseBy (String token, DateFormat[] dfs) {
+	private Date dfParse (String token, DateFormat[] dfs) {
 		for (DateFormat df : dfs) {
 			try {
 				return df.parse(token);
@@ -112,7 +109,6 @@ public class FullDateFormat implements DateParsingFormat {
 		}
 		return null;
 	}
-	
 	private String removeNumSuffixes (String s) {
 		return P_NUM_SUFFIX.matcher(s).replaceAll("$1");
 	}
@@ -122,7 +118,6 @@ public class FullDateFormat implements DateParsingFormat {
 		Scanner in = new Scanner(System.in);
 		DateParsingFormat fdf = new FullDateFormat();
 		DateFormat df;
-		System.out.println(SEP);
 		while (true) {
 			try {
 				//df = new SimpleDateFormat(in.nextLine());

@@ -14,14 +14,14 @@ public class DateFormatter implements CelebiDateFormatter {
 	// Preprocess datestring
 	/////////////////////////////////////////////////////////////////
 	
-	// For separating intra-date tokens, matching characters {'-'|'_'|'/'|'\'|'.'|':'}
+	// For separating intra-date tokens, matching characters {'-'|'_'|' '|'/'|'\'|'.'|':'}
 	private static final String REGEX_DATETIME_DELIM = 
-	"[\\Q-_/\\.:\\E]+";
+	"[\\Q-_/\\.: \\E]+";
 	private final Pattern P_DATETIME_DELIM;
 	
-	// For separating date and time portions, matching chars {','|' '|';'}
+	// For separating date and time portions, matching chars {','|';'}
 	private static final String REGEX_DATETIME_SEP =
-	"[; ,]+";
+	"\\s*[;,]+\\s*";
 	private final Pattern P_DATETIME_SEP;
 	
 	// placeholder strings for pattern matching tokenisation
@@ -32,7 +32,7 @@ public class DateFormatter implements CelebiDateFormatter {
 	private final DateParsingFormat FULL_DF;
 	private final DateParsingFormat PART_DF;
 
-	DateFormatter() {
+	public DateFormatter() {
 		P_DATETIME_DELIM = Pattern.compile(REGEX_DATETIME_DELIM);
 		P_DATETIME_SEP = Pattern.compile(REGEX_DATETIME_SEP);
 		FULL_DF = new FullDateFormat();
@@ -114,22 +114,24 @@ public class DateFormatter implements CelebiDateFormatter {
 		
 		// replace date delimiters with common token
 		token = token.trim();
-		token = P_DATETIME_DELIM.matcher(token).replaceAll(DATETIME_DELIM); // process token delims
 		token = P_DATETIME_SEP.matcher(token).replaceAll(DATETIME_SEP); // process date-time seperator
+		token = P_DATETIME_DELIM.matcher(token).replaceAll(DATETIME_DELIM); // process token delims
 		
-		// try parsing partial dates (without all calendar fields filled).
-//		try { 
-//			return PART_DF.parse(token);
-//		} catch (ParseException pePart) {
-//			;
-//		}
-		
-		// final try: parse with full info, down to minute resolution.
+		// try parse with full info, down to minute resolution.
 		try { 
 			return FULL_DF.parse(token);
-		} catch (ParseException peFull) {
-			throw peFull;
+		} catch (ParseException pePart) {
+			;
 		}
+		
+		// final try: parsing partial dates (without all calendar fields filled).
+		try { 
+			return PART_DF.parse(token);
+		} catch (ParseException peFull) {
+			;
+		}
+		
+		throw new ParseException("Unparseable as Date: \"" + token + '"', 0);
 	}
 	
 	public String formatDate (Date d) {
