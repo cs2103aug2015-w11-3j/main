@@ -20,7 +20,6 @@ import storage.StorageInterface;
 public class DeleteAction implements UndoableAction {
 
     private static final String USR_MSG_DELETE_OOB = "Provided index not on list.";
-    private static final String USR_MSG_DELETE_ERROR = "Failed to delete from storage";
     private static final String USR_MSG_DELETE_OK = "Removed %1$s!";
     private static final String USR_MSG_DELETE_UNDO = "Undoing delete %1$s";
 
@@ -85,21 +84,14 @@ public class DeleteAction implements UndoableAction {
     public Feedback execute() throws LogicException {
         String formattedString;
         Feedback fb;
-        isSuccessful = cStore.delete(cWhichTask);
 
-        if (isSuccessful) {
-            // Used when undo delete to position back into task bag
-            cPosition = cIntBag.removeTask(cWhichTask);
+        cPosition = cIntBag.removeTask(cWhichTask);
+        cStore.delete(cWhichTask);
 
-            formattedString = Utilities.formatString(USR_MSG_DELETE_OK, cWhichTask.getName());
-            fb = new Feedback(cCommand, cIntBag, formattedString);
+        formattedString = Utilities.formatString(USR_MSG_DELETE_OK, cWhichTask.getName());
+        fb = new Feedback(cCommand, cIntBag, formattedString);
 
-            return fb;
-        } else {
-            formattedString = Utilities.formatString(USR_MSG_DELETE_ERROR, cWhichTask.getName());
-
-            throw new LogicException(formattedString);
-        }
+        return fb;
     }
 
     /**
@@ -113,7 +105,7 @@ public class DeleteAction implements UndoableAction {
 
         cIntBag.addTask(cPosition, cWhichTask);
         cStore.save(cWhichTask);
-        
+
         return new Feedback(cCommand, cIntBag, formattedString);
     }
 

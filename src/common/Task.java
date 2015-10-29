@@ -21,7 +21,7 @@ public class Task {
 
     // Reference for possible updatable Celebi data fields
     public static enum DataType {
-        NAME, DATE_START, DATE_END, IMPORTANCE, IS_COMPLETED
+        NAME, DATE_START, DATE_END, IMPORTANCE //, IS_COMPLETED
     }
 
     public static enum Type {
