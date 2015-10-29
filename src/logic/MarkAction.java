@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
+import logic.exceptions.AlreadyMarkedException;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;

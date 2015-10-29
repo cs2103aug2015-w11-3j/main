@@ -1,6 +1,4 @@
-package logic;
-
-import logic.exceptions.LogicException;
+package logic.exceptions;
 
 public class AlreadyUnmarkedException extends LogicException {
 

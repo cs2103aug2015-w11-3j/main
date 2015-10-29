@@ -1,5 +1,8 @@
 package common;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -146,8 +149,22 @@ public class Task {
         if (keyword == null) {
             return true;
         } else {
-            return cName.get().toLowerCase().contains(keyword.toLowerCase());
+            ArrayList<String> tokens = new ArrayList<>();
+            Collections.addAll(tokens, keyword.split(" "));
+            return nameHasTokens(tokens);
         }
+    }
+
+    private boolean nameHasTokens(List<String> tokens) {
+        String nameLowerCase = cName.get().toLowerCase();
+        
+        for(String toCompare : tokens){
+            toCompare = toCompare.toLowerCase();
+            if(nameLowerCase.contains(toCompare)){
+                return true;
+            }
+        }        
+        return false;
     }
 
     private void updateType() {
@@ -176,12 +193,12 @@ public class Task {
             // Have both dates
             boolean startIsWithin = isWithinBothDates(cFilterDateStart, cFilterDateEnd, cStart.get());
             boolean endIsWithin = isWithinBothDates(cFilterDateStart, cFilterDateEnd, cEnd.get());
-            
+
             return startIsWithin && endIsWithin;
         }
     }
 
-    private boolean isWithinBothDates(Date start, Date end, Date toCompare){
+    private boolean isWithinBothDates(Date start, Date end, Date toCompare) {
         return toCompare.before(end) && toCompare.after(start);
     }
     // private methods
