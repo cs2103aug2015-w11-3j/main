@@ -38,6 +38,8 @@ public class Parser implements ParserInterface {
 			"exit"
 	};
 	public static final String[] TOKENS_MARK = {
+			"done",
+			"finish",
 			"mark",
 			"complete"
 	};
