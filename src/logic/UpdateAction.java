@@ -16,14 +16,15 @@ public class UpdateAction implements UndoableAction {
     private static final String USR_MSG_UPDATE_ENDDATE_OK = "Updated end date of %1$s!";
     private static final String USR_MSG_UPDATE_ENDDATE_INVALID = "Failed to update! End date is earlier than of start date!";
     private static final String USR_MSG_UPDATE_NAME_OK = "Updated name of %1$s!";
-    private static final String USR_MSG_UPDATE_UNDO = "FAKE: Undo update %1$s!";
+    private static final String USR_MSG_UPDATE_UNDO = "Undo update %1$s!";
 
     private Command cCommand;
     private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cWhichTask;
-
+    private Task cOldTask;
+    
     public UpdateAction(Command command, TasksBag bag, StorageInterface stor) throws LogicException {
         cCommand = command;
         cCurBag = bag.getFiltered();
@@ -46,6 +47,8 @@ public class UpdateAction implements UndoableAction {
         cWhichTask = cCurBag.getTask(UID);
 
         verifyUpdateData();
+        
+        cOldTask = cWhichTask.clone();
     }
 
     private void verifyUpdateData() throws LogicException {
@@ -134,9 +137,49 @@ public class UpdateAction implements UndoableAction {
 
     @Override
     public Feedback undo() {
-        // TODO Auto-generated method stub
-        String formatted = Utilities.formatString(USR_MSG_UPDATE_UNDO, cWhichTask.getName());
-        return new Feedback(cCommand, cIntBag, formatted);
+        Task toBeUpdated = cWhichTask;
+        Feedback fb;
+        String formattedString;
+
+        switch (cCommand.getTaskField()) {
+            case DATE_END:
+
+                toBeUpdated.setEnd(cOldTask.getEnd());
+                cStore.save(toBeUpdated);
+
+                formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
+                fb = new Feedback(cCommand, cIntBag, formattedString);
+
+                return fb;
+            case DATE_START:
+
+                toBeUpdated.setStart(cOldTask.getStart());
+                cStore.save(toBeUpdated);
+
+                formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
+                fb = new Feedback(cCommand, cIntBag, formattedString);
+                return fb;
+
+            case NAME:
+
+                toBeUpdated.setName(cOldTask.getName());
+                cStore.save(toBeUpdated);
+
+                formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
+                fb = new Feedback(cCommand, cIntBag, formattedString);
+
+                return fb;
+            case IMPORTANCE:
+
+                // TODO Parser not done with this
+                System.out.println("Not done yet");
+                // assert cCommand.get
+                // toBeUpdated.setPriority();
+                break;
+            default:
+                assert false : cCommand.getTaskField();
+        }
+        return null;
     }
 
     @Override

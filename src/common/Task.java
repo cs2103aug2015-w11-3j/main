@@ -197,6 +197,13 @@ public class Task {
             return startIsWithin && endIsWithin;
         }
     }
+    
+    public Task clone() {
+    	Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
+    	newTask.setImportant(cIsImportant);
+    	newTask.setComplete(cIsCompleted);
+    	return newTask;
+    }
 
     private boolean isWithinBothDates(Date start, Date end, Date toCompare) {
         return toCompare.before(end) && toCompare.after(start);
