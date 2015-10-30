@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
 public class TasksBag implements Iterable<Task> {
 
     public static enum FilterBy {
-        COMPLETE_TASKS, INCOMPLETE_TASKS, NONE
+        COMPLETE_TASKS, INCOMPLETE_TASKS, NONE, TODAY
     }
 
     private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS; // Should be
@@ -109,20 +109,27 @@ public class TasksBag implements Iterable<Task> {
                 newContainer = FXCollections.observableArrayList();
                 for (int i = 0; i < tasks.size(); i++) {
                     Task curTask = tasks.get(i);
-                    if (!curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+                    if (curTask.isComplete() == false && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
                         newContainer.add(curTask);
                     }
                 }
+                break;
+            case TODAY:
+                newContainer = FXCollections.observableArrayList();
+                // count # of floating
+                int noOfFloating = countIncompleteFloatingTasks();
+                // count # of dateline/event
+                int noOfNonFloating = countIncompleteDatedTasks();
+                // if floating != 0
+                // show limit for dateline/events etc will be - min(floating, 3)
+                //
+                System.out.println("Float: " + noOfFloating + " Dated: " + noOfNonFloating);
                 break;
             default:
                 assert false;
                 break;
         }
-        /*
-         * Collections.sort(newContainer, (Task t1, Task t2)-> t2.getId() -
-         * t1.getId()); newContainer.forEach( t -> System.out.println(t.getId())
-         * );
-         */
+
         // Sorting by date before returning
         Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t1, t2));
 
@@ -131,6 +138,38 @@ public class TasksBag implements Iterable<Task> {
         TasksBag rtnBag = new TasksBag(newContainer);
         rtnBag.setSortState(cFliterState);
         return rtnBag;
+    }
+
+    /**
+     * Counts the number of tasks which are incomplete and has at least 1 date
+     * 
+     * @return
+     */
+    private int countIncompleteDatedTasks() {
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            if (curTask.isComplete() == false && curTask.hasDate()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Counts the number of tasks which are incomplare and has no date
+     * 
+     * @return
+     */
+    private int countIncompleteFloatingTasks() {
+        int count = 0;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            if (curTask.isComplete() == false && curTask.hasDate() == false) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private boolean checkDate(Task curTask) {
@@ -201,12 +240,12 @@ public class TasksBag implements Iterable<Task> {
      * @param t
      * @return
      */
-    public static ObservableList<Task> copy(ObservableList<Task> t) {
-        ObservableList<Task> rtn = FXCollections.observableArrayList();
-
-        t.forEach(e -> rtn.add(e));
-        return rtn;
-    }
+    /*
+     * public static ObservableList<Task> copy(ObservableList<Task> t) {
+     * ObservableList<Task> rtn = FXCollections.observableArrayList();
+     * 
+     * t.forEach(e -> rtn.add(e)); return rtn; }
+     */
 
     public FilterBy getState() {
         return cFliterState;

@@ -220,4 +220,8 @@ public class Task {
      * Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()); }
      * else { date = null; } return date; }
      */
+
+    public boolean hasDate() {
+        return cType.get() != Type.FLOATING;
+    }
 }

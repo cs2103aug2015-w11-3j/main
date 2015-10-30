@@ -13,6 +13,7 @@ import parser.Command;
 public class SortAction implements Action {
     private static final String USR_MSG_SORT_COMPLETE = "Switching view to completed tasks";
     private static final String USR_MSG_SORT_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_SORT_TODAY = "Switching view to today tasks";
 
     private Command cCommand;
     private TasksBag cBag;
@@ -37,6 +38,9 @@ public class SortAction implements Action {
                 break;
             case NONE:
                 assert false;
+                break;
+            case TODAY:
+                msg = USR_MSG_SORT_TODAY;
                 break;
             default:
                 assert false;
