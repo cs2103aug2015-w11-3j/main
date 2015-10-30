@@ -15,13 +15,13 @@ public class MoveFileAction implements Action {
     private Command cCommand;
     private String cDestination;
     private StorageInterface cStore;
-    private TasksBag cIntBag;
+    private TasksBag cBag;
     
-    public MoveFileAction(Command command, TasksBag internalBag, String destination, StorageInterface stor) {
+    public MoveFileAction(Command command, TasksBag bag, StorageInterface stor) {
         cCommand = command;
         cStore = stor;
-        cIntBag = internalBag;
-        cDestination = destination;
+        cBag = bag;
+        cDestination = command.getText();
     }
 
     @Override
@@ -35,11 +35,10 @@ public class MoveFileAction implements Action {
             boolean moveStatus = cStore.moveFileTo(cDestination);
             
             if (moveStatus) {
-                fb = new Feedback(cCommand, cIntBag, USR_MSG_MOVE_OK);
+                fb = new Feedback(cCommand, cBag, USR_MSG_MOVE_OK);
             } else {
                 throw new LogicException(USR_MSG_MOVE_ERROR);
             }
-            
             return fb;
         } catch (Exception e) {
         	throw new LogicException(USR_MSG_MOVE_ERROR);

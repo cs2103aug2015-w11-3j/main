@@ -106,7 +106,7 @@ public class Configuration {
 
     private void writeBack() throws IOException {
         JSONObject configJson = new JSONObject();
-        configJson.put(KEY_STORAGE_LOCATION, DEFAULT_VALUE_STORAGE_LOCATION);
+        configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
 
         configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
         String text = JSONValue.toJSONString(configJson);

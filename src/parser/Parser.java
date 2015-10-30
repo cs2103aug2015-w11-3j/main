@@ -65,6 +65,10 @@ public class Parser implements ParserInterface {
 			"fil",
 			"filter"
 	};
+	public static final String[] TOKENS_CHANGE_SAVE_LOC = {
+			"mv",
+			"move"
+	};
 	public static final String[][] TOKENS = {
 			TOKENS_ADD,
 			TOKENS_DEL,
@@ -76,7 +80,8 @@ public class Parser implements ParserInterface {
 			TOKENS_REDO,
 			TOKENS_SHOW,
 			TOKENS_SEARCH,
-			TOKENS_FILTER
+			TOKENS_FILTER,
+			TOKENS_CHANGE_SAVE_LOC
 	};
 	
 	private static Parser parserInstance;
@@ -221,6 +226,9 @@ public class Parser implements ParserInterface {
 		if (arrayContains(TOKENS_FILTER, token)) {
 			return Command.Type.FILTER_DATE;
 		}
+		if (arrayContains(TOKENS_CHANGE_SAVE_LOC, token)) {
+			return Command.Type.CHANGE_SAVE_LOC;
+		}
 		
 		return Command.Type.INVALID;
 	}
@@ -252,6 +260,8 @@ public class Parser implements ParserInterface {
 				return parseSearch(args);
 			case FILTER_DATE :
 				return parseFilterDate(args);
+			case CHANGE_SAVE_LOC:
+				return parseChangeSaveLoc(args);
 			default :
 				break;
 			}
@@ -402,6 +412,14 @@ public class Parser implements ParserInterface {
 			} catch (ParseException pe) {
 				;
 			}
+		}
+		
+		return makeInvalid();
+	}
+	private Command parseChangeSaveLoc (String args) {
+		assert(args != null);
+		if (args.length() != 0) {
+			return makeChangeSaveLoc(args);
 		}
 		
 		return makeInvalid();
