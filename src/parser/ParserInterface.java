@@ -1,5 +1,6 @@
 package parser;
 
+import java.nio.file.Path;
 import java.util.Date;
 import common.Task;
 
@@ -20,7 +21,7 @@ public interface ParserInterface {
 	public Command makeUnmark (int taskUID);
 	public Command makeSearch (String searchKey);
 	public Command makeFilterDate (Date rangeStart, Date rangeEnd);
-	public Command makeChangeSaveLoc (String newPath);
+	public Command makeChangeSaveLoc (Path newPath);
 	
 	// to debug command
 	public static void printCmd (Command c) {

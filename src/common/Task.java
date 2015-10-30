@@ -1,5 +1,8 @@
 package common;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -18,7 +21,7 @@ public class Task {
 
     // Reference for possible updatable Celebi data fields
     public static enum DataType {
-        NAME, DATE_START, DATE_END, IMPORTANCE, IS_COMPLETED
+        NAME, DATE_START, DATE_END, IMPORTANCE //, IS_COMPLETED
     }
 
     public static enum Type {
@@ -146,8 +149,22 @@ public class Task {
         if (keyword == null) {
             return true;
         } else {
-            return cName.get().toLowerCase().contains(keyword.toLowerCase());
+            ArrayList<String> tokens = new ArrayList<>();
+            Collections.addAll(tokens, keyword.split(" "));
+            return nameHasTokens(tokens);
         }
+    }
+
+    private boolean nameHasTokens(List<String> tokens) {
+        String nameLowerCase = cName.get().toLowerCase();
+        
+        for(String toCompare : tokens){
+            toCompare = toCompare.toLowerCase();
+            if(nameLowerCase.contains(toCompare)){
+                return true;
+            }
+        }        
+        return false;
     }
 
     private void updateType() {
@@ -176,12 +193,19 @@ public class Task {
             // Have both dates
             boolean startIsWithin = isWithinBothDates(cFilterDateStart, cFilterDateEnd, cStart.get());
             boolean endIsWithin = isWithinBothDates(cFilterDateStart, cFilterDateEnd, cEnd.get());
-            
+
             return startIsWithin && endIsWithin;
         }
     }
+    
+    public Task clone() {
+    	Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
+    	newTask.setImportant(cIsImportant);
+    	newTask.setComplete(cIsCompleted);
+    	return newTask;
+    }
 
-    private boolean isWithinBothDates(Date start, Date end, Date toCompare){
+    private boolean isWithinBothDates(Date start, Date end, Date toCompare) {
         return toCompare.before(end) && toCompare.after(start);
     }
     // private methods

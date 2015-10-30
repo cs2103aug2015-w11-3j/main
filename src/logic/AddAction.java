@@ -5,6 +5,7 @@ import java.util.Date;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
+import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
@@ -15,16 +16,16 @@ import storage.StorageInterface;
  */
 public class AddAction implements UndoableAction {
 
-    private static final String USR_MSG_ADD_ERROR = "Failed to store to storage";
     private static final String USR_MSG_ADD_OK = "Added %1$s!";
     private static final String USR_MSG_ADD_UNDO = "Undo adding %1$s!";
+    private static final String USR_MSG_ADD_DATE_ERROR = "Failed to add! Start date is after end date!";
 
     private Command cCommand;
     private TasksBag cBag;
     private StorageInterface cStore;
     private Task cWhichTask;
 
-    public AddAction(Command command, TasksBag bag, StorageInterface stor) {
+    public AddAction(Command command, TasksBag bag, StorageInterface stor) throws IntegrityCommandException {
         cCommand = command;
         cBag = bag;
         cStore = stor;
@@ -33,7 +34,13 @@ public class AddAction implements UndoableAction {
         Date startDate = cCommand.getStart();
         Date endDate = cCommand.getEnd();
 
-        cWhichTask = new Task(name, startDate, endDate);
+        boolean isValidDate = Utilities.verifyDate(startDate, endDate);
+        if (isValidDate) {
+            cWhichTask = new Task(name, startDate, endDate);
+        } else {
+            throw new IntegrityCommandException(USR_MSG_ADD_DATE_ERROR);
+        }
+
     }
 
     @Override
@@ -41,20 +48,13 @@ public class AddAction implements UndoableAction {
         String formattedString;
         Feedback fb;
 
-        boolean addStatus = cStore.save(cWhichTask);
+        cBag.addTask(cWhichTask);
+        cStore.save(cWhichTask);
 
-        if (addStatus) {
-            cBag.addTask(cWhichTask);
+        formattedString = Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
+        fb = new Feedback(cCommand, cBag, formattedString);
 
-            formattedString = Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
-            fb = new Feedback(cCommand, cBag, formattedString);
-
-            return fb;
-        } else {
-            formattedString = Utilities.formatString(USR_MSG_ADD_ERROR, cWhichTask.getName());
-
-            throw new LogicException(formattedString);
-        }
+        return fb;
     }
 
     @Override

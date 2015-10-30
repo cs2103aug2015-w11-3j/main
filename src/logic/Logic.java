@@ -95,8 +95,8 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new FilterDateAction(rtnCmd, cInternalBag));
                 break;
             case CHANGE_SAVE_LOC:
-                // TODO Check implementation of user specified location. No idea which function to call yet
-                fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, null, cStorage));
+                fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, cStorage));
+                break;
             case QUIT:
                 log.info("recevied quit");
                 fb = new Feedback(rtnCmd, null);

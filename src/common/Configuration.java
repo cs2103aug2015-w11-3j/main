@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.json.simple.JSONObject;
@@ -20,7 +22,7 @@ public class Configuration {
 
     private final String CONFIG_DIRECTORY = "bin/config.json";
     private final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
-    private final String DEFAULT_VALUE_STORAGE_LOCATION = "bin/task.json";
+    private final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
 
     static Configuration instance;
 
@@ -88,6 +90,8 @@ public class Configuration {
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
             if (configStorageLocation == null) {
                 configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
+            } else if (!new File(configStorageLocation).exists()) {
+            	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
             }
 
             writeBack();
@@ -106,7 +110,7 @@ public class Configuration {
 
     private void writeBack() throws IOException {
         JSONObject configJson = new JSONObject();
-        configJson.put(KEY_STORAGE_LOCATION, DEFAULT_VALUE_STORAGE_LOCATION);
+        configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
 
         configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
         String text = JSONValue.toJSONString(configJson);
