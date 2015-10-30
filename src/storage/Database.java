@@ -29,11 +29,13 @@ abstract class Database {
 	private static boolean isConnected;
 
 	static boolean connect (String path) {
-		db = new File(path, FILENAME);
 		try {
+			db = new File(path, FILENAME);
+			
 			if(!db.exists()) {
 				db.createNewFile();
 			}
+
 			dbReader = new Scanner(db);
 			dbReader.useDelimiter("\\Z");
 			
@@ -64,7 +66,6 @@ abstract class Database {
 						
 			dbData = new ArrayList<TaskJson>();
 			dbIndex = new HashMap<Integer, TaskJson>();
-			
 			for (int i = 0; i < parsedResult.size(); i ++) {
 				TaskJson cj = new TaskJson((JSONObject)parsedResult.get(i));
 				dbData.add(cj);

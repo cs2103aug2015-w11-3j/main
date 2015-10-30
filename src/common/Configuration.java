@@ -90,6 +90,8 @@ public class Configuration {
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
             if (configStorageLocation == null) {
                 configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
+            } else if (!new File(configStorageLocation).exists()) {
+            	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
             }
 
             writeBack();
