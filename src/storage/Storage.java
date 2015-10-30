@@ -1,12 +1,15 @@
 package storage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import common.*;
 
 public class Storage implements StorageInterface {
+	
     public Storage() {
 
     }
@@ -29,9 +32,9 @@ public class Storage implements StorageInterface {
     }
 
     private void connectToDatabase() throws IOException, BadFileContentException {
-        Configuration setting = Configuration.getInstance();
-        String fileDir = setting.getUsrFileDirectory();
-        Database.connect(fileDir);
+    	Configuration setting = Configuration.getInstance();
+        String fileLoc = setting.getUsrFileDirectory();
+    	Database.connect(fileLoc);
         Database.load();
     }
 
@@ -76,6 +79,5 @@ public class Storage implements StorageInterface {
         } catch (FileNotFoundException e) {
             return false;
         }
-
     }
 }

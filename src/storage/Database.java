@@ -17,6 +17,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 abstract class Database {
+	private final static String FILENAME = "task.json";
+	
 	private static File db;
 	private static Scanner dbReader;
 	private static Writer dbWriter;
@@ -27,7 +29,7 @@ abstract class Database {
 	private static boolean isConnected;
 
 	static boolean connect (String path) {
-		db = new File(path);
+		db = new File(path, FILENAME);
 		try {
 			if(!db.exists()) {
 				db.createNewFile();
@@ -149,7 +151,7 @@ abstract class Database {
 	
 	static boolean moveTo(String destination) throws FileNotFoundException {
 		File oldDb = db;
-		db = new File(destination);
+		db = new File(destination, FILENAME);
 		try {
 			db.createNewFile();
 			dbReader = new Scanner(db);

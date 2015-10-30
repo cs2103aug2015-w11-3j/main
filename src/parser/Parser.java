@@ -3,6 +3,9 @@ package parser;
 //import com.sun.javafx.css.Combinator;
 import common.Task;
 import static java.util.regex.Pattern.*;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -418,9 +421,16 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseChangeSaveLoc (String args) {
 		assert(args != null);
+		Path path;
 		if (args.length() != 0) {
-			return makeChangeSaveLoc(args);
+			try {
+				path = parsePath(args);
+				return makeChangeSaveLoc(path);
+			} catch (ParseException pe) {
+				;
+			}
 		}
+
 		
 		return makeInvalid();
 	}
@@ -464,6 +474,10 @@ public class Parser implements ParserInterface {
 	Date parseDate (String token) throws ParseException {
 		assert(token != null);
 		return DATE_FORMATTER.parseDate(token);
+	}
+	Path parsePath (String token) throws ParseException {
+		assert(token != null);
+		return Paths.get(token.trim());
 	}
 	
 	
@@ -541,9 +555,9 @@ public class Parser implements ParserInterface {
 		cmd.setEnd(rangeEnd);
 		return cmd;
 	}
-	public Command makeChangeSaveLoc (String newPath) {
+	public Command makeChangeSaveLoc (Path newPath) {
 		Command cmd = new Command(Command.Type.CHANGE_SAVE_LOC, userRawInput);
-		cmd.setText(newPath);
+		cmd.setPath(newPath);
 		return cmd;
 	}
 	

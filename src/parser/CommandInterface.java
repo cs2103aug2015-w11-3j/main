@@ -1,6 +1,8 @@
 package parser;
 
 import common.Task;
+
+import java.nio.file.Path;
 import java.util.Date;
 
 public interface CommandInterface {
@@ -56,6 +58,7 @@ public interface CommandInterface {
 	public Date getStart ();
 	// also represents end of date range for filtering by date
 	public Date getEnd ();
+	public Path getPath();
 	
 	// For search {{ use getText }}
 	//public String getSearchKeyword ();

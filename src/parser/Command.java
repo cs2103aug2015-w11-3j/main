@@ -1,5 +1,6 @@
 package parser;
 
+import java.nio.file.Path;
 import java.util.Date;
 import common.Task;
 
@@ -27,6 +28,7 @@ public class Command implements CommandInterface {
 	// field values
 	private String _name;
 	private Date _startDate, _endDate;
+	private Path _path;
 //	private String _keyword;
 
 	////////////////////////////////////////////////////////////////////////////////////	
@@ -57,6 +59,9 @@ public class Command implements CommandInterface {
 	}
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
+	}
+	void setPath (Path p) {
+		_path = p;
 	}
 //	void setKeyword (String keyword) {
 //		_keyword = keyword;
@@ -100,6 +105,11 @@ public class Command implements CommandInterface {
 	@Override
 	public Date getEnd () {
 		return _endDate == null ? null : (Date)_endDate.clone();
+	}
+
+	@Override
+	public Path getPath() {
+		return _path;
 	}
 
 //	@Override
