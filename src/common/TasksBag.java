@@ -18,7 +18,7 @@ public class TasksBag implements Iterable<Task> {
         COMPLETE_TASKS, INCOMPLETE_TASKS, NONE
     }
 
-    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS; // Should be
+    private FilterBy cFilterState = FilterBy.INCOMPLETE_TASKS; // Should be
                                                                // showing
                                                                // unmarked
                                                                // version
@@ -64,7 +64,7 @@ public class TasksBag implements Iterable<Task> {
 
     public void setSortState(FilterBy attribute) {
         assert attribute != null;
-        cFliterState = attribute;
+        cFilterState = attribute;
     }
 
     public void setSearchState(String keyword) {
@@ -80,7 +80,7 @@ public class TasksBag implements Iterable<Task> {
 
         ObservableList<Task> newContainer = null;
 
-        switch (cFliterState) {
+        switch (cFilterState) {
             /*
              * Not support date filtering case DATE: // Reverse sorting with
              * earliest on top newContainer = TasksBag.copy(tasks);
@@ -129,7 +129,7 @@ public class TasksBag implements Iterable<Task> {
         // Transfer the current state to the new bag
         // UI uses the sort state to identify current tab
         TasksBag rtnBag = new TasksBag(newContainer);
-        rtnBag.setSortState(cFliterState);
+        rtnBag.setSortState(cFilterState);
         return rtnBag;
     }
 
@@ -209,7 +209,7 @@ public class TasksBag implements Iterable<Task> {
     }
 
     public FilterBy getState() {
-        return cFliterState;
+        return cFilterState;
     }
 
     public boolean isEmpty() {

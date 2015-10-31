@@ -44,5 +44,5 @@ Temporary Items
 /bin/
 .classpath
 tasks.json
-.config
+config.json
 log.txt
