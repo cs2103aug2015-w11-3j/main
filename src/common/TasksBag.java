@@ -19,16 +19,22 @@ public class TasksBag implements Iterable<Task> {
         COMPLETE_TASKS, INCOMPLETE_TASKS, NONE, TODAY
     }
 
+    public static enum FilterDateState {
+        NONE, AFTER, BEFORE, BETWEEN
+    }
+
     private static final int FLOAT_LIMIT = 3;
     private static final int TASKS_LIMIT = 15;
-    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS; // Should be
-                                                               // showing
-                                                               // unmarked
-                                                               // version
+    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS;
     private String cSearchState = null;
     private ObservableList<Task> tasks;
     private Date cFilterDateStart;
     private Date cFilterDateEnd;
+    private FilterDateState cDateState = FilterDateState.NONE;
+
+    public FilterDateState getDateState() {
+        return cDateState;
+    }
 
     public TasksBag() {
         tasks = FXCollections.observableArrayList();
@@ -129,8 +135,9 @@ public class TasksBag implements Iterable<Task> {
                     newContainer.addAll(taskNonFloat);
                     newContainer.addAll(taskFloat);
                 } else {
-                    
-                    if (taskFloat.size() <= FLOAT_LIMIT) {// float count is smaller
+
+                    if (taskFloat.size() <= FLOAT_LIMIT) {// float count is
+                                                          // smaller
                         // fill with float then the rest with nonfloat
                         newContainer.addAll(taskFloat);
                         trimList(taskNonFloat, TASKS_LIMIT - newContainer.size());
