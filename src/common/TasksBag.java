@@ -26,7 +26,7 @@ public class TasksBag implements Iterable<Task> {
     private static final int FLOAT_LIMIT = 3;
     private static final int TASKS_LIMIT = 15;
 
-    private FilterBy cFliterState = FilterBy.INCOMPLETE_TASKS;
+    private FilterBy cFilterState = FilterBy.INCOMPLETE_TASKS;
     private String cSearchState = null;
     private ObservableList<Task> tasks;
     private Date cFilterDateStart;
