@@ -21,9 +21,7 @@ public class SearchAction implements Action {
     @Override
     public Feedback execute() throws LogicException {
         String formattedString;
-        
-        cCommand.getStart();
-        cCommand.getEnd();
+
         cBag.setSearchState(cKeyword);
         formattedString = Utilities.formatString(USR_MSG_SEARCH_COMPLETE, cKeyword);
 

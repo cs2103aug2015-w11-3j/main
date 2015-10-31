@@ -1,6 +1,7 @@
 package common;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -21,7 +22,7 @@ public class Task {
 
     // Reference for possible updatable Celebi data fields
     public static enum DataType {
-        NAME, DATE_START, DATE_END, IMPORTANCE //, IS_COMPLETED
+        NAME, DATE_START, DATE_END, IMPORTANCE // , IS_COMPLETED
     }
 
     public static enum Type {
@@ -157,13 +158,13 @@ public class Task {
 
     private boolean nameHasTokens(List<String> tokens) {
         String nameLowerCase = cName.get().toLowerCase();
-        
-        for(String toCompare : tokens){
+
+        for (String toCompare : tokens) {
             toCompare = toCompare.toLowerCase();
-            if(nameLowerCase.contains(toCompare)){
+            if (nameLowerCase.contains(toCompare)) {
                 return true;
             }
-        }        
+        }
         return false;
     }
 
@@ -197,12 +198,12 @@ public class Task {
             return startIsWithin && endIsWithin;
         }
     }
-    
+
     public Task clone() {
-    	Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
-    	newTask.setImportant(cIsImportant);
-    	newTask.setComplete(cIsCompleted);
-    	return newTask;
+        Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
+        newTask.setImportant(cIsImportant);
+        newTask.setComplete(cIsCompleted);
+        return newTask;
     }
 
     private boolean isWithinBothDates(Date start, Date end, Date toCompare) {
@@ -220,4 +221,33 @@ public class Task {
      * Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()); }
      * else { date = null; } return date; }
      */
+
+    public boolean hasDate() {
+        return cType.get() != Type.FLOATING;
+    }
+
+    public boolean isToday() {
+        if (hasDate() == false) {
+            return false;
+        } else {
+            Date compare = getAnyDate();
+            assert compare != null;
+            
+            Date today = new Date();
+            return today.getDate() == compare.getDate();
+        }
+    }
+
+    /**
+     * Obtains the available date that this task contains.
+     * Always gets the start date before end
+     * @return
+     */
+    private Date getAnyDate() {
+        Date rtn = cStart.get();
+        if (rtn == null) {
+            rtn = cEnd.get();
+        }
+        return rtn;
+    }
 }

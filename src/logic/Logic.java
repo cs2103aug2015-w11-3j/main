@@ -9,6 +9,7 @@ import logic.exceptions.UnknownCommandException;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
 import parser.Command;
+import parser.Command.Type;
 import parser.Parser;
 import parser.ParserInterface;
 import storage.Storage;
@@ -55,13 +56,15 @@ public class Logic implements LogicInterface {
     @Override
     public Feedback executeCommand(String userString) throws LogicException {
         Command rtnCmd = cParser.parseCommand(userString);
-
+        if(userString.equals("show today")){
+            return cInvoker.placeAction(new SortAction(Parser.getParser().makeShow(Type.SHOW_TODAY) , cInternalBag, TasksBag.FilterBy.TODAY));
+        }
         log.info("executing " + userString);
         return executeParsed(rtnCmd);
     }
 
     private Feedback executeParsed(Command rtnCmd) throws LogicException {
-
+        
         Feedback fb;
         switch (rtnCmd.getCmdType()) {
             case ADD:

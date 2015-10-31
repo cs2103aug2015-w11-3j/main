@@ -13,6 +13,7 @@ import parser.Command;
 public class SortAction implements Action {
     private static final String USR_MSG_SORT_COMPLETE = "Switching view to completed tasks";
     private static final String USR_MSG_SORT_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_SORT_TODAY = "Switching view to today tasks";
 
     private Command cCommand;
     private TasksBag cBag;
@@ -31,9 +32,15 @@ public class SortAction implements Action {
         switch(cSortBy){
             case COMPLETE_TASKS:
                 msg = USR_MSG_SORT_COMPLETE;
+                cBag.setSortState(FilterBy.COMPLETE_TASKS);
                 break;
             case INCOMPLETE_TASKS:
                 msg = USR_MSG_SORT_INCOMPLETE;
+                cBag.setSortState(FilterBy.INCOMPLETE_TASKS);
+                break;
+            case TODAY:
+                msg = USR_MSG_SORT_TODAY;
+                cBag.setSortState(FilterBy.TODAY);
                 break;
             case NONE:
                 assert false;
@@ -43,7 +50,7 @@ public class SortAction implements Action {
                 break;
             
         }
-        cBag.setSortState(cSortBy);
+        
         
         // both search string and filter date will be reset
         cBag.setSearchState(null);
