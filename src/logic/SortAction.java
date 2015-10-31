@@ -32,22 +32,25 @@ public class SortAction implements Action {
         switch(cSortBy){
             case COMPLETE_TASKS:
                 msg = USR_MSG_SORT_COMPLETE;
+                cBag.setSortState(FilterBy.COMPLETE_TASKS);
                 break;
             case INCOMPLETE_TASKS:
                 msg = USR_MSG_SORT_INCOMPLETE;
-                break;
-            case NONE:
-                assert false;
+                cBag.setSortState(FilterBy.INCOMPLETE_TASKS);
                 break;
             case TODAY:
                 msg = USR_MSG_SORT_TODAY;
+                cBag.setSortState(FilterBy.TODAY);
+                break;
+            case NONE:
+                assert false;
                 break;
             default:
                 assert false;
                 break;
             
         }
-        cBag.setSortState(cSortBy);
+        
         
         // both search string and filter date will be reset
         cBag.setSearchState(null);
