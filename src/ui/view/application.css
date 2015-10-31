@@ -1,5 +1,5 @@
 .root{
-    -fx-font-size: 9pt;
+    -fx-font-size: 9.5pt;
     -fx-font-family: "Helvetica Bold";
 }
 
@@ -108,7 +108,6 @@
 }
 
 .table-row-cell {
-	/*-fx-fixed-cell-size: 100px;*/
 	-fx-background-color: #ffffff;
 	-fx-text-fill: #347150;
 }
@@ -197,7 +196,7 @@
 #feedback-area {
     -fx-background-color: #e4f2d4;
     -fx-fill: #7eb758;
-    -fx-padding: 10 6 10 6;
+    -fx-padding: 6 10 6 10;
 }
 
 #feedback-area .text {
