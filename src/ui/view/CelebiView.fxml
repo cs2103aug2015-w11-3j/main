@@ -11,14 +11,19 @@
    <children>
       <AnchorPane prefHeight="650.0" prefWidth="850.0">
          <children>
-            <SplitPane dividerPositions="0.82" layoutX="330.0" layoutY="340.0" orientation="VERTICAL" prefHeight="650.0" prefWidth="850.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane dividerPositions="0.8197226502311248" focusTraversable="false" layoutX="330.0" layoutY="340.0" orientation="VERTICAL" prefHeight="650.0" prefWidth="850.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" mouseTransparent="true" prefHeight="472.0" prefWidth="800.0" styleClass="background">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="800.0" styleClass="background">
                      <children>
                         <AnchorPane layoutX="92.0" layoutY="57.0" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
                            <children>
                               <TabPane fx:id="statePane" mouseTransparent="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="365.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <tabs>
+                                    <Tab text="What's up">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                      </content>
+                                    </Tab>
                                   <Tab closable="false" text="Incompleted">
                                        <content>
                                           <AnchorPane id="tab-anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
@@ -31,7 +36,7 @@
                                   </Tab>
                                 </tabs>
                               </TabPane>
-                              <TableView fx:id="celebiTable" nodeOrientation="LEFT_TO_RIGHT" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+                              <TableView fx:id="celebiTable" focusTraversable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
                                 <columns>
                                     <TableColumn prefWidth="20.0" resizable="false" />
                                   <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" resizable="false" sortable="false" text="ID" />
@@ -46,9 +51,10 @@
                               </TableView>
                            </children>
                         </AnchorPane>
+                        <Label maxWidth="750.0" text="Current filter: None.    Current search: None." AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="50.0" />
                      </children>
                   </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="87.0" prefWidth="800.0">
+                <AnchorPane maxHeight="112.0" minHeight="0.0" minWidth="0.0" prefHeight="87.0" prefWidth="800.0">
                      <children>
                         <SplitPane dividerPositions="0.6" layoutX="334.0" layoutY="-27.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <items>

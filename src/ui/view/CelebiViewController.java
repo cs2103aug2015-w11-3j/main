@@ -92,7 +92,7 @@ public class CelebiViewController {
     	initializeSecondPrepColumn(secondPrepColumn);
     	*/
     	
-    	celebiTable.setMouseTransparent(true);
+    	//celebiTable.setMouseTransparent(true);
     	
     	initializeCommandPane();
     	initializeCommandField();
@@ -317,9 +317,12 @@ public class CelebiViewController {
 		SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
 		FilterBy state = bag.getState();
 		if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
-			selectionModel.select(1);
+			selectionModel.select(2);
 		}
 		else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
+			selectionModel.select(1);
+		}
+		else if (state == common.TasksBag.FilterBy.TODAY) {
 			selectionModel.select(0);
 		}
 	}
