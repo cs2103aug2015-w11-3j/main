@@ -305,7 +305,7 @@ public class TasksBag implements Iterable<Task> {
             cDateState = FilterDateState.NONE;
         } else if (cFilterDateStart.equals(Utilities.absBeginningTime())) {
             cDateState = FilterDateState.BEFORE;
-        } else if (cFilterDateEnd == Utilities.absEndingTime()) {
+        } else if (cFilterDateEnd.equals(Utilities.absEndingTime())) {
             cDateState = FilterDateState.AFTER;
         } else {
             cDateState = FilterDateState.BETWEEN;
