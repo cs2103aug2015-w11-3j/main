@@ -15,8 +15,8 @@ import java.util.Scanner;
 
 public class Parser implements ParserInterface {
 	
-	public static final String HELP_LIST_CMDS = 
-			"add, del, edit | mark, unmark | show | undo, redo | ";
+	public static final String HELP_LIST_ALL_CMDS = 
+			"| help, quit | add, del, edit | mark, unmark | show | undo, redo | search, filter | move |";
 	public static final String HELP_FORMAT_ADD = 
 			"\"add <name>\" OR \"add <name>; by <due date>\" OR \"add <name>; from <start date> to <end date>\"";
 	public static final String HELP_FORMAT_DEL = 
@@ -33,6 +33,16 @@ public class Parser implements ParserInterface {
 			"\"undo\" OR \"un\" OR \"u\"";
 	public static final String HELP_FORMAT_REDO = 
 			"\"redo\" OR \"re\"";
+	public static final String HELP_FORMAT_SEARCH = 
+			"\"search <words to find in names>\" OR \"s <words to find in names\"";
+	public static final String HELP_FORMAT_FILTER = 
+			"\"filter before/after <reference date>\" OR \"filter from \"";
+	public static final String HELP_FORMAT_MOVE = 
+			"\"move <new save file path>\"";
+	public static final String HELP_FORMAT_QUIT = 
+			"\"quit\" OR \"q\"";
+	public static final String HELP_FORMAT_HELP = 
+			"\"help\" OR \"help <command name (from list of cmds from \"help\")>\"";
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
 	/////////////////////////////////////////////////////////////////
@@ -169,8 +179,8 @@ public class Parser implements ParserInterface {
 		if (arrayContains(Aliases.CMD_FILTER, token)) {
 			return Command.Type.FILTER_DATE;
 		}
-		if (arrayContains(Aliases.CMD_CHANGE_SAVE_LOC, token)) {
-			return Command.Type.CHANGE_SAVE_LOC;
+		if (arrayContains(Aliases.CMD_MOVE, token)) {
+			return Command.Type.MOVE;
 		}
 		if (arrayContains(Aliases.CMD_HELP, token)) {
 			return Command.Type.HELP;
@@ -217,8 +227,8 @@ public class Parser implements ParserInterface {
 			case FILTER_DATE :
 				return parseFilterDate(args);
 				//break;
-			case CHANGE_SAVE_LOC:
-				return parseChangeSaveLoc(args);
+			case MOVE:
+				return parseMove(args);
 				//break;
 			case HELP:
 				return parseHelp(args);
@@ -377,12 +387,12 @@ public class Parser implements ParserInterface {
 		
 		return makeInvalid();
 	}
-	private Command parseChangeSaveLoc (String args) {
+	private Command parseMove (String args) {
 		assert(args != null);
 		if (args.length() != 0) {
 			try {
 				Path p = parsePath(parseText(args));
-				return makeChangeSaveLoc(p);
+				return makeMove(p);
 			} catch (ParseException pe) {
 				;
 			}
@@ -528,8 +538,8 @@ public class Parser implements ParserInterface {
 		return cmd;
 	}
 	@Override
-	public Command makeChangeSaveLoc (Path newPath) {
-		Command cmd = new Command(Command.Type.CHANGE_SAVE_LOC, userRawInput);
+	public Command makeMove (Path newPath) {
+		Command cmd = new Command(Command.Type.MOVE, userRawInput);
 		cmd.setPath(newPath);
 		return cmd;
 	}

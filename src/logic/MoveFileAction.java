@@ -32,7 +32,7 @@ public class MoveFileAction implements Action {
 
     @Override
     public Feedback execute() throws LogicException {
-        assert cCommand.getCmdType() == Command.Type.CHANGE_SAVE_LOC : cCommand.getCmdType();
+        assert cCommand.getCmdType() == Command.Type.MOVE : cCommand.getCmdType();
         Feedback fb;
         ConfigurationInterface config = Configuration.getInstance();
     	

@@ -97,7 +97,7 @@ public class Logic implements LogicInterface {
             case FILTER_DATE:
                 fb = cInvoker.placeAction(new FilterDateAction(rtnCmd, cInternalBag));
                 break;
-            case CHANGE_SAVE_LOC:
+            case MOVE:
                 fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case QUIT:

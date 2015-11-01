@@ -24,7 +24,7 @@ public interface ParserInterface {
 	public Command makeUnmark (int taskUID);
 	public Command makeSearch (String searchKey);
 	public Command makeFilterDate (Date rangeStart, Date rangeEnd);
-	public Command makeChangeSaveLoc (Path newPath);
+	public Command makeMove (Path newPath);
 	public Command makeHelp (Command.Type helpTarget);
 	
 	// to debug command

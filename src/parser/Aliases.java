@@ -67,14 +67,15 @@ public final class Aliases {
 			"display"
 	};
 	static final String[] CMD_SEARCH = {
+			"s",
 			"search",
-			"find"
 	};
 	static final String[] CMD_FILTER = {
+			"f",
 			"fil",
 			"filter"
 	};
-	static final String[] CMD_CHANGE_SAVE_LOC = {
+	static final String[] CMD_MOVE = {
 			"mv",
 			"move"
 	};
@@ -94,7 +95,7 @@ public final class Aliases {
 			CMD_SHOW,
 			CMD_SEARCH,
 			CMD_FILTER,
-			CMD_CHANGE_SAVE_LOC,
+			CMD_MOVE,
 			CMD_HELP
 	};
 	
