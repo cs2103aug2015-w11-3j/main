@@ -15,6 +15,9 @@ import java.util.Scanner;
 
 public class Parser implements ParserInterface {
 	
+	/////////////////////////////////////////////////////////////////
+	// Human-readable strings for command formats (used by HelpAction)
+	/////////////////////////////////////////////////////////////////
 	public static final String HELP_LIST_ALL_CMDS = 
 			"| help, quit | add, del, edit | mark, unmark | show | undo, redo | search, filter | move |";
 	public static final String HELP_FORMAT_ADD = 
@@ -43,6 +46,7 @@ public class Parser implements ParserInterface {
 			"\"quit\" OR \"q\"";
 	public static final String HELP_FORMAT_HELP = 
 			"\"help\" OR \"help <command name (from list of cmds from \"help\")>\"";
+	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
 	/////////////////////////////////////////////////////////////////
