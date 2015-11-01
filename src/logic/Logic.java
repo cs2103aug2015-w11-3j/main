@@ -57,7 +57,7 @@ public class Logic implements LogicInterface {
     public Feedback executeCommand(String userString) throws LogicException {
         Command rtnCmd = cParser.parseCommand(userString);
         if(userString.equals("show today")){
-            return cInvoker.placeAction(new SortAction(Parser.getParser().makeShow(Type.SHOW_TODAY) , cInternalBag, TasksBag.FilterBy.TODAY));
+            return cInvoker.placeAction(new SortAction(Parser.getParser().makeShow(Type.SHOW_DEFAULT) , cInternalBag, TasksBag.FilterBy.TODAY));
         }
         log.info("executing " + userString);
         return executeParsed(rtnCmd);

@@ -24,7 +24,6 @@ public final class Aliases {
 			"create"
 	};
 	static final String[] CMD_UPD = {
-			"u",	
 			"upd",
 			"update",
 			"set",
@@ -50,7 +49,8 @@ public final class Aliases {
 	};
 	static final String[] CMD_UNMARK = {
 			"unmark",
-			"reopen" 
+			"reopen",
+			"uncomplete"
 	};
 	static final String[] CMD_UNDO = {
 			"u",
@@ -63,7 +63,8 @@ public final class Aliases {
 	};
 	static final String[] CMD_SHOW = {
 			"show",
-			"view"
+			"view",
+			"display"
 	};
 	static final String[] CMD_SEARCH = {
 			"search",
@@ -116,6 +117,30 @@ public final class Aliases {
 			"due",
 			"till",
 			"until"
+	};
+
+	/////////////////////////////////////////////////////
+	// Aliases for Task field tokens
+	/////////////////////////////////////////////////////
+	static final String[] VIEW_DEFAULT = {
+			"",
+			"urgent",
+			"default",
+			"upcoming",
+	};
+	static final String[] VIEW_INCOMPLETE = {
+			"undone",
+			"open",
+			"incomplete",
+			"unfinished",
+			"pending"
+	};
+	static final String[] VIEW_COMPLETE = {
+			"done",
+			"closed",
+			"complete",
+			"completed",
+			"finished"
 	};
 	
 	/*

@@ -15,6 +15,24 @@ import java.util.Scanner;
 
 public class Parser implements ParserInterface {
 	
+	public static final String HELP_LIST_CMDS = 
+			"add, del, edit | mark, unmark | show | undo, redo | ";
+	public static final String HELP_FORMAT_ADD = 
+			"\"add <name>\" OR \"add <name>; by <due date>\" OR \"add <name>; from <start date> to <end date>\"";
+	public static final String HELP_FORMAT_DEL = 
+			"\"del <task ID number>\"";
+	public static final String HELP_FORMAT_UPD = 
+			"\"edit <task ID number> name/start/end <new value>\"";
+	public static final String HELP_FORMAT_MARK = 
+			"\"mark <task ID number>\"";
+	public static final String HELP_FORMAT_UNMARK = 
+			"\"unmark <task ID number>\"";
+	public static final String HELP_FORMAT_SHOW = 
+			"\"\"";
+	public static final String HELP_FORMAT_UNDO = 
+			"\"undo\" OR \"un\" OR \"u\"";
+	public static final String HELP_FORMAT_REDO = 
+			"\"redo\" OR \"re\"";
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
 	/////////////////////////////////////////////////////////////////
@@ -28,12 +46,10 @@ public class Parser implements ParserInterface {
 	private final Pattern P_ADD_FLT;
 	private static final String REGEX_ADD_FLT = 
 			"^(?<name>[^;]+)$";
-	
 	// <name>; by|due <end>
 	private final Pattern P_ADD_DL;
 	private static final String REGEX_ADD_DL = 
 			"^(?<name>[^;]+);\\s+(?:by|due|at)\\s(?<end>.+)$";
-	
 	// <name>; from|start <start> end|to|till|until|due <end>
 	private final Pattern P_ADD_EVT;
 	private static final String REGEX_ADD_EVT = 
@@ -67,11 +83,9 @@ public class Parser implements ParserInterface {
 	/////////////////////////////////////////////////////////////////
 	// instance fields
 	/////////////////////////////////////////////////////////////////
-	
 	private String userRawInput;
 	private static Parser parserInstance;
 	private final CelebiDateFormatter DATE_FORMATTER;
-
 	/////////////////////////////////////////////////////////////////
 	
 	private Parser () {
@@ -89,7 +103,6 @@ public class Parser implements ParserInterface {
 		P_FILTER_AFT = Pattern.compile(REGEX_FILTER_AFT, CASE_INSENSITIVE);
 		P_FILTER_BTW = Pattern.compile(REGEX_FILTER_BTW, CASE_INSENSITIVE);
 	}
-	
 	// singleton access
 	public static Parser getParser () {
 		if (parserInstance == null) {
@@ -159,7 +172,9 @@ public class Parser implements ParserInterface {
 		if (arrayContains(Aliases.CMD_CHANGE_SAVE_LOC, token)) {
 			return Command.Type.CHANGE_SAVE_LOC;
 		}
-		
+		if (arrayContains(Aliases.CMD_HELP, token)) {
+			return Command.Type.HELP;
+		}
 		return Command.Type.INVALID;
 	}
 
@@ -168,32 +183,46 @@ public class Parser implements ParserInterface {
 		switch (type) {
 			case ADD :
 				return parseAdd(args);
+				//break;
 			case DELETE : 
 				return parseDel(args);
+				//break;
 			case UPDATE : 
 				return parseUpd(args);
+				//break;
 			case QUIT :
 				return parseQuit(args);
+				//break;
 			case INVALID :
 				return makeInvalid();
+				//break;
 			case show_temp :
 				return parseShow(args);
+				//break;
 			case REDO :
 				return parseRedo(args);
+				//break;
 			case UNDO :
 				return parseUndo(args);
+				//break;
 			case MARK :
 				return parseMark(args);
+				//break;
 			case UNMARK :
 				return parseUnmark(args);
+				//break;
 			case SEARCH :
 				return parseSearch(args);
+				//break;
 			case FILTER_DATE :
 				return parseFilterDate(args);
+				//break;
 			case CHANGE_SAVE_LOC:
 				return parseChangeSaveLoc(args);
+				//break;
 			case HELP:
 				return parseHelp(args);
+				//break;
 			default :
 				break;
 			}
@@ -267,15 +296,15 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseShow (String args) {
 		assert(args != null);
-		if (args.length() == 0) {
+		args = args.toLowerCase();
+		if (arrayContains(Aliases.VIEW_DEFAULT, args)) {
+			return makeShow(Command.Type.SHOW_DEFAULT);
+		}
+		if (arrayContains(Aliases.VIEW_INCOMPLETE, args)) {
 			return makeShow(Command.Type.SHOW_INCOMPLETE);
 		}
-		switch (args) {
-			case "done" :
-			case "complete" :
-			case "completed" :
-				return makeShow(Command.Type.SHOW_COMPLETE);
-			default :
+		if (arrayContains(Aliases.VIEW_COMPLETE, args)) {
+			return makeShow(Command.Type.SHOW_COMPLETE);
 		}
 		return makeInvalid();
 	}
@@ -529,8 +558,4 @@ public class Parser implements ParserInterface {
 		}
 	}
 
-	// Logic test function	// By Ken
-	public Command makeType(Command.Type type){
-		return new Command(type, "");
-	}
 }
