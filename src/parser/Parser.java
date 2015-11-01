@@ -32,12 +32,12 @@ public class Parser implements ParserInterface {
 	// <name>; by|due <end>
 	private final Pattern P_ADD_DL;
 	private static final String REGEX_ADD_DL = 
-			"^(?<name>[^;]+);\\s+(?:by|due)\\s(?<end>.+)$";
+			"^(?<name>[^;]+);\\s+(?:by|due|at)\\s(?<end>.+)$";
 	
 	// <name>; from|start <start> end|to|till|until|due <end>
 	private final Pattern P_ADD_EVT;
 	private static final String REGEX_ADD_EVT = 
-			"^(?<name>[^;]+);\\s+(?:from|start)\\s(?<start>.+)\\s(?:till|to|until|end|due)\\s(?<end>.+)$";
+			"^(?<name>[^;]+);\\s+(?:from|start)\\s+(?<start>.+)\\s+(?:till|to|until|end|due)\\s+(?<end>.+)$";
 	
 	// <uid>
 	private final Pattern P_DEL;
@@ -123,40 +123,40 @@ public class Parser implements ParserInterface {
 		assert(token != null);
 		token = token.toLowerCase();
 		
-		if (arrayContains(ParserReferenceData.TOKENS_ADD, token)) {
+		if (arrayContains(Aliases.CMD_ADD, token)) {
 			return Command.Type.ADD;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_DEL, token)) {
+		if (arrayContains(Aliases.CMD_DEL, token)) {
 			return Command.Type.DELETE;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_UPD, token)) {
+		if (arrayContains(Aliases.CMD_UPD, token)) {
 			return Command.Type.UPDATE;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_QUIT, token)) {
+		if (arrayContains(Aliases.CMD_QUIT, token)) {
 			return Command.Type.QUIT;	
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_MARK, token)) {
+		if (arrayContains(Aliases.CMD_MARK, token)) {
 			return Command.Type.MARK;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_UNMARK, token)) {
+		if (arrayContains(Aliases.CMD_UNMARK, token)) {
 			return Command.Type.UNMARK;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_UNDO, token)) {
+		if (arrayContains(Aliases.CMD_UNDO, token)) {
 			return Command.Type.UNDO;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_REDO, token)) {
+		if (arrayContains(Aliases.CMD_REDO, token)) {
 			return Command.Type.REDO;			
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_SHOW, token)) {
+		if (arrayContains(Aliases.CMD_SHOW, token)) {
 			return Command.Type.show_temp;			
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_SEARCH, token)) {
+		if (arrayContains(Aliases.CMD_SEARCH, token)) {
 			return Command.Type.SEARCH;			
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_FILTER, token)) {
+		if (arrayContains(Aliases.CMD_FILTER, token)) {
 			return Command.Type.FILTER_DATE;
 		}
-		if (arrayContains(ParserReferenceData.TOKENS_CHANGE_SAVE_LOC, token)) {
+		if (arrayContains(Aliases.CMD_CHANGE_SAVE_LOC, token)) {
 			return Command.Type.CHANGE_SAVE_LOC;
 		}
 		
@@ -375,23 +375,17 @@ public class Parser implements ParserInterface {
 	
 	Task.DataType parseFieldKey (String token) throws ParseException {
 		assert(token != null);
-		switch (token.toLowerCase()) {
-			case "name" :
-				return Task.DataType.NAME;
-				
-			case "start" :
-			case "from" :
-				return Task.DataType.DATE_START;
-				
-			case "end" :	// Fallthrough
-			case "till" :	// Fallthrough
-			case "until" :	// Fallthrough
-			case "due" :
-				return Task.DataType.DATE_END;
-				
-			default:
-				throw new ParseException("", -1);
-		}	
+		token = token.toLowerCase();
+		if (arrayContains(Aliases.FIELD_NAME, token)) {
+			return Task.DataType.NAME;
+		}
+		if (arrayContains(Aliases.FIELD_START_DATE, token)) {
+			return Task.DataType.DATE_START;
+		}
+		if (arrayContains(Aliases.FIELD_END_DATE, token)) {
+			return Task.DataType.DATE_END;
+		}
+		throw new ParseException("", -1);
 	}
 	Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
 		assert(key != null && valStr != null);

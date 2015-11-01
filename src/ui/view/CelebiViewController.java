@@ -26,7 +26,7 @@ import common.TasksBag.FilterBy;
 import common.TasksBag.FilterDateState;
 import ui.Main;
 import ui.UIInterface;
-import parser.ParserReferenceData;
+import parser.Aliases;
 
 public class CelebiViewController {
 	//@@author A0133895U
@@ -54,7 +54,7 @@ public class CelebiViewController {
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-	private static final String[][] VALID_CMD_TOKENS = ParserReferenceData.getValidCmdTokens();
+	private static final String[][] VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
     
     /**
      * Initializes the controller class. This method is automatically called
