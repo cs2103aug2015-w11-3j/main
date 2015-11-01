@@ -59,6 +59,11 @@ public class DateFormatter implements CelebiDateFormatter {
 		Calendar cal = new GregorianCalendar();
 		switch (token) {
 		
+			case "none" :
+			case "empty" :
+			case "clear" :
+				return null;
+		
 			// current time
 			case "now" :
 				return new Date();

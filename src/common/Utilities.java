@@ -51,23 +51,14 @@ public final class Utilities {
 
     // @@author A0131891E
     /**
-     * Simple check for whether (T[]) array contains (T) key uses T.equals for
-     * equality check
-     * 
-     * @param arr
-     * @param key
-     * @return true if key is in array
+     * Simple check for whether (T[]) array contains (T) key
      */
     public static final <T> boolean arrayContains(T[] arr, T key) {
         assert (arr != null && key != null);
-        for (T item : arr) {
-            if (key.equals(item)) {
-                return true;
-            }
-        }
-        return false;
+        return !Arrays.stream(arr).noneMatch((x) -> key.equals(x));
     }
 
+    // @@author A0131891E
     /**
      * Returns a deep copy of its argument
      * 
