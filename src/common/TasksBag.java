@@ -298,4 +298,16 @@ public class TasksBag implements Iterable<Task> {
         cFilterDateStart = start;
         cFilterDateEnd = end;
     }
+    
+    public Date getStartDate() {
+    	return cFilterDateStart;
+    }
+    
+    public Date getEndDate() {
+    	return cFilterDateEnd;
+    }
+    
+    public String getSearchState() {
+    	return cSearchState;
+    }
 }
