@@ -1,3 +1,5 @@
+// @author Liu Yang
+
 package common;
 
 import java.io.BufferedWriter;
@@ -5,8 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.json.simple.JSONObject;
@@ -23,6 +23,8 @@ public class Configuration {
     private final String CONFIG_DIRECTORY = "bin/config.json";
     private final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
     private final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
+    
+    private final String MESSAGE_INVALID_STORAGE_LOCATION = "%1$s is not a valid path";
 
     static Configuration instance;
 
@@ -68,7 +70,7 @@ public class Configuration {
         if (!configFile.exists()) {
             // if not found, re-create and set to default configuration
             configFile.createNewFile();
-            reset();
+            resetAll();
         }
 
         configReader = new Scanner(configFile);
@@ -84,28 +86,54 @@ public class Configuration {
 
             JSONObject parsedResult = (JSONObject) JSONValue.parse(plainText);
             if (parsedResult == null) {
-                reset();
+            	resetAll();
             }
 
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
-            if (configStorageLocation == null) {
-                configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
-            } else if (!new File(configStorageLocation).exists()) {
-            	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
-            }
+            
+            if (configStorageLocation == null || !isValidPath(configStorageLocation)) {
+            	Log.log(MESSAGE_INVALID_STORAGE_LOCATION);
+            	resetStorageLocation();
+            } 
 
             writeBack();
         } catch (ClassCastException e) {
-            reset();
+        	resetAll();
         }
     }
-
-    private void reset() throws IOException {
+    
+    private void resetAll() throws IOException {
         // set all properties to default value
-        configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
+    	resetStorageLocation();
 
         // write to the configuration file
         writeBack();
+    }
+    
+    private void resetStorageLocation() {
+    	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
+    }
+    
+    private boolean isValidPath(String path) {
+    	return isValidPathName(path) && isExistingPath(path);
+    }
+    
+    private boolean isValidPathName(String path) {
+    	String[] folders = path.split("/");
+    	for(int i = 0; i < folders.length; i++) {
+    		if(!isAlphanumeric(folders[i])) {
+    			return false;
+    		}
+    	}	
+    	return true;
+    }
+    
+    private boolean isExistingPath(String path) {
+    	return new File(path).exists();
+    }
+    
+    private boolean isAlphanumeric(String s) {
+		return s.matches("[A-Za-z0-9]+");
     }
 
     private void writeBack() throws IOException {
