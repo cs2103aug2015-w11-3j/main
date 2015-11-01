@@ -50,49 +50,7 @@ public class Configuration implements ConfigurationInterface {
         }
         return instance;
     }
-
-    public String getUsrFileDirectory() {
-        return configStorageLocation;
-    }
     
-    public Time getDefaultStartTime() {
-        return new Time(configDefaultStartTime);
-    }
-    
-    public Time getDefaultEndTime() {
-        return new Time(configDefaultEndTime);
-    }
-
-    public void setUsrFileDirector(String newDir) throws IOException {
-    	if (isValidPath(newDir)) {
-    		configDefaultStartTime = newDir;
-    		
-    		// write to the configuration file
-            writeBack();
-            Log.log("usr file moved to " + newDir, this.getClass());
-    	}
-    }
-
-    public void setDefaultStartTime(String newTime) throws IOException {
-    	if (isValidTime(newTime)) {
-    		configDefaultStartTime = newTime;
-    		
-    		// write to the configuration file
-            writeBack();
-            Log.log("default start time reset to " + newTime, this.getClass());
-    	} 
-    }
-    
-    public void setDefaultEndTime(String newTime) throws IOException {
-    	if (isValidTime(newTime)) {
-    		configDefaultEndTime = newTime;
-    		
-    		// write to the configuration file
-            writeBack();
-            Log.log("default end time reset to " + newTime, this.getClass());
-    	}
-    }
-
     private Configuration() {
         try {
             findConfigFile();
@@ -153,6 +111,48 @@ public class Configuration implements ConfigurationInterface {
         	resetAll();
         }
     }
+
+    public String getUsrFileDirectory() {
+        return configStorageLocation;
+    }
+    
+    public Time getDefaultStartTime() {
+        return new Time(configDefaultStartTime);
+    }
+    
+    public Time getDefaultEndTime() {
+        return new Time(configDefaultEndTime);
+    }
+
+    public void setUsrFileDirector(String newDir) throws IOException {
+    	if (isValidPath(newDir)) {
+    		configDefaultStartTime = newDir;
+    		
+    		// write to the configuration file
+            writeBack();
+            Log.log("usr file moved to " + newDir, this.getClass());
+    	}
+    }
+
+    public void setDefaultStartTime(String newTime) throws IOException {
+    	if (isValidTime(newTime)) {
+    		configDefaultStartTime = newTime;
+    		
+    		// write to the configuration file
+            writeBack();
+            Log.log("default start time reset to " + newTime, this.getClass());
+    	} 
+    }
+    
+    public void setDefaultEndTime(String newTime) throws IOException {
+    	if (isValidTime(newTime)) {
+    		configDefaultEndTime = newTime;
+    		
+    		// write to the configuration file
+            writeBack();
+            Log.log("default end time reset to " + newTime, this.getClass());
+    	}
+    }
     
     private void logError(String invalidMsg, String arg, String resetMsg) {
     	String formatted = Utilities.formatString(invalidMsg, arg);
@@ -163,6 +163,8 @@ public class Configuration implements ConfigurationInterface {
     private void resetAll() throws IOException {
         // set all properties to default value
     	resetStorageLocation();
+    	resetDefaultStartTime();
+    	resetDefaultEndTime();
 
         // write to the configuration file
         writeBack();
@@ -218,6 +220,8 @@ public class Configuration implements ConfigurationInterface {
     private void writeBack() throws IOException {
         JSONObject configJson = new JSONObject();
         configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
+        configJson.put(KEY_DEFAULT_START_TIME, configDefaultStartTime);
+        configJson.put(KEY_DEFAULT_END_TIME, configDefaultEndTime);
 
         configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
         String text = JSONValue.toJSONString(configJson);
