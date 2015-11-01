@@ -5,12 +5,19 @@ import static common.Utilities.*;
 
 /**
  * This class holds all static immutable parser-related data used by any class.
- * In effect, it acts as a canonical data storage. Only the parser package classes
- * can change it during runtime (unadvisable). For all intents and purposes though,
- * the data here is immutable.
+ * In effect, it acts as a canonical data storage. 
  * 
- * Classes outside parser package cannot mutate the data in this class.
+ * Only the parser package classes can change it during runtime (unadvisable). 
+ * Classes outside this package cannot mutate the data inside.
  * 
+ * This purpose of this class is to make it easy for developers to implement
+ * any changes related to parsing in general; 
+ * 
+ * for example, if you want to add a new alias for the "add" command, 
+ * you only need to add the new token to the TOKENS_ADD array, and the 
+ * change will be propogated to any classes that reference TOKENS_ADD.
+ * 
+ * Note: Runtime changed will not be propogated.
  */
 public final class ParserReferenceData {
 	// Disable instantiation

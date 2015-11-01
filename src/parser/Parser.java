@@ -1,3 +1,4 @@
+//@@author A0131891E
 package parser;
 
 //import com.sun.javafx.css.Combinator;
@@ -57,17 +58,11 @@ public class Parser implements ParserInterface {
 	private final Pattern P_FILTER_AFT;
 	private static final String REGEX_FILTER_AFT = 
 			"^(?:after|aft)\\s+(?<key>.+)$";
-
+	
 	// between|b/w|btw|from|start <key1(date)> and|to|till|until|end <key2(date)>
 	private final Pattern P_FILTER_BTW;
 	private static final String REGEX_FILTER_BTW = 
 			"^(?:between|b/w|btw|from|start)\\s+(?<key1>.+)\\s+(?:and|to|till|until|end)\\s+(?<key2>.+)$";
-
-	/////////////////////////////////////////////////////////////////
-	// Mapping user input tokens to enum values
-	/////////////////////////////////////////////////////////////////
-	
-	
 	
 	/////////////////////////////////////////////////////////////////
 	// instance fields
