@@ -18,7 +18,7 @@ import org.json.simple.JSONValue;
  * 2. configuration file cannot be parsed -> rewrite in default settings
  * 3. configuration file does not have certain property -> set to default
  */
-public class Configuration {
+public class Configuration implements ConfigurationInterface {
 
     private final String CONFIG_DIRECTORY = "bin/config.json";
     private final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
@@ -35,7 +35,7 @@ public class Configuration {
     private Writer configWriter;
     private String configStorageLocation;
 
-    public static Configuration getInstance() {
+    public static ConfigurationInterface getInstance() {
         if (instance == null) {
             instance = new Configuration();
         }

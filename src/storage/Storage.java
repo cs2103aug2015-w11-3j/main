@@ -30,7 +30,7 @@ public class Storage implements StorageInterface {
     }
 
     private void connectToDatabase() throws IOException, BadFileContentException {
-    	Configuration setting = Configuration.getInstance();
+    	ConfigurationInterface setting = Configuration.getInstance();
         String fileLoc = setting.getUsrFileDirectory();
     	Database.connect(fileLoc);
         Database.load();
