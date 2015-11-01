@@ -60,34 +60,8 @@ public class UI implements UIInterface {
                 feedback = cmd.getMsg(); // "Celebi: Add entered. \n";
                 controller.appendFeedback("celebi: " + feedback);
             }
-            /*
-             * switch (cmd.getCommand().getCmdType()) { case Add: cb =
-             * cmd.getcBag(); feedback = "Celebi: Add entered. \n";
-             * controller.appendFeedback(feedback);
-             * 
-             * display(cb);
-             * 
-             * break; case Delete: feedback = "Celebi: Delete entered. \n";
-             * 
-             * cb = cmd.getcBag(); // Ken added display(cb); // Ken added
-             * controller.appendFeedback(feedback);
-             * 
-             * break; case Sort: // Ken added cb = cmd.getcBag(); display(cb);
-             * feedback = "Celebi: sort entered. \n";
-             * controller.appendFeedback(feedback); break; case ShowAll: // Ken
-             * added cb = cmd.getcBag(); display(cb); feedback =
-             * "Celebi: show all entered. \n";
-             * controller.appendFeedback(feedback); break; case Quit:
-             * System.out.println("Quit entered."); Platform.exit(); break;
-             * default: // Ken added to resolve issues when new switch cases are
-             * implemented but not yet configured cb = cmd.getcBag();
-             * display(cb); feedback = cmd.getCommand() +
-             * " type entered but not captured. \n";
-             * controller.appendFeedback(feedback); break; }
-             */
         } catch (LogicException e) {
             // TODO Auto-generated catch block
-            // e.printStackTrace();
             feedback = e.cMsg;
             controller.appendFeedback("Celebi: " + feedback);
         }
@@ -109,12 +83,8 @@ public class UI implements UIInterface {
      * @param cb
      */
     private void display(TasksBag cb) {
-        /*
-         * System.out.println("No. of elements in system: " + cb.size()); for
-         * (Task c : cb) { System.out.println(c.getName()); }
-         */
         controller.refreshSelection(cb);
-        controller.setTableItems(cb.getList());
+        controller.updateTableItems(cb.getList());
     }
 
     public ObservableList<Task> getCelebiList() {
