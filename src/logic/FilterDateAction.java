@@ -1,8 +1,7 @@
+//@@author A0125546E
 package logic;
 
 import java.util.Date;
-
-import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 import common.TasksBag;
 import common.Utilities;

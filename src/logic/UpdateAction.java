@@ -1,3 +1,4 @@
+//@@author A0125546E
 package logic;
 
 import common.Task;
@@ -33,15 +34,17 @@ public class UpdateAction implements UndoableAction {
 
         int UID = cCommand.getTaskUID();
 
+        // Lower bound
         if (UID <= 0) {
             throw new IntegrityCommandException(USR_MSG_UPDATE_OOB);
         }
-
+        
+        // Upper bound
         if (UID > cCurBag.size()) {
             throw new IntegrityCommandException(USR_MSG_UPDATE_OOB);
         }
 
-        // UID - 1 to get array index
+        // UID - 1 to get actual array mapping
         UID -= 1;
 
         cWhichTask = cCurBag.getTask(UID);

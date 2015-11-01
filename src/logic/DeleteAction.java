@@ -1,3 +1,4 @@
+//@@author A0125546E
 package logic;
 
 import java.util.logging.Logger;
@@ -14,8 +15,6 @@ import storage.StorageInterface;
 /***
  * Note that due to execute being called again when redo-ing. The task to be
  * deleted has to be decided at INIT/Constructor time. Not at execution time.
- * 
- * @author MonoChrome
  */
 public class DeleteAction implements UndoableAction {
 

@@ -146,6 +146,15 @@ public class Task {
         this.cIsImportant = impt;
     }
 
+    // @@author
+    public Task clone() {
+        Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
+        newTask.setImportant(cIsImportant);
+        newTask.setComplete(cIsCompleted);
+        return newTask;
+    }
+
+    // @@author A0125546E
     public boolean hasKeyword(String keyword) {
         if (keyword == null) {
             return true;
@@ -199,28 +208,9 @@ public class Task {
         }
     }
 
-    public Task clone() {
-        Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
-        newTask.setImportant(cIsImportant);
-        newTask.setComplete(cIsCompleted);
-        return newTask;
-    }
-
     private boolean isWithinBothDates(Date start, Date end, Date toCompare) {
         return toCompare.before(end) && toCompare.after(start);
     }
-    // private methods
-    /*
-     * private LocalDate convertToLocalDate(Date date) { LocalDate localDate; if
-     * (date != null) { localDate =
-     * date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(); } else {
-     * localDate = null; } return localDate; }
-     * 
-     * private Date convertToDate(LocalDate localDate) { Date date; if
-     * (localDate != null) { date =
-     * Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()); }
-     * else { date = null; } return date; }
-     */
 
     public boolean hasDate() {
         return cType.get() != Type.FLOATING;
@@ -232,15 +222,16 @@ public class Task {
         } else {
             Date compare = getAnyDate();
             assert compare != null;
-            
+
             Date today = new Date();
             return today.getDate() == compare.getDate();
         }
     }
 
     /**
-     * Obtains the available date that this task contains.
-     * Always gets the start date before end
+     * Obtains the available date that this task contains. Always gets the start
+     * date before end
+     * 
      * @return
      */
     private Date getAnyDate() {

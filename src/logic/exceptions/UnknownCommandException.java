@@ -1,14 +1,12 @@
+//@@author A0125546E
 package logic.exceptions;
 
 public class UnknownCommandException extends LogicException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7836866875248053818L;
+    private static final long serialVersionUID = -7836866875248053818L;
 
-	public UnknownCommandException(String msg) {
-		super(msg);
-	}
+    public UnknownCommandException(String msg) {
+        super(msg);
+    }
 
 }

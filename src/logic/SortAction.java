@@ -1,3 +1,4 @@
+//@@author A0125546E
 package logic;
 
 import common.TasksBag;
@@ -7,8 +8,8 @@ import logic.exceptions.LogicException;
 import parser.Command;
 
 /**
- * @author MonoChrome Changes the state of the internal taskbags to given sort
- *         state Undo sets the internal bag state to previous state
+ * Changes the state of the internal taskbags to given sort state Undo sets the
+ * internal bag state to previous state
  */
 public class SortAction implements Action {
     private static final String USR_MSG_SORT_COMPLETE = "Switching view to completed tasks";
@@ -18,7 +19,6 @@ public class SortAction implements Action {
     private Command cCommand;
     private TasksBag cBag;
     private FilterBy cSortBy;
-    // private FliterBy cPrevSortBy;
 
     public SortAction(Command command, TasksBag internalBag, FilterBy sortBy) throws LogicException {
         cCommand = command;
@@ -29,7 +29,7 @@ public class SortAction implements Action {
     @Override
     public Feedback execute() throws LogicException {
         String msg = "";
-        switch(cSortBy){
+        switch (cSortBy) {
             case COMPLETE_TASKS:
                 msg = USR_MSG_SORT_COMPLETE;
                 cBag.setSortState(FilterBy.COMPLETE_TASKS);
@@ -48,20 +48,13 @@ public class SortAction implements Action {
             default:
                 assert false;
                 break;
-            
+
         }
-        
-        
+
         // both search string and filter date will be reset
         cBag.setSearchState(null);
         cBag.setFilterDateState(null, null);
         return new Feedback(cCommand, cBag, msg);
     }
-
-    /*
-     * @Override public void undo() { cBag.setSortState(cPrevSortBy); }
-     * 
-     * @Override public void redo() throws LogicException { execute(); }
-     */
 
 }

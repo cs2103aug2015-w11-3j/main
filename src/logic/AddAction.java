@@ -1,3 +1,4 @@
+//@@author A0125546E
 package logic;
 
 import java.util.Date;
@@ -11,8 +12,7 @@ import parser.Command;
 import storage.StorageInterface;
 
 /**
- * 
- * @author MonoChrome Adds tasks into internal bag Undo removes the task
+ * Adds tasks into internal bag Undo removes the task
  */
 public class AddAction implements UndoableAction {
 

@@ -1,12 +1,10 @@
+//@@author A0125546E
 package common;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 
-import common.TasksBag.FilterBy;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

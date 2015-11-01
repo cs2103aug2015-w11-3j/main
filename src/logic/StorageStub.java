@@ -1,3 +1,4 @@
+//@@author A0125546E
 package logic;
 
 import common.Task;
@@ -30,10 +31,10 @@ public class StorageStub implements StorageInterface {
         return true;
     }
 
-	@Override
-	public boolean moveFileTo(String destination) {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    @Override
+    public boolean moveFileTo(String destination) {
+        // TODO Auto-generated method stub
+        return true;
+    }
 
 }
