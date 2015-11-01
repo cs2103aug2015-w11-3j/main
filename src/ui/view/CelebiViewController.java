@@ -52,8 +52,6 @@ public class CelebiViewController {
     @FXML
     private TableColumn<Task, Date> endTimeColumn;
     @FXML
-    private TableColumn<Task, String> tagColumn;
-    @FXML
     private TabPane statePane;
     @FXML
     private AnchorPane commandFieldPane;
