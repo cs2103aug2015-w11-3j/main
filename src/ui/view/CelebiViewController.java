@@ -30,9 +30,10 @@ import javafx.scene.layout.Region;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
+import common.Utilities;
+import common.ReferenceData;
 import ui.Main;
 import ui.UIInterface;
-import parser.Parser;
 
 public class CelebiViewController {
 	//@@author A0133895U
@@ -60,6 +61,7 @@ public class CelebiViewController {
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
+    private final String[][] VALID_CMD_TOKENS = ReferenceData.getValidCmdTokens();
 	
     /**
      * Initializes the controller class. This method is automatically called
@@ -235,11 +237,9 @@ public class CelebiViewController {
 	private boolean isCmdToken(String firstWord) {
 		assert(firstWord != null);
 		firstWord = firstWord.toLowerCase();
-		for (String[] tokens : Parser.TOKENS) {
-			for (String token : tokens) {
-				if (firstWord.equals(token)) {
-					return true;
-				}
+		for (String[] tokens : VALID_CMD_TOKENS) {
+			if (Utilities.arrayContains(tokens, firstWord)) {
+				return true;
 			}
 		}
 		return false;
