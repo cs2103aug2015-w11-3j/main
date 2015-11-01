@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import common.Configuration;
+import common.ConfigurationInterface;
 import common.TasksBag;
 import logic.exceptions.LogicException;
 import logic.exceptions.PathNotExistsException;
@@ -33,7 +34,7 @@ public class MoveFileAction implements Action {
     public Feedback execute() throws LogicException {
         assert cCommand.getCmdType() == Command.Type.CHANGE_SAVE_LOC : cCommand.getCmdType();
         Feedback fb;
-    	Configuration config = Configuration.getInstance();
+        ConfigurationInterface config = Configuration.getInstance();
     	
     	if(!Files.exists(cPath)) {
     		throw new PathNotExistsException(USR_MSG_MOVE_INVALID_PATH);
