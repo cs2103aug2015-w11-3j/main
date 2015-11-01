@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
+
+import common.Utilities;
+
 import java.util.regex.Matcher;
 import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
@@ -49,7 +52,7 @@ public class FullDateFormat implements DateParsingFormat {
 		
 	}
 	private DateFormat[] regexesToDFs (String[] regexes) {
-		final Date twoDigitYearStart = new Date(0); // Sets 2 digit year parsing to begin from 1970
+		final Date twoDigitYearStart = Utilities.absBeginningTime();//new Date(0); // Sets 2 digit year parsing to begin from 1970
 		final DateFormat[] dfs = new DateFormat[regexes.length];
 		for (int i = 0; i < dfs.length; i++) {
 			dfs[i] = new SimpleDateFormat(regexes[i]);

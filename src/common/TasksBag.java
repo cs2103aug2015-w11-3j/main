@@ -89,7 +89,7 @@ public class TasksBag implements Iterable<Task> {
         // assert attribute != null;
 
         ObservableList<Task> newContainer = null;
-        
+
         switch (cFilterState) {
             /*
              * Not support date filtering case DATE: // Reverse sorting with
@@ -297,5 +297,18 @@ public class TasksBag implements Iterable<Task> {
     public void setFilterDateState(Date start, Date end) {
         cFilterDateStart = start;
         cFilterDateEnd = end;
+        updateFilterDateState();
+    }
+
+    public void updateFilterDateState() {
+        if (cFilterDateStart == null && cFilterDateEnd == null) {
+            cDateState = FilterDateState.NONE;
+        } else if (cFilterDateStart.equals(Utilities.absBeginningTime())) {
+            cDateState = FilterDateState.BEFORE;
+        } else if (cFilterDateEnd == Utilities.absEndingTime()) {
+            cDateState = FilterDateState.AFTER;
+        } else {
+            cDateState = FilterDateState.BETWEEN;
+        }
     }
 }

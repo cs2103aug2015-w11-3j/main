@@ -18,7 +18,7 @@ import storage.StorageInterface;
 public class Logic implements LogicInterface {
 
     // The default view when UI first query the bag
-    private static final FilterBy DEFAULT_UI_VIEW = TasksBag.FilterBy.INCOMPLETE_TASKS;
+    private static final FilterBy DEFAULT_UI_VIEW = TasksBag.FilterBy.TODAY;
 
     private StorageInterface cStorage;
     private ParserInterface cParser;
