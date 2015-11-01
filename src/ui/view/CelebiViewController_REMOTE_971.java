@@ -11,7 +11,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -31,7 +30,6 @@ import javafx.scene.layout.Region;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
-import common.TasksBag.FilterDateState;
 import common.Utilities;
 import common.ReferenceData;
 import ui.Main;
@@ -60,8 +58,6 @@ public class CelebiViewController {
     private AnchorPane commandFieldPane;
     @FXML
     private AnchorPane feedbackPane;
-    @FXML
-    private Label filterLabel;
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
@@ -329,41 +325,5 @@ public class CelebiViewController {
 		else if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
 			selectionModel.select(2);
 		}
-	}
-	
-	public void updateFilterDisplay(TasksBag bag) {
-		String dateFilterString = getDateFilterString(bag);
-		String searchKeywordString = getSearchKeywordString(bag);
-		String displayString = "Now filtering: " + dateFilterString + ".   Now searching: " + searchKeywordString + ".";
-		filterLabel.setText(displayString);
-	}
-	
-	public String getDateFilterString(TasksBag bag) {
-		FilterDateState state = bag.getDateState();
-		Date start = bag.getStartDate();
-		Date end = bag.getEndDate();
-		String dateFilterString = "none";
-		switch(state) {
-		case NONE:
-			dateFilterString = "none";
-			break;
-		case AFTER:
-			dateFilterString = "after" + start;
-		case BEFORE:
-			dateFilterString = "before" + end;
-		case BETWEEN:
-			dateFilterString = "from" + start + "to" + end;
-		default:
-			break;
-		}
-		return dateFilterString;
-	}
-	
-	public String getSearchKeywordString(TasksBag bag) {
-		String keyword = bag.getSearchState();
-		if (keyword == null || keyword.equals("")) {
-			keyword = "none";
-		}
-		return keyword;
 	}
 }

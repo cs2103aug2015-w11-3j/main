@@ -31,9 +31,12 @@ import javafx.scene.layout.Region;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
+<<<<<<< HEAD
 import common.TasksBag.FilterDateState;
+=======
 import common.Utilities;
 import common.ReferenceData;
+>>>>>>> 9cd8f18d2532458136bb6477a3b7d31830dd5ba9
 import ui.Main;
 import ui.UIInterface;
 

@@ -3,11 +3,10 @@ package parser;
 //import com.sun.javafx.css.Combinator;
 import common.Task;
 import static java.util.regex.Pattern.*;
-
+import java.util.Arrays;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
+import static common.Utilities.*;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.*;
@@ -82,7 +81,7 @@ public class Parser implements ParserInterface {
 			"help",
 			"?"
 	};
-	public static final String[][] TOKENS = {
+	private static final String[][] TOKENS = {
 			TOKENS_ADD,
 			TOKENS_DEL,
 			TOKENS_UPD,
@@ -97,7 +96,12 @@ public class Parser implements ParserInterface {
 			TOKENS_CHANGE_SAVE_LOC,
 			TOKENS_HELP
 	};
-
+	
+	// returns deep clone of TOKENS (preserves TOKENS immutability)
+	// does not clone Strings (java Strings already immutable)
+	public static String[][] getAllCmdTokens () {
+		return str2dArrayClone(TOKENS);
+	}
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -615,16 +619,6 @@ public class Parser implements ParserInterface {
 		System.out.println("name: " + c.getText());
 		System.out.println("start: " + c.getStart());
 		System.out.println("end: "+ c.getEnd());
-	}
-	
-	private static final <T> boolean arrayContains (T[] arr, T key) {
-		assert(arr != null && key != null);
-		for (T item : arr) {
-			if (key.equals(item)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public static void main(String[] args) throws Exception {
