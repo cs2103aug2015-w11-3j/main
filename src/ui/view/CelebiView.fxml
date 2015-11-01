@@ -38,7 +38,7 @@
                               </TabPane>
                               <TableView fx:id="celebiTable" focusTraversable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
                                 <columns>
-                                    <TableColumn prefWidth="20.0" resizable="false" />
+                                    <TableColumn editable="false" prefWidth="20.0" resizable="false" sortable="false" />
                                   <TableColumn fx:id="idColumn" editable="false" prefWidth="50.0" resizable="false" sortable="false" text="ID" />
                                   <TableColumn fx:id="taskNameColumn" editable="false" prefWidth="310.0" resizable="false" sortable="false" text="Task Name" />
                                     <TableColumn fx:id="startTimeColumn" editable="false" prefWidth="140.0" resizable="false" sortable="false" text="Start Time" />
