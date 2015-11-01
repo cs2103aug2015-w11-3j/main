@@ -32,8 +32,6 @@ import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
 import common.TasksBag.FilterDateState;
-import common.Utilities;
-import common.ReferenceData;
 import ui.Main;
 import ui.UIInterface;
 import parser.ParserReferenceData;
@@ -66,8 +64,8 @@ public class CelebiViewController {
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    private final String[][] VALID_CMD_TOKENS = ParserReferenceData.getValidCmdTokens();
-	
+	private static final String[][] VALID_CMD_TOKENS = ParserReferenceData.getValidCmdTokens();
+    
     /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
@@ -243,8 +241,10 @@ public class CelebiViewController {
 		assert(firstWord != null);
 		firstWord = firstWord.toLowerCase();
 		for (String[] tokens : VALID_CMD_TOKENS) {
-			if (Utilities.arrayContains(tokens, firstWord)) {
-				return true;
+			for (String token : tokens) {
+				if (firstWord.equals(token)) {
+					return true;
+				}
 			}
 		}
 		return false;
