@@ -31,12 +31,14 @@ import javafx.scene.layout.Region;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
+<<<<<<< HEAD
 import common.TasksBag.FilterDateState;
+=======
 import common.Utilities;
 import common.ReferenceData;
+>>>>>>> 9cd8f18d2532458136bb6477a3b7d31830dd5ba9
 import ui.Main;
 import ui.UIInterface;
-import parser.ParserReferenceData;
 
 public class CelebiViewController {
 	//@@author A0133895U
@@ -66,7 +68,7 @@ public class CelebiViewController {
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    private final String[][] VALID_CMD_TOKENS = ParserReferenceData.getValidCmdTokens();
+    private final String[][] VALID_CMD_TOKENS = ReferenceData.getValidCmdTokens();
 	
     /**
      * Initializes the controller class. This method is automatically called

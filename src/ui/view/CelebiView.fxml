@@ -51,7 +51,7 @@
                               </TableView>
                            </children>
                         </AnchorPane>
-                        <Label maxWidth="750.0" text="Current filter: None.    Current search: None." AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="50.0" />
+                        <Label fx:id="filterLabel" maxWidth="750.0" text="Current filter: None.    Current search: None." AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="50.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane maxHeight="112.0" minHeight="0.0" minWidth="0.0" prefHeight="87.0" prefWidth="800.0">

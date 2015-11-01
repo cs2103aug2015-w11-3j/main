@@ -84,6 +84,7 @@ public class UI implements UIInterface {
      */
     private void display(TasksBag cb) {
         controller.refreshSelection(cb);
+        controller.updateFilterDisplay(cb);
         controller.updateTableItems(cb.getList());
     }
 
