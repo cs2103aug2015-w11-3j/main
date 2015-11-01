@@ -1,3 +1,4 @@
+//@@author A0131891E
 package parser;
 
 import java.text.DateFormat;
@@ -8,7 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
 import static java.util.Calendar.*;
 
-public class PartialDateFormat implements DateParsingFormat {
+public class PartialDateFormat implements CelebiDateFormatter {
 
 	public static final String DELIM = DateFormatter.DATETIME_DELIM;
 	public static final String SEP = DateFormatter.DATETIME_SEP;
@@ -69,7 +70,7 @@ public class PartialDateFormat implements DateParsingFormat {
 	}
 	
 	@Override
-	public Date parse (String token) throws ParseException {
+	public Date parseDate (String token) throws ParseException {
 		
 		cal = new GregorianCalendar();		
 		GregorianCalendar tempCal = new GregorianCalendar(); // to extract day/month/year info from cal

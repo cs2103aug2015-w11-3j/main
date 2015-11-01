@@ -1,5 +1,7 @@
+//@@author A0131891E
 package parser;
 
+import common.Utilities;
 import java.text.ParseException;
 import java.util.Calendar;
 import static java.util.Calendar.*;
@@ -28,9 +30,20 @@ public class DateFormatter implements CelebiDateFormatter {
 	public static final String DATETIME_DELIM = "*";
 	public static final String DATETIME_SEP = "|";
 	
-	private final DateParsingFormat CONV_DF;
-	private final DateParsingFormat FULL_DF;
-	private final DateParsingFormat PART_DF;
+	// for UPDATE cmd removing of dates (task conversion event->deadline->float)
+	private static final String[] EMPTY_DATE_TOKENS = {
+		"none",
+		"remove",
+		"clear"
+	};
+
+	/////////////////////////////////////////////////////////////////
+	// Worker classes for parsing different date formats
+	/////////////////////////////////////////////////////////////////
+	
+	private final CelebiDateFormatter CONV_DF;
+	private final CelebiDateFormatter FULL_DF;
+	private final CelebiDateFormatter PART_DF;
 
 	public DateFormatter() {
 		P_DATETIME_DELIM = Pattern.compile(REGEX_DATETIME_DELIM);
@@ -119,14 +132,14 @@ public class DateFormatter implements CelebiDateFormatter {
 		
 		// try parse with full info, down to minute resolution.
 		try { 
-			return FULL_DF.parse(token);
+			return FULL_DF.parseDate(token);
 		} catch (ParseException pePart) {
 			;
 		}
 		
 		// final try: parsing partial dates (without all calendar fields filled).
 		try { 
-			return PART_DF.parse(token);
+			return PART_DF.parseDate(token);
 		} catch (ParseException peFull) {
 			;
 		}

@@ -1,3 +1,4 @@
+//@@author A0131891E
 package parser;
 
 import java.text.DateFormat;
@@ -12,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
 
-public class FullDateFormat implements DateParsingFormat {
+public class FullDateFormat implements CelebiDateFormatter {
 	
 	public static final String DELIM = DateFormatter.DATETIME_DELIM;
 	public static final String SEP = DateFormatter.DATETIME_SEP;
@@ -61,7 +62,7 @@ public class FullDateFormat implements DateParsingFormat {
 	
 	// Takes in datestring preprocessed by DateParser to handle all seperators and delimiters
 	@Override
-	public Date parse (String token) throws ParseException {
+	public Date parseDate (String token) throws ParseException {
 
 		cal = new GregorianCalendar();
 		
@@ -116,13 +117,13 @@ public class FullDateFormat implements DateParsingFormat {
 	// Expl testing
 	public static void main (String[] args) throws Exception {
 		Scanner in = new Scanner(System.in);
-		DateParsingFormat fdf = new FullDateFormat();
+		CelebiDateFormatter fdf = new FullDateFormat();
 		DateFormat df;
 		while (true) {
 			try {
 				//df = new SimpleDateFormat(in.nextLine());
 				//System.out.println(df.parse(in.nextLine()));
-			System.out.println(fdf.parse(in.nextLine()));
+			System.out.println(fdf.parseDate(in.nextLine()));
 			} catch (ParseException e) {
 				System.out.println(e);
 			}

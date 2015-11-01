@@ -1,3 +1,4 @@
+//@@author A0131891E
 package parser;
 
 import java.nio.file.Path;
@@ -5,6 +6,8 @@ import java.util.Date;
 import common.Task;
 
 public interface ParserInterface {
+	
+	// Used in actual program execution flow
 	public void init();
 	public Command parseCommand(String s);
 	

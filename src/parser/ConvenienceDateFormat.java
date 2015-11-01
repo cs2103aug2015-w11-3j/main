@@ -1,3 +1,4 @@
+//@@author A0131891E
 package parser;
 
 import java.text.ParseException;
@@ -6,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
-public class ConvenienceDateFormat implements DateParsingFormat {
+public class ConvenienceDateFormat implements CelebiDateFormatter {
 
 	private static final String[] k = {};
 	
@@ -15,7 +16,7 @@ public class ConvenienceDateFormat implements DateParsingFormat {
 	}
 
 	@Override
-	public Date parse(String s) throws ParseException {
+	public Date parseDate (String s) throws ParseException {
 		// TODO Auto-generated method stub
 		return null;
 	}

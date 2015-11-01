@@ -53,6 +53,7 @@ public final class Utilities {
      * @return deep copy of matrix
      */
     public static final String[][] str2dArrayClone (String[][] matrix) {
+    	assert(matrix != null);
     	final String[][] newMatrix = new String[matrix.length][];
 		for (int i = 0; i < newMatrix.length; i++) {
 			newMatrix[i] = Arrays.copyOf(matrix[i], matrix[i].length);
