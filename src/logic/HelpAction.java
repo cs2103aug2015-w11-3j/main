@@ -81,13 +81,16 @@ public class HelpAction implements Action {
                 msg = buildString(HelpStrings.HELP_FORMAT_UNMARK);
                 break;
             case show_temp:
+            	assert false; // should never happen; show_temp is a parse hack needs to be refactored :P
                 msg = buildString(HelpStrings.HELP_FORMAT_HELP_TEMP);
                 break;
             case UPDATE:
                 msg = buildString(HelpStrings.HELP_FORMAT_UPD);
                 break;
             case INVALID:       // Fallthrough
+            	assert false; // should never happen; no help for invalid commands
             default:
+            	assert false; // should never happen as well, this is an enum and null will not happen
                 msg = buildString(USR_MSG_HELP_INVALID);
                 break;
             
