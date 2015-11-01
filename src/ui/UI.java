@@ -58,7 +58,7 @@ public class UI implements UIInterface {
                 cb = cmd.getcBag();
                 display(cb);
                 feedback = cmd.getMsg(); // "Celebi: Add entered. \n";
-                controller.appendFeedback("celebi: " + feedback);
+                controller.appendFeedback("Celebi: " + feedback);
             }
         } catch (LogicException e) {
             // TODO Auto-generated catch block
