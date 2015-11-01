@@ -3,6 +3,8 @@ package parser;
 
 //import com.sun.javafx.css.Combinator;
 import common.Task;
+import common.Utilities;
+
 import static java.util.regex.Pattern.*;
 import java.util.Arrays;
 import java.nio.file.Path;
@@ -357,7 +359,7 @@ public class Parser implements ParserInterface {
 		if ((m = P_FILTER_BEF.matcher(args)).matches()) {
 			try {
 				end = parseDate(m.group("key"));
-				start = new Date(0);
+				start = Utilities.absBeginningTime();//new Date(0);
 				return makeFilterDate(start, end);
 			} catch (ParseException pe) {
 				;
@@ -365,7 +367,7 @@ public class Parser implements ParserInterface {
 		} else if ((m = P_FILTER_AFT.matcher(args)).matches()) {
 			try {
 				start = parseDate(m.group("key"));
-				end = new Date(Long.MAX_VALUE);
+				end = Utilities.absEndingTime();//new Date(Long.MAX_VALUE);
 				return makeFilterDate(start, end);
 			} catch (ParseException pe) {
 				;

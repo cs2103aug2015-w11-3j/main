@@ -30,6 +30,21 @@ public final class Utilities {
         return formatted;
         
     }
+    /**
+     * Provides the beginning of time in Unix term
+     * @return the epoch
+     */
+    public static Date absBeginningTime(){
+        return new Date(0);
+    }
+    
+    /**
+     * Provides the ending of time in Unix term 64-bit
+     * @return end date
+     */
+    public static Date absEndingTime(){
+        return new Date(Long.MAX_VALUE);
+    }
     //@@author A0131891E
     /**
      * Simple check for whether (T[]) array contains (T) key
