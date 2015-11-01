@@ -62,6 +62,7 @@ public class Command implements CommandInterface {
 		_endDate = d == null ? null : (Date) d.clone();
 	}
 	void setHelpCmdType (Type t) {
+		assert(t != Type.INVALID);
 		_helpCmdType = t;
 	}
 	void setPath (Path p) {
