@@ -29,6 +29,7 @@ public class LogicTest {
     public void testFullCoverage() {
 
         // Logic.java
+        testFailException("", UnknownCommandException.class);
         testFailException("khasd", UnknownCommandException.class);
         testFailException("undo", NoUndoActionException.class);
         testFailException("redo", NoRedoActionException.class);
@@ -55,24 +56,62 @@ public class LogicTest {
         testFailException("update 1 start hello", UnknownCommandException.class);
         testPass("update 1 start 2015-10-10 15:00");
         testPass("update 1 end now");
+        testPass("undo");
+        testPass("redo");
 
         // Show
         testPass("show");
         testPass("show done");
         testFailException("delete 1", IllegalAccessCommandException.class);
-        testPass("show");
+        testPass("show undone");
 
         // Mark/Unmark
         testFailException("unmark 1", AlreadyUnmarkedException.class);
         testPass("mark 1");
         testFailException("mark 0", IllegalAccessCommandException.class);
+        testPass("undo");
+        testPass("redo");
+        testPass("show done");
+        testPass("unmark 1");
+        testPass("undo");
+        testPass("redo");
+        testPass("show done");
 
         // Search
         testPass("search hello");
         testPass("show");
+        testPass("show today");
+        testPass("show done");
+        testPass("show complete");
+        testPass("show undone");
+        testPass("show incomplete");
 
         // filter
+        testPass("filter after now");
+        testPass("filter before now");
         testPass("filter from now to tmr");
+
+        // help
+        testPass("help");
+        testPass("help done");
+        testPass("help complete");
+        testPass("help undo");
+        testPass("help redo");
+        testPass("help mark");
+        testPass("help unmark");
+        testPass("help add");
+        testPass("help delete");
+        testPass("help quit");
+        testPass("help search");
+        testPass("help filter");
+        testPass("help show");
+        //testPass("help show done");
+        //testPass("help show undone");
+        //testPass("help show today");        
+        testPass("help help");
+        testFailException("help 1", UnknownCommandException.class);
+        
+        
     }
 
     @Test
@@ -93,7 +132,9 @@ public class LogicTest {
     @Test
     public void testDelete() {
         // Boundary for fail. Empty entry
+        testFailException("d -1", IntegrityCommandException.class);
         testFailException("d 0", IntegrityCommandException.class);
+        testFailException("d 1", IntegrityCommandException.class);
 
         testPass("add one");
         // Boundary for fail. 0 and 2 with size 1
@@ -186,31 +227,6 @@ public class LogicTest {
         }
         Assert.fail("Should have thrown " + whatException.getName() + " for: " + failCommand);
     }
-
-    /*
-     * 
-     * private void testFailAlreadyMarked(String failCommand) { try {
-     * logic.executeCommand(failCommand); } catch (AlreadyMarkedException e) {
-     * return; } catch (LogicException e) { Assert.fail(
-     * "Should have thrown Already Marked Exception for: " + failCommand); }
-     * Assert.fail("Should have thrown Already Marked Exception for: " +
-     * failCommand); }
-     * 
-     * private void testFailAlreadyUnmarked(String failCommand) { try {
-     * logic.executeCommand(failCommand); } catch (AlreadyUnmarkedException e) {
-     * return; } catch (LogicException e) { Assert.fail(
-     * "Should have thrown Already Unmarked Exception for: " + failCommand); }
-     * Assert.fail("Should have thrown Already Unmarked Exception for: " +
-     * failCommand); }
-     * 
-     * // Will return if it actually fails the integrity test private void
-     * testFailIntegrity(String failCommand) { try {
-     * logic.executeCommand(failCommand); } catch (IntegrityCommandException e)
-     * { return; } catch (LogicException e) { Assert.fail(
-     * "Should have thrown Integrity Exception for: " + failCommand); }
-     * Assert.fail("Should have thrown Integrity Exception for: " +
-     * failCommand); }
-     */
 
     private void init() {
         logic = new Logic();

@@ -59,6 +59,8 @@ public class Logic implements LogicInterface {
      */
     @Override
     public Feedback executeCommand(String userString) throws LogicException {
+        assert userString != null;
+        
         Command rtnCmd = cParser.parseCommand(userString);
         if(userString.equals("show today")){
             return cInvoker.placeAction(new SortAction(Parser.getParser().makeShow(Type.SHOW_DEFAULT) , cInternalBag, TasksBag.FilterBy.TODAY));
@@ -105,21 +107,19 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case QUIT:
-                log.info("recevied quit");
                 fb = new Feedback(rtnCmd, null);
                 break;
             case SEARCH:
             	fb = cInvoker.placeAction(new SearchAction(rtnCmd, cInternalBag));
                 break;
-            case INVALID:
-                log.info("recevied invalid type");
-                throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
             case SHOW_DEFAULT:
                 fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
                 break;
             case HELP:
                 fb = cInvoker.placeAction(new HelpAction(rtnCmd, cInternalBag));
                 break;
+            case INVALID:
+                throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
             default:
                 assert false : rtnCmd.getCmdType();
                 fb = new Feedback(rtnCmd, cInternalBag);
