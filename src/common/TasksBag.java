@@ -311,4 +311,16 @@ public class TasksBag implements Iterable<Task> {
             cDateState = FilterDateState.BETWEEN;
         }
     }
+    
+    public Date getStartDate() {
+    	return cFilterDateStart;
+    }
+    
+    public Date getEndDate() {
+    	return cFilterDateEnd;
+    }
+    
+    public String getSearchState() {
+    	return cSearchState;
+    }
 }

@@ -1,3 +1,4 @@
+//@@author A0131891E
 package parser;
 
 //import com.sun.javafx.css.Combinator;
@@ -5,94 +6,16 @@ import common.Task;
 import common.Utilities;
 
 import static java.util.regex.Pattern.*;
-
+import java.util.Arrays;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
+import static common.Utilities.*;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.*;
 import java.util.Scanner;
 
 public class Parser implements ParserInterface {
-
-	public static final String[] TOKENS_ADD = {
-			"a",
-			"add",
-			"new",
-			"create"
-	};
-	public static final String[] TOKENS_DEL = {
-			"d",
-			"del",
-			"delete",
-			"rm",
-			"remove"
-	};
-	public static final String[] TOKENS_UPD = {
-			"u",	
-			"upd",
-			"update",
-			"set",
-			"edit"
-	};
-	public static final String[] TOKENS_QUIT = {
-			"q",	
-			"quit",
-			"exit"
-	};
-	public static final String[] TOKENS_MARK = {
-			"done",
-			"finish",
-			"mark",
-			"complete"
-	};
-	public static final String[] TOKENS_UNMARK = {
-			"unmark",
-			"reopen" 
-	};
-	public static final String[] TOKENS_UNDO = {
-			"undo",
-			"un" 
-	};
-	public static final String[] TOKENS_REDO = {
-			"redo",
-			"re" 
-	};
-	public static final String[] TOKENS_SHOW = {
-			"show",
-			"view"
-	};
-	public static final String[] TOKENS_SEARCH = {
-			"search",
-			"find"
-	};
-	public static final String[] TOKENS_FILTER = {
-			"fil",
-			"filter"
-	};
-	public static final String[] TOKENS_CHANGE_SAVE_LOC = {
-			"mv",
-			"move"
-	};
-	public static final String[][] TOKENS = {
-			TOKENS_ADD,
-			TOKENS_DEL,
-			TOKENS_UPD,
-			TOKENS_QUIT,
-			TOKENS_MARK,
-			TOKENS_UNMARK,
-			TOKENS_UNDO,
-			TOKENS_REDO,
-			TOKENS_SHOW,
-			TOKENS_SEARCH,
-			TOKENS_FILTER,
-			TOKENS_CHANGE_SAVE_LOC
-	};
-	
-	private static Parser parserInstance;
-	private final CelebiDateFormatter DATE_FORMATTER;
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -137,7 +60,7 @@ public class Parser implements ParserInterface {
 	private final Pattern P_FILTER_AFT;
 	private static final String REGEX_FILTER_AFT = 
 			"^(?:after|aft)\\s+(?<key>.+)$";
-
+	
 	// between|b/w|btw|from|start <key1(date)> and|to|till|until|end <key2(date)>
 	private final Pattern P_FILTER_BTW;
 	private static final String REGEX_FILTER_BTW = 
@@ -148,6 +71,8 @@ public class Parser implements ParserInterface {
 	/////////////////////////////////////////////////////////////////
 	
 	private String userRawInput;
+	private static Parser parserInstance;
+	private final CelebiDateFormatter DATE_FORMATTER;
 
 	/////////////////////////////////////////////////////////////////
 	
@@ -183,14 +108,14 @@ public class Parser implements ParserInterface {
 
 	@Override
 	public Command parseCommand (String rawInput) {
-		
 		assert(rawInput != null);
 		
 		userRawInput = rawInput;
+		// Splits input string at first whitespace substring, trimming trailing whitespace
 		String[] cmdAndArgs = P_WHITESPACE.split(rawInput.trim(), 2);
-		if (cmdAndArgs.length != 2) {
-			String[] temp = {cmdAndArgs[0], ""};
-			cmdAndArgs = temp;
+		// if no command args, set the args half of the array to empty string
+		if (cmdAndArgs.length != 2) { 
+			cmdAndArgs = new String[]{cmdAndArgs[0], ""};
 		}
 		Command.Type cmdType = getCmdType(cmdAndArgs[0]);
 		return passArgs(cmdType, cmdAndArgs[1]);
@@ -200,40 +125,40 @@ public class Parser implements ParserInterface {
 		assert(token != null);
 		token = token.toLowerCase();
 		
-		if (arrayContains(TOKENS_ADD, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_ADD, token)) {
 			return Command.Type.ADD;
 		}
-		if (arrayContains(TOKENS_DEL, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_DEL, token)) {
 			return Command.Type.DELETE;
 		}
-		if (arrayContains(TOKENS_UPD, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_UPD, token)) {
 			return Command.Type.UPDATE;
 		}
-		if (arrayContains(TOKENS_QUIT, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_QUIT, token)) {
 			return Command.Type.QUIT;	
 		}
-		if (arrayContains(TOKENS_MARK, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_MARK, token)) {
 			return Command.Type.MARK;
 		}
-		if (arrayContains(TOKENS_UNMARK, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_UNMARK, token)) {
 			return Command.Type.UNMARK;
 		}
-		if (arrayContains(TOKENS_UNDO, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_UNDO, token)) {
 			return Command.Type.UNDO;
 		}
-		if (arrayContains(TOKENS_REDO, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_REDO, token)) {
 			return Command.Type.REDO;			
 		}
-		if (arrayContains(TOKENS_SHOW, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_SHOW, token)) {
 			return Command.Type.show_temp;			
 		}
-		if (arrayContains(TOKENS_SEARCH, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_SEARCH, token)) {
 			return Command.Type.SEARCH;			
 		}
-		if (arrayContains(TOKENS_FILTER, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_FILTER, token)) {
 			return Command.Type.FILTER_DATE;
 		}
-		if (arrayContains(TOKENS_CHANGE_SAVE_LOC, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_CHANGE_SAVE_LOC, token)) {
 			return Command.Type.CHANGE_SAVE_LOC;
 		}
 		
@@ -269,6 +194,8 @@ public class Parser implements ParserInterface {
 				return parseFilterDate(args);
 			case CHANGE_SAVE_LOC:
 				return parseChangeSaveLoc(args);
+			case HELP:
+				return parseHelp(args);
 			default :
 				break;
 			}
@@ -425,17 +352,26 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseChangeSaveLoc (String args) {
 		assert(args != null);
-		Path path;
 		if (args.length() != 0) {
 			try {
-				path = parsePath(args);
-				return makeChangeSaveLoc(path);
+				Path p = parsePath(parseText(args));
+				return makeChangeSaveLoc(p);
 			} catch (ParseException pe) {
 				;
 			}
 		}
-
-		
+		return makeInvalid();
+	}
+	private Command parseHelp (String args) {
+		assert(args != null);
+		if (args.length() == 0) { // no args for help cmd
+			return makeHelp(null);
+		}
+		Command.Type helpTarget = getCmdType(args);
+		// help args can be parsed into a cmd type
+		if (helpTarget != Command.Type.INVALID) {
+			return makeHelp(helpTarget);
+		}
 		return makeInvalid();
 	}
 	
@@ -484,7 +420,7 @@ public class Parser implements ParserInterface {
 		return Paths.get(token.trim());
 	}
 	
-	
+	@Override
 	public Command makeAdd (String name, Date start, Date end) {
 		Command cmd = new Command(Command.Type.ADD, userRawInput);
 		cmd.setEnd(end);
@@ -492,6 +428,7 @@ public class Parser implements ParserInterface {
 		cmd.setText(name);
 		return cmd;
 	}
+	@Override
 	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue) throws IllegalArgumentException {
 		Command cmd = new Command(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(fieldType);
@@ -512,56 +449,73 @@ public class Parser implements ParserInterface {
 		}
 		return cmd;	
 	}
+	@Override
 	public Command makeDelete (int taskUID) {
 		Command cmd = new Command(Command.Type.DELETE, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
+	@Override
 	public Command makeQuit () {
 		Command cmd = new Command(Command.Type.QUIT, userRawInput);
 		return cmd;
 	}
+	@Override
 	public Command makeInvalid () {
 		Command cmd = new Command(Command.Type.INVALID, userRawInput);
 		return cmd;
 	}
+	@Override
 	public Command makeShow (Command.Type showtype) {
 		Command cmd = new Command(showtype, userRawInput);
 		return cmd;		
 	}
+	@Override
 	public Command makeRedo () {
 		Command cmd = new Command(Command.Type.REDO, userRawInput);
 		return cmd;
 	}
+	@Override
 	public Command makeUndo () {
 		Command cmd = new Command(Command.Type.UNDO, userRawInput);
 		return cmd;
 		
 	}
+	@Override
 	public Command makeMark (int taskUID) {
 		Command cmd = new Command(Command.Type.MARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
+	@Override
 	public Command makeUnmark (int taskUID) {
 		Command cmd = new Command(Command.Type.UNMARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
+	@Override
 	public Command makeSearch (String keyword) {
 		Command cmd = new Command(Command.Type.SEARCH, userRawInput);
 		cmd.setText(keyword);
 		return cmd;
 	}
+	@Override
 	public Command makeFilterDate (Date rangeStart, Date rangeEnd) {
 		Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
 		cmd.setStart(rangeStart);
 		cmd.setEnd(rangeEnd);
 		return cmd;
 	}
+	@Override
 	public Command makeChangeSaveLoc (Path newPath) {
 		Command cmd = new Command(Command.Type.CHANGE_SAVE_LOC, userRawInput);
 		cmd.setPath(newPath);
+		return cmd;
+	}
+	@Override
+	public Command makeHelp (Command.Type helpTarget) {
+		Command cmd = new Command(Command.Type.HELP, userRawInput);
+		cmd.setHelpCmdType(helpTarget);
 		return cmd;
 	}
 	
@@ -573,16 +527,6 @@ public class Parser implements ParserInterface {
 		System.out.println("name: " + c.getText());
 		System.out.println("start: " + c.getStart());
 		System.out.println("end: "+ c.getEnd());
-	}
-	
-	private static final <T> boolean arrayContains (T[] arr, T key) {
-		assert(arr != null && key != null);
-		for (T item : arr) {
-			if (key.equals(item)) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public static void main(String[] args) throws Exception {

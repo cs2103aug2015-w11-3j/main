@@ -1,6 +1,7 @@
 package parser;
 
 import common.Task;
+import parser.Command.Type;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -23,26 +24,27 @@ public interface CommandInterface {
 	///////////////////////////////////////////////////
 	
 	/** ALL
-	 * 
 	 * Identifies the type of command for further processing
 	 * @return Command.Type (enum), null if NA
 	 */
 	public Command.Type getCmdType ();
-	
-	/** DELETE, UPDATE
-	 * 
+	/** DELETE, UPDATE, MARK, UNMARK
 	 * Identifies a specific Celebi task object by index on UI for further processing.
 	 * Uses the index as shown on the UI to the user, Logic must perform UID->real ID mapping.
-	 * @return Integer, -1 if not applicable
+	 * @return int, -1 if not applicable
 	 */
 	public int getTaskUID ();
-	
 	/** UPDATE
-	 * 
 	 * Identifies a specific field type within the Celebi object for field-level processing.
-	 * @return Celebi.DataType (enum), null if NA
+	 * @return Task.DataType (enum), null if NA
 	 */
 	public Task.DataType getTaskField ();
+	/** HELP
+	 * Identifies the command type the user is requesting help for.
+	 * Will be null if the user is requesting the general help (to list all cmds)
+	 * @return Command.Type (enum), or null if general help requested
+	 */
+	public Type getHelpCmdType();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters
@@ -58,6 +60,7 @@ public interface CommandInterface {
 	public Date getStart ();
 	// also represents end of date range for filtering by date
 	public Date getEnd ();
+	// used for chaning save location
 	public Path getPath();
 	
 	// For search {{ use getText }}

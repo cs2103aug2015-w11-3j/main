@@ -1,7 +1,6 @@
 package ui.view;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.fxmisc.richtext.InlineCssTextArea;
@@ -11,31 +10,26 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Region;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
+import common.TasksBag.FilterDateState;
 import ui.Main;
 import ui.UIInterface;
-import parser.Parser;
+import parser.ParserReferenceData;
 
 public class CelebiViewController {
-	//@@author TODO
+	//@@author A0133895U
 	Main mainApp;
 	UIInterface ui;
 	
@@ -50,50 +44,26 @@ public class CelebiViewController {
     @FXML
     private TableColumn<Task, Date> endTimeColumn;
     @FXML
-    private TableColumn<Task, String> tagColumn;
-    @FXML
     private TabPane statePane;
-    /*
-    @FXML
-    private TableColumn<Task, Task.Type> firstPrepColumn;
-    @FXML
-    private TableColumn<Task, Task.Type> secondPrepColumn;
-    */
     @FXML
     private AnchorPane commandFieldPane;
     @FXML
     private AnchorPane feedbackPane;
+    @FXML
+    private Label filterLabel;
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-	
+	private static final String[][] VALID_CMD_TOKENS = ParserReferenceData.getValidCmdTokens();
+    
     /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
      */
     @FXML
     private void initialize() {
-    	celebiTable.setFixedCellSize(26.2);
-    	// Initialize the celebi table with the six columns.
-    	idColumn.setSortable(false);
-    	idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue())+1));
-        
-    	taskNameColumn.setCellValueFactory(
-                cellData -> cellData.getValue().nameProperty());
-    	startTimeColumn.setCellValueFactory(cellData -> cellData.getValue().startProperty());
-    	initializeDateColumn(startTimeColumn);
-    	endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().endProperty());
-    	initializeDateColumn(endTimeColumn);
-    	
-    	/*
-    	firstPrepColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
-    	initializeFirstPrepColumn(firstPrepColumn);
-    	secondPrepColumn.setCellValueFactory(cellData -> cellData.getValue().typeProperty());
-    	initializeSecondPrepColumn(secondPrepColumn);
-    	*/
-    	
-    	//celebiTable.setMouseTransparent(true);
-    	
+    	initializeCelebiTable();
+    	initializeTableColumns();
     	initializeCommandPane();
     	initializeCommandField();
     	initializeFeedbackPane();
@@ -106,9 +76,56 @@ public class CelebiViewController {
             }
         });
     }
+
+	private void initializeCelebiTable() {
+		celebiTable.setFixedCellSize(26.2);
+	}
+
+	/**
+	 * Initialize the table columns by setting the field that each column uses
+	 */
+	private void initializeTableColumns() {
+		initializeIdColumn();
+		initializeTaskNameColumn();
+    	initializeStartTimeColumn();
+    	initializeEndTimeColumn();
+	}
+
+	/**
+	 * initialize task end time column to display the end field of cell data
+	 */
+	private void initializeEndTimeColumn() {
+		endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().endProperty());
+		// format the date displayed
+		initializeDateColumn(endTimeColumn);
+	}
+
+	/**
+	 * initialize task start time column to display the start field of cell data
+	 */
+	private void initializeStartTimeColumn() {
+		startTimeColumn.setCellValueFactory(cellData -> cellData.getValue().startProperty());
+    	// format the date displayed
+		initializeDateColumn(startTimeColumn);
+	}
+
+	/**
+	 * initialize task name column to display the name field of cell data
+	 */
+	private void initializeTaskNameColumn() {
+		taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+	}
+
+	/**
+	 * initialize id column to display 1,2,3,...till number of tasks
+	 */
+	private void initializeIdColumn() {
+		idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(
+				celebiTable.getItems().indexOf(column.getValue())+1));
+	}
     
     /**
-     * Initialize the date column with text
+     * Initialize the date column with formatted date
      * @param column
      */
     private void initializeDateColumn(TableColumn<Task, Date> column) {
@@ -130,56 +147,9 @@ public class CelebiViewController {
     	    };
     	});
     }
-    
-    private void initializeFirstPrepColumn(TableColumn<Task, Task.Type> column) {
-    	column.setCellFactory(col -> {
-    		return new TableCell<Task, Task.Type>(){
-    			@Override
-    			protected void updateItem(Task.Type item, boolean empty) {
-    				super.updateItem(item, empty);
-    				
-    				if (item == Task.Type.FLOATING) {
-    					setText(null);
-    				}
-    				else if (item == Task.Type.NOEND) {
-    					setText("from");
-    				}
-    				else if (item == Task.Type.DEADLINE) {
-    					setText(null);
-    				}
-    				else if (item == Task.Type.EVENT) {
-    					setText("from");
-    				}
-    			}
-    		};
-    	});
-    }
-    
-    private void initializeSecondPrepColumn(TableColumn<Task, Task.Type> column) {
-    	column.setCellFactory(col -> {
-    		return new TableCell<Task, Task.Type>(){
-    			@Override
-    			protected void updateItem(Task.Type item, boolean empty) {
-    				super.updateItem(item, empty);
-    				
-    				if (item == Task.Type.FLOATING) {
-    					setText(null);
-    				}
-    				else if (item == Task.Type.NOEND) {
-    					setText(null);
-    				}
-    				else if (item == Task.Type.DEADLINE) {
-    					setText("due");
-    				}
-    				else if (item == Task.Type.EVENT) {
-    					setText("to");
-    				}
-    			}
-    		};
-    	});
-    }
-    
+  
     private void initializeCommandPane() {
+    	// add command area into the pane
     	commandArea = new InlineCssTextArea();
     	AnchorPane.setTopAnchor(commandArea, 5.0);
     	AnchorPane.setBottomAnchor(commandArea, 10.0);
@@ -189,10 +159,57 @@ public class CelebiViewController {
     }
     
     /**
-     * Initialize command field with enter action
+     * Initialize command field with enter action and keyword highlighting checker
      */
     private void initializeCommandField() {
-    	commandArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
+    	commandArea.requestFocus();
+    	commandArea.setId("command-area");
+    	
+    	setEnterPressedEvent();
+    	setKeywordHighlightChecker();
+    }
+
+	private void setKeywordHighlightChecker() {
+		commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
+    		String firstWord;
+    		firstWord = extractFirstWord(newValue);  		
+    		if (isCmdToken(firstWord)) {
+    			// highlight the first word
+    			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: #529228;");
+    			// leave the rest of the command unhighlighted
+    			if (newValue.length() > firstWord.length()) {
+    				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal;");
+    			}
+    		}
+    		// leave the command unhighlighted
+    		else {
+    			commandArea.setStyle(0, newValue.length(),"-fx-font-weight: normal;");
+    		}
+    	});
+	}
+
+	/**
+	 * Extract the first word from a string
+	 * @param string
+	 * @return first word
+	 */
+	private String extractFirstWord(String string) {
+		String firstWord;
+		int i = string.indexOf(' ');
+		if (i == -1) {
+			firstWord = string;
+		}
+		else {
+			firstWord = string.substring(0, i);
+		}
+		return firstWord;
+	}
+
+	/**
+	 * Add in enter pressed event for command area so that it passes the command to UI everytime enter is hit
+	 */
+	private void setEnterPressedEvent() {
+		commandArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
     	    @Override
     	    public void handle(KeyEvent keyEvent) {
     	        KeyCode code = keyEvent.getCode();
@@ -205,40 +222,7 @@ public class CelebiViewController {
     	        }
     	    }
     	});
-    	
-    	commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
-    		String firstWord;
-    		int i = newValue.indexOf(' ');
-    		if (i == -1) {
-    			firstWord = newValue;
-    		}
-    		else {
-    			firstWord = newValue.substring(0, i);
-    		}
-    		
-    		// (yijin) see the isCmdToken method i made below.
-    		/*
-    		 boolean found = false;
-    		 for (int j=0; j<commandKeywords.length; j++) {
-    			if(firstWord.equals(commandKeywords[j])) {
-    				found = true;
-    			}
-    		}*/
-    		
-    		if (isCmdToken(firstWord)) {
-    			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: #529228;");
-    			if (newValue.length() > firstWord.length()) {
-    				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal;");
-    			}
-    		}
-    		else {
-    			commandArea.setStyle(0, newValue.length(),"-fx-font-weight: normal;");
-    		}
-    	});
-    	
-    	commandArea.requestFocus();
-    	commandArea.setId("command-area");
-    }
+	}
 
     //@@author A0131891E
     // Helped you link the highlighting check to my parser's token string array.
@@ -246,7 +230,7 @@ public class CelebiViewController {
 	private boolean isCmdToken(String firstWord) {
 		assert(firstWord != null);
 		firstWord = firstWord.toLowerCase();
-		for (String[] tokens : Parser.TOKENS) {
+		for (String[] tokens : VALID_CMD_TOKENS) {
 			for (String token : tokens) {
 				if (firstWord.equals(token)) {
 					return true;
@@ -255,9 +239,10 @@ public class CelebiViewController {
 		}
 		return false;
 	}
-    //@@author TODO
     
+	//@@author A0133895U
     private void initializeFeedbackPane() {
+    	// add feedback area into the pane
     	feedbackArea = new InlineCssTextArea();
     	feedbackArea.setWrapText(true);
     	AnchorPane.setTopAnchor(feedbackArea, 5.0);
@@ -282,14 +267,14 @@ public class CelebiViewController {
 
         // Add observable list data to the table
         System.out.println(ui == null);
-        setTableItems(ui.getCelebiList());
+        updateTableItems(ui.getCelebiList());
     }
 	
 	public void setUI(UIInterface ui) {
 		this.ui = ui;
 	}
 	
-	public void setTableItems(ObservableList<Task> celebiList) {
+	public void updateTableItems(ObservableList<Task> celebiList) {
 		celebiTable.setItems(celebiList);
 	}
 	
@@ -297,11 +282,17 @@ public class CelebiViewController {
 		commandArea.clear();
 	}
 	
+	/**
+	 * Append feedback to the feedback area
+	 * @param newFeedback
+	 */
 	public void appendFeedback(String newFeedback) {
+		// if the text to be appended is the only line in feedback area, set its color green
 		if(feedbackArea.getText().equals("")) {
 			feedbackArea.appendText(newFeedback);
 			feedbackArea.setStyle(0, "-fx-fill: #7eb758;");
 		}
+		// else make the first line in feedback area black, the rest green
 		else {
 			feedbackArea.appendText(newFeedback);
 			feedbackArea.setStyle(0, "-fx-fill: black;");
@@ -313,17 +304,57 @@ public class CelebiViewController {
 		feedbackArea.clear();;
 	}
 	
+	/**
+	 * Refresh the tab selection according to the current filter state
+	 * @param bag
+	 */
 	public void refreshSelection(TasksBag bag) {
 		SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
 		FilterBy state = bag.getState();
-		if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
-			selectionModel.select(2);
+		if (state == common.TasksBag.FilterBy.TODAY) {
+			selectionModel.select(0);
 		}
 		else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
 			selectionModel.select(1);
 		}
-		else if (state == common.TasksBag.FilterBy.TODAY) {
-			selectionModel.select(0);
+		else if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
+			selectionModel.select(2);
 		}
+	}
+	
+	public void updateFilterDisplay(TasksBag bag) {
+		String dateFilterString = getDateFilterString(bag);
+		String searchKeywordString = getSearchKeywordString(bag);
+		String displayString = "Now filtering: " + dateFilterString + ".   Now searching: " + searchKeywordString + ".";
+		filterLabel.setText(displayString);
+	}
+	
+	public String getDateFilterString(TasksBag bag) {
+		FilterDateState state = bag.getDateState();
+		Date start = bag.getStartDate();
+		Date end = bag.getEndDate();
+		String dateFilterString = "none";
+		switch(state) {
+		case NONE:
+			dateFilterString = "none";
+			break;
+		case AFTER:
+			dateFilterString = "after" + start;
+		case BEFORE:
+			dateFilterString = "before" + end;
+		case BETWEEN:
+			dateFilterString = "from" + start + "to" + end;
+		default:
+			break;
+		}
+		return dateFilterString;
+	}
+	
+	public String getSearchKeywordString(TasksBag bag) {
+		String keyword = bag.getSearchState();
+		if (keyword == null || keyword.equals("")) {
+			keyword = "none";
+		}
+		return keyword;
 	}
 }

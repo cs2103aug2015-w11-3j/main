@@ -14,7 +14,7 @@ public class Command implements CommandInterface {
 		MARK, UNMARK,
 		QUIT, 
 		INVALID,
-		CHANGE_SAVE_LOC
+		CHANGE_SAVE_LOC, HELP
 	}
 
 	// Immutable, every command has these
@@ -24,6 +24,7 @@ public class Command implements CommandInterface {
 	// identifiers
 	private int _taskUID;
 	private Task.DataType _taskField;
+	private Type _helpCmdType;
 	
 	// field values
 	private String _name;
@@ -60,18 +61,18 @@ public class Command implements CommandInterface {
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
 	}
+	void setHelpCmdType (Type t) {
+		_helpCmdType = t;
+	}
 	void setPath (Path p) {
 		_path = p;
 	}
-//	void setKeyword (String keyword) {
-//		_keyword = keyword;
-//	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
 	// GETTERS
 	////////////////////////////////////////////////////////////////////////////////////
 
-	// INVALID INPUT
+	// Full user input that triggered this command
 	@Override
 	public String getRawUserInput () {
 		return _userInput;
@@ -80,7 +81,11 @@ public class Command implements CommandInterface {
 	// Identifiers
 
 	@Override
-	public Command.Type getCmdType () {
+	public Type getHelpCmdType() {
+		return _helpCmdType;
+	}
+	@Override
+	public Type getCmdType () {
 		return _cmdType;
 	}
 	@Override
@@ -106,7 +111,6 @@ public class Command implements CommandInterface {
 	public Date getEnd () {
 		return _endDate == null ? null : (Date)_endDate.clone();
 	}
-
 	@Override
 	public Path getPath() {
 		return _path;

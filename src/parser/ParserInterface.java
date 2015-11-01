@@ -22,6 +22,7 @@ public interface ParserInterface {
 	public Command makeSearch (String searchKey);
 	public Command makeFilterDate (Date rangeStart, Date rangeEnd);
 	public Command makeChangeSaveLoc (Path newPath);
+	public Command makeHelp (Command.Type helpTarget);
 	
 	// to debug command
 	public static void printCmd (Command c) {
