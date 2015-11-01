@@ -26,7 +26,7 @@ public class HelpAction implements Action {
         
         // General help command requested by user
         if(cmdType == null){
-            msg = buildString(HelpStrings.HELP_LIST_ALL_CMDS);
+            msg = buildGeneralHelpString();
         }else {
             msg = generateHelpString();
         }
@@ -90,7 +90,7 @@ public class HelpAction implements Action {
             case INVALID:       // Fallthrough
             	assert false; // should never happen; no help for invalid commands
             default:
-            	assert false; // should never happen as well, this is an enum and null will not happen
+            	assert false; // should never happen as well, this is an enum
                 msg = buildString(USR_MSG_HELP_INVALID);
                 break;
             
@@ -100,5 +100,8 @@ public class HelpAction implements Action {
 
     private String buildString(String s){
         return "Enter " + s;
+    }
+    private String buildGeneralHelpString() {
+    	return "Enter \"help " + HelpStrings.HELP_LIST_ALL_CMDS + "\"";
     }
 }
