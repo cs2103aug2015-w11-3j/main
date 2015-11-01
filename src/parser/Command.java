@@ -85,7 +85,7 @@ public class Command implements CommandInterface {
 		return _helpCmdType;
 	}
 	@Override
-	public Command.Type getCmdType () {
+	public Type getCmdType () {
 		return _cmdType;
 	}
 	@Override

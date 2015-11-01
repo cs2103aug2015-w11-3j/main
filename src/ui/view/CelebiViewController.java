@@ -36,6 +36,7 @@ import common.Utilities;
 import common.ReferenceData;
 import ui.Main;
 import ui.UIInterface;
+import parser.ParserReferenceData;
 
 public class CelebiViewController {
 	//@@author A0133895U
@@ -65,7 +66,7 @@ public class CelebiViewController {
     
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    private final String[][] VALID_CMD_TOKENS = ReferenceData.getValidCmdTokens();
+    private final String[][] VALID_CMD_TOKENS = ParserReferenceData.getValidCmdTokens();
 	
     /**
      * Initializes the controller class. This method is automatically called

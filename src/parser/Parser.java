@@ -13,95 +13,6 @@ import java.util.regex.*;
 import java.util.Scanner;
 
 public class Parser implements ParserInterface {
-
-	/////////////////////////////////////////////////////////////////
-	// Valid user command token strings
-	/////////////////////////////////////////////////////////////////
-	
-	private static final String[] TOKENS_ADD = {
-			"a",
-			"add",
-			"new",
-			"create"
-	};
-	private static final String[] TOKENS_DEL = {
-			"d",
-			"del",
-			"delete",
-			"rm",
-			"remove"
-	};
-	private static final String[] TOKENS_UPD = {
-			"u",	
-			"upd",
-			"update",
-			"set",
-			"edit"
-	};
-	private static final String[] TOKENS_QUIT = {
-			"q",	
-			"quit",
-			"exit"
-	};
-	private static final String[] TOKENS_MARK = {
-			"done",
-			"finish",
-			"mark",
-			"complete"
-	};
-	private static final String[] TOKENS_UNMARK = {
-			"unmark",
-			"reopen" 
-	};
-	private static final String[] TOKENS_UNDO = {
-			"undo",
-			"un" 
-	};
-	private static final String[] TOKENS_REDO = {
-			"redo",
-			"re" 
-	};
-	private static final String[] TOKENS_SHOW = {
-			"show",
-			"view"
-	};
-	private static final String[] TOKENS_SEARCH = {
-			"search",
-			"find"
-	};
-	private static final String[] TOKENS_FILTER = {
-			"fil",
-			"filter"
-	};
-	private static final String[] TOKENS_CHANGE_SAVE_LOC = {
-			"mv",
-			"move"
-	};
-	private static final String[] TOKENS_HELP = {
-			"help",
-			"?"
-	};
-	private static final String[][] TOKENS = {
-			TOKENS_ADD,
-			TOKENS_DEL,
-			TOKENS_UPD,
-			TOKENS_QUIT,
-			TOKENS_MARK,
-			TOKENS_UNMARK,
-			TOKENS_UNDO,
-			TOKENS_REDO,
-			TOKENS_SHOW,
-			TOKENS_SEARCH,
-			TOKENS_FILTER,
-			TOKENS_CHANGE_SAVE_LOC,
-			TOKENS_HELP
-	};
-	
-	// returns deep clone of TOKENS (preserves TOKENS immutability)
-	// does not clone Strings (java Strings already immutable)
-	public static String[][] getAllCmdTokens () {
-		return str2dArrayClone(TOKENS);
-	}
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -217,40 +128,40 @@ public class Parser implements ParserInterface {
 		assert(token != null);
 		token = token.toLowerCase();
 		
-		if (arrayContains(TOKENS_ADD, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_ADD, token)) {
 			return Command.Type.ADD;
 		}
-		if (arrayContains(TOKENS_DEL, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_DEL, token)) {
 			return Command.Type.DELETE;
 		}
-		if (arrayContains(TOKENS_UPD, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_UPD, token)) {
 			return Command.Type.UPDATE;
 		}
-		if (arrayContains(TOKENS_QUIT, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_QUIT, token)) {
 			return Command.Type.QUIT;	
 		}
-		if (arrayContains(TOKENS_MARK, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_MARK, token)) {
 			return Command.Type.MARK;
 		}
-		if (arrayContains(TOKENS_UNMARK, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_UNMARK, token)) {
 			return Command.Type.UNMARK;
 		}
-		if (arrayContains(TOKENS_UNDO, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_UNDO, token)) {
 			return Command.Type.UNDO;
 		}
-		if (arrayContains(TOKENS_REDO, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_REDO, token)) {
 			return Command.Type.REDO;			
 		}
-		if (arrayContains(TOKENS_SHOW, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_SHOW, token)) {
 			return Command.Type.show_temp;			
 		}
-		if (arrayContains(TOKENS_SEARCH, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_SEARCH, token)) {
 			return Command.Type.SEARCH;			
 		}
-		if (arrayContains(TOKENS_FILTER, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_FILTER, token)) {
 			return Command.Type.FILTER_DATE;
 		}
-		if (arrayContains(TOKENS_CHANGE_SAVE_LOC, token)) {
+		if (arrayContains(ParserReferenceData.TOKENS_CHANGE_SAVE_LOC, token)) {
 			return Command.Type.CHANGE_SAVE_LOC;
 		}
 		
