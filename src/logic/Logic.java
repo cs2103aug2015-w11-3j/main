@@ -117,6 +117,8 @@ public class Logic implements LogicInterface {
             case SHOW_DEFAULT:
                 fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
                 break;
+            case HELP:
+                fb = cInvoker.placeAction(new HelpAction(rtnCmd));
             default:
                 assert false : rtnCmd.getCmdType();
                 fb = new Feedback(rtnCmd, cInternalBag);
