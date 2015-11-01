@@ -25,6 +25,8 @@ public class Configuration {
     private final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
     
     private final String MESSAGE_INVALID_STORAGE_LOCATION = "%1$s is not a valid path";
+    
+    private final String MESSAGE_RESET_STORAGE_LOCATION = "Storage location set to " + CONFIG_DIRECTORY;
 
     static Configuration instance;
 
@@ -92,7 +94,7 @@ public class Configuration {
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
             
             if (configStorageLocation == null || !isValidPath(configStorageLocation)) {
-            	Log.log(MESSAGE_INVALID_STORAGE_LOCATION);
+            	logInvalidLocation();
             	resetStorageLocation();
             } 
 
@@ -100,6 +102,12 @@ public class Configuration {
         } catch (ClassCastException e) {
         	resetAll();
         }
+    }
+    
+    private void logInvalidLocation() {
+    	String formatted = Utilities.formatString(MESSAGE_INVALID_STORAGE_LOCATION, configStorageLocation);
+    	Log.log(formatted);
+    	Log.log(MESSAGE_RESET_STORAGE_LOCATION);
     }
     
     private void resetAll() throws IOException {
