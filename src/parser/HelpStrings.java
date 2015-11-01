@@ -19,4 +19,5 @@ public class HelpStrings {
     public static final String HELP_FORMAT_MOVE = "\"move <new save file path>\"";
     public static final String HELP_FORMAT_QUIT = "\"quit\" OR \"q\"";
     public static final String HELP_FORMAT_HELP = "\"help\" OR \"help <command name (from list of cmds from \"help\")>\"";
+    public static final String HELP_FORMAT_HELP_TEMP = null;
 }

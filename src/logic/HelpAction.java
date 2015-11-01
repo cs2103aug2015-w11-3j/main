@@ -6,6 +6,7 @@ import parser.HelpStrings;
 
 public class HelpAction implements Action {
 
+    private static final String USR_MSG_HELP_INVALID = "No help available for this command";
     private Command cCommand;
 
     public HelpAction(Command rtnCmd) {
@@ -22,38 +23,53 @@ public class HelpAction implements Action {
                 msg = buildHelp(HelpStrings.HELP_FORMAT_ADD);
                 break;
             case DELETE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_DEL);
                 break;
             case FILTER_DATE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_FILTER);
                 break;
             case HELP:
-                break;
-            case INVALID:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_HELP);
                 break;
             case MARK:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_MARK);
                 break;
             case MOVE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_MOVE);
                 break;
             case QUIT:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_QUIT);
                 break;
             case REDO:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_REDO);
                 break;
             case SEARCH:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_SEARCH);
                 break;
             case SHOW_COMPLETE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_SHOW);
                 break;
             case SHOW_DEFAULT:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_SHOW);
                 break;
             case SHOW_INCOMPLETE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_SHOW);
                 break;
             case UNDO:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_UNDO);
                 break;
             case UNMARK:
-                break;
-            case UPDATE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_UNMARK);
                 break;
             case show_temp:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_HELP_TEMP);
                 break;
+            case UPDATE:
+                msg = buildHelp(HelpStrings.HELP_FORMAT_UPD);
+                break;
+            case INVALID:       // Fallthrough
             default:
+                msg = buildHelp(USR_MSG_HELP_INVALID);
                 break;
             
         }
@@ -62,6 +78,6 @@ public class HelpAction implements Action {
     }
 
     private String buildHelp(String s){
-        return "";
+        return "" + s;
     }
 }
