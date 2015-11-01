@@ -194,7 +194,7 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isToday()) {
+            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isToday() && curTask.hasKeyword(cSearchState)) {
                 taskList.add(curTask);
             }
         }
@@ -211,7 +211,7 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() == false) {
+            if (curTask.isComplete() == false && curTask.hasDate() == false && curTask.hasKeyword(cSearchState)) {
                 taskList.add(curTask);
             }
         }

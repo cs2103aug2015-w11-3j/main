@@ -19,6 +19,8 @@ import storage.StorageInterface;
 
 public class Logic implements LogicInterface {
 
+    private static final String USR_MSG_UNKNOWN_COMMAND = "I couldn't understand you... (>.<)";
+
     // The default view when UI first query the bag
     private static final FilterBy DEFAULT_UI_VIEW = TasksBag.FilterBy.TODAY;
 
@@ -82,7 +84,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW_INCOMPLETE:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FilterBy.INCOMPLETE_TASKS));
                 break;
             case MARK:
                 fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
@@ -111,8 +113,10 @@ public class Logic implements LogicInterface {
                 break;
             case INVALID:
                 log.info("recevied invalid type");
-                throw new UnknownCommandException("I couldn't understand you... (>.<)");
-
+                throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
+            case SHOW_DEFAULT:
+                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
+                break;
             default:
                 assert false : rtnCmd.getCmdType();
                 fb = new Feedback(rtnCmd, cInternalBag);
