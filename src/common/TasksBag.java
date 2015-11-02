@@ -165,6 +165,8 @@ public class TasksBag implements Iterable<Task> {
         // UI uses the sort state to identify current tab
         TasksBag rtnBag = new TasksBag(newContainer);
         rtnBag.setSortState(cFilterState);
+        rtnBag.setSearchState(cSearchState);
+        rtnBag.setFilterDateState(cFilterDateStart, cFilterDateEnd);
         return rtnBag;
     }
 
