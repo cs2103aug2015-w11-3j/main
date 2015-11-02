@@ -34,7 +34,8 @@ public class DateFormatter implements CelebiDateFormatter {
 	private static final String[] EMPTY_DATE_TOKENS = {
 		"none",
 		"remove",
-		"clear"
+		"clear",
+		"empty"
 	};
 
 	/////////////////////////////////////////////////////////////////
@@ -157,15 +158,15 @@ public class DateFormatter implements CelebiDateFormatter {
 		return null;
 	}
 	
-	public static void main (String[] args) {
-		DateFormatter df = new DateFormatter();
-		Scanner in = new Scanner(System.in);
-		while (true) {
-			try {
-				System.out.println(df.parseDate(in.nextLine()));
-			} catch (ParseException pe) {
-				System.out.println(pe);
-			}
-		}
-	}
+//	public static void main (String[] args) {
+//		DateFormatter df = new DateFormatter();
+//		Scanner in = new Scanner(System.in);
+//		while (true) {
+//			try {
+//				System.out.println(df.parseDate(in.nextLine()));
+//			} catch (ParseException pe) {
+//				System.out.println(pe);
+//			}
+//		}
+//	}
 }
