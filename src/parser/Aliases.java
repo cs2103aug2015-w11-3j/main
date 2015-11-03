@@ -14,6 +14,7 @@ public final class Aliases {
 	private Aliases () {
 	}
 
+	
 	/////////////////////////////////////////////////////
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
@@ -105,16 +106,22 @@ public final class Aliases {
 	static final String[] FIELD_NAME = {
 			"name",
 			"title",
-			"text"
+			"text",
+			"descr",
+			"description"
 	};
 	static final String[] FIELD_START_DATE = {
+			"at",
 			"start",
 			"from",
-			"begin"
+			"begin",
+			"on"
 	};
 	static final String[] FIELD_END_DATE = {
-			"end",
 			"by",
+			"finish",
+			"to",
+			"end",
 			"due",
 			"till",
 			"until"
