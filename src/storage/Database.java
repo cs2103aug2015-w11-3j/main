@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -151,11 +152,12 @@ abstract class Database {
 		return true;
 	}
 	
-	static boolean moveTo(String destination) throws FileNotFoundException {
-		db.renameTo(new File(destination, FILENAME));
+	static boolean moveTo(String destination) throws IOException {
+		Files.move(db.toPath(), new File(destination, FILENAME).toPath());
+		connect(destination);
 		return true;
 	}
-	
+		
 	// private methods
 	private static boolean save () {
 		try {

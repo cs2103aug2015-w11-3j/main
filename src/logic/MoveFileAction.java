@@ -36,22 +36,16 @@ public class MoveFileAction implements Action {
         Feedback fb;
         ConfigurationInterface config = Configuration.getInstance();
     	
-    	if(!Files.exists(cPath)) {
-    		throw new PathNotExistsException(USR_MSG_MOVE_INVALID_PATH);
-    	}
-    	
         try {
-        	config.setUsrFileDirector(cPath.toString());
-            boolean moveStatus = cStore.moveFileTo(cPath.toString());
+            cStore.moveFileTo(cPath.toString());
             
-            if (!moveStatus) {
-            	throw new Exception();
-            } 
+            config.setUsrFileDirector(cPath.toString());
             
             fb = new Feedback(cCommand, cBag, USR_MSG_MOVE_OK);
 
             return fb;
         } catch (Exception e) {
+        	System.out.println(e);
         	throw new LogicException(USR_MSG_MOVE_ERROR);
         }
     }

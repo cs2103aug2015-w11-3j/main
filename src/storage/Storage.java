@@ -75,8 +75,9 @@ public class Storage implements StorageInterface {
     public boolean moveFileTo(String destination) {
         try {
             return Database.moveTo(destination);
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
+        	System.out.println(e);
             return false;
-        }
+        } 
     }
 }
