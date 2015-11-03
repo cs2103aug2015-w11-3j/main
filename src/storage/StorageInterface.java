@@ -1,5 +1,7 @@
 package storage;
 
+import java.io.IOException;
+
 import common.Task;
 import common.TasksBag;
 
@@ -12,5 +14,5 @@ public interface StorageInterface {
 	
 	public boolean delete(Task c);
 	
-	public boolean moveFileTo(String destination);
+	public boolean moveFileTo(String destination) throws IOException;
 }

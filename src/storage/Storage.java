@@ -72,12 +72,7 @@ public class Storage implements StorageInterface {
     }
 
     @Override
-    public boolean moveFileTo(String destination) {
-        try {
-            return Database.moveTo(destination);
-        } catch (Exception e) {
-        	System.out.println(e);
-            return false;
-        } 
+    public boolean moveFileTo(String destination) throws IOException {
+    	return Database.moveTo(destination);
     }
 }

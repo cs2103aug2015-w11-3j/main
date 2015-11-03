@@ -124,13 +124,11 @@ public class Configuration implements ConfigurationInterface {
     }
 
     public void setUsrFileDirector(String newDir) throws IOException {
-    	if (isValidPath(newDir)) {
-    		configStorageLocation = newDir;
-    		
-    		// write to the configuration file
-            writeBack();
-            Log.log("usr file moved to " + newDir, this.getClass());
-    	}
+		configStorageLocation = newDir;
+		
+		// write to the configuration file
+        writeBack();
+        Log.log("usr file moved to " + newDir, this.getClass());
     }
 
     public void setDefaultStartTime(String newTime) throws IOException {
