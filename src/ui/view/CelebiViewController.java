@@ -330,22 +330,30 @@ public class CelebiViewController {
 	}
 	
 	public String getDateFilterString(TasksBag bag) {
+		String MESSAGE_NONE = "none";
+		String MESSAGE_AFTER = "after %1$s";
+		String MESSAGE_BEFORE = "before %1$s";
+		String MESSAGE_BETWEEN = "from %1$s to %2$s";
+		
 		FilterDateState state = bag.getDateState();
 		Date start = bag.getStartDate();
 		Date end = bag.getEndDate();
 		String dateFilterString = "none";
 		switch(state) {
-		case NONE:
-			dateFilterString = "none";
-			break;
-		case AFTER:
-			dateFilterString = "after" + start;
-		case BEFORE:
-			dateFilterString = "before" + end;
-		case BETWEEN:
-			dateFilterString = "from" + start + "to" + end;
-		default:
-			break;
+			case NONE:
+				dateFilterString = MESSAGE_NONE;
+				break;
+			case AFTER:
+				dateFilterString = String.format(MESSAGE_AFTER, start);
+				break;
+			case BEFORE:
+				dateFilterString = String.format(MESSAGE_BEFORE, end);
+				break;
+			case BETWEEN:
+				dateFilterString = String.format(MESSAGE_BETWEEN, start, end);
+				break;
+			default:
+				break;
 		}
 		return dateFilterString;
 	}

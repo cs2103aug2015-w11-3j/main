@@ -1,6 +1,9 @@
 //@@author A0125546E
 package logic;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +18,7 @@ import logic.exceptions.LogicException;
 import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
 import logic.exceptions.UnknownCommandException;
+import sun.util.resources.cldr.CalendarData;
 
 public class LogicTest {
 
@@ -105,13 +109,12 @@ public class LogicTest {
         testPass("help search");
         testPass("help filter");
         testPass("help show");
-        //testPass("help show done");
-        //testPass("help show undone");
-        //testPass("help show today");        
+        // testPass("help show done");
+        // testPass("help show undone");
+        // testPass("help show today");
         testPass("help help");
         testFailException("help 1", UnknownCommandException.class);
-        
-        
+
     }
 
     @Test
@@ -208,6 +211,43 @@ public class LogicTest {
         // Null string
         Assert.assertEquals(true, k.hasKeyword(null));
 
+    }
+
+    @Test
+    public void testDate() {
+        testDateComma();
+        testDateSpace();
+    }
+    private void testDateInvalid(){
+        //testFail()
+    }
+    private void testDateSpace() {
+        Calendar c = Calendar.getInstance();
+
+        testPass("a task; from 2015-1-1 10:00 to 2015-1-1 10:01");
+        TasksBag bag = logic.getTaskBag();
+        Task task = bag.getTask(0);
+
+        c.set(2015, 1, 1, 10, 0, 0);
+        Assert.assertEquals(c.getTime(), task.getStart());
+
+        c.set(2015, 1, 1, 10, 0, 1);
+        Assert.assertEquals(c.getTime(), task.getEnd());
+    }
+
+    private void testDateComma() {
+        Calendar c = Calendar.getInstance();
+
+        testPass("a task; from 2015-1-1, 10:00 to 2015-1-1, 10:01");
+        testPass("a task; from 2015-1-1, 10:01, 10:00 to 2015-1-1");
+        TasksBag bag = logic.getTaskBag();
+        Task task = bag.getTask(0);
+
+        c.set(2015, 1, 1, 10, 0, 0);
+        Assert.assertEquals(c.getTime(), task.getStart());
+
+        c.set(2015, 1, 1, 10, 0, 1);
+        Assert.assertEquals(c.getTime(), task.getEnd());
     }
 
     private void testPass(String passCommand) {

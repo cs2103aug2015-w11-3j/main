@@ -87,6 +87,7 @@ public class Task {
         // cEnd.set(convertToLocalDate((Date)end.clone()));
     }
 
+    //@@author A0131891E
     // getters
     public boolean isComplete() {
         return cIsCompleted;
@@ -120,6 +121,7 @@ public class Task {
         return cType.get();
     }
 
+    //@@author YUKA??
     // get properties
     public StringProperty nameProperty() {
         return cName;
@@ -240,5 +242,9 @@ public class Task {
             rtn = cEnd.get();
         }
         return rtn;
+    }
+    
+    public boolean isOverdue() {
+    	return getEnd().after(new Date());
     }
 }
