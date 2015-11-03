@@ -218,7 +218,9 @@ public class LogicTest {
         testDateComma();
         testDateSpace();
     }
-
+    private void testDateInvalid(){
+        //testFail()
+    }
     private void testDateSpace() {
         Calendar c = Calendar.getInstance();
 
@@ -237,6 +239,7 @@ public class LogicTest {
         Calendar c = Calendar.getInstance();
 
         testPass("a task; from 2015-1-1, 10:00 to 2015-1-1, 10:01");
+        testPass("a task; from 2015-1-1, 10:01, 10:00 to 2015-1-1");
         TasksBag bag = logic.getTaskBag();
         Task task = bag.getTask(0);
 
