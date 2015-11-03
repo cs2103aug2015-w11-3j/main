@@ -1,13 +1,8 @@
 package common;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

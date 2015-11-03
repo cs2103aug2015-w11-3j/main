@@ -26,18 +26,84 @@ public class Parser implements ParserInterface {
 	private static final String REGEX_WHITESPACE = 
 			"\\s+";
 	
+	//TODO regexes for all cmds for consistency
+	private static final String REGEX_FOR_MATCHING_NAME_FIELD_ALIAS = regexContaining(Aliases.FIELD_NAME);
+	private static final String REGEX_FOR_MATCHING_START_FIELD_ALIAS = regexContaining(Aliases.FIELD_START_DATE);
+	private static final String REGEX_FOR_MATCHING_END_FIELD_ALIAS = regexContaining(Aliases.FIELD_END_DATE);
+	
+	////////////////////////////////////////////////////////////////
+	// ADD command parsing parameters
+	////////////////////////////////////////////////////////////////
+	
+	private static final String REGEX_NAME_DATE_DELIM = "\\s*;\\s*";
+	
+	private static final String GRPNAME_NAME = "name";
+	private static final String GRPNAME_START = "start";
+	private static final String GRPNAME_END = "end";
+	
+	private static final String GRP_NAME = regexNamedGrp("[^;]+", GRPNAME_NAME);
+	private static final String GRP_START = regexNamedGrp(".+", GRPNAME_START);
+	private static final String GRP_END = regexNamedGrp(".+", GRPNAME_END);
 	// <name>
 	private final Pattern P_ADD_FLT;
 	private static final String REGEX_ADD_FLT = 
-			"^(?<name>[^;]+)$";
-	// <name>; by|due <end>
-	private final Pattern P_ADD_DL;
-	private static final String REGEX_ADD_DL = 
-			"^(?<name>[^;]+);\\s+(?:by|due|at)\\s(?<end>.+)$";
-	// <name>; from|start <start> end|to|till|until|due <end>
+		(new StringBuilder())
+		.append('^')
+		.append(GRP_NAME)
+		.append('$')
+		.toString();
+			//"^(?<name>[^;]+)$";
+	// <name>; <start field identifier> <start>
+	private final Pattern P_ADD_START;
+	private static final String REGEX_ADD_START = 
+		(new StringBuilder())
+		.append('^')
+		.append(GRP_NAME)
+		.append(REGEX_NAME_DATE_DELIM)
+		.append(REGEX_FOR_MATCHING_START_FIELD_ALIAS)
+		.append(REGEX_WHITESPACE)
+		.append(GRP_START)
+		.append('$')
+		.toString();
+//			"^(?<name>[^;]+)\\s+;\\s+" + 
+//			REGEX_FOR_MATCHING_START_TOK + 
+//			"\\s(?<start>.+)$";
+	// <name>; <end field identifier> <end>
+	private final Pattern P_ADD_END;
+	private static final String REGEX_ADD_END = 
+		(new StringBuilder())
+		.append('^')
+		.append(GRP_NAME)
+		.append(REGEX_NAME_DATE_DELIM)
+		.append(REGEX_FOR_MATCHING_END_FIELD_ALIAS)
+		.append(REGEX_WHITESPACE)
+		.append(GRP_END)
+		.append('$')
+		.toString();
+//			"^(?<name>[^;]+)\\s+;\\s+" + 
+//			REGEX_FOR_MATCHING_END_TOK + 
+//			"\\s(?<end>.+)$";
+	// <name>; <start field identifier> <start> <end field identifier> <end>
 	private final Pattern P_ADD_EVT;
 	private static final String REGEX_ADD_EVT = 
-			"^(?<name>[^;]+);\\s+(?:from|start)\\s+(?<start>.+)\\s+(?:till|to|until|end|due)\\s+(?<end>.+)$";
+		(new StringBuilder())
+		.append('^')
+		.append(GRP_NAME)
+		.append(REGEX_NAME_DATE_DELIM)
+		.append(REGEX_FOR_MATCHING_START_FIELD_ALIAS)
+		.append(REGEX_WHITESPACE)
+		.append(GRP_START)
+		.append(REGEX_WHITESPACE)
+		.append(REGEX_FOR_MATCHING_END_FIELD_ALIAS)
+		.append(REGEX_WHITESPACE)
+		.append(GRP_END)
+		.append('$')
+		.toString();
+//			"^(?<name>[^;]+)\\s+;\\s+" + 
+//			REGEX_FOR_MATCHING_START_TOK + 
+//			"\\s+(?<start>.+)\\s+" + 
+//			REGEX_FOR_MATCHING_END_TOK + 
+//			"\\s+(?<end>.+)$";
 	
 	// <uid>
 	private final Pattern P_DEL;
@@ -79,10 +145,11 @@ public class Parser implements ParserInterface {
 		
 		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
 		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT, CASE_INSENSITIVE);
-		P_ADD_DL = Pattern.compile(REGEX_ADD_DL, CASE_INSENSITIVE);
+		P_ADD_START = Pattern.compile(REGEX_ADD_START, CASE_INSENSITIVE);
+		P_ADD_END = Pattern.compile(REGEX_ADD_END, CASE_INSENSITIVE);
 		P_ADD_EVT = Pattern.compile(REGEX_ADD_EVT, CASE_INSENSITIVE);
-		P_DEL = Pattern.compile(REGEX_DEL);
-		P_UPD = Pattern.compile(REGEX_UPD);
+		P_DEL = Pattern.compile(REGEX_DEL, CASE_INSENSITIVE);
+		P_UPD = Pattern.compile(REGEX_UPD, CASE_INSENSITIVE);
 		P_FILTER_BEF = Pattern.compile(REGEX_FILTER_BEF, CASE_INSENSITIVE);
 		P_FILTER_AFT = Pattern.compile(REGEX_FILTER_AFT, CASE_INSENSITIVE);
 		P_FILTER_BTW = Pattern.compile(REGEX_FILTER_BTW, CASE_INSENSITIVE);
@@ -101,10 +168,32 @@ public class Parser implements ParserInterface {
 		System.out.println("Parser Init complete");
 	}
 
+	private static final String regexContaining (String[] tokens) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("(?:");
+		for (String tok : tokens) {
+			sb.append("\\Q").append(tok).append("\\E"); // necesary escaping
+			sb.append('|');
+		}
+		if (tokens.length > 0) { 
+			sb.deleteCharAt(sb.length() - 1);
+		}
+		sb.append(')');
+		return sb.toString();
+	}
+	private static final String regexNamedGrp (String regex, String grpName) {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("(?");
+		sb.append('<').append(grpName).append('>');
+		sb.append(regex);
+		sb.append(')');
+		return sb.toString();
+}
+	
 	@Override
 	public Command parseCommand (String rawInput) {
 		assert(rawInput != null);
-		
+		// TODO rework to not use String.split
 		userRawInput = rawInput;
 		// Splits input string at first whitespace substring, trimming trailing whitespace
 		String[] cmdAndArgs = P_WHITESPACE.split(rawInput.trim(), 2);
@@ -216,34 +305,63 @@ public class Parser implements ParserInterface {
 
 	private Command parseAdd (String args) {
 		assert(args != null);
+		
 		Matcher m;
 		Date start, end;
 		String name;
-		Pattern[] addPs = { 
-					P_ADD_EVT,
-					P_ADD_DL,
-					P_ADD_FLT
-				};
-		
-		for (Pattern p : addPs) {
-			m = p.matcher(args);
-			name = null;
-			start = end = null;
+		m = P_ADD_FLT.matcher(args);
+		if (m.matches()) {
+			name = m.group("name").trim();
+			start = null;
+			end = null;
+			return makeAdd(name, start, end);
+		}
+		try {
+			m = P_ADD_START.matcher(args);
 			if (m.matches()) {
-				try {
-					name = parseText(m.group("name"));
-					end = parseDate(m.group("end")); // throws IAE if FLT
-					start = parseDate(m.group("start")); // throws IAE if FLT/DL
-				} catch (IllegalArgumentException ie) {
-					//System.out.println(ie);
-					; // nonexistent named capturing group for FLT,DL
-				} catch (Exception pe) {
-					System.out.println(pe);
-					break; // unparsable tokens, invalid command.
-				}
+				name = m.group("name").trim();
+				start = parseDate(m.group("start").trim());
+				end = null;
 				return makeAdd(name, start, end);
 			}
+			
+			m = P_ADD_FLT.matcher(args);
+			if (m.matches()) {
+				name = m.group("name").trim();
+				start = null;
+				end = parseDate(m.group("end").trim());
+				return makeAdd(name, start, end);
+			}
+			
+			m = P_ADD_EVT.matcher(args);
+			if (m.matches()) {
+				name = m.group("name").trim();
+				start = parseDate(m.group("start").trim());
+				end = parseDate(m.group("end").trim());
+				return makeAdd(name, start, end);
+			}
+		} catch (ParseException pe) {
+			System.out.println(pe);;
 		}
+//		for (Pattern p : addPs) {
+//			m = p.matcher(args);
+//			name = null;
+//			start = end = null;
+//			if (m.matches()) {
+//				try {
+//					name = parseText(m.group("name"));
+//					end = parseDate(m.group("end")); // throws IAE if FLT
+//					start = parseDate(m.group("start")); // throws IAE if FLT/DL
+//				} catch (IllegalArgumentException ie) {
+//					//System.out.println(ie);
+//					; // nonexistent named capturing group for FLT,DL
+//				} catch (Exception pe) {
+//					System.out.println(pe);
+//					break; // unparsable tokens, invalid command.
+//				}
+//				return makeAdd(name, start, end);
+//			}
+//		}
 		return makeInvalid();
 	}
 	private Command parseDel (String args) {
@@ -537,8 +655,14 @@ public class Parser implements ParserInterface {
 	public static void main(String[] args) throws Exception {
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
+		System.out.println(REGEX_ADD_FLT);
+		System.out.println(REGEX_ADD_START);
+		System.out.println(REGEX_ADD_END);
+		System.out.println(REGEX_ADD_EVT);
 		while (true) {
-			printCmd(p.parseCommand(sc.nextLine()));
+			System.out.println(p.P_ADD_FLT.pattern());
+			System.out.println(p.P_ADD_FLT.matcher(sc.nextLine()).matches());
+			//printCmd(p.parseCommand(sc.nextLine()));
 		}
 	}
 

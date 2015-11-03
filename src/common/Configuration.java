@@ -125,7 +125,7 @@ public class Configuration implements ConfigurationInterface {
 
     public void setUsrFileDirector(String newDir) throws IOException {
     	if (isValidPath(newDir)) {
-    		configDefaultStartTime = newDir;
+    		configStorageLocation = newDir;
     		
     		// write to the configuration file
             writeBack();
