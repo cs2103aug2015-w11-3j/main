@@ -152,22 +152,8 @@ abstract class Database {
 	}
 	
 	static boolean moveTo(String destination) throws FileNotFoundException {
-		File oldDb = db;
-		db = new File(destination, FILENAME);
-		try {
-			db.createNewFile();
-			dbReader = new Scanner(db);
-			dbReader.useDelimiter("\\Z");
-			
-			save();
-			oldDb.delete();
-			return true;
-		} catch (Exception e) {
-			db = oldDb;
-			dbReader = new Scanner(db);
-			dbReader.useDelimiter("\\Z");
-			return false;
-		}
+		db.renameTo(new File(destination, FILENAME));
+		return true;
 	}
 	
 	// private methods
