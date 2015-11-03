@@ -7,7 +7,9 @@ import org.fxmisc.richtext.InlineCssTextArea;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -16,6 +18,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -79,6 +82,32 @@ public class CelebiViewController {
 
 	private void initializeCelebiTable() {
 		celebiTable.setFixedCellSize(26.2);
+		
+		PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
+		celebiTable.setRowFactory(tableview -> {
+			TableRow<Task> row = new TableRow<>();
+			ChangeListener<Date> changeListener = (observable, oldEndDate, newEndDate) -> {
+				row.pseudoClassStateChanged(overdue, newEndDate.before(new Date()));
+			};
+			row.itemProperty().addListener((observable, previousTask, currentTask) -> {
+				if (previousTask != null) {
+					previousTask.endProperty().removeListener(changeListener);
+				}
+				if (currentTask != null) {
+					currentTask.endProperty().addListener(changeListener);
+					if (currentTask.getEnd() != null) {
+						row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
+					}
+					else {
+						row.pseudoClassStateChanged(overdue, false);
+					}
+				}
+				else {
+					row.pseudoClassStateChanged(overdue, false);
+				}
+			});
+			return row;
+		});
 	}
 
 	/**

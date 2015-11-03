@@ -30,6 +30,15 @@
 }
 */
 
+/*
+Pseudo class 'up' will change the row background
+ color to green when activated 
+ */
+.table-row-cell:overdue .text 
+{
+	-fx-fill: #919191;
+}
+
 .table-view {
 
     -fx-base: transparent;
