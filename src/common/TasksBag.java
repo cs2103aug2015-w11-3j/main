@@ -23,6 +23,7 @@ public class TasksBag implements Iterable<Task> {
 
     private static final int FLOAT_LIMIT = 3;
     private static final int TASKS_LIMIT = 15;
+    private static final int DEFAULT_DAY_RANGE = 3;
 
     private FilterBy cFilterState = FilterBy.INCOMPLETE_TASKS;
     private String cSearchState = null;
@@ -196,7 +197,7 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isToday() && curTask.hasKeyword(cSearchState)) {
+            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isWithinDays(DEFAULT_DAY_RANGE) && curTask.hasKeyword(cSearchState)) {
                 taskList.add(curTask);
             }
         }

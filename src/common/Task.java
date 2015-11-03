@@ -1,12 +1,8 @@
 package common;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -87,7 +83,7 @@ public class Task {
         // cEnd.set(convertToLocalDate((Date)end.clone()));
     }
 
-    //@@author A0131891E
+    // @@author A0131891E
     // getters
     public boolean isComplete() {
         return cIsCompleted;
@@ -121,7 +117,7 @@ public class Task {
         return cType.get();
     }
 
-    //@@author YUKA??
+    // @@author YUKA??
     // get properties
     public StringProperty nameProperty() {
         return cName;
@@ -160,11 +156,11 @@ public class Task {
     public boolean hasKeyword(String keyword) {
         if (keyword == null) {
             return true;
-        } else {
-            ArrayList<String> tokens = new ArrayList<>();
-            Collections.addAll(tokens, keyword.split(" "));
-            return nameHasTokens(tokens);
         }
+
+        ArrayList<String> tokens = new ArrayList<>();
+        Collections.addAll(tokens, keyword.split(" "));
+        return nameHasTokens(tokens);
     }
 
     private boolean nameHasTokens(List<String> tokens) {
@@ -242,5 +238,37 @@ public class Task {
             rtn = cEnd.get();
         }
         return rtn;
+    }
+
+    /**
+     * Checks if any date of the task is within x days
+     * 
+     * @return
+     */
+    public boolean isWithinDays(int noOfDays) {
+        Date date = getAnyDate();
+        if (date == null) {
+            return false;
+        }
+
+        Date cur = new Date();
+            
+        long days = convertDaysToLong(noOfDays);
+        long daysDifference = date.getTime() - cur.getTime(); 
+        if (daysDifference > 0 && daysDifference < days) {
+            return true;
+        }
+        return false;
+    }
+
+    private long convertDaysToLong(int days) {
+        if (days <= 0) {
+            return 0;
+        }
+        int hours = 24;
+        int minutes = 60;
+        int seconds = 60;
+        int milliseconds = 1000;
+        return days * hours * minutes * seconds * milliseconds;
     }
 }
