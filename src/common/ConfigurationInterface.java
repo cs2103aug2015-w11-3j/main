@@ -10,4 +10,6 @@ public interface ConfigurationInterface {
     public void setUsrFileDirector(String newDir) throws IOException;
     public void setDefaultStartTime(String newTime) throws IOException;
     public void setDefaultEndTime(String newTime) throws IOException;
+    
+    public void resetStorageLocation() throws IOException;
 }
