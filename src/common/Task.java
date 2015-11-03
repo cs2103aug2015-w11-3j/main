@@ -243,4 +243,8 @@ public class Task {
         }
         return rtn;
     }
+    
+    public boolean isOverdue() {
+    	return getEnd().after(new Date());
+    }
 }
