@@ -317,6 +317,14 @@ public class Parser implements ParserInterface {
 			return makeAdd(name, start, end);
 		}
 		try {
+			m = P_ADD_EVT.matcher(args);
+			if (m.matches()) {
+				name = m.group("name").trim();
+				start = parseDate(m.group("start").trim());
+				end = parseDate(m.group("end").trim());
+				return makeAdd(name, start, end);
+			}
+			
 			m = P_ADD_START.matcher(args);
 			if (m.matches()) {
 				name = m.group("name").trim();
@@ -325,21 +333,13 @@ public class Parser implements ParserInterface {
 				return makeAdd(name, start, end);
 			}
 			
-			m = P_ADD_FLT.matcher(args);
+			m = P_ADD_END.matcher(args);
 			if (m.matches()) {
 				name = m.group("name").trim();
 				start = null;
 				end = parseDate(m.group("end").trim());
 				return makeAdd(name, start, end);
-			}
-			
-			m = P_ADD_EVT.matcher(args);
-			if (m.matches()) {
-				name = m.group("name").trim();
-				start = parseDate(m.group("start").trim());
-				end = parseDate(m.group("end").trim());
-				return makeAdd(name, start, end);
-			}
+			}			
 		} catch (ParseException pe) {
 			System.out.println(pe);;
 		}
@@ -660,9 +660,9 @@ public class Parser implements ParserInterface {
 		System.out.println(REGEX_ADD_END);
 		System.out.println(REGEX_ADD_EVT);
 		while (true) {
-			System.out.println(p.P_ADD_FLT.pattern());
-			System.out.println(p.P_ADD_FLT.matcher(sc.nextLine()).matches());
-			//printCmd(p.parseCommand(sc.nextLine()));
+//			System.out.println(p.P_ADD_FLT.pattern());
+//			System.out.println(p.P_ADD_FLT.matcher(sc.nextLine()).matches());
+			printCmd(p.parseCommand(sc.nextLine()));
 		}
 	}
 
