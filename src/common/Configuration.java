@@ -88,7 +88,7 @@ public class Configuration implements ConfigurationInterface {
 
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
             
-            if (!isValidPath(configStorageLocation)) {
+            if (configStorageLocation == null) {
             	resetStorageLocation();
             	logError(MESSAGE_INVALID_STORAGE_LOCATION, configStorageLocation, MESSAGE_RESET_STORAGE_LOCATION);
             } 
@@ -159,32 +159,27 @@ public class Configuration implements ConfigurationInterface {
     
     private void resetAll() throws IOException {
         // set all properties to default value
-    	resetStorageLocation();
-    	resetDefaultStartTime();
-    	resetDefaultEndTime();
+    	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
+    	configDefaultStartTime = DEFAULT_VALUE_DEFAULT_START_TIME;
+    	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
 
         // write to the configuration file
         writeBack();
     }
     
-    private void resetStorageLocation() {
+    public void resetStorageLocation() throws IOException {
     	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
+    	writeBack();
     }
     
-    private void resetDefaultStartTime() {
+    private void resetDefaultStartTime() throws IOException {
     	configDefaultStartTime = DEFAULT_VALUE_DEFAULT_START_TIME;
+    	writeBack();
     }
     
-    private void resetDefaultEndTime() {
+    private void resetDefaultEndTime() throws IOException {
     	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
-    }
-    
-    private boolean isValidPath(String path) {
-    	if (path == null) {
-    		return false;
-    	}
-    	
-    	return isValidPathName(path) && isExistingPath(path);
+    	writeBack();
     }
     
     private boolean isValidTime(String str) {
@@ -195,24 +190,6 @@ public class Configuration implements ConfigurationInterface {
     	Time t = new Time(str);
     	return t.isValid();
     }
-    
-    private boolean isValidPathName(String path) {
-    	String[] folders = path.split("/");
-    	for(int i = 0; i < folders.length; i++) {
-    		if(!isAlphanumeric(folders[i])) {
-    			return false;
-    		}
-    	}	
-    	return true;
-    }
-    
-    private boolean isExistingPath(String path) {
-    	return new File(path).exists();
-    }
-    
-    private boolean isAlphanumeric(String s) {
-		return s.matches("[A-Za-z0-9]+");
-    }
 
     private void writeBack() throws IOException {
         JSONObject configJson = new JSONObject();
@@ -222,7 +199,7 @@ public class Configuration implements ConfigurationInterface {
 
         configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
         String text = JSONValue.toJSONString(configJson);
-
+        System.out.println(text);
         configWriter.write(text);
         configWriter.close();
         configWriter = null;

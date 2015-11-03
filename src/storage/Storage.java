@@ -1,7 +1,6 @@
 //@@author A0133920N
 package storage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -15,14 +14,14 @@ public class Storage implements StorageInterface {
 
     public void init() {
         Log.log("Storage Init");
-        Log.log("Storage Init complete");
         try {
             connectToDatabase();
-        } catch (IOException e) {
-            Log.log("Storage Init Fail");
+            Log.log("Storage Init complete");
         } catch (BadFileContentException e) {
             Log.log("Storage Init Fail");
-        }
+        } catch (IOException e) {
+        	Log.log("Storage Init Fail");
+        } 
     }
 
     public void close() {
@@ -33,7 +32,15 @@ public class Storage implements StorageInterface {
     private void connectToDatabase() throws IOException, BadFileContentException {
     	ConfigurationInterface setting = Configuration.getInstance();
         String fileLoc = setting.getUsrFileDirectory();
-    	Database.connect(fileLoc);
+        
+        boolean connectResult = Database.connect(fileLoc);
+        
+        if (!connectResult) {
+        	Log.log("Location in ");
+        	setting.resetStorageLocation();
+        	connectToDatabase();
+        }
+    	
         Database.load();
     }
 

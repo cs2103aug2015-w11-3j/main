@@ -3,7 +3,6 @@ package storage;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -42,11 +41,13 @@ abstract class Database {
 			dbReader.useDelimiter("\\Z");
 			
 			isConnected = true;
+		
 		} catch (IOException e) {
-			dbReader = null;
-			isConnected = false;
+			return false;
 		}
-		return isConnected;
+		
+		return true;
+		
 	}
 	
 	static boolean load () throws BadFileContentException {
@@ -153,8 +154,12 @@ abstract class Database {
 	}
 	
 	static boolean moveTo(String destination) throws IOException {
-		Files.move(db.toPath(), new File(destination, FILENAME).toPath());
-		connect(destination);
+		File newDb = new File(destination, FILENAME);
+		Files.move(db.toPath(), newDb.toPath());
+		db = newDb;
+
+		dbReader = new Scanner(db);
+		dbReader.useDelimiter("\\Z");
 		return true;
 	}
 		
