@@ -1,6 +1,16 @@
 //@@author A0131891E
 package parser;
 
+import static java.util.Calendar.DAY_OF_WEEK;
+import static java.util.Calendar.FRIDAY;
+import static java.util.Calendar.MONDAY;
+import static java.util.Calendar.SATURDAY;
+import static java.util.Calendar.SUNDAY;
+import static java.util.Calendar.THURSDAY;
+import static java.util.Calendar.TUESDAY;
+import static java.util.Calendar.WEDNESDAY;
+import static java.util.Calendar.WEEK_OF_YEAR;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,8 +27,106 @@ public class ConvenienceDateFormat implements CelebiDateFormatter {
 
 	@Override
 	public Date parseDate (String s) throws ParseException {
-		// TODO Auto-generated method stub
-		return null;
+		Calendar cal = new GregorianCalendar();
+		switch (s.trim().toLowerCase()) {
+		
+			case "none" :
+			case "empty" :
+			case "clear" :
+				return null;
+		
+			// current time
+			case "now" :
+				return new Date();
+				
+			// +24h
+			case "tmr" :		// Fallthrough
+			case "tomorrow" :
+				return new Date(1000*60*60*24 + (new Date()).getTime());
+				
+			// +24*7h
+			case "next week" :
+				return new Date(1000*60*60*24*7 + (new Date()).getTime());
+				
+			case "sun" :
+			case "sunday" :
+				cal.set(DAY_OF_WEEK, SUNDAY);
+				return cal.getTime();
+			case "mon" :
+			case "monday" :
+				cal.set(DAY_OF_WEEK, MONDAY);
+				return cal.getTime();
+			case "tue" :
+			case "tues" :
+			case "tuesday" :
+				cal.set(DAY_OF_WEEK, TUESDAY);
+				return cal.getTime();
+			case "wed" :
+			case "wednesday" :
+				cal.set(DAY_OF_WEEK, WEDNESDAY);
+				return cal.getTime();
+			case "thu" :
+			case "thur" :
+			case "thurs" :
+			case "thursday" :
+				cal.set(DAY_OF_WEEK, THURSDAY);
+				return cal.getTime();
+			case "fri" :
+			case "friday" :
+				cal.set(DAY_OF_WEEK, FRIDAY);
+				return cal.getTime();
+			case "sat" :
+			case "saturday" :
+				cal.set(DAY_OF_WEEK, SATURDAY);
+				return cal.getTime();
+			
+			case "next mon" :
+			case "next monday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, MONDAY);
+				return cal.getTime();
+				
+			case "next tue" :
+			case "next tues" :
+			case "next tuesday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, TUESDAY);
+				return cal.getTime();
+				
+			case "next wed" :
+			case "next wednesday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, WEDNESDAY);
+				return cal.getTime();
+				
+			case "next thu" :
+			case "next thur" :
+			case "next thursday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, THURSDAY);
+				return cal.getTime();
+				
+			case "next fri" :
+			case "next friday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, FRIDAY);
+				return cal.getTime();
+
+			case "next sat" :
+			case "next saturday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, SATURDAY);
+				return cal.getTime();
+
+			case "next sun" :
+			case "next sunday" :
+				cal.add(WEEK_OF_YEAR, 1);
+				cal.set(DAY_OF_WEEK, SUNDAY);
+				return cal.getTime();
+				
+			default:
+				throw new ParseException("", -1);
+		}
 	}
 	
 	public static void main (String[] args) {
