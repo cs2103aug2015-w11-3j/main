@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -36,6 +37,8 @@ public class CelebiViewController {
 	Main mainApp;
 	UIInterface ui;
 	
+	@FXML
+	private AnchorPane rootPane;
     @FXML
     private TableView<Task> celebiTable;
     @FXML
@@ -58,6 +61,22 @@ public class CelebiViewController {
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
 	private static final String[][] VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
+	
+	private static final String DAY_CELEBI_COLOR = "#7eb758";
+	private static final String NIGHT_CELEBI_COLOR = "#16a085";
+	private static final String DAY_USER_COLOR = "#000000";
+	private static final String NIGHT_USER_COLOR = "#ecf0f1";
+	private static final String DAY_KEYWORD_COLOR = "#529228";
+	private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
+	
+	private static enum SKIN {
+        DAY, NIGHT
+    }
+	
+	private SKIN skinMode = SKIN.DAY;
+	private String currentCelebiColor = DAY_CELEBI_COLOR;
+	private String currentUserColor = DAY_USER_COLOR;
+	private String currentKeywordColor = DAY_KEYWORD_COLOR;
     
     /**
      * Initializes the controller class. This method is automatically called
@@ -204,15 +223,15 @@ public class CelebiViewController {
     		firstWord = extractFirstWord(newValue);  		
     		if (isCmdToken(firstWord)) {
     			// highlight the first word
-    			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: #529228;");
+    			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: " + currentKeywordColor + ";");
     			// leave the rest of the command unhighlighted
     			if (newValue.length() > firstWord.length()) {
-    				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal;");
+    				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
     			}
     		}
     		// leave the command unhighlighted
     		else {
-    			commandArea.setStyle(0, newValue.length(),"-fx-font-weight: normal;");
+    			commandArea.setStyle(0, newValue.length(),"-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
     		}
     	});
 	}
@@ -319,13 +338,13 @@ public class CelebiViewController {
 		// if the text to be appended is the only line in feedback area, set its color green
 		if(feedbackArea.getText().equals("")) {
 			feedbackArea.appendText(newFeedback);
-			feedbackArea.setStyle(0, "-fx-fill: #7eb758;");
+			feedbackArea.setStyle(0, "-fx-fill: " + currentCelebiColor + ";");
 		}
 		// else make the first line in feedback area black, the rest green
 		else {
 			feedbackArea.appendText(newFeedback);
-			feedbackArea.setStyle(0, "-fx-fill: black;");
-			feedbackArea.setStyle(1, "-fx-fill: #7eb758;");
+			feedbackArea.setStyle(0, "-fx-fill: " + currentUserColor + ";");
+			feedbackArea.setStyle(1, "-fx-fill: " + currentCelebiColor + ";");
 		}
 	}
 	
@@ -393,5 +412,23 @@ public class CelebiViewController {
 			keyword = "none";
 		}
 		return keyword;
+	}
+	
+	public void switchNightSkin() {
+		String css = Main.class.getResource("view/style_night.css").toExternalForm();
+		rootPane.getStylesheets().clear();
+		rootPane.getStylesheets().add(css);
+		currentCelebiColor = NIGHT_CELEBI_COLOR;
+		currentUserColor = NIGHT_USER_COLOR;
+		currentKeywordColor = NIGHT_KEYWORD_COLOR;
+	}
+	
+	public void switchDaySkin() {
+		String css = Main.class.getResource("view/application.css").toExternalForm();
+		rootPane.getStylesheets().clear();
+		rootPane.getStylesheets().add(css);
+		currentCelebiColor = DAY_CELEBI_COLOR;
+		currentUserColor = DAY_USER_COLOR;
+		currentKeywordColor = DAY_KEYWORD_COLOR;
 	}
 }

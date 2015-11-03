@@ -12,6 +12,7 @@ import ui.view.CelebiViewController;
 public class Main extends Application {	
 	private Stage primaryStage;
     private BorderPane rootLayout;
+    private Scene scene;
     
     @Override
     public void start(Stage primaryStage) {
@@ -38,6 +39,7 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.show();
+            this.scene = scene;
         } catch (IOException e) {
             e.printStackTrace();
         }

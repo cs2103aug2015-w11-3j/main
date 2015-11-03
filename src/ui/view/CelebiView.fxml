@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
+<AnchorPane fx:id="rootPane" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
    <children>
       <AnchorPane prefHeight="650.0" prefWidth="850.0">
          <children>
-            <SplitPane dividerPositions="0.8197226502311248" focusTraversable="false" layoutX="330.0" layoutY="340.0" orientation="VERTICAL" prefHeight="650.0" prefWidth="850.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane id="upper-split-pane" dividerPositions="0.8197226502311248" focusTraversable="false" layoutX="330.0" layoutY="340.0" orientation="VERTICAL" prefHeight="650.0" prefWidth="850.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="472.0" prefWidth="800.0" styleClass="background">
                      <children>
@@ -21,21 +21,22 @@
                                 <tabs>
                                     <Tab text="What's up">
                                       <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <AnchorPane id="tab-anchorpane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                       </content>
                                     </Tab>
                                   <Tab closable="false" text="Incompleted">
                                        <content>
-                                          <AnchorPane id="tab-anchorPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                          <AnchorPane id="tab-anchorpane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                        </content>
                                   </Tab>
                                   <Tab closable="false" text="Completed">
                                     <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                      <AnchorPane id="tab-anchorpane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                     </content>
                                   </Tab>
                                 </tabs>
                               </TabPane>
+                              <AnchorPane id="tableview-background-pane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
                               <TableView fx:id="celebiTable" focusTraversable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
                                 <columns>
                                     <TableColumn editable="false" prefWidth="25.0" resizable="false" sortable="false" />
@@ -50,12 +51,12 @@
                               </TableView>
                            </children>
                         </AnchorPane>
-                        <Label fx:id="filterLabel" maxWidth="750.0" text="Current filter: None.    Current search: None." AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="50.0" />
+                        <Label id="filter-label" fx:id="filterLabel" maxWidth="750.0" text="Current filter: None.    Current search: None." AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="50.0" />
                      </children>
                   </AnchorPane>
-                <AnchorPane maxHeight="112.0" minHeight="0.0" minWidth="0.0" prefHeight="87.0" prefWidth="800.0">
+                <AnchorPane id="below-anchor-pane" maxHeight="112.0" minHeight="0.0" minWidth="0.0" prefHeight="87.0" prefWidth="800.0">
                      <children>
-                        <SplitPane dividerPositions="0.6" layoutX="334.0" layoutY="-27.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane id="below-split-pane" dividerPositions="0.6" layoutX="334.0" layoutY="-27.0" orientation="VERTICAL" prefHeight="145.0" prefWidth="798.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <items>
                             <AnchorPane fx:id="feedbackPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                             <AnchorPane fx:id="commandFieldPane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />

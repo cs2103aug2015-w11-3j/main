@@ -1,10 +1,21 @@
 .root{
     -fx-font-size: 9.5pt;
     -fx-font-family: "Helvetica Bold";
+    -fx-cell-focus-inner-border: #85b9de;
 }
 
 .background {
-    -fx-background-color: #ffffff;
+    -fx-background-color: #34495e;
+}
+
+#tableview-background-pane {
+	-fx-background-color: transparent;
+	-fx-border-width: 0 1 1 1;
+    -fx-border-color: 
+        transparent
+        #1abc9c
+        #1abc9c
+        #1abc9c;
 }
 
 /*
@@ -34,31 +45,39 @@
 Pseudo class 'up' will change the row background
  color to green when activated 
  */
-.table-cell {
-	-fx-border-color: transparent;
-}
-
 .table-row-cell:overdue .text 
 {
 	-fx-fill: #9e9c9c;
 }
 
-.table-view {
+.table-row-cell .text 
+{
+	-fx-fill: #ecf0f1;
+}
 
+.table-cell {
+	-fx-border-color: transparent;
+}
+
+.table-view {
     -fx-base: transparent;
-    -fx-control-inner-background: #FFFFFF;
-    -fx-background-color: #b7e67e;
+    -fx-control-inner-background: #1abc9c;
+    -fx-background-color: transparent;
     -fx-border-width: 0 0 0 0;
     -fx-border-color: 
         transparent
-        #b7e67e
-        #b7e67e
-        #b7e67e;
+        #1abc9c
+        #1abc9c
+        #1abc9c;
     -fx-padding: 1;
 }
 
+.table-view .table-row-cell {
+  -fx-border-width: 1;
+}
+
 .table-view > .virtual-flow > .scroll-bar:vertical{
-    -fx-background-color: #b7e67e;
+    -fx-background-color: #1abc9c;
     -fx-background-insets: 0, 0 0 0 1;
     -fx-padding: -1 -1 -1 0;
 }
@@ -89,7 +108,7 @@ Pseudo class 'up' will change the row background
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #b7e67e;
+    -fx-background-color: #1abc9c;
 }
 
 .table-view .column-header, .table-view .filler {
@@ -109,7 +128,7 @@ Pseudo class 'up' will change the row background
     /*
     -fx-font-family: "Segoe UI Light";
     */
-    -fx-text-fill: #529228;
+    -fx-text-fill: #ecf0f1;
     -fx-alignment: center-left;
     -fx-opacity: 1;
 }
@@ -119,12 +138,12 @@ Pseudo class 'up' will change the row background
 }
 
 .table-row-cell {
-	-fx-background-color: #ffffff;
-	-fx-text-fill: #347150;
+	-fx-background-color: #2c3e50;
+	-fx-background-insets: 0, 0 0 0 0;
 }
 
 .table-row-cell:odd {
-	-fx-background-color: #ECF0F1;
+	-fx-background-color: #34495e;
 }
 
 .table-view > .virtual-flow > .scroll-bar:disabled {
@@ -154,19 +173,11 @@ Pseudo class 'up' will change the row background
     -fx-tab-min-width:90px;
     -fx-tab-min-height: 25px;
     -fx-tab-max-height: 25px;
-    /*
-    -fx-border-width: 0 1.3 1.3 1.3;
-    -fx-border-color: 
-        transparent
-        #b7e67e
-        #b7e67e
-        #b7e67e;
-        */
 }
 
 .tab-pane .tab
 {
-    -fx-background-color: #ECF0F1;
+    -fx-background-color: #567089;
 
 }
 
@@ -177,19 +188,19 @@ Pseudo class 'up' will change the row background
 
 .tab-pane .tab:selected
 {
-    -fx-background-color: #b7e67e;
+    -fx-background-color: #1abc9c;
 }
 
 .tab .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: #9f9d9d;
+    -fx-text-fill: #96abc1;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
 
 .tab:selected .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: #7eb758;
+    -fx-text-fill: #dcdfe1;
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
@@ -197,15 +208,19 @@ Pseudo class 'up' will change the row background
 }
 
 #tab-anchorPane {
-	-fx-padding: 1;
+	-fx-background-color: #1abc9c;
 }
 
 .text-field {
     -fx-padding: 0px;
 }
 
+.split-pane {
+	-fx-background-color: #567089;
+}
+
 #feedback-area {
-    -fx-background-color: #e4f2d4;
+    -fx-background-color: #213142;
     -fx-fill: #7eb758;
     -fx-padding: 6 10 6 10;
 }
@@ -219,9 +234,15 @@ Pseudo class 'up' will change the row background
 }
 
 #command-area {
+    -fx-background-color: #213142;
     -fx-padding: 2 6 2 6;
 }
 
 #command-area .text-area .scroll-bar:vertical:disabled {
     -fx-opacity: 0;
+}
+
+#filter-label {
+	-fx-text-fill: #96abc1;
+	-fx-font-size: 9pt;
 }
