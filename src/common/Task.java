@@ -241,21 +241,6 @@ public class Task {
     }
 
     /**
-     * Checks the end take and returns if it had passed current time.
-     * 
-     * @return if end time is after current time
-     */
-    public boolean isOverdue() {
-        Date end = cEnd.get();
-        if (end == null) {
-            return false;
-        }
-
-        Date cur = new Date();
-        return end.after(cur);
-    }
-
-    /**
      * Checks if any date of the task is within x days
      * 
      * @return
@@ -267,9 +252,10 @@ public class Task {
         }
 
         Date cur = new Date();
-
-        long futureTimeLong = cur.getTime() + convertDaysToLong(noOfDays);
-        if (futureTimeLong - date.getTime() > 0) {
+            
+        long days = convertDaysToLong(noOfDays);
+        long daysDifference = date.getTime() - cur.getTime(); 
+        if (daysDifference > 0 && daysDifference < days) {
             return true;
         }
         return false;
