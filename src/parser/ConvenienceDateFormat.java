@@ -1,15 +1,7 @@
 //@@author A0131891E
 package parser;
 
-import static java.util.Calendar.DAY_OF_WEEK;
-import static java.util.Calendar.FRIDAY;
-import static java.util.Calendar.MONDAY;
-import static java.util.Calendar.SATURDAY;
-import static java.util.Calendar.SUNDAY;
-import static java.util.Calendar.THURSDAY;
-import static java.util.Calendar.TUESDAY;
-import static java.util.Calendar.WEDNESDAY;
-import static java.util.Calendar.WEEK_OF_YEAR;
+import static java.util.Calendar.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,6 +9,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
+
+import common.Configuration;
+import common.Time;
 public class ConvenienceDateFormat implements CelebiDateFormatter {
 
 	private static final String[] k = {};
@@ -26,27 +21,42 @@ public class ConvenienceDateFormat implements CelebiDateFormatter {
 	}
 
 	@Override
-	public Date parseDate (String s) throws ParseException {
+	public Date parseDate (String s, boolean isStart) throws ParseException {
 		Calendar cal = new GregorianCalendar();
+		Time t;
+		if (isStart) {
+			t = Configuration.getInstance().getDefaultStartTime();
+		} else {
+			t = Configuration.getInstance().getDefaultEndTime();
+		}
+		cal.set(HOUR_OF_DAY, t.getHour());
+		cal.set(MINUTE, t.getMin());
 		switch (s.trim().toLowerCase()) {
 		
 			case "none" :
 			case "empty" :
 			case "clear" :
+			case "remove" :
+			case "null" :
 				return null;
 		
 			// current time
 			case "now" :
 				return new Date();
 				
+			case "today" :
+				return cal.getTime();
+				
 			// +24h
 			case "tmr" :		// Fallthrough
 			case "tomorrow" :
-				return new Date(1000*60*60*24 + (new Date()).getTime());
+				cal.add(DAY_OF_YEAR, 1);
+				return cal.getTime();
 				
 			// +24*7h
 			case "next week" :
-				return new Date(1000*60*60*24*7 + (new Date()).getTime());
+				cal.add(WEEK_OF_YEAR, 1);
+				return cal.getTime();
 				
 			case "sun" :
 			case "sunday" :

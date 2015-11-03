@@ -54,19 +54,17 @@ public class DateFormatter implements CelebiDateFormatter {
 		CONV_DF = new ConvenienceDateFormat();
 	}
 
-	public Date parseDate (String token) throws ParseException {
+	public Date parseDate (String token, boolean isStart) throws ParseException {
 		assert(token != null);
 		token = token.trim().toLowerCase();
 		try {
-			return CONV_DF.parseDate(token);
+			return CONV_DF.parseDate(token, isStart);
 		} catch (ParseException pe) {
-			return parseAbsDate(token);
+			return parseAbsDate(token, isStart);
 		}
 	}
-	Date parseAbsDate (String token) throws ParseException {
+	Date parseAbsDate (String token, boolean isStart) throws ParseException {
 		assert(token != null);
-		
-		
 		
 		// replace date delimiters with common token
 		token = token.trim();
@@ -75,14 +73,14 @@ public class DateFormatter implements CelebiDateFormatter {
 		
 		// try parse with full info, down to minute resolution.
 		try { 
-			return FULL_DF.parseDate(token);
+			return FULL_DF.parseDate(token, isStart);
 		} catch (ParseException pePart) {
 			;
 		}
 		
 		// final try: parsing partial dates (without all calendar fields filled).
 		try { 
-			return PART_DF.parseDate(token);
+			return PART_DF.parseDate(token, isStart);
 		} catch (ParseException peFull) {
 			;
 		}
@@ -100,7 +98,7 @@ public class DateFormatter implements CelebiDateFormatter {
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			try {
-				System.out.println(df.parseDate(in.nextLine()));
+				System.out.println(df.parseDate(in.nextLine(), true));
 			} catch (ParseException pe) {
 				System.out.println(pe);
 			}
