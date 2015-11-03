@@ -18,10 +18,10 @@ import java.util.regex.Matcher;
 import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
 
-public class FullDateFormat implements CelebiDateFormatter {
+public class FullDateFormat implements CelebiDateParser {
 	
-	public static final String DELIM = DateFormatter.DATETIME_DELIM;
-	public static final String SEP = DateFormatter.DATETIME_SEP;
+	public static final String DELIM = DateParser.DATETIME_DELIM;
+	public static final String SEP = DateParser.DATETIME_SEP;
 	
 	private static final String REGEX_NUM_SUFFIX = 
 			"(\\d)(?:st|nd|rd|th)"; 	// $1 to capture preceding digit
@@ -123,7 +123,7 @@ public class FullDateFormat implements CelebiDateFormatter {
 	// Expl testing
 	public static void main (String[] args) throws Exception {
 		Scanner in = new Scanner(System.in);
-		CelebiDateFormatter fdf = new FullDateFormat();
+		CelebiDateParser fdf = new FullDateFormat();
 		DateFormat df;
 		while (true) {
 			try {

@@ -19,10 +19,10 @@ import java.util.regex.Pattern;
 import common.Configuration;
 import common.Time;
 
-public class PartialDateFormat implements CelebiDateFormatter {
+public class PartialDateFormat implements CelebiDateParser {
 	
-	public static final String DELIM = DateFormatter.DATETIME_DELIM;
-	public static final String SEP = DateFormatter.DATETIME_SEP;
+	public static final String DELIM = DateParser.DATETIME_DELIM;
+	public static final String SEP = DateParser.DATETIME_SEP;
 	
 	private static final String REGEX_NUM_SUFFIX = 
 			"(\\d)(?:st|nd|rd|th)"; 	// $1 to capture preceding digit

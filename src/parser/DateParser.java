@@ -10,7 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class DateFormatter implements CelebiDateFormatter {
+public class DateParser implements CelebiDateParser {
 	
 	/////////////////////////////////////////////////////////////////
 	// Preprocess datestring
@@ -42,11 +42,11 @@ public class DateFormatter implements CelebiDateFormatter {
 	// Worker classes for parsing different date formats
 	/////////////////////////////////////////////////////////////////
 	
-	private final CelebiDateFormatter CONV_DF;
-	private final CelebiDateFormatter FULL_DF;
-	private final CelebiDateFormatter PART_DF;
+	private final CelebiDateParser CONV_DF;
+	private final CelebiDateParser FULL_DF;
+	private final CelebiDateParser PART_DF;
 
-	public DateFormatter() {
+	public DateParser() {
 		P_DATETIME_DELIM = Pattern.compile(REGEX_DATETIME_DELIM);
 		P_DATETIME_SEP = Pattern.compile(REGEX_DATETIME_SEP);
 		FULL_DF = new FullDateFormat();
@@ -94,7 +94,7 @@ public class DateFormatter implements CelebiDateFormatter {
 	}
 	
 	public static void main (String[] args) {
-		DateFormatter df = new DateFormatter();
+		DateParser df = new DateParser();
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			try {

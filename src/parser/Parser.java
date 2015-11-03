@@ -221,13 +221,13 @@ public class Parser implements ParserInterface {
 	/////////////////////////////////////////////////////////////////
 	private String userRawInput;
 	private static Parser parserInstance;
-	private final CelebiDateFormatter DATE_FORMATTER;
+	private final CelebiDateParser DATE_FORMATTER;
 	/////////////////////////////////////////////////////////////////
 	
 	private Parser () {
 		userRawInput = "no user input received";
 		
-		DATE_FORMATTER = new DateFormatter();
+		DATE_FORMATTER = new DateParser();
 		
 		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
 		

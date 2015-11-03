@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 import common.Configuration;
 import common.Time;
-public class ConvenienceDateFormat implements CelebiDateFormatter {
+public class ConvenienceDateFormat implements CelebiDateParser {
 
 	private static final String[] k = {};
 	
