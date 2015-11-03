@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import common.Configuration;
+import common.Time;
 import common.Utilities;
 
 import java.util.regex.Matcher;
@@ -35,6 +37,7 @@ public class FullDateFormat implements CelebiDateFormatter {
 	
 	// parse for date section (cal day)
 	private static final String[] REGEX_DATES = {
+			String.format("MMM%sdd%<syy", DELIM),
 			String.format("dd%sM%<syy", DELIM), 	// for handling numbered months
 			String.format("dd%sMMM%<syy", DELIM), 	// for handling text months
 			String.format("yy%sM%<sdd", DELIM), 	// yy/mm/dd is lower in prio than dd/mm/yy
@@ -65,7 +68,7 @@ public class FullDateFormat implements CelebiDateFormatter {
 	
 	// Takes in datestring preprocessed by DateParser to handle all seperators and delimiters
 	@Override
-	public Date parseDate (String token) throws ParseException {
+	public Date parseDate (String token, boolean isStart) throws ParseException {
 
 		cal = new GregorianCalendar();
 		
@@ -126,7 +129,7 @@ public class FullDateFormat implements CelebiDateFormatter {
 			try {
 				//df = new SimpleDateFormat(in.nextLine());
 				//System.out.println(df.parse(in.nextLine()));
-			System.out.println(fdf.parseDate(in.nextLine()));
+			System.out.println(fdf.parseDate(in.nextLine(), true));
 			} catch (ParseException e) {
 				System.out.println(e);
 			}

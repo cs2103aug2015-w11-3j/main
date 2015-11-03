@@ -13,7 +13,9 @@ public interface ParserInterface {
 	
 	// Manually create commands for logic testing.
 	public Command makeAdd (String name, Date start, Date end);
-	public Command makeUpdate (int taskUID, Task.DataType fieldType, Object newValue) throws IllegalArgumentException;
+	public Command makeUpdateName (int taskUID, String newName);
+	public Command makeUpdateStart (int taskUID, Date newDate);
+	public Command makeUpdateEnd (int taskUID, Date newDate);
 	public Command makeDelete (int taskUID);
 	public Command makeQuit ();
 	public Command makeInvalid ();

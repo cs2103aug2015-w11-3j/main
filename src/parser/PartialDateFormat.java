@@ -1,16 +1,26 @@
 //@@author A0131891E
 package parser;
 
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.DAY_OF_WEEK;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Scanner;
 import java.util.regex.Pattern;
-import static java.util.Calendar.*;
+
+import common.Configuration;
+import common.Time;
 
 public class PartialDateFormat implements CelebiDateFormatter {
-
+	
 	public static final String DELIM = DateFormatter.DATETIME_DELIM;
 	public static final String SEP = DateFormatter.DATETIME_SEP;
 	
@@ -21,6 +31,7 @@ public class PartialDateFormat implements CelebiDateFormatter {
 	// parse for date section (cal day)
 	private final DateFormat[] DATE_YMD_DFS;
 	private static final String[] REGEX_YMD_DATES = {
+			String.format("MMM%sdd%<syy", DELIM),
 			String.format("dd%sM%<syy", DELIM), 	// for handling numbered months
 			String.format("dd%sMMM%<syy", DELIM), 	// for handling text months
 			String.format("yy%sM%<sdd", DELIM), 	// yy/mm/dd is lower in prio than dd/mm/yy
@@ -70,9 +81,18 @@ public class PartialDateFormat implements CelebiDateFormatter {
 	}
 	
 	@Override
-	public Date parseDate (String token) throws ParseException {
+	public Date parseDate (String token, boolean isStart) throws ParseException {
 		
-		cal = new GregorianCalendar();		
+		cal = new GregorianCalendar();
+		Time t;
+		if (isStart) {
+			t = Configuration.getInstance().getDefaultStartTime();
+		} else {
+			t = Configuration.getInstance().getDefaultEndTime();
+		}
+		cal.set(HOUR_OF_DAY, t.getHour());
+		cal.set(MINUTE, t.getMin());
+		
 		GregorianCalendar tempCal = new GregorianCalendar(); // to extract day/month/year info from cal
 		token = removeNumSuffixes(token);
 		
@@ -127,5 +147,16 @@ public class PartialDateFormat implements CelebiDateFormatter {
 			}
 		}
 		return null;
+	}
+	public static void main (String[] args) {
+		Scanner sc = new Scanner(System.in);
+		PartialDateFormat pdf = new PartialDateFormat();
+		while (true) {
+			try {
+				System.out.println(pdf.parseDate(sc.nextLine(), false));
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
 	}
 }

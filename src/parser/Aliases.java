@@ -128,7 +128,7 @@ public final class Aliases {
 	};
 
 	/////////////////////////////////////////////////////
-	// Aliases for Task field tokens
+	// Aliases for show command arguments
 	/////////////////////////////////////////////////////
 	static final String[] VIEW_DEFAULT = {
 			"",
@@ -149,6 +149,34 @@ public final class Aliases {
 			"complete",
 			"completed",
 			"finished"
+	};
+	
+	/////////////////////////////////////////////////////
+	// Aliases for show command arguments
+	/////////////////////////////////////////////////////
+	static final String[] FILTER_ARG_BEF = {
+			"bef",
+			"before"
+	};
+	static final String[] FILTER_ARG_AFT = {
+			"aft",
+			"after"
+	};
+	static final String[] FILTER_ARG_BTW_START = {
+			"from",
+			"start",
+			"b/w",
+			"btw",
+			"between",
+			"range",
+			"within"
+	};
+	static final String[] FILTER_ARG_BTW_END = {
+			"to",
+			"end",
+			"and",
+			"till",
+			"until"
 	};
 	
 	/*
