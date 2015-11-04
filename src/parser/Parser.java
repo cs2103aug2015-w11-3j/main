@@ -522,7 +522,7 @@ public class Parser implements ParserInterface {
 		args = args.trim();
 		final Matcher m = P_MARK.matcher(args);
 		if (m.matches()) {
-			final int uid = Integer.parseInt(GRPNAME_UID);
+			final int uid = Integer.parseInt(m.group(GRPNAME_UID));
 			return makeMark(uid);
 		}
 		return makeInvalid();
@@ -532,7 +532,7 @@ public class Parser implements ParserInterface {
 		args = args.trim();
 		final Matcher m = P_UNMARK.matcher(args);
 		if (m.matches()) {
-			final int uid = Integer.parseInt(GRPNAME_UID);
+			final int uid = Integer.parseInt(m.group(GRPNAME_UID));
 			return makeUnmark(uid);
 		}
 		return makeInvalid();
