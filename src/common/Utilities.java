@@ -2,7 +2,6 @@ package common;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Arrays;
 
 /**
  * Class containing miscellaneous functions for any component to use. Should not

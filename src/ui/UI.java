@@ -78,7 +78,7 @@ public class UI implements UIInterface {
         }
     }
 
-    /**
+    /**x
      * Display the default table view
      */
     public void showWelcomeView() {

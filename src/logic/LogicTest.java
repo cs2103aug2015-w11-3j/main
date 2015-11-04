@@ -1,14 +1,17 @@
 //@@author A0125546E
 package logic;
 
-import java.time.LocalDate;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +26,11 @@ import logic.exceptions.LogicException;
 import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
 import logic.exceptions.UnknownCommandException;
-import sun.util.resources.cldr.CalendarData;
 
 public class LogicTest {
 
+    private static final String JSON_LOC_DEFAULT = "bin/task.json";
+    private static final String JSON_LOC_TEMP = "bin/temp.json";
     static Logic logic;
 
     @Before
@@ -34,11 +38,17 @@ public class LogicTest {
         init();
     }
 
+    @After
+    public void cleanUpTest() {
+        cleanUp();
+    }
+
     @Test
-    public void testFullCoverage() {
+    public void Coverage() {
 
         // Logic.java
         testFailException("", UnknownCommandException.class);
+        testFailException("wrong add undo remove quit exit delete", UnknownCommandException.class);
         testFailException("khasd", UnknownCommandException.class);
         testFailException("undo", NoUndoActionException.class);
         testFailException("redo", NoRedoActionException.class);
@@ -123,22 +133,65 @@ public class LogicTest {
     }
 
     @Test
-    public void testAdd() {
+    public void AddStressTest() {
+        int TASK_COUNT = 50;
         TasksBag temp;
         Task tempTask;
+        Random rng = new Random();
 
-        testPass("add name");
+        int rndVal = rng.nextInt(TASK_COUNT);
+
+        for (int i = 0; i < rndVal; i++) {
+            testPass("add name " + i);
+        }
 
         temp = logic.getTaskBag();
-        tempTask = temp.getTask(0);
+        Assert.assertEquals(rndVal, temp.size());
 
-        Assert.assertEquals(1, temp.size());
-        Assert.assertEquals("name", tempTask.getName());
+        for (int i = 0; i < rndVal; i++) {
+            tempTask = temp.getTask(i);
 
+            Assert.assertEquals(false, tempTask.isComplete());
+            Assert.assertEquals(null, tempTask.getStart());
+            Assert.assertEquals(null, tempTask.getEnd());
+            Assert.assertEquals("name " + i, tempTask.getName());
+        }
     }
 
     @Test
-    public void testDelete() {
+    public void AddSymbols() {
+        // Valid symbols. The only invalid is ;
+        String symbols = ",./<>?:'\"[]{}\\|=+=~-_!@#$%^&*()`";
+        testPass("add " + symbols);
+        Task addedTask = logic.getTaskBag().getTask(0);
+        Assert.assertTrue(symbols.equals(addedTask.getName()));
+        testPass("delete 1");
+    }
+
+    @Test
+    public void AddTrailingSpaces(){
+        String taskName = "takoyaki";
+        testPass("  \n  \t   add " + taskName + "     ");
+        Task addedTask = logic.getTaskBag().getTask(0);
+        Assert.assertTrue(taskName.equals(addedTask.getName()));
+        testPass("delete 1");
+    }
+    
+    @Test
+    public void AddNeg() {
+
+        // Nameless tasks and symbols variants
+        testFailException("add", UnknownCommandException.class);
+        testFailException("add ", UnknownCommandException.class);
+        testFailException("add\n", UnknownCommandException.class);
+        testFailException("add\t", UnknownCommandException.class);
+        testFailException("add!?", UnknownCommandException.class);
+        testFailException("a!dd task", UnknownCommandException.class);
+        testFailException("add;", UnknownCommandException.class);
+    }
+
+    @Test
+    public void Delete() {
         // Boundary for fail. Empty entry
         testFailException("d -1", IntegrityCommandException.class);
         testFailException("d 0", IntegrityCommandException.class);
@@ -151,7 +204,7 @@ public class LogicTest {
     }
 
     @Test
-    public void testMark() {
+    public void Mark() {
         Task t;
         // Boundary for 0 entry but trying to mark
         testFailException("mark 0", IntegrityCommandException.class);
@@ -175,7 +228,7 @@ public class LogicTest {
     }
 
     @Test
-    public void testUnmark() {
+    public void Unmark() {
         // Boundary for 0 entry but trying to unmark
         Task t;
         testFailException("unmark 0", IntegrityCommandException.class);
@@ -200,7 +253,7 @@ public class LogicTest {
     }
 
     @Test
-    public void testTaskSearchKeyword() {
+    public void TaskSearchKeyword() {
         Task k = new Task("LowerCase UpperCase", null, null);
 
         // Half match case mixcase
@@ -219,14 +272,16 @@ public class LogicTest {
     }
 
     @Test
-    public void testDate() {
-        testDateComma();
-        testDateSpace();
+    public void Date() {
+        DateComma();
+        // testDateSpace();
     }
-    private void testDateInvalid(){
-        //testFail()
+
+    private void DateInvalid() {
+        // testFail()
     }
-    private void testDateSpace() {
+
+    private void DateSpace() {
         Calendar c = Calendar.getInstance();
 
         testPass("a task; from 2015-1-1 10:00 to 2015-1-1 10:01");
@@ -240,25 +295,24 @@ public class LogicTest {
         Assert.assertEquals(c.getTime(), task.getEnd());
     }
 
-    private void testDateComma() {
+    private void DateComma() {
         Calendar c = Calendar.getInstance();
-
+        LocalDateTime testDate;
+        LocalDateTime assertDate;
         testPass("a task; from 2015-1-1, 10:00 to 2015-1-1, 10:01");
-        testPass("a task; from 2015-1-1, 10:01, 10:00 to 2015-1-1");
+        // testPass("a task; from 2015-1-1, 10:01, 10:00 to 2015-1-1");
         TasksBag bag = logic.getTaskBag();
         Task task = bag.getTask(0);
 
-        LocalDateTime d = LocalDateTime.of(2015, 1, 1, 10, 0);
-        c.set(2015, 1, 1, 10, 0, 0);
-        
-        LocalDateTime timeD = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
-       
-        //long timeS = task.getStart().getTime();
-        Assert.assertTrue(timeD.equals(d));
-        //Assert.assertEquals(d, task.getStart());
+        assertDate = LocalDateTime.of(2015, 1, 1, 10, 0);
+        testDate = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+        Assert.assertTrue(testDate.equals(assertDate));
 
-        c.set(2015, 1, 1, 10, 0, 1);
-        Assert.assertEquals(c.getTime(), task.getEnd());
+        assertDate = LocalDateTime.of(2015, 1, 1, 10, 1);
+        testDate = LocalDateTime.ofInstant(task.getEnd().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
     }
 
     private void testPass(String passCommand) {
@@ -280,11 +334,32 @@ public class LogicTest {
     }
 
     private void init() {
+        File tempFd = new File(JSON_LOC_TEMP);
+        File fd = new File(JSON_LOC_DEFAULT);
+
+        try {
+            Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         logic = new Logic();
         logic.init();
-
-        logic.setStorage(new StorageStub());
-        // logic.setParser(new ParserStub());
     }
 
+    private void cleanUp() {
+        logic.close();
+        File fd = new File(JSON_LOC_DEFAULT);
+        File tempFd = new File(JSON_LOC_TEMP);
+        Date timeStamp = new Date();
+
+        File finalLocFd = new File(JSON_LOC_TEMP + timeStamp.getTime());
+
+        try {
+            Files.copy(fd.toPath(), finalLocFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(tempFd.toPath(), fd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

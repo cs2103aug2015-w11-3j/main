@@ -37,4 +37,10 @@ public class StorageStub implements StorageInterface {
         return true;
     }
 
+    @Override
+    public void close() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
