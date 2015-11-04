@@ -31,6 +31,7 @@ public class LogicTest {
 
     private static final String JSON_LOC_DEFAULT = "bin/task.json";
     private static final String JSON_LOC_TEMP = "bin/temp.json";
+    private static final String JSON_LOC_FINAL = "bin/test/";
     static Logic logic;
 
     @Before
@@ -169,14 +170,14 @@ public class LogicTest {
     }
 
     @Test
-    public void AddTrailingSpaces(){
+    public void AddTrailingSpaces() {
         String taskName = "takoyaki";
         testPass("  \n  \t   add " + taskName + "     ");
         Task addedTask = logic.getTaskBag().getTask(0);
         Assert.assertTrue(taskName.equals(addedTask.getName()));
         testPass("delete 1");
     }
-    
+
     @Test
     public void AddNeg() {
 
@@ -272,49 +273,133 @@ public class LogicTest {
     }
 
     @Test
-    public void Date() {
-        DateComma();
-        // testDateSpace();
+    public void DateInvalidDates() {
+        // Invalid due to out of normal date range
+        testFailException("a task; from 2015_13_1, 10:00", UnknownCommandException.class);
+        testFailException("a task; from 2015-2-28, 10:00 to 2015_2_29, 10:01", UnknownCommandException.class);
+        testFailException("a task; from 2015-2-29, 10:00", UnknownCommandException.class);
+        testFailException("a task; from 2015-2-00, 10:00", UnknownCommandException.class);
+        testFailException("a task; from 2015_1_32, 10:00", UnknownCommandException.class);
+        testFailException("a task; from 2015_00_1, 10:00", UnknownCommandException.class);
+        testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
+        
+        // @yijin Currently failing
+        testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
+        testFailException("a task; from 2015_2_-1, 10:00", UnknownCommandException.class);
     }
 
-    private void DateInvalid() {
-        // testFail()
-    }
-
-    private void DateSpace() {
-        Calendar c = Calendar.getInstance();
-
-        testPass("a task; from 2015-1-1 10:00 to 2015-1-1 10:01");
-        TasksBag bag = logic.getTaskBag();
-        Task task = bag.getTask(0);
-
-        c.set(2015, 1, 1, 10, 0, 0);
-        Assert.assertEquals(c.getTime(), task.getStart());
-
-        c.set(2015, 1, 1, 10, 0, 1);
-        Assert.assertEquals(c.getTime(), task.getEnd());
-    }
-
-    private void DateComma() {
-        Calendar c = Calendar.getInstance();
+    @Test
+    public void DateUnderscore() {
         LocalDateTime testDate;
         LocalDateTime assertDate;
-        testPass("a task; from 2015-1-1, 10:00 to 2015-1-1, 10:01");
-        // testPass("a task; from 2015-1-1, 10:01, 10:00 to 2015-1-1");
+
+        testPass("a task; from 2015_1_3, 10:00 to 2015_1_5, 10:01");
         TasksBag bag = logic.getTaskBag();
         Task task = bag.getTask(0);
 
-        assertDate = LocalDateTime.of(2015, 1, 1, 10, 0);
+        assertDate = LocalDateTime.of(2015, 1, 3, 10, 0);
         testDate = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
         Assert.assertTrue(testDate.equals(assertDate));
 
-        assertDate = LocalDateTime.of(2015, 1, 1, 10, 1);
+        assertDate = LocalDateTime.of(2015, 1, 5, 10, 1);
         testDate = LocalDateTime.ofInstant(task.getEnd().toInstant(), ZoneId.systemDefault());
         System.out.println(testDate);
         System.out.println(assertDate);
         Assert.assertTrue(testDate.equals(assertDate));
     }
 
+    @Test
+    public void DateDot() {
+        LocalDateTime testDate;
+        LocalDateTime assertDate;
+
+        testPass("a task; from 2015.1.2, 10:00 to 2015.1.4, 10:01");
+        TasksBag bag = logic.getTaskBag();
+        Task task = bag.getTask(0);
+
+        assertDate = LocalDateTime.of(2015, 1, 2, 10, 0);
+        testDate = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+
+        assertDate = LocalDateTime.of(2015, 1, 4, 10, 1);
+        testDate = LocalDateTime.ofInstant(task.getEnd().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+    }
+
+    @Test
+    public void DateForwardSlash() {
+        LocalDateTime testDate;
+        LocalDateTime assertDate;
+
+        testPass("a task; from 2015/1/3, 10:00 to 2015/1/5, 10:01");
+        TasksBag bag = logic.getTaskBag();
+        Task task = bag.getTask(0);
+
+        assertDate = LocalDateTime.of(2015, 1, 3, 10, 0);
+        testDate = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+
+        assertDate = LocalDateTime.of(2015, 1, 5, 10, 1);
+        testDate = LocalDateTime.ofInstant(task.getEnd().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+    }
+
+    @Test
+    public void DateBackSlash() {
+        LocalDateTime testDate;
+        LocalDateTime assertDate;
+
+        testPass("a task; from 2015\\1\\3, 10:00 to 2015\\1\\5, 10:01");
+        TasksBag bag = logic.getTaskBag();
+        Task task = bag.getTask(0);
+
+        assertDate = LocalDateTime.of(2015, 1, 3, 10, 0);
+        testDate = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+
+        assertDate = LocalDateTime.of(2015, 1, 5, 10, 1);
+        testDate = LocalDateTime.ofInstant(task.getEnd().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+    }
+
+    @Test
+    public void DateColon() {
+        LocalDateTime testDate;
+        LocalDateTime assertDate;
+        testPass("a task; from 2015:10:1, 10:00 to 2015:10:1, 10:01");
+        TasksBag bag = logic.getTaskBag();
+        Task task = bag.getTask(0);
+
+        assertDate = LocalDateTime.of(2015, 10, 1, 10, 0);
+        testDate = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+
+        assertDate = LocalDateTime.of(2015, 10, 1, 10, 1);
+        testDate = LocalDateTime.ofInstant(task.getEnd().toInstant(), ZoneId.systemDefault());
+        System.out.println(testDate);
+        System.out.println(assertDate);
+        Assert.assertTrue(testDate.equals(assertDate));
+    }
+
+    /*
+     * Below are helper functions to ease testing
+     */
     private void testPass(String passCommand) {
         try {
             logic.executeCommand(passCommand);
@@ -353,7 +438,7 @@ public class LogicTest {
         File tempFd = new File(JSON_LOC_TEMP);
         Date timeStamp = new Date();
 
-        File finalLocFd = new File(JSON_LOC_TEMP + timeStamp.getTime());
+        File finalLocFd = new File(JSON_LOC_FINAL + timeStamp.getTime() + ".json");
 
         try {
             Files.copy(fd.toPath(), finalLocFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
