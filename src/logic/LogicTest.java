@@ -1,6 +1,11 @@
 //@@author A0125546E
 package logic;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -243,8 +248,14 @@ public class LogicTest {
         TasksBag bag = logic.getTaskBag();
         Task task = bag.getTask(0);
 
+        LocalDateTime d = LocalDateTime.of(2015, 1, 1, 10, 0);
         c.set(2015, 1, 1, 10, 0, 0);
-        Assert.assertEquals(c.getTime(), task.getStart());
+        
+        LocalDateTime timeD = LocalDateTime.ofInstant(task.getStart().toInstant(), ZoneId.systemDefault());
+       
+        //long timeS = task.getStart().getTime();
+        Assert.assertTrue(timeD.equals(d));
+        //Assert.assertEquals(d, task.getStart());
 
         c.set(2015, 1, 1, 10, 0, 1);
         Assert.assertEquals(c.getTime(), task.getEnd());
