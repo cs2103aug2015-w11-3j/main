@@ -16,6 +16,7 @@ public class DateFormatter {
 		// TODO Auto-generated constructor stub
 	}
 
+	private static final String NULL_DATE = "none";
 	private static final DateFormat YEAR_LVL = new SimpleDateFormat("YYYY MMM d (h.mm a)");
 	private static final DateFormat MONTH_LVL = new SimpleDateFormat("MMM d EEEE (h.mm a)");
 	private static final DateFormat WEEK_LVL = new SimpleDateFormat("MMM d EEEE (h.mm a)");
@@ -26,6 +27,9 @@ public class DateFormatter {
 	public String formatDate (Date d) {
 		final GregorianCalendar now = new GregorianCalendar();
 		final GregorianCalendar date = new GregorianCalendar();
+		if (d == null) {
+			return NULL_DATE;
+		}
 		date.setTime(d);
 		String temp;
 		if (now.get(YEAR) != date.get(YEAR)) {

@@ -404,19 +404,22 @@ public class CelebiViewController {
 		FilterDateState state = bag.getDateState();
 		Date start = bag.getStartDate();
 		Date end = bag.getEndDate();
+		String formattedStart = df.formatDate(start);
+		String formattedEnd = df.formatDate(end);
+		
 		String dateFilterString = "none";
 		switch(state) {
 			case NONE:
 				dateFilterString = MESSAGE_NONE;
 				break;
 			case AFTER:
-				dateFilterString = String.format(MESSAGE_AFTER, start);
+				dateFilterString = String.format(MESSAGE_AFTER, formattedStart);
 				break;
 			case BEFORE:
-				dateFilterString = String.format(MESSAGE_BEFORE, end);
+				dateFilterString = String.format(MESSAGE_BEFORE, formattedEnd);
 				break;
 			case BETWEEN:
-				dateFilterString = String.format(MESSAGE_BETWEEN, start, end);
+				dateFilterString = String.format(MESSAGE_BETWEEN, formattedStart, formattedEnd);
 				break;
 			default:
 				break;
