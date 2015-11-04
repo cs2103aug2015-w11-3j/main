@@ -1,5 +1,5 @@
 //@@author A0131891E
-package ui;
+package ui.view;
 
 import static java.util.Calendar.*;
 import java.text.DateFormat;
@@ -16,12 +16,12 @@ public class DateFormatter {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static final DateFormat YEAR_LVL = new SimpleDateFormat("h:mma EEEE, d MMM YYYY");
-	private static final DateFormat MONTH_LVL = new SimpleDateFormat("h:mma EEEE, d MMMM");
-	private static final DateFormat WEEK_LVL = new SimpleDateFormat("h:mma EEEE d");
-	private static final DateFormat WEEKDAY_LVL = new SimpleDateFormat("h:mma EEEE '(this week)'");
-	private static final DateFormat TMR_LVL = new SimpleDateFormat("h:mma 'tomorrow'");
-	private static final DateFormat TODAY_LEVEL = new SimpleDateFormat("h:mma 'today'");
+	private static final DateFormat YEAR_LVL = new SimpleDateFormat("YYYY MMM d (h.mm a)");
+	private static final DateFormat MONTH_LVL = new SimpleDateFormat("MMM d EEEE (h.mm a)");
+	private static final DateFormat WEEK_LVL = new SimpleDateFormat("MMM d EEEE (h.mm a)");
+	private static final DateFormat WEEKDAY_LVL = new SimpleDateFormat("'This' EEEE (h.mm a)");
+	private static final DateFormat TMR_LVL = new SimpleDateFormat("'Tomorrow' (h.mm a)");
+	private static final DateFormat TODAY_LEVEL = new SimpleDateFormat("'Today' (h.mm a)");
 	
 	public String formatDate (Date d) {
 		final GregorianCalendar now = new GregorianCalendar();

@@ -36,6 +36,7 @@ public class CelebiViewController {
 	//@@author A0133895U
 	Main mainApp;
 	UIInterface ui;
+	final DateFormatter df = new DateFormatter();
 	
 	@FXML
 	private AnchorPane rootPane;
@@ -189,7 +190,7 @@ public class CelebiViewController {
     	            } else {
     	                // Format date.
     	            	String displayDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(item);
-    	            	setText(displayDate);
+    	            	setText(df.formatDate(item));
     	            }
     	        }
     	    };
