@@ -32,13 +32,13 @@ import ui.UIInterface;
 import parser.Aliases;
 
 public class CelebiViewController {
-	//@@author A0133895U
-	Main mainApp;
-	UIInterface ui;
-	final DateFormatter df = new DateFormatter();
-	
-	@FXML
-	private AnchorPane rootPane;
+    // @@author A0133895U
+    Main mainApp;
+    UIInterface ui;
+    final DateFormatter df = new DateFormatter();
+
+    @FXML
+    private AnchorPane rootPane;
     @FXML
     private TableView<Task> celebiTable;
     @FXML
@@ -59,395 +59,414 @@ public class CelebiViewController {
     private AnchorPane feedbackPane;
     @FXML
     private Label filterLabel;
-    
+
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-	private static final String[][] VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
-	
-	private static final String DAY_CELEBI_COLOR = "#7eb758";
-	private static final String NIGHT_CELEBI_COLOR = "#16a085";
-	private static final String DAY_USER_COLOR = "#000000";
-	private static final String NIGHT_USER_COLOR = "#ecf0f1";
-	private static final String DAY_KEYWORD_COLOR = "#529228";
-	private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
-	
-	private static enum SKIN {
+    private static final String[][] VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
+
+    private static final String DAY_CELEBI_COLOR = "#7eb758";
+    private static final String NIGHT_CELEBI_COLOR = "#16a085";
+    private static final String DAY_USER_COLOR = "#000000";
+    private static final String NIGHT_USER_COLOR = "#ecf0f1";
+    private static final String DAY_KEYWORD_COLOR = "#529228";
+    private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
+
+    private static enum SKIN {
         DAY, NIGHT
     }
-	
-	private SKIN skinMode = SKIN.DAY;
-	private String currentCelebiColor = DAY_CELEBI_COLOR;
-	private String currentUserColor = DAY_USER_COLOR;
-	private String currentKeywordColor = DAY_KEYWORD_COLOR;
-    
+
+    private SKIN skinMode = SKIN.DAY;
+    private String currentCelebiColor = DAY_CELEBI_COLOR;
+    private String currentUserColor = DAY_USER_COLOR;
+    private String currentKeywordColor = DAY_KEYWORD_COLOR;
+
     /**
      * Initializes the controller class. This method is automatically called
      * after the fxml file has been loaded.
      */
     @FXML
     private void initialize() {
-    	initializeCelebiTable();
-    	initializeTableColumns();
-    	initializeCommandPane();
-    	initializeCommandField();
-    	initializeFeedbackPane();
-    	initializeFeedbackArea();
-    	
-    	Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+        initializeCelebiTable();
+        initializeTableColumns();
+        initializeCommandPane();
+        initializeCommandField();
+        initializeFeedbackPane();
+        initializeFeedbackArea();
+
+        Platform.runLater(() -> {
                 commandArea.requestFocus();
+        });
+    }
+
+    //private void temp(ObservableV)
+    private void initializeCelebiTable() {
+        celebiTable.setFixedCellSize(26.2);
+
+        PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
+        celebiTable.setRowFactory(tableview -> {
+            TableRow<Task> row = new TableRow<>();
+
+            ChangeListener<Date> changeListener = (observable, oldEndDate, newEndDate) -> {
+                row.pseudoClassStateChanged(overdue, newEndDate.before(new Date()));
+            };
+
+            row.itemProperty().addListener((observable, previousTask, currentTask) -> {
+                if (previousTask != null) {
+                    previousTask.endProperty().removeListener(changeListener);
+                }
+                
+                if (currentTask != null) {
+                    currentTask.endProperty().addListener(changeListener);
+                    
+                    if (currentTask.getEnd() != null) {
+                        row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
+                    } else {
+                        row.pseudoClassStateChanged(overdue, false);
+                    }
+                    
+                } else {
+                    row.pseudoClassStateChanged(overdue, false);
+                }
+            });
+            return row;
+        });
+
+        TableColumn[] columns = { spaceColumn, idColumn, taskNameColumn, startTimeColumn, endTimeColumn };
+        celebiTable.getColumns().addListener(new ListChangeListener<TableColumn>() {
+            public boolean reordered = false;
+
+            @Override
+            public void onChanged(Change change) {
+                change.next();
+                if (change.wasReplaced() && !reordered) {
+                    reordered = true;
+                    celebiTable.getColumns().setAll(columns);
+                    reordered = false;
+                }
             }
         });
     }
 
-	private void initializeCelebiTable() {
-		celebiTable.setFixedCellSize(26.2);
-		
-		PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
-		celebiTable.setRowFactory(tableview -> {
-			TableRow<Task> row = new TableRow<>();
-			ChangeListener<Date> changeListener = (observable, oldEndDate, newEndDate) -> {
-				row.pseudoClassStateChanged(overdue, newEndDate.before(new Date()));
-			};
-			row.itemProperty().addListener((observable, previousTask, currentTask) -> {
-				if (previousTask != null) {
-					previousTask.endProperty().removeListener(changeListener);
-				}
-				if (currentTask != null) {
-					currentTask.endProperty().addListener(changeListener);
-					if (currentTask.getEnd() != null) {
-						row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
-					}
-					else {
-						row.pseudoClassStateChanged(overdue, false);
-					}
-				}
-				else {
-					row.pseudoClassStateChanged(overdue, false);
-				}
-			});
-			return row;
-		});
-		
-		TableColumn[] columns = {spaceColumn, idColumn, taskNameColumn, startTimeColumn, endTimeColumn};
-		celebiTable.getColumns().addListener(new ListChangeListener<TableColumn>() {
-			public boolean reordered = false;
-			
-			@Override
-			public void onChanged(Change change) {
-				change.next();
-				if (change.wasReplaced() && !reordered) {
-					reordered = true;
-					celebiTable.getColumns().setAll(columns);
-					reordered = false;
-				}
-			}
-		});
-	}
+    /**
+     * Initialize the table columns by setting the field that each column uses
+     */
+    private void initializeTableColumns() {
+        initializeIdColumn();
+        initializeTaskNameColumn();
+        initializeStartTimeColumn();
+        initializeEndTimeColumn();
+    }
 
-	/**
-	 * Initialize the table columns by setting the field that each column uses
-	 */
-	private void initializeTableColumns() {
-		initializeIdColumn();
-		initializeTaskNameColumn();
-    	initializeStartTimeColumn();
-    	initializeEndTimeColumn();
-	}
+    /**
+     * initialize task end time column to display the end field of cell data
+     */
+    private void initializeEndTimeColumn() {
+        endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().endProperty());
+        // format the date displayed
+        initializeDateColumn(endTimeColumn);
+    }
 
-	/**
-	 * initialize task end time column to display the end field of cell data
-	 */
-	private void initializeEndTimeColumn() {
-		endTimeColumn.setCellValueFactory(cellData -> cellData.getValue().endProperty());
-		// format the date displayed
-		initializeDateColumn(endTimeColumn);
-	}
+    /**
+     * initialize task start time column to display the start field of cell data
+     */
+    private void initializeStartTimeColumn() {
+        startTimeColumn.setCellValueFactory(cellData -> cellData.getValue().startProperty());
+        // format the date displayed
+        initializeDateColumn(startTimeColumn);
+    }
 
-	/**
-	 * initialize task start time column to display the start field of cell data
-	 */
-	private void initializeStartTimeColumn() {
-		startTimeColumn.setCellValueFactory(cellData -> cellData.getValue().startProperty());
-    	// format the date displayed
-		initializeDateColumn(startTimeColumn);
-	}
+    /**
+     * initialize task name column to display the name field of cell data
+     */
+    private void initializeTaskNameColumn() {
+        taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+    }
 
-	/**
-	 * initialize task name column to display the name field of cell data
-	 */
-	private void initializeTaskNameColumn() {
-		taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-	}
+    /**
+     * initialize id column to display 1,2,3,...till number of tasks
+     */
+    private void initializeIdColumn() {
+        idColumn.setCellValueFactory(
+                column -> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue()) + 1));
+    }
 
-	/**
-	 * initialize id column to display 1,2,3,...till number of tasks
-	 */
-	private void initializeIdColumn() {
-		idColumn.setCellValueFactory(column-> new ReadOnlyObjectWrapper<Number>(
-				celebiTable.getItems().indexOf(column.getValue())+1));
-	}
-    
     /**
      * Initialize the date column with formatted date
+     * 
      * @param column
      */
     private void initializeDateColumn(TableColumn<Task, Date> column) {
-    	column.setCellFactory(col -> {
-    		return new TableCell<Task, Date>(){
-    	        @Override
-    	        protected void updateItem(Date item, boolean empty) {
-    	            super.updateItem(item, empty);
+        column.setCellFactory(col -> {
+            return new TableCell<Task, Date>() {
+                @Override
+                protected void updateItem(Date item, boolean empty) {
+                    super.updateItem(item, empty);
 
-    	            if (item == null || empty) {
-    	                setText(null);
-    	                setStyle("");
-    	            } else {
-    	                // Format date.
-    	            	setText(df.formatDate(item));
-    	            }
-    	        }
-    	    };
-    	});
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        // Format date.
+                        setText(df.formatDate(item));
+                    }
+                }
+            };
+        });
     }
-  
+
     private void initializeCommandPane() {
-    	// add command area into the pane
-    	commandArea = new InlineCssTextArea();
-    	AnchorPane.setTopAnchor(commandArea, 5.0);
-    	AnchorPane.setBottomAnchor(commandArea, 10.0);
-    	AnchorPane.setLeftAnchor(commandArea, 50.0);
-    	AnchorPane.setRightAnchor(commandArea, 50.0);
-    	commandFieldPane.getChildren().add(commandArea);
+        // add command area into the pane
+        commandArea = new InlineCssTextArea();
+        AnchorPane.setTopAnchor(commandArea, 5.0);
+        AnchorPane.setBottomAnchor(commandArea, 10.0);
+        AnchorPane.setLeftAnchor(commandArea, 50.0);
+        AnchorPane.setRightAnchor(commandArea, 50.0);
+        commandFieldPane.getChildren().add(commandArea);
     }
-    
+
     /**
-     * Initialize command field with enter action and keyword highlighting checker
+     * Initialize command field with enter action and keyword highlighting
+     * checker
      */
     private void initializeCommandField() {
-    	commandArea.requestFocus();
-    	commandArea.setId("command-area");
-    	
-    	setEnterPressedEvent();
-    	setKeywordHighlightChecker();
+        commandArea.requestFocus();
+        commandArea.setId("command-area");
+
+        setEnterPressedEvent();
+        setKeywordHighlightChecker();
     }
 
-	private void setKeywordHighlightChecker() {
-		commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
-    		String firstWord;
-    		firstWord = extractFirstWord(newValue);  		
-    		if (isCmdToken(firstWord)) {
-    			// highlight the first word
-    			commandArea.setStyle(0, firstWord.length(), "-fx-font-weight: bold; -fx-fill: " + currentKeywordColor + ";");
-    			// leave the rest of the command unhighlighted
-    			if (newValue.length() > firstWord.length()) {
-    				commandArea.setStyle(firstWord.length() + 1, newValue.length(),"-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
-    			}
-    		}
-    		// leave the command unhighlighted
-    		else {
-    			commandArea.setStyle(0, newValue.length(),"-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
-    		}
-    	});
-	}
+    private void setKeywordHighlightChecker() {
+        commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            String firstWord;
+            firstWord = extractFirstWord(newValue);
+            if (isCmdToken(firstWord)) {
+                // highlight the first word
+                commandArea.setStyle(0, firstWord.length(),
+                        "-fx-font-weight: bold; -fx-fill: " + currentKeywordColor + ";");
+                // leave the rest of the command unhighlighted
+                if (newValue.length() > firstWord.length()) {
+                    commandArea.setStyle(firstWord.length() + 1, newValue.length(),
+                            "-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
+                }
+            }
+            // leave the command unhighlighted
+            else {
+                commandArea.setStyle(0, newValue.length(),
+                        "-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
+            }
+        });
+    }
 
-	/**
-	 * Extract the first word from a string
-	 * @param string
-	 * @return first word
-	 */
-	private String extractFirstWord(String string) {
-		String firstWord;
-		int i = string.indexOf(' ');
-		if (i == -1) {
-			firstWord = string;
-		}
-		else {
-			firstWord = string.substring(0, i);
-		}
-		return firstWord;
-	}
+    /**
+     * Extract the first word from a string
+     * 
+     * @param string
+     * @return first word
+     */
+    private String extractFirstWord(String string) {
+        String firstWord;
+        int i = string.indexOf(' ');
+        if (i == -1) {
+            firstWord = string;
+        } else {
+            firstWord = string.substring(0, i);
+        }
+        return firstWord;
+    }
 
-	/**
-	 * Add in enter pressed event for command area so that it passes the command to UI everytime enter is hit
-	 */
-	private void setEnterPressedEvent() {
-		commandArea.setOnKeyPressed(new EventHandler<KeyEvent>() {
-    	    @Override
-    	    public void handle(KeyEvent keyEvent) {
-    	        KeyCode code = keyEvent.getCode();
-    	    	if (code == KeyCode.ENTER)  {
-    	            // when enter is hit, pass the user input to UI
-    	        	String text = commandArea.getText();
-    	            ui.passCommand(text);
-    	            commandArea.clear();
-    	            keyEvent.consume();
-    	        }
-    	    }
-    	});
-	}
+    /**
+     * Add in enter pressed event for command area so that it passes the command
+     * to UI everytime enter is hit
+     */
+    private void setEnterPressedEvent() {
+        commandArea.setOnKeyPressed((keyEvent) -> {
+            KeyCode code = keyEvent.getCode();
+            if (code == KeyCode.ENTER) {
+                // when enter is hit, pass the user input to UI
+                String text = commandArea.getText();
+                ui.passCommand(text);
+                commandArea.clear();
+                keyEvent.consume();
+            }
+        });
 
-    //@@author A0131891E
+        /*
+         * new EventHandler<KeyEvent>() {
+         * 
+         * @Override public void handle(KeyEvent keyEvent) { KeyCode code =
+         * keyEvent.getCode(); if (code == KeyCode.ENTER) { // when enter is
+         * hit, pass the user input to UI String text = commandArea.getText();
+         * ui.passCommand(text); commandArea.clear(); keyEvent.consume(); } }
+         * });
+         */
+    }
+
+    // @@author A0131891E
     // Helped you link the highlighting check to my parser's token string array.
-    // Next time if I change the accepted token strings, it will automatically reflect in the UI.
-	private boolean isCmdToken(String firstWord) {
-		assert(firstWord != null);
-		firstWord = firstWord.toLowerCase();
-		for (String[] tokens : VALID_CMD_TOKENS) {
-			for (String token : tokens) {
-				if (firstWord.equals(token)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-    
-	//@@author A0133895U
-    private void initializeFeedbackPane() {
-    	// add feedback area into the pane
-    	feedbackArea = new InlineCssTextArea();
-    	feedbackArea.setWrapText(true);
-    	AnchorPane.setTopAnchor(feedbackArea, 5.0);
-    	AnchorPane.setBottomAnchor(feedbackArea, 0.0);
-    	AnchorPane.setLeftAnchor(feedbackArea, 50.0);
-    	AnchorPane.setRightAnchor(feedbackArea, 50.0);
-    	feedbackPane.getChildren().add(feedbackArea);
+    // Next time if I change the accepted token strings, it will automatically
+    // reflect in the UI.
+    private boolean isCmdToken(String firstWord) {
+        assert (firstWord != null);
+        firstWord = firstWord.toLowerCase();
+        for (String[] tokens : VALID_CMD_TOKENS) {
+            for (String token : tokens) {
+                if (firstWord.equals(token)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
-    
+
+    // @@author A0133895U
+    private void initializeFeedbackPane() {
+        // add feedback area into the pane
+        feedbackArea = new InlineCssTextArea();
+        feedbackArea.setWrapText(true);
+        AnchorPane.setTopAnchor(feedbackArea, 5.0);
+        AnchorPane.setBottomAnchor(feedbackArea, 0.0);
+        AnchorPane.setLeftAnchor(feedbackArea, 50.0);
+        AnchorPane.setRightAnchor(feedbackArea, 50.0);
+        feedbackPane.getChildren().add(feedbackArea);
+    }
+
     /**
      * Initialize feedback area.
      */
     private void initializeFeedbackArea() {
-    	// set the feedback area to be uneditable and set it to be always at the bottom
-    	feedbackArea.setEditable(false);
-    	feedbackArea.setId("feedback-area");
-    	//feedbackA.textProperty().addListener((observable, oldValue, newValue) -> feedbackA.setScrollTop(Double.MIN_VALUE));
+        // set the feedback area to be uneditable and set it to be always at the
+        // bottom
+        feedbackArea.setEditable(false);
+        feedbackArea.setId("feedback-area");
+        // feedbackA.textProperty().addListener((observable, oldValue, newValue)
+        // -> feedbackA.setScrollTop(Double.MIN_VALUE));
     }
-	
-	public void setMainApp(Main mainApp) {
+
+    public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
 
         // Add observable list data to the table
         System.out.println(ui == null);
         updateTableItems(ui.getCelebiList());
     }
-	
-	public void setUI(UIInterface ui) {
-		this.ui = ui;
-	}
-	
-	public void updateTableItems(ObservableList<Task> celebiList) {
-		celebiTable.setItems(celebiList);
-	}
-	
-	public void clearCommand() {
-		commandArea.clear();
-	}
-	
-	/**
-	 * Append feedback to the feedback area
-	 * @param newFeedback
-	 */
-	public void appendFeedback(String newFeedback) {
-		// if the text to be appended is the only line in feedback area, set its color green
-		if(feedbackArea.getText().equals("")) {
-			feedbackArea.appendText(newFeedback);
-			feedbackArea.setStyle(0, "-fx-fill: " + currentCelebiColor + ";");
-		}
-		// else make the first line in feedback area black, the rest green
-		else {
-			feedbackArea.appendText(newFeedback);
-			feedbackArea.setStyle(0, "-fx-fill: " + currentUserColor + ";");
-			feedbackArea.setStyle(1, "-fx-fill: " + currentCelebiColor + ";");
-		}
-	}
-	
-	public void clearFeedback() {
-		feedbackArea.clear();;
-	}
-	
-	/**
-	 * Refresh the tab selection according to the current filter state
-	 * @param bag
-	 */
-	public void refreshSelection(TasksBag bag) {
-		SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
-		FilterBy state = bag.getState();
-		if (state == common.TasksBag.FilterBy.TODAY) {
-			selectionModel.select(0);
-		}
-		else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
-			selectionModel.select(1);
-		}
-		else if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
-			selectionModel.select(2);
-		}
-	}
-	
-	public void updateFilterDisplay(TasksBag bag) {
-		String dateFilterString = getDateFilterString(bag);
-		String searchKeywordString = getSearchKeywordString(bag);
-		String displayString = "Now filtering: " + dateFilterString + ".   Now searching: " + searchKeywordString + ".";
-		filterLabel.setText(displayString);
-	}
-	
-	public String getDateFilterString(TasksBag bag) {
-		String MESSAGE_NONE = "none";
-		String MESSAGE_AFTER = "after %1$s";
-		String MESSAGE_BEFORE = "before %1$s";
-		String MESSAGE_BETWEEN = "from %1$s to %2$s";
-		
-		FilterDateState state = bag.getDateState();
-		Date start = bag.getStartDate();
-		Date end = bag.getEndDate();
-		String formattedStart = df.formatDate(start);
-		String formattedEnd = df.formatDate(end);
-		
-		String dateFilterString = "none";
-		switch(state) {
-			case NONE:
-				dateFilterString = MESSAGE_NONE;
-				break;
-			case AFTER:
-				dateFilterString = String.format(MESSAGE_AFTER, formattedStart);
-				break;
-			case BEFORE:
-				dateFilterString = String.format(MESSAGE_BEFORE, formattedEnd);
-				break;
-			case BETWEEN:
-				dateFilterString = String.format(MESSAGE_BETWEEN, formattedStart, formattedEnd);
-				break;
-			default:
-				break;
-		}
-		return dateFilterString;
-	}
-	
-	public String getSearchKeywordString(TasksBag bag) {
-		String keyword = bag.getSearchState();
-		if (keyword == null || keyword.equals("")) {
-			keyword = "none";
-		}
-		return keyword;
-	}
-	
-	public void switchNightSkin() {
-		String css = Main.class.getResource("view/style_night.css").toExternalForm();
-		rootPane.getStylesheets().clear();
-		rootPane.getStylesheets().add(css);
-		currentCelebiColor = NIGHT_CELEBI_COLOR;
-		currentUserColor = NIGHT_USER_COLOR;
-		currentKeywordColor = NIGHT_KEYWORD_COLOR;
-	}
-	
-	public void switchDaySkin() {
-		String css = Main.class.getResource("view/application.css").toExternalForm();
-		rootPane.getStylesheets().clear();
-		rootPane.getStylesheets().add(css);
-		currentCelebiColor = DAY_CELEBI_COLOR;
-		currentUserColor = DAY_USER_COLOR;
-		currentKeywordColor = DAY_KEYWORD_COLOR;
-	}
+
+    public void setUI(UIInterface ui) {
+        this.ui = ui;
+    }
+
+    public void updateTableItems(ObservableList<Task> celebiList) {
+        celebiTable.setItems(celebiList);
+    }
+
+    public void clearCommand() {
+        commandArea.clear();
+    }
+
+    /**
+     * Append feedback to the feedback area
+     * 
+     * @param newFeedback
+     */
+    public void appendFeedback(String newFeedback) {
+        // if the text to be appended is the only line in feedback area, set its
+        // color green
+        if (feedbackArea.getText().equals("")) {
+            feedbackArea.appendText(newFeedback);
+            feedbackArea.setStyle(0, "-fx-fill: " + currentCelebiColor + ";");
+        }
+        // else make the first line in feedback area black, the rest green
+        else {
+            feedbackArea.appendText(newFeedback);
+            feedbackArea.setStyle(0, "-fx-fill: " + currentUserColor + ";");
+            feedbackArea.setStyle(1, "-fx-fill: " + currentCelebiColor + ";");
+        }
+    }
+
+    public void clearFeedback() {
+        feedbackArea.clear();
+        ;
+    }
+
+    /**
+     * Refresh the tab selection according to the current filter state
+     * 
+     * @param bag
+     */
+    public void refreshSelection(TasksBag bag) {
+        SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
+        FilterBy state = bag.getState();
+        if (state == common.TasksBag.FilterBy.TODAY) {
+            selectionModel.select(0);
+        } else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
+            selectionModel.select(1);
+        } else if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
+            selectionModel.select(2);
+        }
+    }
+
+    public void updateFilterDisplay(TasksBag bag) {
+        String dateFilterString = getDateFilterString(bag);
+        String searchKeywordString = getSearchKeywordString(bag);
+        String displayString = "Now filtering: " + dateFilterString + ".   Now searching: " + searchKeywordString + ".";
+        filterLabel.setText(displayString);
+    }
+
+    public String getDateFilterString(TasksBag bag) {
+        String MESSAGE_NONE = "none";
+        String MESSAGE_AFTER = "after %1$s";
+        String MESSAGE_BEFORE = "before %1$s";
+        String MESSAGE_BETWEEN = "from %1$s to %2$s";
+
+        FilterDateState state = bag.getDateState();
+        Date start = bag.getStartDate();
+        Date end = bag.getEndDate();
+        String formattedStart = df.formatDate(start);
+        String formattedEnd = df.formatDate(end);
+
+        String dateFilterString = "none";
+        switch (state) {
+            case NONE:
+                dateFilterString = MESSAGE_NONE;
+                break;
+            case AFTER:
+                dateFilterString = String.format(MESSAGE_AFTER, formattedStart);
+                break;
+            case BEFORE:
+                dateFilterString = String.format(MESSAGE_BEFORE, formattedEnd);
+                break;
+            case BETWEEN:
+                dateFilterString = String.format(MESSAGE_BETWEEN, formattedStart, formattedEnd);
+                break;
+            default:
+                break;
+        }
+        return dateFilterString;
+    }
+
+    public String getSearchKeywordString(TasksBag bag) {
+        String keyword = bag.getSearchState();
+        if (keyword == null || keyword.equals("")) {
+            keyword = "none";
+        }
+        return keyword;
+    }
+
+    public void switchNightSkin() {
+        String css = Main.class.getResource("view/style_night.css").toExternalForm();
+        rootPane.getStylesheets().clear();
+        rootPane.getStylesheets().add(css);
+        currentCelebiColor = NIGHT_CELEBI_COLOR;
+        currentUserColor = NIGHT_USER_COLOR;
+        currentKeywordColor = NIGHT_KEYWORD_COLOR;
+    }
+
+    public void switchDaySkin() {
+        String css = Main.class.getResource("view/application.css").toExternalForm();
+        rootPane.getStylesheets().clear();
+        rootPane.getStylesheets().add(css);
+        currentCelebiColor = DAY_CELEBI_COLOR;
+        currentUserColor = DAY_USER_COLOR;
+        currentKeywordColor = DAY_KEYWORD_COLOR;
+    }
 }
