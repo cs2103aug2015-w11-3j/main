@@ -16,4 +16,5 @@ public interface LogicInterface {
 
     public TasksBag getDefaultBag();
 
+    public void close();
 }

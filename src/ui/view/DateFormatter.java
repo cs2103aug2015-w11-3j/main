@@ -16,16 +16,20 @@ public class DateFormatter {
 		// TODO Auto-generated constructor stub
 	}
 
+	private static final String NULL_DATE = "none";
 	private static final DateFormat YEAR_LVL = new SimpleDateFormat("YYYY MMM d (h.mm a)");
 	private static final DateFormat MONTH_LVL = new SimpleDateFormat("MMM d EEEE (h.mm a)");
 	private static final DateFormat WEEK_LVL = new SimpleDateFormat("MMM d EEEE (h.mm a)");
-	private static final DateFormat WEEKDAY_LVL = new SimpleDateFormat("'This' EEEE (h.mm a)");
+	private static final DateFormat WEEKDAY_LVL = new SimpleDateFormat("EEEE (h.mm a)");
 	private static final DateFormat TMR_LVL = new SimpleDateFormat("'Tomorrow' (h.mm a)");
 	private static final DateFormat TODAY_LEVEL = new SimpleDateFormat("'Today' (h.mm a)");
 	
 	public String formatDate (Date d) {
 		final GregorianCalendar now = new GregorianCalendar();
 		final GregorianCalendar date = new GregorianCalendar();
+		if (d == null) {
+			return NULL_DATE;
+		}
 		date.setTime(d);
 		String temp;
 		if (now.get(YEAR) != date.get(YEAR)) {

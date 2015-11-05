@@ -214,18 +214,20 @@ public class Task {
         return cType.get() != Type.FLOATING;
     }
 
+    /*
     public boolean isToday() {
         if (hasDate() == false) {
             return false;
-        } else {
-            Date compare = getAnyDate();
-            assert compare != null;
+        } 
 
-            Date today = new Date();
-            return today.getDate() == compare.getDate();
-        }
+        Date compare = getAnyDate();
+        assert compare != null;
+
+        Date today = new Date();
+        return today.getDate() == compare.getDate();
     }
-
+    */
+    
     /**
      * Obtains the available date that this task contains. Always gets the start
      * date before end

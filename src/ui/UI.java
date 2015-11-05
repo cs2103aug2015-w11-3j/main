@@ -2,6 +2,9 @@ package ui;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+
+import java.util.logging.Logger;
+
 import common.*;
 import logic.Feedback;
 import logic.Logic;
@@ -12,9 +15,13 @@ import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
 
+    private static final String UI_TXT_USRCMD = "You: %1$s\n";// + userInput + "\n";
+    private static final String UI_TXT_FEEDBACK = "Celebi: %1$s"; 
+    private static final String UI_TXT_WELCOME = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
     LogicInterface logic;
     private CelebiViewController controller;
     private TasksBag cb = new TasksBag();
+    private Logger log;
 
     @Override
     public void init() {
@@ -34,7 +41,7 @@ public class UI implements UIInterface {
     }
 
     public UI() {
-
+        log = Logger.getLogger("UI");
     }
 
     /**
@@ -45,10 +52,12 @@ public class UI implements UIInterface {
     public void passCommand(String userInput) {
         controller.clearCommand();
         controller.clearFeedback();
-        controller.appendFeedback("You: " + userInput + "\n");
+        
+        String usrCmd = Utilities.formatString(UI_TXT_USRCMD, userInput);
+        controller.appendFeedback(usrCmd);
 
         Feedback cmd = null;
-        String feedback = "";
+        String usrMsg = "";
         try {
             cmd = logic.executeCommand(userInput);
             if (cmd.getCommand().getCmdType() == Command.Type.QUIT) {
@@ -57,24 +66,26 @@ public class UI implements UIInterface {
             } else {
                 cb = cmd.getcBag();
                 display(cb);
-                feedback = cmd.getMsg(); // "Celebi: Add entered. \n";
-                controller.appendFeedback("Celebi: " + feedback);
+                usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getMsg());
+                controller.appendFeedback(usrMsg);
             }
         } catch (LogicException e) {
-            // TODO Auto-generated catch block
-            feedback = e.cMsg;
-            controller.appendFeedback("Celebi: " + feedback);
+
+            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
+            controller.appendFeedback(usrMsg);
+        } catch (Exception e){
+            log.severe(e.toString());
         }
     }
 
-    /**
+    /**x
      * Display the default table view
      */
     public void showWelcomeView() {
         display(logic.getDefaultBag()); // Get default view
-        String feedback = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
+
         controller.clearFeedback();
-        controller.appendFeedback(feedback);
+        controller.appendFeedback(UI_TXT_WELCOME);
     }
 
     /**

@@ -85,6 +85,7 @@ abstract class Database {
 	
 	static boolean disconnect () {
 		db = null;
+		dbReader.close();
 		dbReader = null;
 		dbData = null;
 		dbIndex = null;

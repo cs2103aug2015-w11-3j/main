@@ -25,7 +25,7 @@ public class Configuration implements ConfigurationInterface {
     private final String KEY_DEFAULT_END_TIME = "DEFAULT_END_TIME";
     
     private final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
-    private final String DEFAULT_VALUE_DEFAULT_START_TIME = "00:00";
+    private final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
     private final String DEFAULT_VALUE_DEFAULT_END_TIME = "23:59";
     
     private final String MESSAGE_INVALID_STORAGE_LOCATION = "%1$s is not a valid path";

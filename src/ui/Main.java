@@ -2,10 +2,14 @@ package ui;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import ui.view.CelebiViewController;
 
@@ -72,6 +76,21 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
+    
+    
+    /*
+    class WindowsButtons extends HBox {
+    	public WindowsButtons() {
+    		Button close = new Button("X");
+    		close.setOnAction(new EventHandler<ActionEvent>() {
+    			@Override
+    			public void handle(ActionEvent event) {
+    				Platform.exit();
+    			}
+    		});
+    	}
+    }
+    */
 	
 	
     /**

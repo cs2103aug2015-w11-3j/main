@@ -3,12 +3,11 @@ package logic;
 
 import java.util.logging.Logger;
 
-import common.Task;
+import common.TasksBag;
+import common.TasksBag.FilterBy;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
-import common.TasksBag;
-import common.TasksBag.FilterBy;
 import parser.Command;
 import parser.Command.Type;
 import parser.Parser;
@@ -158,4 +157,7 @@ public class Logic implements LogicInterface {
         return cInternalBag.getFiltered();
     }
 
+    public void close(){
+        cStorage.close();
+    }
 }

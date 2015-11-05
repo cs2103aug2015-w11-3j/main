@@ -3,7 +3,6 @@ package logic;
 
 import java.util.logging.Logger;
 
-import common.Log;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;

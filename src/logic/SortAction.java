@@ -3,7 +3,6 @@ package logic;
 
 import common.TasksBag;
 import common.TasksBag.FilterBy;
-import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
 

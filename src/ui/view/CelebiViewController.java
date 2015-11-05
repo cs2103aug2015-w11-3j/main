@@ -8,6 +8,7 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
@@ -42,6 +43,8 @@ public class CelebiViewController {
 	private AnchorPane rootPane;
     @FXML
     private TableView<Task> celebiTable;
+    @FXML
+    private TableColumn<Task, String> spaceColumn;
     @FXML
     private TableColumn<Task, Number> idColumn;
     @FXML
@@ -128,6 +131,21 @@ public class CelebiViewController {
 			});
 			return row;
 		});
+		
+		TableColumn[] columns = {spaceColumn, idColumn, taskNameColumn, startTimeColumn, endTimeColumn};
+		celebiTable.getColumns().addListener(new ListChangeListener<TableColumn>() {
+			public boolean reordered = false;
+			
+			@Override
+			public void onChanged(Change change) {
+				change.next();
+				if (change.wasReplaced() && !reordered) {
+					reordered = true;
+					celebiTable.getColumns().setAll(columns);
+					reordered = false;
+				}
+			}
+		});
 	}
 
 	/**
@@ -189,7 +207,6 @@ public class CelebiViewController {
     	                setStyle("");
     	            } else {
     	                // Format date.
-    	            	String displayDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(item);
     	            	setText(df.formatDate(item));
     	            }
     	        }
@@ -387,19 +404,22 @@ public class CelebiViewController {
 		FilterDateState state = bag.getDateState();
 		Date start = bag.getStartDate();
 		Date end = bag.getEndDate();
+		String formattedStart = df.formatDate(start);
+		String formattedEnd = df.formatDate(end);
+		
 		String dateFilterString = "none";
 		switch(state) {
 			case NONE:
 				dateFilterString = MESSAGE_NONE;
 				break;
 			case AFTER:
-				dateFilterString = String.format(MESSAGE_AFTER, start);
+				dateFilterString = String.format(MESSAGE_AFTER, formattedStart);
 				break;
 			case BEFORE:
-				dateFilterString = String.format(MESSAGE_BEFORE, end);
+				dateFilterString = String.format(MESSAGE_BEFORE, formattedEnd);
 				break;
 			case BETWEEN:
-				dateFilterString = String.format(MESSAGE_BETWEEN, start, end);
+				dateFilterString = String.format(MESSAGE_BETWEEN, formattedStart, formattedEnd);
 				break;
 			default:
 				break;
