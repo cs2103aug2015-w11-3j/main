@@ -77,10 +77,30 @@ public class StorageTest {
     	Assert.assertTrue(defaultFile.exists());
     }
     
-    // @Test
-    // Test if cannot find the storage file
-    public void testStorageFileNotExists() {
+    @Test
+    // Test if path exists but the storage file does not exist
+    public void testStorageFileNotExists() throws IOException {
+    	ConfigurationInterface config = Configuration.getInstance();
+    	String defaultPath = config.getDefaultUsrFileDirectory();
+    	String currentConfigPath;
+    	File defaultFile = new File(defaultPath, TEST_FILENAME);
+    	StorageInterface storage;
     	
+    	// check path in configuration has been reset to default
+    	config.resetStorageLocation();
+    	currentConfigPath = config.getUsrFileDirectory();
+    	Assert.assertEquals(currentConfigPath, defaultPath);
+    	
+    	// check the default file in default location does not exist, 
+    	// in order to make sure it is 're-created' below
+    	deleteIfExists(defaultFile);
+    	Assert.assertFalse(defaultFile.exists());
+    	
+    	storage = Storage.getStorage();
+    	storage.init();
+    	
+    	// check the file in default path has been re-created
+    	Assert.assertTrue(defaultFile.exists());
     }
 
     // @Test 
@@ -135,6 +155,12 @@ public class StorageTest {
     private static void deleteIfExists(File f) {
     	if (f.exists()) {
     		f.delete();
+    	}
+    }
+    
+    private static void createIfNotExists(File f) throws IOException {
+    	if (!f.exists()) {
+    		f.createNewFile();
     	}
     }
 }
