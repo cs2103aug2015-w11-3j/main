@@ -21,11 +21,10 @@ public class Storage implements StorageInterface {
     	return instance;
     }
 
-    public void init() {
+    public void init(boolean isTestMode) {
         Log.log("Storage Init");
-        System.out.println("lol");
         try {
-            connectToDatabase();
+            connectToDatabase(isTestMode);
             Log.log("Storage Init complete");
         } catch (BadFileContentException e) {
             Log.log("Storage Init Fail");
@@ -39,16 +38,16 @@ public class Storage implements StorageInterface {
         Database.disconnect();
     }
 
-    private void connectToDatabase() throws IOException, BadFileContentException {
+    private void connectToDatabase(boolean isTestMode) throws IOException, BadFileContentException {
     	ConfigurationInterface setting = Configuration.getInstance();
         String fileLoc = setting.getUsrFileDirectory();
         
-        boolean connectResult = Database.connect(fileLoc);
+        boolean connectResult = Database.connect(fileLoc, isTestMode);
         
         if (!connectResult) {
         	Log.log("Location in ");
         	setting.resetStorageLocation();
-        	connectToDatabase();
+        	connectToDatabase(isTestMode);
         }
     	
         Database.load();
