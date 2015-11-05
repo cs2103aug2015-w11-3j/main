@@ -4,6 +4,7 @@ package common;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,13 +32,15 @@ public class TasksBag implements Iterable<Task> {
     private Date cFilterDateStart;
     private Date cFilterDateEnd;
     private FilterDateState cDateState = FilterDateState.NONE;
-
-    public FilterDateState getDateState() {
-        return cDateState;
-    }
+    private Logger log;
 
     public TasksBag() {
         tasks = FXCollections.observableArrayList();
+        log = Logger.getLogger("TasksBag");
+    }
+
+    public FilterDateState getDateState() {
+        return cDateState;
     }
 
     public TasksBag(ObservableList<Task> t) {
@@ -87,7 +90,7 @@ public class TasksBag implements Iterable<Task> {
     public TasksBag getFiltered() {
         // assert attribute != null;
 
-        ObservableList<Task> newContainer = null;
+        ObservableList<Task> newContainer = FXCollections.observableArrayList();
 
         switch (cFilterState) {
             /*
@@ -97,62 +100,16 @@ public class TasksBag implements Iterable<Task> {
              * compareDate(t2, t1)); break;
              */
             case NONE:
-                newContainer = FXCollections.observableArrayList();
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task curTask = tasks.get(i);
-                    if (curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
-                        newContainer.add(curTask);
-                    }
-                }
+                filterTaskNone(newContainer);
                 break;
             case COMPLETE_TASKS:
-                newContainer = FXCollections.observableArrayList();
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task curTask = tasks.get(i);
-                    if (curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
-                        newContainer.add(curTask);
-                    }
-                }
+                filterTasksComplete(newContainer);
                 break;
             case INCOMPLETE_TASKS:
-                newContainer = FXCollections.observableArrayList();
-                for (int i = 0; i < tasks.size(); i++) {
-                    Task curTask = tasks.get(i);
-                    if (curTask.isComplete() == false && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
-                        newContainer.add(curTask);
-                    }
-                }
+                filterTasksIncomplete(newContainer);
                 break;
             case TODAY:
-                newContainer = FXCollections.observableArrayList();
-                // count # of floating
-                ObservableList<Task> taskFloat = getIncompleteFloatingTasks();
-                // count # of dateline/event
-                ObservableList<Task> taskNonFloat = getIncompleteDatedTasks();
-
-                int totalCount = taskFloat.size() + taskNonFloat.size();
-                if (totalCount <= TASKS_LIMIT) {
-                    // take all
-                    newContainer.addAll(taskNonFloat);
-                    newContainer.addAll(taskFloat);
-                } else {
-
-                    if (taskFloat.size() <= FLOAT_LIMIT) {// float count is
-                                                          // smaller
-                        // fill with float then the rest with nonfloat
-                        newContainer.addAll(taskFloat);
-                        trimList(taskNonFloat, TASKS_LIMIT - newContainer.size());
-                        newContainer.addAll(taskNonFloat);
-                    } else {// non float count is smallerF
-                        // fill with non float then the rest with floats
-                        randomizeList(taskFloat);
-                        trimList(taskFloat, FLOAT_LIMIT);
-                        newContainer.addAll(taskFloat);
-                        trimList(taskNonFloat, TASKS_LIMIT - FLOAT_LIMIT);
-                        newContainer.addAll(taskNonFloat);
-                    }
-                }
-                System.out.println("Float: " + taskFloat.size() + " Dated: " + taskNonFloat.size());
+                filterTasksToday(newContainer);
                 break;
             default:
                 assert false;
@@ -171,6 +128,67 @@ public class TasksBag implements Iterable<Task> {
         return rtnBag;
     }
 
+    private void filterTaskNone(ObservableList<Task> container) {
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            if (curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+                container.add(curTask);
+            }
+        }
+    }
+
+    private void filterTasksComplete(ObservableList<Task> container) {
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            if (curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+                container.add(curTask);
+            }
+        }
+    }
+
+    private void filterTasksIncomplete(ObservableList<Task> container) {
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            if (curTask.isComplete() == false && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+                container.add(curTask);
+            }
+        }
+    }
+
+    private void filterTasksToday(ObservableList<Task> container) {
+        // count # of floating
+        ObservableList<Task> taskFloat = getIncompleteFloatingTasks();
+        // count # of dateline/event
+        ObservableList<Task> taskNonFloat = getIncompleteDatedTasks();
+
+        int totalCount = taskFloat.size() + taskNonFloat.size();
+        System.out.println(taskFloat.size());
+        if (totalCount <= TASKS_LIMIT) {
+            // take all
+            container.addAll(taskNonFloat);
+            container.addAll(taskFloat);
+        } else {
+
+            if (taskFloat.size() <= FLOAT_LIMIT) {// float count is
+                                                  // smaller
+                // fill with float then the rest with nonfloat
+                container.addAll(taskFloat);
+                trimList(taskNonFloat, TASKS_LIMIT - container.size());
+                container.addAll(taskNonFloat);
+            } else {// non float count is smaller
+                // fill with non float then the rest with floats
+                trimList(taskNonFloat, TASKS_LIMIT - FLOAT_LIMIT);
+                container.addAll(taskNonFloat);
+                                
+                randomizeList(taskFloat);
+                trimList(taskFloat, TASKS_LIMIT - container.size());
+                container.addAll(taskFloat);
+                
+            }
+        }
+        log.info("Float: " + taskFloat.size() + " Dated: " + taskNonFloat.size());
+    }
+
     private void randomizeList(ObservableList<Task> list) {
         Collections.shuffle(list);
     }
@@ -182,8 +200,6 @@ public class TasksBag implements Iterable<Task> {
      * @param i
      */
     private void trimList(ObservableList<Task> taskList, int size) {
-        // TODO Auto-generated method stub
-        // taskList.size();
         taskList.remove(size, taskList.size());
     }
 
@@ -197,7 +213,8 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isWithinDays(DEFAULT_DAY_RANGE) && curTask.hasKeyword(cSearchState)) {
+            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isWithinDays(DEFAULT_DAY_RANGE)
+                    && curTask.hasKeyword(cSearchState)) {
                 taskList.add(curTask);
             }
         }
@@ -291,10 +308,6 @@ public class TasksBag implements Iterable<Task> {
         return tasks.size() == 0;
     }
 
-    public void filterDate(Date start, Date end) {
-
-    }
-
     public void setFilterDateState(Date start, Date end) {
         cFilterDateStart = start;
         cFilterDateEnd = end;
@@ -312,16 +325,16 @@ public class TasksBag implements Iterable<Task> {
             cDateState = FilterDateState.BETWEEN;
         }
     }
-    
+
     public Date getStartDate() {
-    	return cFilterDateStart;
+        return cFilterDateStart;
     }
-    
+
     public Date getEndDate() {
-    	return cFilterDateEnd;
+        return cFilterDateEnd;
     }
-    
+
     public String getSearchState() {
-    	return cSearchState;
+        return cSearchState;
     }
 }
