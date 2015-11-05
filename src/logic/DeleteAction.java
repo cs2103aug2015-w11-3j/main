@@ -26,7 +26,6 @@ public class DeleteAction implements UndoableAction {
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cWhichTask; // The task to be modified
-    private boolean isSuccessful;
     private int cPosition; // Position of internal bag
     Logger log;
 
@@ -52,7 +51,6 @@ public class DeleteAction implements UndoableAction {
         cCurBag = internalBag.getFiltered();
         cIntBag = internalBag;
         cStore = stor;
-        isSuccessful = false;
         log = Logger.getLogger("DeleteAction");
 
         // Find the offending command and lock it at init time
