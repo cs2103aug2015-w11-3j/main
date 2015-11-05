@@ -126,7 +126,7 @@ public class UI implements UIInterface {
             cmd = logic.executeKeyEvent(whichKey);
             cb = cmd.getcBag();
             display(cb);
-            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getKey());
+            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getMsg());
             controller.appendFeedback(usrMsg);
 
         } catch (LogicException e) {
