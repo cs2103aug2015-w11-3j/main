@@ -53,7 +53,7 @@ public class UnmarkAction implements UndoableAction {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
+    public CommandFeedback execute() throws LogicException {
         String formattedString;
         
         // Should not unmark again if it is already unmarked.
@@ -67,24 +67,24 @@ public class UnmarkAction implements UndoableAction {
         }
         
         formattedString = Utilities.formatString(USR_MSG_UNMARK_OK, cWhichTask.getName());
-        Feedback fb = new Feedback(cCommand, cIntBag, formattedString);
+        CommandFeedback fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
         return fb;
     }
 
     @Override
-    public Feedback undo() {
+    public CommandFeedback undo() {
         assert cWhichTask != null;
 
         cWhichTask.setComplete(true);
         cStore.save(cWhichTask);
         
         String formattedString = Utilities.formatString(USR_MSG_UNMARK_UNDO, cWhichTask.getName());
-        return new Feedback(cCommand, cIntBag, formattedString);
+        return new CommandFeedback(cCommand, cIntBag, formattedString);
     }
 
     @Override
-    public Feedback redo() throws LogicException {
+    public CommandFeedback redo() throws LogicException {
         return execute();
     }
 }

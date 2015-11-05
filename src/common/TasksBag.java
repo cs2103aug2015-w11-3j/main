@@ -15,7 +15,7 @@ import javafx.collections.ObservableList;
 public class TasksBag implements Iterable<Task> {
 
     public static enum FilterBy {
-        COMPLETE_TASKS, INCOMPLETE_TASKS, NONE, TODAY
+        COMPLETE_TASKS, INCOMPLETE_TASKS, TODAY
     }
 
     public static enum FilterDateState {
@@ -26,7 +26,7 @@ public class TasksBag implements Iterable<Task> {
     private static final int TASKS_LIMIT = 15;
     private static final int DEFAULT_DAY_RANGE = 3;
 
-    private FilterBy cFilterState = FilterBy.INCOMPLETE_TASKS;
+    private FilterBy cFilterState = null; // setting to default
     private String cSearchState = null;
     private ObservableList<Task> tasks;
     private Date cFilterDateStart;
@@ -37,6 +37,7 @@ public class TasksBag implements Iterable<Task> {
     public TasksBag() {
         tasks = FXCollections.observableArrayList();
         log = Logger.getLogger("TasksBag");
+        cFilterState = FilterBy.INCOMPLETE_TASKS; // setting to default
     }
 
     public FilterDateState getDateState() {
@@ -74,7 +75,7 @@ public class TasksBag implements Iterable<Task> {
         return tasks;
     }
 
-    public void setSortState(FilterBy attribute) {
+    public void setFilterState(FilterBy attribute) {
         assert attribute != null;
         cFilterState = attribute;
     }
@@ -93,15 +94,6 @@ public class TasksBag implements Iterable<Task> {
         ObservableList<Task> newContainer = FXCollections.observableArrayList();
 
         switch (cFilterState) {
-            /*
-             * Not support date filtering case DATE: // Reverse sorting with
-             * earliest on top newContainer = TasksBag.copy(tasks);
-             * Collections.sort(newContainer, (Task t1, Task t2) ->
-             * compareDate(t2, t1)); break;
-             */
-            case NONE:
-                filterTaskNone(newContainer);
-                break;
             case COMPLETE_TASKS:
                 filterTasksComplete(newContainer);
                 break;
@@ -116,25 +108,19 @@ public class TasksBag implements Iterable<Task> {
                 break;
         }
 
-        // Sorting by date before returning
-        Collections.sort(newContainer, (Task t1, Task t2) -> compareDate(t1, t2));
-
+        // Sorting by chronological date before returning
+        sortDateChronological(newContainer);
         // Transfer the current state to the new bag
         // UI uses the sort state to identify current tab
         TasksBag rtnBag = new TasksBag(newContainer);
-        rtnBag.setSortState(cFilterState);
+        rtnBag.setFilterState(cFilterState);
         rtnBag.setSearchState(cSearchState);
         rtnBag.setFilterDateState(cFilterDateStart, cFilterDateEnd);
         return rtnBag;
     }
 
-    private void filterTaskNone(ObservableList<Task> container) {
-        for (int i = 0; i < tasks.size(); i++) {
-            Task curTask = tasks.get(i);
-            if (curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
-                container.add(curTask);
-            }
-        }
+    private void sortDateChronological(ObservableList<Task> container) {
+        Collections.sort(container, (Task t1, Task t2) -> compareDate(t1, t2));
     }
 
     private void filterTasksComplete(ObservableList<Task> container) {
@@ -179,11 +165,11 @@ public class TasksBag implements Iterable<Task> {
                 // fill with non float then the rest with floats
                 trimList(taskNonFloat, TASKS_LIMIT - FLOAT_LIMIT);
                 container.addAll(taskNonFloat);
-                                
+
                 randomizeList(taskFloat);
                 trimList(taskFloat, TASKS_LIMIT - container.size());
                 container.addAll(taskFloat);
-                
+
             }
         }
         log.info("Float: " + taskFloat.size() + " Dated: " + taskNonFloat.size());
@@ -337,4 +323,30 @@ public class TasksBag implements Iterable<Task> {
     public String getSearchState() {
         return cSearchState;
     }
+
+    public void toggleFilter() {
+        switch (cFilterState) {
+            case COMPLETE_TASKS:
+                cFilterState = FilterBy.INCOMPLETE_TASKS;
+                break;
+            case INCOMPLETE_TASKS:
+                cFilterState = FilterBy.TODAY;
+                break;
+            case TODAY:
+                cFilterState = FilterBy.COMPLETE_TASKS;
+                break;
+            default:
+                log.severe("Default filter state encountered during toggleFilter.");
+                cFilterState = FilterBy.TODAY;
+                break;
+        }
+    }
+
+    /*
+     * Used. Not supporting filter state none private void
+     * filterTaskNone(ObservableList<Task> container) { for (int i = 0; i <
+     * tasks.size(); i++) { Task curTask = tasks.get(i); if
+     * (curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+     * container.add(curTask); } } }
+     */
 }

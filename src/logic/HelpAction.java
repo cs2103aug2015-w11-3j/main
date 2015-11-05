@@ -19,9 +19,9 @@ public class HelpAction implements Action {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
+    public CommandFeedback execute() throws LogicException {
         String msg = "";
-        Feedback fb;
+        CommandFeedback fb;
         Type cmdType = cCommand.getHelpCmdType();
         
         // General help command requested by user
@@ -31,7 +31,7 @@ public class HelpAction implements Action {
             msg = generateHelpString();
         }
         
-        fb = new Feedback(cCommand,cBag, msg);
+        fb = new CommandFeedback(cCommand,cBag, msg);
         return fb;
     }
 

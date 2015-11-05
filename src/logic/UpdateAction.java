@@ -91,9 +91,9 @@ public class UpdateAction implements UndoableAction {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
+    public CommandFeedback execute() throws LogicException {
         Task toBeUpdated = cWhichTask;
-        Feedback fb;
+        CommandFeedback fb;
         String formattedString;
 
         switch (cCommand.getTaskField()) {
@@ -103,7 +103,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_ENDDATE_OK, toBeUpdated.getName());
-                fb = new Feedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
                 return fb;
             case DATE_START:
@@ -112,7 +112,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_STARTDATE_OK, toBeUpdated.getName());
-                fb = new Feedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
                 return fb;
 
             case NAME:
@@ -121,7 +121,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_NAME_OK, toBeUpdated.getName());
-                fb = new Feedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
                 return fb;
             case IMPORTANCE:
@@ -139,9 +139,9 @@ public class UpdateAction implements UndoableAction {
     }
 
     @Override
-    public Feedback undo() {
+    public CommandFeedback undo() {
         Task toBeUpdated = cWhichTask;
-        Feedback fb;
+        CommandFeedback fb;
         String formattedString;
 
         switch (cCommand.getTaskField()) {
@@ -151,7 +151,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
-                fb = new Feedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
                 return fb;
             case DATE_START:
@@ -160,7 +160,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
-                fb = new Feedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
                 return fb;
 
             case NAME:
@@ -169,7 +169,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
-                fb = new Feedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
                 return fb;
             case IMPORTANCE:
@@ -186,7 +186,7 @@ public class UpdateAction implements UndoableAction {
     }
 
     @Override
-    public Feedback redo() throws LogicException {
+    public CommandFeedback redo() throws LogicException {
         // TODO Auto-generated method stub
         return execute();
     }

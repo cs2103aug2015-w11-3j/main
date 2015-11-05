@@ -44,31 +44,31 @@ public class AddAction implements UndoableAction {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
+    public CommandFeedback execute() throws LogicException {
         String formattedString;
-        Feedback fb;
+        CommandFeedback fb;
 
         cBag.addTask(cWhichTask);
         cStore.save(cWhichTask);
 
         formattedString = Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
-        fb = new Feedback(cCommand, cBag, formattedString);
+        fb = new CommandFeedback(cCommand, cBag, formattedString);
 
         return fb;
     }
 
     @Override
-    public Feedback undo() {
+    public CommandFeedback undo() {
         assert cWhichTask != null;
 
         cStore.delete(cWhichTask);
         cBag.removeTask(cWhichTask);
         String formatted = Utilities.formatString(USR_MSG_ADD_UNDO, cWhichTask.getName());
-        return new Feedback(cCommand, cBag, formatted);
+        return new CommandFeedback(cCommand, cBag, formatted);
     }
 
     @Override
-    public Feedback redo() throws LogicException {
+    public CommandFeedback redo() throws LogicException {
         return execute();
     }
 }

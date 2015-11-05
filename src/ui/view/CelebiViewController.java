@@ -94,11 +94,11 @@ public class CelebiViewController {
         initializeFeedbackArea();
 
         Platform.runLater(() -> {
-                commandArea.requestFocus();
+            commandArea.requestFocus();
         });
     }
 
-    //private void temp(ObservableV)
+    // private void temp(ObservableV)
     private void initializeCelebiTable() {
         celebiTable.setFixedCellSize(26.2);
 
@@ -114,16 +114,16 @@ public class CelebiViewController {
                 if (previousTask != null) {
                     previousTask.endProperty().removeListener(changeListener);
                 }
-                
+
                 if (currentTask != null) {
                     currentTask.endProperty().addListener(changeListener);
-                    
+
                     if (currentTask.getEnd() != null) {
                         row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
                     } else {
                         row.pseudoClassStateChanged(overdue, false);
                     }
-                    
+
                 } else {
                     row.pseudoClassStateChanged(overdue, false);
                 }
@@ -233,7 +233,20 @@ public class CelebiViewController {
         commandArea.setId("command-area");
 
         setEnterPressedEvent();
+        setTabPressedEvent();
         setKeywordHighlightChecker();
+    }
+
+    private void setTabPressedEvent() {
+        commandArea.setOnKeyPressed((keyEvent) -> {
+            KeyCode code = keyEvent.getCode();
+
+            // take only tab event. Else would interact with other key presses
+            if (code == KeyCode.TAB) {
+                ui.passKeyEvent(code);
+                keyEvent.consume();
+            }
+        });
     }
 
     private void setKeywordHighlightChecker() {
