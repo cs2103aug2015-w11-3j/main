@@ -9,6 +9,7 @@ import common.*;
 public class Storage implements StorageInterface {
 	
 	private static Storage instance;
+	private static boolean _isTestMode;
 	
     private Storage() {
     }
@@ -21,10 +22,10 @@ public class Storage implements StorageInterface {
     	return instance;
     }
 
-    public void init(boolean isTestMode) {
+    public void init() {
         Log.log("Storage Init");
         try {
-            connectToDatabase(isTestMode);
+            connectToDatabase();
             Log.log("Storage Init complete");
         } catch (BadFileContentException e) {
             Log.log("Storage Init Fail");
@@ -38,16 +39,16 @@ public class Storage implements StorageInterface {
         Database.disconnect();
     }
 
-    private void connectToDatabase(boolean isTestMode) throws IOException, BadFileContentException {
+    private void connectToDatabase() throws IOException, BadFileContentException {
     	ConfigurationInterface setting = Configuration.getInstance();
         String fileLoc = setting.getUsrFileDirectory();
         
-        boolean connectResult = Database.connect(fileLoc, isTestMode);
+        boolean connectResult = Database.connect(fileLoc, _isTestMode);
         
         if (!connectResult) {
-        	Log.log("Location in ");
+        	Log.log("Location invalid");
         	setting.resetStorageLocation();
-        	connectToDatabase(isTestMode);
+        	connectToDatabase();
         }
     	
         Database.load();
@@ -90,5 +91,14 @@ public class Storage implements StorageInterface {
     @Override
     public boolean moveFileTo(String destination) throws IOException {
     	return Database.moveTo(destination);
+    }
+    
+    // Methods below are only used for Storage unit tests
+    static void openTestMode() {
+    	_isTestMode = true;
+    }
+    
+    static void closeTestMode() {
+    	_isTestMode = false;
     }
 }

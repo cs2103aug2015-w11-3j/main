@@ -111,6 +111,10 @@ public class Configuration implements ConfigurationInterface {
         }
     }
 
+    public String getDefaultUsrFileDirectory() {
+    	return DEFAULT_VALUE_STORAGE_LOCATION;
+    }
+    
     public String getUsrFileDirectory() {
         return configStorageLocation;
     }

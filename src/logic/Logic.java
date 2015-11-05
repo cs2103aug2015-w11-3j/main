@@ -38,7 +38,7 @@ public class Logic implements LogicInterface {
     public void init() {
 
         cStorage = Storage.getStorage();
-        cStorage.init(false);
+        cStorage.init();
         cParser = Parser.getParser();
         cParser.init();
 
