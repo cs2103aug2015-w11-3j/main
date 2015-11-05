@@ -20,13 +20,13 @@ public class SearchAction implements Action {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
+    public CommandFeedback execute() throws LogicException {
         String formattedString;
 
         cBag.setSearchState(cKeyword);
         formattedString = Utilities.formatString(USR_MSG_SEARCH_COMPLETE, cKeyword);
 
-        return new Feedback(cCommand, cBag, formattedString);
+        return new CommandFeedback(cCommand, cBag, formattedString);
     }
 
 }

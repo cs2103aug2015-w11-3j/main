@@ -1,26 +1,13 @@
-//@@author A0125546E
 package logic;
 
 import common.TasksBag;
-import parser.Command;
 
-/*
- * Wrapper class to contain Command type and 
- * CelebiBag for UI
- */
 public class Feedback {
     private final TasksBag cBag;
-    private final Command cCommand;
-    private String cMsg;
 
-    public Feedback(Command comd, TasksBag bag) {
+    public Feedback(TasksBag bag) {
+
         cBag = bag;
-        cCommand = comd;
-    }
-
-    public Feedback(Command comd, TasksBag bag, String msg) {
-        this(comd, bag);
-        cMsg = msg;
     }
 
     /**
@@ -30,18 +17,6 @@ public class Feedback {
      */
     public TasksBag getcBag() {
         return cBag.getFiltered();
-    }
-
-    public Command getCommand() {
-        return cCommand;
-    }
-
-    public String getMsg() {
-        return cMsg;
-    }
-
-    public void setMsg(String msg) {
-        cMsg = msg;
     }
 
 }

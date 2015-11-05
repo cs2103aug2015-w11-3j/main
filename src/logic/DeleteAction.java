@@ -77,15 +77,15 @@ public class DeleteAction implements UndoableAction {
      *             If deleting out of bound
      */
     @Override
-    public Feedback execute() throws LogicException {
+    public CommandFeedback execute() throws LogicException {
         String formattedString;
-        Feedback fb;
+        CommandFeedback fb;
 
         cPosition = cIntBag.removeTask(cWhichTask);
         cStore.delete(cWhichTask);
 
         formattedString = Utilities.formatString(USR_MSG_DELETE_OK, cWhichTask.getName());
-        fb = new Feedback(cCommand, cIntBag, formattedString);
+        fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
         return fb;
     }
@@ -95,21 +95,21 @@ public class DeleteAction implements UndoableAction {
      * into storage
      */
     @Override
-    public Feedback undo() {
+    public CommandFeedback undo() {
         String formattedString;
         formattedString = Utilities.formatString(USR_MSG_DELETE_UNDO, cWhichTask.getName());
 
         cIntBag.addTask(cPosition, cWhichTask);
         cStore.save(cWhichTask);
 
-        return new Feedback(cCommand, cIntBag, formattedString);
+        return new CommandFeedback(cCommand, cIntBag, formattedString);
     }
 
     /**
      * Remove task object from bag Deletes task at storage
      */
     @Override
-    public Feedback redo() throws LogicException {
+    public CommandFeedback redo() throws LogicException {
         return execute();
     }
 }
