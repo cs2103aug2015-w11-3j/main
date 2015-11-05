@@ -2,11 +2,13 @@ package ui;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.scene.input.KeyCode;
 
 import java.util.logging.Logger;
 
 import common.*;
-import logic.Feedback;
+import logic.CommandFeedback;
+import logic.KeyEventFeedback;
 import logic.Logic;
 import logic.LogicInterface;
 import logic.exceptions.LogicException;
@@ -15,9 +17,11 @@ import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
 
-    private static final String UI_TXT_USRCMD = "You: %1$s\n";// + userInput + "\n";
-    private static final String UI_TXT_FEEDBACK = "Celebi: %1$s"; 
+    private static final String UI_TXT_USRCMD = "You: %1$s\n";
+    private static final String UI_TXT_FEEDBACK = "Celebi: %1$s";
     private static final String UI_TXT_WELCOME = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
+    private static final String UI_TXT_TABEVENT = "You pressed tab\n";
+    
     LogicInterface logic;
     private CelebiViewController controller;
     private TasksBag cb = new TasksBag();
@@ -52,11 +56,11 @@ public class UI implements UIInterface {
     public void passCommand(String userInput) {
         controller.clearCommand();
         controller.clearFeedback();
-        
+
         String usrCmd = Utilities.formatString(UI_TXT_USRCMD, userInput);
         controller.appendFeedback(usrCmd);
 
-        Feedback cmd = null;
+        CommandFeedback cmd = null;
         String usrMsg = "";
         try {
             cmd = logic.executeCommand(userInput);
@@ -73,13 +77,13 @@ public class UI implements UIInterface {
 
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.appendFeedback(usrMsg);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.severe(e.toString());
         }
     }
 
-    /**x
-     * Display the default table view
+    /**
+     * x Display the default table view
      */
     public void showWelcomeView() {
         display(logic.getDefaultBag()); // Get default view
@@ -106,5 +110,31 @@ public class UI implements UIInterface {
 
     public void setController(CelebiViewController controller) {
         this.controller = controller;
+    }
+
+    @Override
+    public void passKeyEvent(KeyCode whichKey) {
+        controller.clearCommand();
+        controller.clearFeedback();
+
+        String usrCmd = Utilities.formatString(UI_TXT_TABEVENT);
+        controller.appendFeedback(usrCmd);
+
+        KeyEventFeedback cmd = null;
+        String usrMsg = "";
+        try {
+            cmd = logic.executeKeyEvent(whichKey);
+            cb = cmd.getcBag();
+            display(cb);
+            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getKey());
+            controller.appendFeedback(usrMsg);
+
+        } catch (LogicException e) {
+
+            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
+            controller.appendFeedback(usrMsg);
+        } catch (Exception e) {
+            log.severe(e.toString());
+        }
     }
 }

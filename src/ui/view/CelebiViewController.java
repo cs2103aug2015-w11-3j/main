@@ -94,11 +94,11 @@ public class CelebiViewController {
         initializeFeedbackArea();
 
         Platform.runLater(() -> {
-                commandArea.requestFocus();
+            commandArea.requestFocus();
         });
     }
 
-    //private void temp(ObservableV)
+    // private void temp(ObservableV)
     private void initializeCelebiTable() {
         celebiTable.setFixedCellSize(26.2);
 
@@ -114,16 +114,16 @@ public class CelebiViewController {
                 if (previousTask != null) {
                     previousTask.endProperty().removeListener(changeListener);
                 }
-                
+
                 if (currentTask != null) {
                     currentTask.endProperty().addListener(changeListener);
-                    
+
                     if (currentTask.getEnd() != null) {
                         row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
                     } else {
                         row.pseudoClassStateChanged(overdue, false);
                     }
-                    
+
                 } else {
                     row.pseudoClassStateChanged(overdue, false);
                 }
@@ -232,8 +232,17 @@ public class CelebiViewController {
         commandArea.requestFocus();
         commandArea.setId("command-area");
 
-        setEnterPressedEvent();
+        setPressedEvent();
         setKeywordHighlightChecker();
+    }
+
+    private void setTabPressedEvent() {
+        commandArea.setOnKeyPressed((keyEvent) -> {
+            KeyCode code = keyEvent.getCode();
+
+            // take only tab event. Else would interact with other key presses
+            
+        });
     }
 
     private void setKeywordHighlightChecker() {
@@ -279,14 +288,20 @@ public class CelebiViewController {
      * Add in enter pressed event for command area so that it passes the command
      * to UI everytime enter is hit
      */
-    private void setEnterPressedEvent() {
+    private void setPressedEvent() {
         commandArea.setOnKeyPressed((keyEvent) -> {
             KeyCode code = keyEvent.getCode();
+            
             if (code == KeyCode.ENTER) {
                 // when enter is hit, pass the user input to UI
                 String text = commandArea.getText();
                 ui.passCommand(text);
                 commandArea.clear();
+                keyEvent.consume();
+            }
+            
+            if (code == KeyCode.TAB) {
+                ui.passKeyEvent(code);
                 keyEvent.consume();
             }
         });

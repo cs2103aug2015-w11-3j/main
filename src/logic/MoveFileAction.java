@@ -34,9 +34,9 @@ public class MoveFileAction implements Action {
     }
 
     @Override
-    public Feedback execute() throws LogicException  {
+    public CommandFeedback execute() throws LogicException  {
         assert cCommand.getCmdType() == Command.Type.MOVE : cCommand.getCmdType();
-        Feedback fb;
+        CommandFeedback fb;
         ConfigurationInterface config = Configuration.getInstance();
     	
         try {
@@ -44,7 +44,7 @@ public class MoveFileAction implements Action {
             
             config.setUsrFileDirector(cPath.toString());
             
-            fb = new Feedback(cCommand, cBag, USR_MSG_MOVE_OK);
+            fb = new CommandFeedback(cCommand, cBag, USR_MSG_MOVE_OK);
 
             return fb;
         } catch (FileAlreadyExistsException e) {
@@ -56,7 +56,7 @@ public class MoveFileAction implements Action {
         } catch (Exception e) {
         	System.out.println(e);
         	System.out.println("sb2");
-        	return new Feedback(cCommand, cBag, USR_MSG_MOVE_OK);
+        	return new CommandFeedback(cCommand, cBag, USR_MSG_MOVE_OK);
 
 //        	throw new LogicException(USR_MSG_MOVE_ERROR);
         }

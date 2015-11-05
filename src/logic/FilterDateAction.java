@@ -28,13 +28,13 @@ public class FilterDateAction implements Action {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
-        Feedback fb;
+    public CommandFeedback execute() throws LogicException {
+        CommandFeedback fb;
 
         cBag.setFilterDateState(cStart, cEnd);
         TasksBag.FilterDateState dState = cBag.getDateState();
 
-        fb = new Feedback(cCommand, cBag, getFeedbackText(dState));
+        fb = new CommandFeedback(cCommand, cBag, getFeedbackText(dState));
         return fb;
     }
 

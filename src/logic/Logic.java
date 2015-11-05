@@ -2,7 +2,7 @@
 package logic;
 
 import java.util.logging.Logger;
-
+import javafx.scene.input.KeyCode;
 import common.TasksBag;
 import common.TasksBag.FilterBy;
 import logic.exceptions.IntegrityCommandException;
@@ -15,14 +15,13 @@ import parser.ParserInterface;
 import storage.Storage;
 import storage.StorageInterface;
 
-
 public class Logic implements LogicInterface {
 
     private static final String USR_MSG_UNKNOWN_COMMAND = "I couldn't understand you... (>.<)";
 
     // The default view when UI first query the bag
     private static final FilterBy DEFAULT_UI_VIEW = TasksBag.FilterBy.TODAY;
-
+    private static final KeyCode TOGGLE_FILTER_STATE_KEY = KeyCode.TAB;
     private StorageInterface cStorage;
     private ParserInterface cParser;
     private TasksBag cInternalBag;
@@ -32,14 +31,14 @@ public class Logic implements LogicInterface {
     public Logic() {
         cInternalBag = new TasksBag();
         cInvoker = new ActionInvoker();
-        log = Logger.getLogger("Logic");
+        log = Logger.getLogger("Filter");
     }
 
     @Override
     public void init() {
 
         cStorage = Storage.getStorage();
-        cStorage.init();
+        cStorage.init(false);
         cParser = Parser.getParser();
         cParser.init();
 
@@ -57,19 +56,16 @@ public class Logic implements LogicInterface {
      *            string value entered by user
      */
     @Override
-    public Feedback executeCommand(String userString) throws LogicException {
+    public CommandFeedback executeCommand(String userString) throws LogicException {
         assert userString != null;
-        
+
         Command rtnCmd = cParser.parseCommand(userString);
-        if(userString.equals("show today")){
-            return cInvoker.placeAction(new SortAction(Parser.getParser().makeShow(Type.SHOW_DEFAULT) , cInternalBag, TasksBag.FilterBy.TODAY));
-        }
         log.info("executing " + userString);
         return executeParsed(rtnCmd);
     }
 
-    private Feedback executeParsed(Command rtnCmd) throws LogicException {
-        
+    private CommandFeedback executeParsed(Command rtnCmd) throws LogicException {
+
         Feedback fb;
         switch (rtnCmd.getCmdType()) {
             case ADD:
@@ -79,13 +75,13 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW_COMPLETE:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FilterBy.COMPLETE_TASKS));
+                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, TasksBag.FilterBy.COMPLETE_TASKS));
                 break;
             case UPDATE:
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW_INCOMPLETE:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, TasksBag.FilterBy.INCOMPLETE_TASKS));
+                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, TasksBag.FilterBy.INCOMPLETE_TASKS));
                 break;
             case MARK:
                 fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
@@ -106,13 +102,13 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new MoveFileAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case QUIT:
-                fb = new Feedback(rtnCmd, null);
+                fb = new CommandFeedback(rtnCmd, null);
                 break;
             case SEARCH:
-            	fb = cInvoker.placeAction(new SearchAction(rtnCmd, cInternalBag));
+                fb = cInvoker.placeAction(new SearchAction(rtnCmd, cInternalBag));
                 break;
             case SHOW_DEFAULT:
-                fb = cInvoker.placeAction(new SortAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
+                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
                 break;
             case HELP:
                 fb = cInvoker.placeAction(new HelpAction(rtnCmd, cInternalBag));
@@ -121,13 +117,11 @@ public class Logic implements LogicInterface {
                 throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
             default:
                 assert false : rtnCmd.getCmdType();
-                fb = new Feedback(rtnCmd, cInternalBag);
+                fb = new CommandFeedback(rtnCmd, cInternalBag);
                 break;
         }
-        return fb;
+        return (CommandFeedback)fb;
     }
-
-
 
     @Override
     public boolean initData(String s) {
@@ -153,11 +147,20 @@ public class Logic implements LogicInterface {
 
     @Override
     public TasksBag getDefaultBag() {
-        cInternalBag.setSortState(DEFAULT_UI_VIEW);
+        cInternalBag.setFilterState(DEFAULT_UI_VIEW);
         return cInternalBag.getFiltered();
     }
 
-    public void close(){
+    public void close() {
         cStorage.close();
+    }
+
+    @Override
+    public KeyEventFeedback executeKeyEvent(KeyCode whichKey) throws LogicException {
+        KeyEventFeedback fb = null;
+        if(whichKey == TOGGLE_FILTER_STATE_KEY){
+            fb = (KeyEventFeedback)cInvoker.placeAction(new FilterToggle(cInternalBag, whichKey));
+        }
+        return fb;
     }
 }

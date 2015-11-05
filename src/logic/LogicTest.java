@@ -99,7 +99,6 @@ public class LogicTest {
         // Search
         testPass("search hello");
         testPass("show");
-        testPass("show today");
         testPass("show done");
         testPass("show complete");
         testPass("show undone");
@@ -218,7 +217,7 @@ public class LogicTest {
         // fail test under INCOMPLETE(default) filter of tasksbag
         testFailException("mark 1", IntegrityCommandException.class);
 
-        logic.getTaskBag().setSortState(TasksBag.FilterBy.COMPLETE_TASKS);
+        logic.getTaskBag().setFilterState(TasksBag.FilterBy.COMPLETE_TASKS);
 
         testFailException("mark 1", AlreadyMarkedException.class);
 
