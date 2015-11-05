@@ -6,7 +6,7 @@ import common.Task;
 import common.TasksBag;
 
 public interface StorageInterface {
-	public void init();
+	public void init(boolean isTestMode);
 	
 	public boolean load(String s, TasksBag c);
 	

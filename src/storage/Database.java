@@ -19,6 +19,7 @@ import org.json.simple.JSONValue;
 
 abstract class Database {
 	private final static String FILENAME = "task.json";
+	private final static String TEST_FILENAME = "test_task.json";
 	
 	private static File db;
 	private static Scanner dbReader;
@@ -29,14 +30,18 @@ abstract class Database {
 	
 	private static boolean isConnected;
 
-	static boolean connect (String path) {
+	static boolean connect (String path, boolean isTestMode) {
 		try {
-			db = new File(path, FILENAME);
-			
-			if(!db.exists()) {
+			if (isTestMode) {
+				db = new File(path, TEST_FILENAME);
 				db.createNewFile();
+			} else {
+				db = new File(path, FILENAME);
+				if(!db.exists()) {
+					db.createNewFile();
+				}
 			}
-
+			
 			dbReader = new Scanner(db);
 			dbReader.useDelimiter("\\Z");
 			

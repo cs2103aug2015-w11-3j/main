@@ -39,7 +39,7 @@ public class Logic implements LogicInterface {
     public void init() {
 
         cStorage = Storage.getStorage();
-        cStorage.init();
+        cStorage.init(false);
         cParser = Parser.getParser();
         cParser.init();
 
