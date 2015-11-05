@@ -38,7 +38,7 @@ public class Logic implements LogicInterface {
     @Override
     public void init() {
 
-        cStorage = new Storage();
+        cStorage = Storage.getStorage();
         cStorage.init();
         cParser = Parser.getParser();
         cParser.init();
