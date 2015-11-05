@@ -75,9 +75,12 @@ abstract class Database {
 			dbIndex = new HashMap<Integer, TaskJson>();
 			for (int i = 0; i < parsedResult.size(); i ++) {
 				TaskJson cj = new TaskJson((JSONObject)parsedResult.get(i));
-				dbData.add(cj);
-				dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
+				if(cj.isValid()) {
+					dbData.add(cj);
+					dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
+				}
 			}
+			save();
 			return true;
 		} catch (ClassCastException e) {
 			throw new BadFileContentException("Bad file format");

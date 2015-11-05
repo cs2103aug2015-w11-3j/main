@@ -8,7 +8,7 @@ import storage.StorageInterface;
 public class StorageStub implements StorageInterface {
 
     @Override
-    public void init(boolean isTestMode) {
+    public void init() {
         // TODO Auto-generated method stub
 
     }

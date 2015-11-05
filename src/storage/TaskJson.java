@@ -97,10 +97,10 @@ class TaskJson extends LinkedHashMap<String, String>{
 	private void validateDates () {
 		Date parsedStart = parseDate(get(KEY_NAME_DATE_START));
 		Date parsedEnd = parseDate(get(KEY_NAME_DATE_END));
-		if (parsedStart == null) {
-			put(KEY_NAME_DATE_START, VALUE_NULL);
-		} else if (parsedEnd == null) {
-			put(KEY_NAME_DATE_END, VALUE_NULL);
+		if (get(KEY_NAME_DATE_START) != "null" && parsedStart == null) {
+			_isValid = false;
+		} else if (get(KEY_NAME_DATE_END) != "null" && parsedEnd == null) {
+			_isValid = false;
 		} else if (parsedStart.compareTo(parsedEnd) > 0) {
 			_isValid = false;
 		}
@@ -109,7 +109,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 	private void validateIsCompleted () {
 		if (!get(KEY_NAME_IS_COMPLETED).equals(VALUE_TRUE) && 
 			!get(KEY_NAME_IS_COMPLETED).equals(VALUE_FALSE)) {
-			put(KEY_NAME_DATE_END, VALUE_FALSE);
+			_isValid = false;
 		}
 	}
 	
