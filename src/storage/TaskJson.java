@@ -51,10 +51,12 @@ class TaskJson extends LinkedHashMap<String, String>{
 	public TaskJson (JSONObject j) {
 		mapFromJSONObject(j);
 		
-		validateId ();
-		validateName ();
-		validateDates ();
-		validateIsCompleted ();
+		if (isValid()) {
+			validateId ();
+			validateName ();
+			validateDates ();
+			validateIsCompleted ();
+		}
 	}
 	
 	public boolean isValid () {
