@@ -51,8 +51,7 @@ abstract class Database {
 			return false;
 		}
 		
-		return true;
-		
+		return true;	
 	}
 	
 	static boolean load () throws BadFileContentException {
