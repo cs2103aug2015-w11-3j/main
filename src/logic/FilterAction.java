@@ -11,9 +11,9 @@ import parser.Command;
  * internal bag state to previous state
  */
 public class FilterAction implements Action {
-    private static final String USR_MSG_SORT_COMPLETE = "Switching view to completed tasks";
-    private static final String USR_MSG_SORT_INCOMPLETE = "Switching view to incompleted tasks";
-    private static final String USR_MSG_SORT_TODAY = "Switching view to today tasks";
+    private static final String USR_MSG_FILTER_COMPLETE = "Switching view to completed tasks";
+    private static final String USR_MSG_FILTER_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_FILTER_TODAY = "Switching view to today tasks";
 
     private Command cCommand;
     private TasksBag cBag;
@@ -30,15 +30,15 @@ public class FilterAction implements Action {
         String msg = "";
         switch (cSortBy) {
             case COMPLETE_TASKS:
-                msg = USR_MSG_SORT_COMPLETE;
+                msg = USR_MSG_FILTER_COMPLETE;
                 cBag.setFilterState(FilterBy.COMPLETE_TASKS);
                 break;
             case INCOMPLETE_TASKS:
-                msg = USR_MSG_SORT_INCOMPLETE;
+                msg = USR_MSG_FILTER_INCOMPLETE;
                 cBag.setFilterState(FilterBy.INCOMPLETE_TASKS);
                 break;
             case TODAY:
-                msg = USR_MSG_SORT_TODAY;
+                msg = USR_MSG_FILTER_TODAY;
                 cBag.setFilterState(FilterBy.TODAY);
                 break;
             default:
