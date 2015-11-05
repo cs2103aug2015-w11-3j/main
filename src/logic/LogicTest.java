@@ -99,7 +99,6 @@ public class LogicTest {
         // Search
         testPass("search hello");
         testPass("show");
-        testPass("show today");
         testPass("show done");
         testPass("show complete");
         testPass("show undone");

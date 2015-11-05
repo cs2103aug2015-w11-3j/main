@@ -232,8 +232,7 @@ public class CelebiViewController {
         commandArea.requestFocus();
         commandArea.setId("command-area");
 
-        setEnterPressedEvent();
-        setTabPressedEvent();
+        setPressedEvent();
         setKeywordHighlightChecker();
     }
 
@@ -242,10 +241,7 @@ public class CelebiViewController {
             KeyCode code = keyEvent.getCode();
 
             // take only tab event. Else would interact with other key presses
-            if (code == KeyCode.TAB) {
-                ui.passKeyEvent(code);
-                keyEvent.consume();
-            }
+            
         });
     }
 
@@ -292,14 +288,20 @@ public class CelebiViewController {
      * Add in enter pressed event for command area so that it passes the command
      * to UI everytime enter is hit
      */
-    private void setEnterPressedEvent() {
+    private void setPressedEvent() {
         commandArea.setOnKeyPressed((keyEvent) -> {
             KeyCode code = keyEvent.getCode();
+            
             if (code == KeyCode.ENTER) {
                 // when enter is hit, pass the user input to UI
                 String text = commandArea.getText();
                 ui.passCommand(text);
                 commandArea.clear();
+                keyEvent.consume();
+            }
+            
+            if (code == KeyCode.TAB) {
+                ui.passKeyEvent(code);
                 keyEvent.consume();
             }
         });
