@@ -36,7 +36,7 @@ public final class Utilities {
      * @return the epoch
      */
     public static Date absBeginningTime() {
-        return new Date(0);
+        return new Date(Long.MIN_VALUE);
     }
 
     /**
@@ -54,7 +54,7 @@ public final class Utilities {
      */
     public static final <T> boolean arrayContains(T[] arr, T key) {
         assert (arr != null && key != null);
-        return !Arrays.stream(arr).noneMatch((x) -> key.equals(x));
+        return !Arrays.stream(arr).noneMatch((T x) -> key.equals(x));
     }
 
     // @@author A0131891E
