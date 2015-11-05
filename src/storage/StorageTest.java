@@ -213,7 +213,7 @@ public class StorageTest {
     	}
     }
 
-    // @Test 
+    @Test 
     public void test() {
         TasksBag cb;
         int size;
