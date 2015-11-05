@@ -50,7 +50,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 	
 	public TaskJson (JSONObject j) {
 		mapFromJSONObject(j);
-		
+				
 		if (isValid()) {
 			validateId ();
 			validateName ();
@@ -97,13 +97,13 @@ class TaskJson extends LinkedHashMap<String, String>{
 	private void validateDates () {
 		Date parsedStart = parseDate(get(KEY_NAME_DATE_START));
 		Date parsedEnd = parseDate(get(KEY_NAME_DATE_END));
-		if (get(KEY_NAME_DATE_START) != "null" && parsedStart == null) {
+		if (!get(KEY_NAME_DATE_START).equals("null") && parsedStart == null) {
 			_isValid = false;
-		} else if (get(KEY_NAME_DATE_END) != "null" && parsedEnd == null) {
+		} else if (!get(KEY_NAME_DATE_END).equals("null") && parsedEnd == null) {
 			_isValid = false;
-		} else if (parsedStart.compareTo(parsedEnd) > 0) {
+		} else if (parsedStart != null && parsedEnd != null && parsedStart.compareTo(parsedEnd) > 0) {
 			_isValid = false;
-		}
+		}		
 	}
 	
 	private void validateIsCompleted () {

@@ -29,66 +29,72 @@ public class StorageTest {
 	private final String TESTFILE_CONTENT_INVALID_JSON = "[invalid json)";
 	private final String TESTFILE_CONTENT_INVALID_JSON_ARRAY = "\"foo\":\"bar\"";
 	
-	private final String VALID_TASK = "{ \"ID:\" \"1\","
+	private final String VALID_TASK = "{\"ID\":\"1\","
 			+ "\"NAME\":\"test valid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
-			+ "\"IS_COMPLETED\":\"false\" }";
+			+ "\"IS_COMPLETED\":\"false\"}";
 	
 	private final String INVALID_TASK_NO_ID = "{ "
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_ID_1 = "{ \"ID:\" \"0\","
+	private final String INVALID_TASK_INVALID_ID_1 = "{ \"ID\": \"0\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_ID_2 = "{ \"ID:\" \"-1\","
+	private final String INVALID_TASK_INVALID_ID_2 = "{ \"ID\": \"-1\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_ID_3 = "{ \"ID:\" \"1.5\","
+	private final String INVALID_TASK_INVALID_ID_3 = "{ \"ID\": \"1.5\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_ID_4 = "{ \"ID:\" \"bla\","
+	private final String INVALID_TASK_INVALID_ID_4 = "{ \"ID\": \"bla\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_NO_NAME = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_NO_NAME = "{ \"ID\": \"2\","
 			+ "\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_NAME_1 = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_INVALID_NAME_1 = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_NO_START_DATE = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_NO_START_DATE = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_NO_END_DATE = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_NO_END_DATE = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_DATE_1 = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_INVALID_DATE_1 = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"bla\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_DATE_2 = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_INVALID_DATE_2 = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"bla\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_INVALID_DATE_3 = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_INVALID_DATE_3 = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"2015-11-06 08:00\","
 			+ "\"DATE_END\":\"2014-11-06 08:00\","
 			+ "\"IS_COMPLETED\":\"false\" }";
 	
-	private final String INVALID_TASK_NO_IS_COMPLETE = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_NO_IS_COMPLETE = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\""
 			+ "}";
 	
-	private final String INVALID_TASK_INVALID_IS_COMPLETE = "{ \"ID:\" \"2\","
+	private final String INVALID_TASK_INVALID_IS_COMPLETE = "{ \"ID\": \"2\","
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"bla\" }";
+	
+	private final String[] INVALID_TASKS = {INVALID_TASK_NO_ID, INVALID_TASK_INVALID_ID_1,
+			INVALID_TASK_INVALID_ID_2, INVALID_TASK_INVALID_ID_3, INVALID_TASK_INVALID_ID_4,
+			INVALID_TASK_NO_NAME, INVALID_TASK_INVALID_NAME_1, INVALID_TASK_NO_START_DATE,
+			INVALID_TASK_NO_END_DATE, INVALID_TASK_INVALID_DATE_1, INVALID_TASK_INVALID_DATE_2,
+			INVALID_TASK_INVALID_DATE_3, INVALID_TASK_NO_IS_COMPLETE, INVALID_TASK_INVALID_IS_COMPLETE};
 	
 	private final String TESTFILE_CONTENT_INITIAL = "[]";
 	
@@ -200,7 +206,11 @@ public class StorageTest {
      * Expected: those entries failed to be parsed are discarded, without affecting others
      */ 
     public void testLoadInvalidTask() throws IOException {
-    	
+    	for (int i = 0; i < INVALID_TASKS.length; i++) {
+    		String content = "[" + VALID_TASK + INVALID_TASKS[i] + "]";
+    		
+    		testInvalidTask(content);
+    	}
     }
 
     // @Test 
@@ -268,12 +278,38 @@ public class StorageTest {
     	
     	tb = new TasksBag();
     	storage.load("", tb);
-    	Assert.assertEquals(tb.size(), 0);
+    	Assert.assertEquals(0, tb.size());
     
     	fileContent = readFile(storageFile);
-    	System.out.println(fileContent);
-    	System.out.println(TESTFILE_CONTENT_INITIAL);
     	Assert.assertEquals(fileContent, TESTFILE_CONTENT_INITIAL);
+    }
+    
+    private void testInvalidTask(String content) throws IOException {
+    	ConfigurationInterface config = Configuration.getInstance();
+    	String path = config.getUsrFileDirectory();
+    	StorageInterface storage;
+    	TasksBag tb;
+    	String fileContent;
+    	
+    	System.out.println(content);
+    	
+    	File storageFile = new File(path, TEST_FILENAME);
+    	createIfNotExists(storageFile);
+    	Assert.assertTrue(storageFile.exists());
+    	
+    	writeToFile(storageFile, content);
+    	fileContent = readFile(storageFile);
+    	Assert.assertEquals(fileContent, content);
+    	
+    	storage = Storage.getStorage();
+    	storage.init();
+    	
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(1, tb.size());
+    
+    	fileContent = readFile(storageFile);
+    	Assert.assertEquals(fileContent, "[" + VALID_TASK +"]");
     }
     
     private void writeToFile(File f, String content) throws IOException {
