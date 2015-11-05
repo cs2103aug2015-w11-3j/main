@@ -7,6 +7,7 @@ import common.TasksBag;
 import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.Command;
+import ui.view.DateFormatter;
 
 public class FilterDateAction implements Action {
 
@@ -39,16 +40,23 @@ public class FilterDateAction implements Action {
 
     private String getFeedbackText(TasksBag.FilterDateState state) {
         String rtn = "Filtering date after " + cStart + " to " + cEnd;
+        String formatStart;
+        String formatEnd;
+        DateFormatter df = new DateFormatter();
         switch (state) {
             case AFTER:
-                rtn = Utilities.formatString(USR_MSG_FILTER_AFTER_DATE, cStart);
+                formatStart = df.formatDate(cStart);
+                rtn = Utilities.formatString(USR_MSG_FILTER_AFTER_DATE, formatStart);
                 break;
 
             case BEFORE:
-                rtn = Utilities.formatString(USR_MSG_FILTER_BEFORE_DATE, cEnd);
+                formatEnd = df.formatDate(cEnd);
+                rtn = Utilities.formatString(USR_MSG_FILTER_BEFORE_DATE, formatEnd);
                 break;
             case BETWEEN:
-                rtn = Utilities.formatString(USR_MSG_FILTER_BETWEEN_DATE, cStart, cEnd);
+                formatStart = df.formatDate(cStart);
+                formatEnd = df.formatDate(cEnd);
+                rtn = Utilities.formatString(USR_MSG_FILTER_BETWEEN_DATE, formatStart, formatEnd);
                 break;
             default:
                 break;
