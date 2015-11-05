@@ -1,3 +1,4 @@
+//@@author A0133920N
 package storage;
 
 import java.util.Calendar;
@@ -14,7 +15,7 @@ public class StorageTest {
         TasksBag cb;
         int size;
 
-        Storage s = new Storage();
+        Storage s = Storage.getInstance();
         s.init();
         Task c1 = new Task("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0));
         Task c2 = new Task("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0));

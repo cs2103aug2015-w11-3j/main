@@ -8,12 +8,22 @@ import common.*;
 
 public class Storage implements StorageInterface {
 	
-    public Storage() {
-
+	private static Storage instance;
+	
+    private Storage() {
+    }
+    
+    public static Storage getStorage() {
+    	if (instance == null) {
+    		instance = new Storage();
+    	}
+    	
+    	return instance;
     }
 
     public void init() {
         Log.log("Storage Init");
+        System.out.println("lol");
         try {
             connectToDatabase();
             Log.log("Storage Init complete");
