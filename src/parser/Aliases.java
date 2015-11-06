@@ -1,9 +1,11 @@
 //@@author A0131891E
 package parser;
 
-import java.util.Set;
-import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Arrays;
+import java.util.Collection;
+
 
 /**
  * This class holds all user input token aliases.
@@ -14,112 +16,113 @@ import java.util.Arrays;
  * NOTE: ALIAS STRINGS CANNOT CONTAIN WHITESPACE
  */
 public final class Aliases {
-	// Disable instantiation
-	private Aliases () {
-	}
-	
+
 	/////////////////////////////////////////////////////
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
-	static final Set<String> CMD_ADD = createSet(
+	static final String[] CMD_ADD = {
 		"a",
 		"add",
 		"new",
 		"create"
-	);
-	static final Set<String> CMD_UPD = createSet(
+	};
+	static final String[] CMD_UPD = {
 		"upd",
 		"update",
 		"set",
 		"edit"
-	);
-	static final Set<String> CMD_DEL = createSet(
+	};
+	static final String[] CMD_DEL = {
 		"d",
 		"del",
 		"delete",
 		"rm",
 		"remove"
-	);
-	static final Set<String> CMD_QUIT = createSet(
-		"q",	
-		"quit",
-		"exit"
-	);
-	static final Set<String> CMD_MARK = createSet(
+	};
+	static final String[] CMD_MARK = {
 		"done",
 		"finish",
 		"mark",
 		"complete"
-	);
-	static final Set<String> CMD_UNMARK = createSet(
+	};
+	static final String[] CMD_UNMARK = {
 		"unmark",
 		"reopen",
 		"uncomplete"
-	);
-	static final Set<String> CMD_UNDO = createSet(
+	};
+	static final String[] CMD_UNDO = {
 		"u",
 		"un",
 		"undo"
-	);
-	static final Set<String> CMD_REDO = createSet(
+	};
+	static final String[] CMD_REDO = {
 		"redo",
 		"re" 
-	);
-	static final Set<String> CMD_SHOW = createSet(
+	};
+	static final String[] CMD_SHOW = {
 		"show",
 		"view",
 		"display"
-	);
-	static final Set<String> CMD_SEARCH = createSet(
+	};
+	static final String[] CMD_SEARCH = {
 		"s",
 		"find",
 		"search"
-	);
-	static final Set<String> CMD_FILTER = createSet(
+	};
+	static final String[] CMD_FILTER = {
 		"f",
 		"fil",
 		"filter"
-	);
-	static final Set<String> CMD_CLEAR = createSet(
+	};
+	static final String[] CMD_CLEAR = {
 		"clr",
 		"cls",
 		"clear",
 		"reset"
-	);
-	static final Set<String> CMD_MOVE = createSet(
+	};
+	static final String[] CMD_MOVE = {
 		"mv",
 		"move"
-	);
-	static final Set<String> CMD_HELP = createSet(
+	};
+	static final String[] CMD_ALIAS = {
+		"map",
+		"alias"
+	};
+	static final String[] CMD_HELP = {
 		"help",
 		"?",
 		"-h"
-	);
-	static final Set<String> CMD_THEME = createSet(
+	};
+	static final String[] CMD_THEME = {
 		"skin",
 		"theme",
 		"color",
 		"colour"
-	);
+	};
+	static final String[] CMD_QUIT = {
+		"q",	
+		"quit",
+		"exit"
+	};
 	
 	/////////////////////////////////////////////////////
 	// Aliases for Task field tokens
 	/////////////////////////////////////////////////////
-	static final Set<String> FIELD_NAME = createSet(
+	static final String[] FIELD_NAME = {
 		"name",
 		"title",
 		"text",
 		"descr",
 		"description"
-	);
-	static final Set<String> FIELD_START_DATE = createSet(
+	};
+	static final String[] FIELD_START_DATE = {
 		"at",
 		"start",
 		"from",
 		"begin",
 		"on"
-	);
-	static final Set<String> FIELD_END_DATE = createSet(
+	};
+	static final String[] FIELD_END_DATE = {
 		"by",
 		"finish",
 		"to",
@@ -127,44 +130,45 @@ public final class Aliases {
 		"due",
 		"till",
 		"until"
-	);
+	};
 
 	/////////////////////////////////////////////////////
 	// Aliases for show command arguments
 	/////////////////////////////////////////////////////
-	static final Set<String> VIEW_DEFAULT = createSet(
+	static final String[] VIEW_DEFAULT = {
 		"",
 		"urgent",
 		"default",
 		"upcoming"
-	);
-	static final Set<String> VIEW_INCOMPLETE = createSet(
+	};
+	static final String[] VIEW_INCOMPLETE = {
 		"undone",
 		"open",
 		"incomplete",
 		"unfinished",
 		"pending"
-	);
-	static final Set<String> VIEW_COMPLETE = createSet(
+	};
+	static final String[] VIEW_COMPLETED = {
 		"done",
 		"closed",
 		"complete",
 		"completed",
 		"finished"
-	);
+	};
 	
 	/////////////////////////////////////////////////////
 	// Aliases for filter command delimiters
 	/////////////////////////////////////////////////////
-	static final Set<String> FILTER_ARG_BEF = createSet(
+	static final String[] FILTER_ARG_BEF = {
+		"by",
 		"bef",
 		"before"
-	);
-	static final Set<String> FILTER_ARG_AFT = createSet(
+	};
+	static final String[] FILTER_ARG_AFT = {
 		"aft",
 		"after"
-	);
-	static final Set<String> FILTER_ARG_BTW_START = createSet(
+	};
+	static final String[] FILTER_ARG_BTW_START = {
 		"from",
 		"start",
 		"b/w",
@@ -172,82 +176,113 @@ public final class Aliases {
 		"between",
 		"range",
 		"within"
-	);
-	static final Set<String> FILTER_ARG_BTW_END = createSet(
+	};
+	static final String[] FILTER_ARG_BTW_END = {
+		"by",
 		"to",
 		"end",
 		"and",
 		"till",
 		"until"
-	);
+	};
 
     /////////////////////////////////////////////////////
     // Aliases for themes
     /////////////////////////////////////////////////////
-	static final Set<String> THEME_DAY = createSet(
+	static final String[] THEME_DAY = {
         "day",
         "light",
         "bright",
         "white"
-	);
-	static final Set<String> THEME_NIGHT = createSet(
+	};
+	static final String[] THEME_NIGHT = {
         "night",
         "shadow",
         "dark",
         "black"
-	);
+	};
 	
-
     /////////////////////////////////////////////////////////
     // Aliases for special update date values to remove date
     /////////////////////////////////////////////////////////
-	// for UPDATE cmd removing of dates (task conversion event->deadline->float)
-	static final Set<String> DATE_CLEAR = createSet(
+	// for UPDATE cmd removing of dates (task conversion event->deadline->float}
+	static final String[] CLEAR_VAL = {
 		"nil",
+		"null",
 		"none",
 		"remove",
 		"clear",
 		"empty"
-	);
-	/**
-	 * @return a NEW Set containing all valid command tokens
-	 * 
-	 * Changes to the returned set will not mutate data in this class.
-	 * Currently used by ui.view.CelebiViewController
-	 * for real-time user input command syntax highlighting.
-	 */
-	public static final Set<String> getValidCmdTokens () {
-		final Set<String> allTokens = new LinkedHashSet<String>();
-		allTokens.addAll(CMD_ADD);
-		allTokens.addAll(CMD_UPD);
-		allTokens.addAll(CMD_QUIT);
-		allTokens.addAll(CMD_MARK);
-		allTokens.addAll(CMD_UNMARK);
-		allTokens.addAll(CMD_UNDO);
-		allTokens.addAll(CMD_REDO);
-		allTokens.addAll(CMD_SHOW);
-		allTokens.addAll(CMD_SEARCH);
-		allTokens.addAll(CMD_FILTER);
-		allTokens.addAll(CMD_MOVE);
-		allTokens.addAll(CMD_HELP);
-		allTokens.addAll(CMD_THEME);
-		return allTokens;
+	};
+	
+	private static Aliases instance = null;
+	public static Aliases getInstance () {
+		if (instance == null) {
+			instance = new Aliases();
+		}
+		return instance;
 	}
 	
-	@SafeVarargs
+	// Stores the default alias->command.type mapping
+	private final Map<String, Command.Type> ALIAS_MAP_CMD_TYPE;
+	
+	private Aliases () {
+		
+		ALIAS_MAP_CMD_TYPE = new LinkedHashMap<>();
+		mapCmdTypeAliases();
+		
+	}
+	
+	private final void mapCmdTypeAliases () {
+
+		mapAliases(CMD_ADD, Command.Type.ADD);
+		mapAliases(CMD_UPD, Command.Type.UPDATE);
+		mapAliases(CMD_DEL, Command.Type.DELETE);
+		
+		mapAliases(CMD_MARK, Command.Type.MARK);
+		mapAliases(CMD_UNMARK, Command.Type.UNMARK);
+		
+		mapAliases(CMD_UNDO, Command.Type.UNDO);
+		mapAliases(CMD_REDO, Command.Type.REDO);
+		
+		mapAliases(CMD_SHOW, Command.Type.SHOW);
+		
+		mapAliases(CMD_SEARCH, Command.Type.SEARCH);
+		mapAliases(CMD_FILTER, Command.Type.FILTER_DATE);
+		mapAliases(CMD_CLEAR, Command.Type.CLEAR_FILTERS);
+		
+		mapAliases(CMD_MOVE, Command.Type.MOVE);
+		mapAliases(CMD_ALIAS, Command.Type.ALIAS);
+		
+		mapAliases(CMD_HELP, Command.Type.HELP);
+		mapAliases(CMD_THEME, Command.Type.THEME);
+		
+		mapAliases(CMD_QUIT, Command.Type.QUIT);
+	}
+	
+	
+	private final void mapAliases (String[] aliases, Command.Type cmdType) {
+		mapAliasesToValue(ALIAS_MAP_CMD_TYPE, cmdType, Arrays.asList(aliases));
+	}
+	
+	// getter returns clone to preserve immutability
+	public final Map<String, Command.Type> getAliasMap () {
+		return new LinkedHashMap<>(ALIAS_MAP_CMD_TYPE);
+	}
+	
 	/**
-	 * Used to generate sets to hold aliases.
-	 * 
-	 * In principle, we want sets since we are doing a pure token search
-	 * In reality, the hashing for each .contains() call probably takes a longer
-	 * time then a simple for loop over an array doing a .equals check for each item.
-	 * 
-	 * For the sake of extensibility and to support the most used operation (search), 
-	 * we go with the Set interface instead of array.
-	 * @param elements
-	 * @return Set containing those elements
+	 * Maps every key in keys to value, inside map.
+	 * If any duplicate is detected in the map, assertion kills program.
+	 * Since this is used only for alias mapping, any detected duplicates
+	 * imply an error on the dev's part in specifying the aliases above.
+	 * @param map : mappings are stored here.
+	 * @param value : to be mapped by all aliases
+	 * @param aliases : to be mapped to value
 	 */
-	private static final <E> Set<E> createSet (E... elements) {
-		return new LinkedHashSet<E>(Arrays.asList(elements));
+	private static final <V> void mapAliasesToValue (Map<String, V> map, V value, Collection<String> aliases) {
+		assert(map != null && aliases != null && value != null);
+		for (String alias : aliases) {
+			assert map.put(alias, value) == null : "duplicate key binding " + alias ; // no duplicates allowed
+		}
 	}
 }

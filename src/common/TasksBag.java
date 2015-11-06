@@ -17,7 +17,7 @@ import javafx.collections.ObservableList;
 public class TasksBag implements Iterable<Task> {
 
     public static enum ViewType {
-        COMPLETE_TASKS, INCOMPLETE_TASKS, TODAY
+        COMPLETED, INCOMPLETE, DEFAULT
     }
 
     public static enum FilterDateState {
@@ -39,7 +39,7 @@ public class TasksBag implements Iterable<Task> {
     public TasksBag() {
         tasks = FXCollections.observableArrayList();
         log = Logger.getLogger("TasksBag");
-        cViewType = ViewType.INCOMPLETE_TASKS; // setting to default
+        cViewType = ViewType.INCOMPLETE; // setting to default
     }
 
     public FilterDateState getDateState() {
@@ -96,13 +96,13 @@ public class TasksBag implements Iterable<Task> {
         ObservableList<Task> newContainer = FXCollections.observableArrayList();
 
         switch (cViewType) {
-            case COMPLETE_TASKS:
+            case COMPLETED:
                 filterTasksComplete(newContainer);
                 break;
-            case INCOMPLETE_TASKS:
+            case INCOMPLETE:
                 filterTasksIncomplete(newContainer);
                 break;
-            case TODAY:
+            case DEFAULT:
                 filterTasksToday(newContainer);
                 break;
             default:
@@ -351,18 +351,18 @@ public class TasksBag implements Iterable<Task> {
 
     public void toggleView() {
         switch (cViewType) {
-            case COMPLETE_TASKS:
-                cViewType = ViewType.INCOMPLETE_TASKS;
+            case COMPLETED:
+                cViewType = ViewType.INCOMPLETE;
                 break;
-            case INCOMPLETE_TASKS:
-                cViewType = ViewType.TODAY;
+            case INCOMPLETE:
+                cViewType = ViewType.DEFAULT;
                 break;
-            case TODAY:
-                cViewType = ViewType.COMPLETE_TASKS;
+            case DEFAULT:
+                cViewType = ViewType.COMPLETED;
                 break;
             default:
                 log.severe("Default filter state encountered during toggleFilter.");
-                cViewType = ViewType.TODAY;
+                cViewType = ViewType.DEFAULT;
                 break;
         }
     }

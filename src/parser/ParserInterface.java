@@ -32,6 +32,7 @@ public interface ParserInterface {
 	public Command makeMove (Path newPath);
 	public Command makeHelp (Command.Type helpTarget);
 	public Command makeTheme (Skin theme);
+	public Command makeAlias (String alias, Command.Type target);
 	
 	// to debug command
 	public static void printCmd (Command c) {

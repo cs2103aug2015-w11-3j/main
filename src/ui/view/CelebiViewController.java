@@ -1,7 +1,7 @@
 package ui.view;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.Map;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
@@ -27,6 +27,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import common.Configuration;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.ViewType;
@@ -34,6 +35,7 @@ import common.TasksBag.FilterDateState;
 import ui.Main;
 import ui.UIInterface;
 import parser.Aliases;
+import parser.Command;
 
 public class CelebiViewController {
     // @@author A0133895U
@@ -66,7 +68,8 @@ public class CelebiViewController {
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    private static final Set<String> VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
+    
+    private Map<String, Command.Type> VALID_CMD_TOKENS;
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
     private static final String NIGHT_CELEBI_COLOR = "#16a085";
@@ -102,6 +105,8 @@ public class CelebiViewController {
         initializeFeedbackPane();
         initializeFeedbackArea();
 
+        VALID_CMD_TOKENS = Aliases.getInstance().getAliasMap();
+        
         Platform.runLater(() -> {
             commandArea.requestFocus();
         });
@@ -405,7 +410,7 @@ public class CelebiViewController {
     private boolean isCmdToken(String firstWord) {
         assert (firstWord != null);
         firstWord = firstWord.toLowerCase();
-        return VALID_CMD_TOKENS.contains(firstWord);
+        return Configuration.getInstance().isUserAlias(firstWord) || VALID_CMD_TOKENS.containsKey(firstWord);
     }
 
     // @@author A0133895U
@@ -485,11 +490,11 @@ public class CelebiViewController {
     public void refreshSelection(TasksBag bag) {
         SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
         ViewType state = bag.getView();
-        if (state == common.TasksBag.ViewType.TODAY) {
+        if (state == common.TasksBag.ViewType.DEFAULT) {
             selectionModel.select(0);
-        } else if (state == common.TasksBag.ViewType.INCOMPLETE_TASKS) {
+        } else if (state == common.TasksBag.ViewType.INCOMPLETE) {
             selectionModel.select(1);
-        } else if (state == common.TasksBag.ViewType.COMPLETE_TASKS) {
+        } else if (state == common.TasksBag.ViewType.COMPLETED) {
             selectionModel.select(2);
         }
     }

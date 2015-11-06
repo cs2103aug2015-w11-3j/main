@@ -23,5 +23,5 @@ public class HelpStrings {
     
     public static final String HELP_FORMAT_THEME = "\"theme/skin <day/night>\"";
     public static final String HELP_FORMAT_CLEAR = "\"clr OR clear OR reset\"";
-    
+    public static final String HELP_FORMAT_ALIAS = "\"alias <your new alias> <default command token>\"";
 }

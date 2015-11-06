@@ -22,7 +22,7 @@ public class HelpAction implements Action {
     public CommandFeedback execute() throws LogicException {
         String msg = "";
         CommandFeedback fb;
-        Type cmdType = cCommand.getHelpCmdType();
+        Type cmdType = cCommand.getSecondaryCmdType();
         
         // General help command requested by user
         if(cmdType == null){
@@ -37,7 +37,7 @@ public class HelpAction implements Action {
 
     private String generateHelpString() {
         String msg;
-        switch(cCommand.getHelpCmdType()){
+        switch(cCommand.getSecondaryCmdType()){
             case ADD:
                 msg = buildString(HelpStrings.HELP_FORMAT_ADD);
                 break;

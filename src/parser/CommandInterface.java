@@ -47,7 +47,7 @@ public interface CommandInterface {
 	 * Will be null if the user is requesting the general help (to list all cmds)
 	 * @return Command.Type (enum), or null if general help requested
 	 */
-	public Type getHelpCmdType ();
+	public Type getSecondaryCmdType ();
 	
 	public TasksBag.ViewType getViewType ();
 	

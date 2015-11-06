@@ -17,7 +17,7 @@ public class Command implements CommandInterface {
 		MARK, UNMARK,
 		QUIT, 
 		INVALID,
-		MOVE, HELP, 
+		MOVE, HELP, ALIAS,
 		THEME
 	}
 
@@ -29,7 +29,7 @@ public class Command implements CommandInterface {
 	// identifiers
 	private int _taskUID;
 	private Task.DataType _taskField;
-	private Type _helpCmdType;
+	private Type _secondaryCmdType;
 	private TasksBag.ViewType _viewType;
 	private CelebiViewController.Skin _theme;
 	
@@ -74,9 +74,9 @@ public class Command implements CommandInterface {
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
 	}
-	void setHelpCmdType (Type t) {
+	void setSecondaryCmdType (Type t) {
 		assert(t != Type.INVALID);
-		_helpCmdType = t;
+		_secondaryCmdType = t;
 	}
 	void setPath (Path p) {
 		_path = p;
@@ -95,8 +95,8 @@ public class Command implements CommandInterface {
 	// Identifiers
 
 	@Override
-	public Type getHelpCmdType() {
-		return _helpCmdType;
+	public Type getSecondaryCmdType() {
+		return _secondaryCmdType;
 	}
 	@Override
 	public Type getCmdType () {

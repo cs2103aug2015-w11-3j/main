@@ -19,7 +19,7 @@ public class Logic implements LogicInterface {
     private static final String USR_MSG_UNKNOWN_COMMAND = "I couldn't understand you... (>.<)";
 
     // The default view when UI first query the bag
-    private static final ViewType DEFAULT_UI_VIEW = TasksBag.ViewType.TODAY;
+    private static final ViewType DEFAULT_UI_VIEW = TasksBag.ViewType.DEFAULT;
     private static final KeyCode TOGGLE_FILTER_STATE_KEY = KeyCode.TAB;
     private StorageInterface cStorage;
     private ParserInterface cParser;
@@ -112,6 +112,9 @@ public class Logic implements LogicInterface {
             case CLEAR_FILTERS:
                 fb = cInvoker.placeAction(new FilterClearAction(rtnCmd, cInternalBag));
                 break;
+            case ALIAS:
+            	fb = cInvoker.placeAction(new AliasAction(rtnCmd, cInternalBag));
+            	break;
             case INVALID:
                 throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
             default:

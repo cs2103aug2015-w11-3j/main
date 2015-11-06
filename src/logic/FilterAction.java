@@ -29,17 +29,17 @@ public class FilterAction implements Action {
     public CommandFeedback execute() {
         String msg = "";
         switch (cSortBy) {
-            case COMPLETE_TASKS:
+            case COMPLETED:
                 msg = USR_MSG_FILTER_COMPLETE;
-                cBag.setView(ViewType.COMPLETE_TASKS);
+                cBag.setView(ViewType.COMPLETED);
                 break;
-            case INCOMPLETE_TASKS:
+            case INCOMPLETE:
                 msg = USR_MSG_FILTER_INCOMPLETE;
-                cBag.setView(ViewType.INCOMPLETE_TASKS);
+                cBag.setView(ViewType.INCOMPLETE);
                 break;
-            case TODAY:
+            case DEFAULT:
                 msg = USR_MSG_FILTER_TODAY;
-                cBag.setView(ViewType.TODAY);
+                cBag.setView(ViewType.DEFAULT);
                 break;
             default:
                 assert false;

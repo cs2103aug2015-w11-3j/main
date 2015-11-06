@@ -217,7 +217,7 @@ public class LogicTest {
         // fail test under INCOMPLETE(default) filter of tasksbag
         testFailException("mark 1", IllegalAccessCommandException.class);
 
-        logic.getTaskBag().setView(TasksBag.ViewType.COMPLETE_TASKS);
+        logic.getTaskBag().setView(TasksBag.ViewType.COMPLETED);
 
         testFailException("mark 1", AlreadyMarkedException.class);
 

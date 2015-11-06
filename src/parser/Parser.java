@@ -6,17 +6,20 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Collection;
 
+import common.Configuration;
 //import com.sun.javafx.css.Combinator;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
-import static ui.view.CelebiViewController.Skin;
+import ui.view.CelebiViewController.Skin;
 
 public class Parser implements ParserInterface {
 	
@@ -27,80 +30,89 @@ public class Parser implements ParserInterface {
 	
 	// for whitespace work
 	private final Pattern P_WHITESPACE;
-	private static final String REGEX_WHITESPACE = 
+	private static final String REG_WHITESPACE = 
 			"\\s+";
 	
-	//TODO regexes for all cmds for consistency
-	private static final String REGEX_MATCHING_NAME_FIELD_ALIAS = regexContaining(Aliases.FIELD_NAME);
-	private static final String REGEX_MATCHING_START_FIELD_ALIAS = regexContaining(Aliases.FIELD_START_DATE);
-	private static final String REGEX_MATCHING_END_FIELD_ALIAS = regexContaining(Aliases.FIELD_END_DATE);
+	// regexes for all cmds for consistency
+	private static final String REG_MATCHING_NAME_FIELD = regexContaining(Aliases.FIELD_NAME);
+	private static final String REG_MATCHING_START_FIELD = regexContaining(Aliases.FIELD_START_DATE);
+	private static final String REG_MATCHING_END_FIELD = regexContaining(Aliases.FIELD_END_DATE);
+	
+	private static final String REG_MATCHING_SHOW_DEFAULT = regexContaining(Aliases.VIEW_DEFAULT);
+	private static final String REG_MATCHING_SHOW_COMPLETED = regexContaining(Aliases.VIEW_COMPLETED);
+	private static final String REG_MATCHING_SHOW_INCOMPLETE = regexContaining(Aliases.VIEW_INCOMPLETE);
+	
+	private static final String REG_MATCHING_THEME_DAY = regexContaining(Aliases.THEME_DAY);
+	private static final String REG_MATCHING_THEME_NIGHT = regexContaining(Aliases.THEME_NIGHT);
+	
+	private static final String REG_MATCHING_CLEAR_VAL = regexContaining(Aliases.CLEAR_VAL);
 	
 	private static final String GRPNAME_NAME = "name";
 	private static final String GRPNAME_START = "start";
 	private static final String GRPNAME_END = "end";
 	private static final String GRPNAME_UID = "uid";
 	
-	private static final String REGEX_VALID_NAME = "[^;]+";
-	private static final String REGEX_UNVALIDATED_DATE = ".+"; // still needs to get parsed by date formatter
-	private static final String REGEX_UID = "-?\\d+"; // supports negative numbers for logic to throw exception
+	private static final String REG_VALID_NAME = "[^;]+";
+	private static final String REG_UNVALIDATED_DATE = ".+"; // still needs to get parsed by date formatter
+	private static final String REG_UID = "-?\\d+"; // supports negative numbers for logic to throw exception
 	
-	private static final String REGEX_GRP_NAME = regexNamedGrp(REGEX_VALID_NAME, GRPNAME_NAME);
-	private static final String REGEX_GRP_START = regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_START);
-	private static final String REGEX_GRP_END = regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_END);
-	private static final String REGEX_GRP_UID = regexNamedGrp(REGEX_UID, GRPNAME_UID);
+	private static final String REG_GRP_NAME = regexNamedGrp(REG_VALID_NAME, GRPNAME_NAME);
+	private static final String REG_GRP_START = regexNamedGrp(REG_UNVALIDATED_DATE, GRPNAME_START);
+	private static final String REG_GRP_END = regexNamedGrp(REG_UNVALIDATED_DATE, GRPNAME_END);
+	private static final String REG_GRP_UID = regexNamedGrp(REG_UID, GRPNAME_UID);
 	
 	////////////////////////////////////////////////////////////////
 	// ADD command parsing parameters
 	////////////////////////////////////////////////////////////////
 	
-	private static final String REGEX_NAME_DATE_DELIM = "\\s*;\\s*";
+	private static final String REG_NAME_DATE_DELIM = "\\s*;\\s*";
 	
 	// <name>
 	private final Pattern P_ADD_FLT;
-	private static final String REGEX_ADD_FLT = concatArgs(
+	private static final String REG_ADD_FLT = concatArgs(
 		'^',
-		REGEX_GRP_NAME,
+		REG_GRP_NAME,
 		'$'
 	);
 		
 	
 	// <name>; <start field identifier> <start>
 	private final Pattern P_ADD_START;
-	private static final String REGEX_ADD_START = concatArgs(
+	private static final String REG_ADD_START = concatArgs(
 		'^',
-		REGEX_GRP_NAME,
-		REGEX_NAME_DATE_DELIM,
-		REGEX_MATCHING_START_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_START,
+		REG_GRP_NAME,
+		REG_NAME_DATE_DELIM,
+		REG_MATCHING_START_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_START,
 		'$'
 	);
 
 	// <name>; <end field identifier> <end>
 	private final Pattern P_ADD_END;
-	private static final String REGEX_ADD_END = concatArgs(
+	private static final String REG_ADD_END = concatArgs(
 		'^',
-		REGEX_GRP_NAME,
-		REGEX_NAME_DATE_DELIM,
-		REGEX_MATCHING_END_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_END,
+		REG_GRP_NAME,
+		REG_NAME_DATE_DELIM,
+		REG_MATCHING_END_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_END,
 		'$'
 	);
 
 	// <name>; <start field identifier> <start> <end field identifier> <end>
 	private final Pattern P_ADD_EVT;
-	private static final String REGEX_ADD_EVT = concatArgs(
+	private static final String REG_ADD_EVT = concatArgs(
 		'^',
-		REGEX_GRP_NAME,
-		REGEX_NAME_DATE_DELIM,
-		REGEX_MATCHING_START_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_START,
-		REGEX_WHITESPACE,
-		REGEX_MATCHING_END_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_END,
+		REG_GRP_NAME,
+		REG_NAME_DATE_DELIM,
+		REG_MATCHING_START_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_START,
+		REG_WHITESPACE,
+		REG_MATCHING_END_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_END,
 		'$'
 	);
 
@@ -109,38 +121,38 @@ public class Parser implements ParserInterface {
 	////////////////////////////////////////////////////////////////
 	
 	private static final String GRPNAME_NEWVAL = "newval";
-	private static final String REGEX_GRP_NEW_NAME = regexNamedGrp(REGEX_VALID_NAME, GRPNAME_NEWVAL);
-	private static final String REGEX_GRP_NEW_DATE = regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_NEWVAL);
+	private static final String REG_GRP_NEW_NAME = regexNamedGrp(REG_VALID_NAME, GRPNAME_NEWVAL);
+	private static final String REG_GRP_NEW_DATE = regexNamedGrp(REG_UNVALIDATED_DATE, GRPNAME_NEWVAL);
 	
 	// <field> <uid> <newval>
 	private final Pattern P_UPD_NAME;
-	private static final String REGEX_UPD_NAME = concatArgs(
+	private static final String REG_UPD_NAME = concatArgs(
 		'^',
-		REGEX_GRP_UID,
-		REGEX_WHITESPACE,
-		REGEX_MATCHING_NAME_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_NEW_NAME,
+		REG_GRP_UID,
+		REG_WHITESPACE,
+		REG_MATCHING_NAME_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_NEW_NAME,
 		'$'
 	);
 	private final Pattern P_UPD_START;
-	private static final String REGEX_UPD_START = concatArgs(
+	private static final String REG_UPD_START = concatArgs(
 		'^',
-		REGEX_GRP_UID,
-		REGEX_WHITESPACE,
-		REGEX_MATCHING_START_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_NEW_DATE,
+		REG_GRP_UID,
+		REG_WHITESPACE,
+		REG_MATCHING_START_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_NEW_DATE,
 		'$'
 	);
 	private final Pattern P_UPD_END;
-	private static final String REGEX_UPD_END = concatArgs(
+	private static final String REG_UPD_END = concatArgs(
 		'^',
-		REGEX_GRP_UID,
-		REGEX_WHITESPACE,
-		REGEX_MATCHING_END_FIELD_ALIAS,
-		REGEX_WHITESPACE,
-		REGEX_GRP_NEW_DATE,
+		REG_GRP_UID,
+		REG_WHITESPACE,
+		REG_MATCHING_END_FIELD,
+		REG_WHITESPACE,
+		REG_GRP_NEW_DATE,
 		'$'
 	);
 
@@ -148,61 +160,132 @@ public class Parser implements ParserInterface {
 	// UID arg only command (DEL, MARK, UNMARK, parsing parameters
 	////////////////////////////////////////////////////////////////
 	
-	private static final String REGEX_UID_ONLY = concatArgs(
+	private static final String REG_UID_ONLY = concatArgs(
 		'^',
-		REGEX_GRP_UID,
+		REG_GRP_UID,
 		'$'
 	);
 
 	private final Pattern P_DEL;
-	private static final String REGEX_DEL = REGEX_UID_ONLY;
+	private static final String REG_DEL = REG_UID_ONLY;
 	private final Pattern P_MARK;
-	private static final String REGEX_MARK = REGEX_UID_ONLY;
+	private static final String REG_MARK = REG_UID_ONLY;
 	private final Pattern P_UNMARK;
-	private static final String REGEX_UNMARK = REGEX_UID_ONLY;
+	private static final String REG_UNMARK = REG_UID_ONLY;
 
+	
+	////////////////////////////////////////////////////////////////
+	// SHOW command parsing parameters
+	////////////////////////////////////////////////////////////////
+
+	private final Pattern P_SHOW_DEFAULT;
+	private static final String REG_SHOW_DEFAULT = concatArgs(
+		'^',
+		REG_MATCHING_SHOW_DEFAULT,
+		'$'
+	);
+	
+	private final Pattern P_SHOW_INCOMPLETE;
+	private static final String REG_SHOW_INCOMPLETE = concatArgs(
+		'^',
+		REG_MATCHING_SHOW_INCOMPLETE,
+		'$'
+	);
+	
+	private final Pattern P_SHOW_COMPLETED;
+	private static final String REG_SHOW_COMPLETED = concatArgs(
+		'^',
+		REG_MATCHING_SHOW_COMPLETED,
+		'$'
+	);
+	
+	
 	////////////////////////////////////////////////////////////////
 	// FILTER command parsing parameters
 	////////////////////////////////////////////////////////////////
 
 	private static final String GRPNAME_FIL_LO_BOUND = "start";
 	private static final String GRPNAME_FIL_HI_BOUND = "end";
-	private static final String REGEX_GRP_FIL_LO_BOUND = 
-			regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_FIL_LO_BOUND);
-	private static final String REGEX_GRP_FIL_HI_BOUND = 
-			regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_FIL_HI_BOUND);
+	private static final String REG_GRP_FIL_LO_BOUND = 
+			regexNamedGrp(REG_UNVALIDATED_DATE, GRPNAME_FIL_LO_BOUND);
+	private static final String REG_GRP_FIL_HI_BOUND = 
+			regexNamedGrp(REG_UNVALIDATED_DATE, GRPNAME_FIL_HI_BOUND);
 	
 	// before|bef <key(date,>
 	private final Pattern P_FILTER_BEF;
-	private static final String REGEX_FILTER_BEF = concatArgs(
+	private static final String REG_FILTER_BEF = concatArgs(
 		'^',
 		regexContaining(Aliases.FILTER_ARG_BEF),
-		REGEX_WHITESPACE,
-		REGEX_GRP_FIL_HI_BOUND,
+		REG_WHITESPACE,
+		REG_GRP_FIL_HI_BOUND,
 		'$'
 	);
 
 	// after|aft <key(date,>
 	private final Pattern P_FILTER_AFT;
-	private static final String REGEX_FILTER_AFT = concatArgs(
+	private static final String REG_FILTER_AFT = concatArgs(
 		'^',
 		regexContaining(Aliases.FILTER_ARG_AFT),
-		REGEX_WHITESPACE,
-		REGEX_GRP_FIL_LO_BOUND,
+		REG_WHITESPACE,
+		REG_GRP_FIL_LO_BOUND,
 		'$'
 	);
 	
 	// between|b/w|btw|from|start <key1(date,> and|to|till|until|end <key2(date,>
 	private final Pattern P_FILTER_BTW;
-	private static final String REGEX_FILTER_BTW = concatArgs(
+	private static final String REG_FILTER_BTW = concatArgs(
 		'^',
 		regexContaining(Aliases.FILTER_ARG_BTW_START),
-		REGEX_WHITESPACE,
-		REGEX_GRP_FIL_LO_BOUND,
-		REGEX_WHITESPACE,
+		REG_WHITESPACE,
+		REG_GRP_FIL_LO_BOUND,
+		REG_WHITESPACE,
 		regexContaining(Aliases.FILTER_ARG_BTW_END),
-		REGEX_WHITESPACE,
-		REGEX_GRP_FIL_HI_BOUND,
+		REG_WHITESPACE,
+		REG_GRP_FIL_HI_BOUND,
+		'$'
+	);
+	
+
+	////////////////////////////////////////////////////////////////
+	// THEME command parsing parameters
+	////////////////////////////////////////////////////////////////
+
+	private final Pattern P_THEME_DAY;
+	private static final String REG_THEME_DAY = concatArgs(
+		'^',
+		REG_MATCHING_THEME_DAY,
+		'$'
+	);
+	private final Pattern P_THEME_NIGHT;
+	private static final String REG_THEME_NIGHT = concatArgs(
+		'^',
+		REG_MATCHING_THEME_NIGHT,
+		'$'
+	);
+
+
+	////////////////////////////////////////////////////////////////
+	// ALIAS command parsing parameters
+	////////////////////////////////////////////////////////////////
+
+	private static final String REG_VALID_CMD = "\\S+";
+	private static final String GRPNAME_TARGET_CMD = "target";
+	private static final String GRPNAME_ALIAS = "alias";
+	private static final String REG_GRP_ALIAS_TARGET = regexNamedGrp(REG_VALID_CMD, GRPNAME_TARGET_CMD);
+	private static final String REG_GRP_ALIAS_NEW = regexNamedGrp(REG_VALID_CMD, GRPNAME_ALIAS);
+	
+	private final Pattern P_ALIAS_NEW;
+	private static final String REG_ALIAS_NEW = concatArgs(
+		'^',
+		REG_GRP_ALIAS_TARGET,
+		REG_WHITESPACE,
+		REG_GRP_ALIAS_NEW,
+		'$'
+	);
+	private final Pattern P_ALIAS_CLR;
+	private static final String REG_ALIAS_CLR = concatArgs(
+		'^',
+		REG_MATCHING_CLEAR_VAL,
 		'$'
 	);
 	
@@ -213,31 +296,44 @@ public class Parser implements ParserInterface {
 	private String userRawInput;
 	private static Parser parserInstance;
 	private final CelebiDateParser DATE_FORMATTER;
+	private final Map<String, Command.Type> DEFAULT_ALIAS_MAP;
 	/////////////////////////////////////////////////////////////////
 	
 	private Parser () {
+		DEFAULT_ALIAS_MAP = Aliases.getInstance().getAliasMap();
+		
 		userRawInput = "no user input received";
 		
 		DATE_FORMATTER = new DateParser();
 		
-		P_WHITESPACE = Pattern.compile(REGEX_WHITESPACE);
+		P_WHITESPACE = Pattern.compile(REG_WHITESPACE);
 		
-		P_ADD_FLT = Pattern.compile(REGEX_ADD_FLT, CASE_INSENSITIVE);
-		P_ADD_START = Pattern.compile(REGEX_ADD_START, CASE_INSENSITIVE);
-		P_ADD_END = Pattern.compile(REGEX_ADD_END, CASE_INSENSITIVE);
-		P_ADD_EVT = Pattern.compile(REGEX_ADD_EVT, CASE_INSENSITIVE);
+		P_ADD_FLT = Pattern.compile(REG_ADD_FLT, CASE_INSENSITIVE);
+		P_ADD_START = Pattern.compile(REG_ADD_START, CASE_INSENSITIVE);
+		P_ADD_END = Pattern.compile(REG_ADD_END, CASE_INSENSITIVE);
+		P_ADD_EVT = Pattern.compile(REG_ADD_EVT, CASE_INSENSITIVE);
 		
-		P_UPD_NAME = Pattern.compile(REGEX_UPD_NAME, CASE_INSENSITIVE);
-		P_UPD_START = Pattern.compile(REGEX_UPD_START, CASE_INSENSITIVE);
-		P_UPD_END = Pattern.compile(REGEX_UPD_END, CASE_INSENSITIVE);
+		P_UPD_NAME = Pattern.compile(REG_UPD_NAME, CASE_INSENSITIVE);
+		P_UPD_START = Pattern.compile(REG_UPD_START, CASE_INSENSITIVE);
+		P_UPD_END = Pattern.compile(REG_UPD_END, CASE_INSENSITIVE);
 		
-		P_DEL = Pattern.compile(REGEX_DEL, CASE_INSENSITIVE);
-		P_MARK = Pattern.compile(REGEX_MARK, CASE_INSENSITIVE);
-		P_UNMARK = Pattern.compile(REGEX_UNMARK, CASE_INSENSITIVE);
+		P_DEL = Pattern.compile(REG_DEL, CASE_INSENSITIVE);
+		P_MARK = Pattern.compile(REG_MARK, CASE_INSENSITIVE);
+		P_UNMARK = Pattern.compile(REG_UNMARK, CASE_INSENSITIVE);
 		
-		P_FILTER_BEF = Pattern.compile(REGEX_FILTER_BEF, CASE_INSENSITIVE);
-		P_FILTER_AFT = Pattern.compile(REGEX_FILTER_AFT, CASE_INSENSITIVE);
-		P_FILTER_BTW = Pattern.compile(REGEX_FILTER_BTW, CASE_INSENSITIVE);
+		P_SHOW_DEFAULT = Pattern.compile(REG_SHOW_DEFAULT);
+		P_SHOW_INCOMPLETE = Pattern.compile(REG_SHOW_INCOMPLETE);
+		P_SHOW_COMPLETED = Pattern.compile(REG_SHOW_COMPLETED);
+		
+		P_FILTER_BEF = Pattern.compile(REG_FILTER_BEF, CASE_INSENSITIVE);
+		P_FILTER_AFT = Pattern.compile(REG_FILTER_AFT, CASE_INSENSITIVE);
+		P_FILTER_BTW = Pattern.compile(REG_FILTER_BTW, CASE_INSENSITIVE);
+		
+		P_THEME_DAY = Pattern.compile(REG_THEME_DAY);
+		P_THEME_NIGHT = Pattern.compile(REG_THEME_NIGHT);
+		
+		P_ALIAS_NEW = Pattern.compile(REG_ALIAS_NEW);
+		P_ALIAS_CLR = Pattern.compile(REG_ALIAS_CLR);
 	}
 	// singleton access
 	public static Parser getParser () {
@@ -253,14 +349,14 @@ public class Parser implements ParserInterface {
 		System.out.println("Parser Init complete");
 	}
 
-	private static final String regexContaining (Collection<String> tokens) {
+	private static final String regexContaining (String[] tokens) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(?:");
 		for (String tok : tokens) {
 			sb.append("\\Q").append(tok).append("\\E"); // necesary escaping
 			sb.append('|');
 		}
-		if (tokens.size() > 0) { 
+		if (tokens.length > 0) { 
 			sb.deleteCharAt(sb.length() - 1);
 		}
 		sb.append(')');
@@ -293,63 +389,22 @@ public class Parser implements ParserInterface {
 		if (cmdAndArgs.length != 2) { 
 			cmdAndArgs = new String[]{cmdAndArgs[0], ""};
 		}
-		Command.Type cmdType = getCmdType(cmdAndArgs[0]);
+		Command.Type cmdType = parseCmdType(cmdAndArgs[0]);
 		return passArgs(cmdType, cmdAndArgs[1]);
 	}
 	
-	private Command.Type getCmdType (String token) {
+	private Command.Type parseCmdType (String token) {
 		assert(token != null);
 		token = cleanText(token);
-		// CUD
-		if (Aliases.CMD_ADD.contains(token)) {
-			return Command.Type.ADD;
+		
+		Command.Type cmdType = Configuration.getInstance().getCmdTypeFromUserAlias(token);
+		if (cmdType != null && !token.equals("alias")) { // final check to prevent alias overwrite
+			return cmdType;
 		}
-		if (Aliases.CMD_DEL.contains(token)) {
-			return Command.Type.DELETE;
-		}
-		if (Aliases.CMD_UPD.contains(token)) {
-			return Command.Type.UPDATE;
-		}
-		// completing tasks
-		if (Aliases.CMD_MARK.contains(token)) {
-			return Command.Type.MARK;
-		}
-		if (Aliases.CMD_UNMARK.contains(token)) {
-			return Command.Type.UNMARK;
-		}
-		// undo/redo
-		if (Aliases.CMD_UNDO.contains(token)) {
-			return Command.Type.UNDO;
-		}
-		if (Aliases.CMD_REDO.contains(token)) {
-			return Command.Type.REDO;			
-		}
-		// display
-		if (Aliases.CMD_SHOW.contains(token)) {
-			return Command.Type.SHOW;			
-		}
-		// filter text/date
-		if (Aliases.CMD_SEARCH.contains(token)) {
-			return Command.Type.SEARCH;			
-		}
-		if (Aliases.CMD_FILTER.contains(token)) {
-			return Command.Type.FILTER_DATE;
-		}
-		if (Aliases.CMD_CLEAR.contains(token)) {
-			return Command.Type.CLEAR_FILTERS;
-		}
-		// misc
-		if (Aliases.CMD_MOVE.contains(token)) {
-			return Command.Type.MOVE;
-		}
-		if (Aliases.CMD_HELP.contains(token)) {
-			return Command.Type.HELP;
-		}
-		if (Aliases.CMD_QUIT.contains(token)) {
-			return Command.Type.QUIT;	
-		}
-		if (Aliases.CMD_THEME.contains(token)) {
-			return Command.Type.THEME;
+				
+		cmdType = DEFAULT_ALIAS_MAP.get(token);
+		if (cmdType != null) {
+			return cmdType;
 		}
 		// user is an idiot?
 		return Command.Type.INVALID;
@@ -405,6 +460,9 @@ public class Parser implements ParserInterface {
 				return parseClear(args);
 			case THEME :
 				return parseTheme(args);
+				//break;
+			case ALIAS :
+				return parseAlias(args);
 				//break;
 			default :
 				break;
@@ -520,15 +578,28 @@ public class Parser implements ParserInterface {
 	private Command parseShow (String args) {
 		assert(args != null);
 		args = cleanText(args);
-		if (Aliases.VIEW_DEFAULT.contains(args)) {
-			return makeShow(TasksBag.ViewType.TODAY);
+		
+		Matcher m;
+		TasksBag.ViewType view;
+		
+		m = P_SHOW_DEFAULT.matcher(args);
+		if (m.matches()) {
+			view = TasksBag.ViewType.DEFAULT;
+			return makeShow(view);
 		}
-		if (Aliases.VIEW_INCOMPLETE.contains(args)) {
-			return makeShow(TasksBag.ViewType.INCOMPLETE_TASKS);
+		
+		m = P_SHOW_INCOMPLETE.matcher(args);
+		if (m.matches()) {
+			view = TasksBag.ViewType.INCOMPLETE;
+			return makeShow(view);
 		}
-		if (Aliases.VIEW_COMPLETE.contains(args)) {
-			return makeShow(TasksBag.ViewType.COMPLETE_TASKS);
+		
+		m = P_SHOW_COMPLETED.matcher(args);
+		if (m.matches()) {
+			view = TasksBag.ViewType.COMPLETED;
+			return makeShow(view);
 		}
+		
 
 		return makeInvalid();
 	}
@@ -633,7 +704,7 @@ public class Parser implements ParserInterface {
 		if (args.length() == 0) { // no args for help cmd
 			return makeHelp(null);
 		}
-		Command.Type helpTarget = getCmdType(args);
+		Command.Type helpTarget = parseCmdType(args);
 		// help args can be parsed into a cmd type
 		if (helpTarget != Command.Type.INVALID) {
 			return makeHelp(helpTarget);
@@ -643,12 +714,43 @@ public class Parser implements ParserInterface {
 	private Command parseTheme (String args) {
 		assert(args != null);
 		args = cleanText(args);
-		if (Aliases.THEME_DAY.contains(args)) {
+		
+		Matcher m;
+		
+		m = P_THEME_DAY.matcher(args);
+		if (m.matches()) {
 			return makeTheme(Skin.DAY);
 		}
-		if (Aliases.THEME_NIGHT.contains(args)) {
+		
+		m = P_THEME_NIGHT.matcher(args);
+		if (m.matches()) {
 			return makeTheme(Skin.NIGHT);
 		}
+
+		return makeInvalid();
+	}
+	private Command parseAlias (String args) {
+		assert(args != null);
+		args = cleanText(args);
+		
+		final Command.Type target;
+		final String alias;
+		Matcher m;
+		
+		m = P_ALIAS_CLR.matcher(args);
+		if (m.matches()) {
+			return makeAlias(null, null);
+		}
+		
+		m = P_ALIAS_NEW.matcher(args);
+		if (m.matches()) {
+			target = parseCmdType(cleanText(m.group(GRPNAME_TARGET_CMD)));
+			alias = cleanText(m.group(GRPNAME_ALIAS)); // can be any non whitespace string
+			if (target != Command.Type.INVALID ) {
+				return makeAlias(alias, target);
+			}
+		}
+		
 		return makeInvalid();
 	}
 	
@@ -669,7 +771,10 @@ public class Parser implements ParserInterface {
 	// to signify removal of a date field from the task.
 	// Allows conversion from event->deadline/startonly->float
 	private Date parseUpdDate (String dateStr) throws ParseException {
-		if (Aliases.DATE_CLEAR.contains(cleanText(dateStr))) {
+		assert(dateStr != null);
+		cleanText(dateStr);
+		final List<String> clearDateAliases = Arrays.asList(Aliases.CLEAR_VAL);
+		if (clearDateAliases.contains(dateStr)) {
 			return null;
 		}
 		return parseDate(dateStr, true);
@@ -677,7 +782,7 @@ public class Parser implements ParserInterface {
 	
 	@Override
 	public Command makeAdd (String name, Date start, Date end) {
-		Command cmd = new Command(Command.Type.ADD, userRawInput);
+		final Command cmd = new Command(Command.Type.ADD, userRawInput);
 		cmd.setEnd(end);
 		cmd.setStart(start);
 		cmd.setText(name);
@@ -685,7 +790,7 @@ public class Parser implements ParserInterface {
 	}
 	@Override
 	public Command makeUpdateName (int taskUID, String newName) {
-		Command cmd = new Command(Command.Type.UPDATE, userRawInput);
+		final Command cmd = new Command(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.NAME);
 		cmd.setTaskUID(taskUID);
 		cmd.setText(newName);
@@ -693,7 +798,7 @@ public class Parser implements ParserInterface {
 	}
 	@Override
 	public Command makeUpdateStart (int taskUID, Date newDate) {
-		Command cmd = new Command(Command.Type.UPDATE, userRawInput);
+		final Command cmd = new Command(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.DATE_START);
 		cmd.setTaskUID(taskUID);
 		cmd.setStart(newDate);
@@ -701,7 +806,7 @@ public class Parser implements ParserInterface {
 	}
 	@Override
 	public Command makeUpdateEnd (int taskUID, Date newDate) {
-		Command cmd = new Command(Command.Type.UPDATE, userRawInput);
+		final Command cmd = new Command(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.DATE_END);
 		cmd.setTaskUID(taskUID);
 		cmd.setEnd(newDate);
@@ -709,94 +814,102 @@ public class Parser implements ParserInterface {
 	}
 	@Override
 	public Command makeDelete (int taskUID) {
-		Command cmd = new Command(Command.Type.DELETE, userRawInput);
+		final Command cmd = new Command(Command.Type.DELETE, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	@Override
 	public Command makeShow (TasksBag.ViewType view) {
-		Command cmd = new Command(Command.Type.SHOW, userRawInput);
+		final Command cmd = new Command(Command.Type.SHOW, userRawInput);
 		cmd.setViewType(view);
 		return cmd;		
 	}
 	@Override
 	public Command makeRedo () {
-		Command cmd = new Command(Command.Type.REDO, userRawInput);
+		final Command cmd = new Command(Command.Type.REDO, userRawInput);
 		return cmd;
 	}
 	@Override
 	public Command makeUndo () {
-		Command cmd = new Command(Command.Type.UNDO, userRawInput);
+		final Command cmd = new Command(Command.Type.UNDO, userRawInput);
 		return cmd;
 		
 	}
 	@Override
 	public Command makeMark (int taskUID) {
-		Command cmd = new Command(Command.Type.MARK, userRawInput);
+		final Command cmd = new Command(Command.Type.MARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	@Override
 	public Command makeUnmark (int taskUID) {
-		Command cmd = new Command(Command.Type.UNMARK, userRawInput);
+		final Command cmd = new Command(Command.Type.UNMARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	@Override
 	public Command makeSearch (String keyword) {
-		Command cmd = new Command(Command.Type.SEARCH, userRawInput);
+		final Command cmd = new Command(Command.Type.SEARCH, userRawInput);
 		cmd.setText(keyword);
 		return cmd;
 	}
 	@Override
 	public Command makeFilterDate (Date rangeStart, Date rangeEnd) {
-		Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
+		final Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
 		cmd.setStart(rangeStart);
 		cmd.setEnd(rangeEnd);
 		return cmd;
 	}
 	@Override
 	public Command makeClear () {
-		Command cmd = new Command(Command.Type.CLEAR_FILTERS, userRawInput);
+		final Command cmd = new Command(Command.Type.CLEAR_FILTERS, userRawInput);
 		return cmd;
 	}
 	@Override
 	public Command makeMove (Path newPath) {
-		Command cmd = new Command(Command.Type.MOVE, userRawInput);
+		final Command cmd = new Command(Command.Type.MOVE, userRawInput);
 		cmd.setPath(newPath);
 		return cmd;
 	}
 	@Override
 	public Command makeHelp (Command.Type helpTarget) {
-		Command cmd = new Command(Command.Type.HELP, userRawInput);
-		cmd.setHelpCmdType(helpTarget);
+		final Command cmd = new Command(Command.Type.HELP, userRawInput);
+		cmd.setSecondaryCmdType(helpTarget);
 		return cmd;
 	}
 	@Override
 	public Command makeQuit () {
-		Command cmd = new Command(Command.Type.QUIT, userRawInput);
+		final Command cmd = new Command(Command.Type.QUIT, userRawInput);
 		return cmd;
 	}
 	@Override
 	public Command makeTheme (Skin theme) {
-            Command cmd = new Command(Command.Type.THEME, userRawInput);
+        final Command cmd = new Command(Command.Type.THEME, userRawInput);
 	    cmd.setTheme(theme);
 	    return cmd;
 	}
 	@Override
+	public Command makeAlias (String alias, Command.Type target) {
+		final Command cmd = new Command(Command.Type.ALIAS, userRawInput);
+		cmd.setText(alias);
+		cmd.setSecondaryCmdType(target);
+		return cmd;
+	}
+	@Override
 	public Command makeInvalid () {
-		Command cmd = new Command(Command.Type.INVALID, userRawInput);
+		final Command cmd = new Command(Command.Type.INVALID, userRawInput);
 		return cmd;
 	}
 	
 	public static void printCmd (Command c) {
 		System.out.println("type: " + c.getCmdType());
 		System.out.println("raw: " + c.getRawUserInput());
-		System.out.println("uid: " + c.getTaskUID());
-		System.out.println("fieldkey: " + c.getTaskField());
+		System.out.print("uid: " + c.getTaskUID());
+		System.out.println("   fieldkey: " + c.getTaskField());
 		System.out.println("name: " + c.getText());
-		System.out.println("start: " + c.getStart());
-		System.out.println("end: "+ c.getEnd());
+		System.out.print("start: " + c.getStart());
+		System.out.println("   end: "+ c.getEnd());
+		System.out.println("2nd cmd type: " + c.getSecondaryCmdType());
 	}
 	
 	public static void main(String[] args) throws Exception {

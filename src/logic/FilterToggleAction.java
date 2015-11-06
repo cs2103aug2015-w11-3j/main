@@ -28,15 +28,15 @@ public class FilterToggleAction implements Action {
         cBag.toggleView();
 
         switch (bagState) {
-            case COMPLETE_TASKS:
+            case COMPLETED:
                 msg = USR_MSG_FILTER_COMPLETE;
                 break;
 
-            case INCOMPLETE_TASKS:
+            case INCOMPLETE:
                 msg = USR_MSG_FILTER_INCOMPLETE;
                 break;
 
-            case TODAY:
+            case DEFAULT:
                 msg = USR_MSG_FILTER_TODAY;
                 break;
         }
