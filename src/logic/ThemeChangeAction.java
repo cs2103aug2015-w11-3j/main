@@ -3,15 +3,19 @@ package logic;
 import common.TasksBag;
 import logic.exceptions.LogicException;
 import parser.Command;
+import ui.view.CelebiViewController;
 
-public class ThemeChangeAction implements Action {      
+public class ThemeChangeAction implements Action {
 
     private Command cCommand;
     private TasksBag cBag;
+    private CelebiViewController.SKIN cSkin;
 
     public ThemeChangeAction(Command comd, TasksBag bag) {
         cCommand = comd;
         cBag = bag;
+        cSkin = cCommand.getTheme();
+        assert cSkin != null;
     }
 
     @Override

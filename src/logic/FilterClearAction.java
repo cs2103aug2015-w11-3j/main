@@ -16,6 +16,8 @@ public class FilterClearAction implements Action {
 
     @Override
     public Feedback execute() throws LogicException {
+        cBag.setSearchState(null);
+        cBag.setFilterDateState(null, null);
         CommandFeedback fb = new CommandFeedback(cCommand, cBag);
         return fb;
     }

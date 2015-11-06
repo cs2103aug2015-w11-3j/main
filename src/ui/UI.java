@@ -60,17 +60,28 @@ public class UI implements UIInterface {
         String usrCmd = Utilities.formatString(UI_TXT_USRCMD, userInput);
         controller.appendFeedback(usrCmd);
 
-        CommandFeedback cmd = null;
+        CommandFeedback fb = null;
         String usrMsg = "";
         try {
-            cmd = logic.executeCommand(userInput);
-            if (cmd.getCommand().getCmdType() == Command.Type.QUIT) {
+            fb = logic.executeCommand(userInput);
+            
+            switch(fb.getCommand().getCmdType()){
+                case QUIT:
+                    System.out.println("Quit entered.");
+                    Platform.exit();
+                    break;
+                case THEME:
+                    break;
+                    //fb.get
+            }
+            
+            if (fb.getCommand().getCmdType() == Command.Type.QUIT) {
                 System.out.println("Quit entered.");
                 Platform.exit();
             } else {
-                cb = cmd.getcBag();
+                cb = fb.getcBag();
                 display(cb);
-                usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getMsg());
+                usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
                 controller.appendFeedback(usrMsg);
             }
         } catch (LogicException e) {

@@ -280,7 +280,7 @@ public class LogicTest {
         testFailException("a task; from 2015_1_32, 10:00", UnknownCommandException.class);
         testFailException("a task; from 2015_00_1, 10:00", UnknownCommandException.class);
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
-        
+
         // @yijin Currently failing
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
         testFailException("a task; from 2015_2_-1, 10:00", UnknownCommandException.class);
@@ -410,8 +410,11 @@ public class LogicTest {
         try {
             logic.executeCommand(failCommand);
         } catch (LogicException e) {
-            e.getClass().equals(whatException);
-            return;
+            Assert.assertEquals(whatException, e.getClass());
+            if (e.getClass().equals(whatException)) {
+                return;
+            }
+            Assert.fail("Should have thrown " + whatException.getName() + " for: " + failCommand);
         }
         Assert.fail("Should have thrown " + whatException.getName() + " for: " + failCommand);
     }

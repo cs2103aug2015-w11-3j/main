@@ -75,7 +75,8 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, TasksBag.ViewType.COMPLETE_TASKS));
+                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag));// ,
+                                                                                  // TasksBag.ViewType.COMPLETE_TASKS));
                 break;
             case UPDATE:
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
@@ -107,20 +108,20 @@ public class Logic implements LogicInterface {
             case HELP:
                 fb = cInvoker.placeAction(new HelpAction(rtnCmd, cInternalBag));
                 break;
-            case INVALID:
-                throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
-            case THEME:      
+            case THEME:
                 fb = cInvoker.placeAction(new ThemeChangeAction(rtnCmd, cInternalBag));
                 break;
             case CLEAR_FILTERS:
                 fb = cInvoker.placeAction(new FilterClearAction(rtnCmd, cInternalBag));
                 break;
+            case INVALID:
+                throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
             default:
                 assert false : rtnCmd.getCmdType();
                 fb = new CommandFeedback(rtnCmd, cInternalBag);
                 break;
         }
-        return (CommandFeedback)fb;
+        return (CommandFeedback) fb;
     }
 
     @Override
@@ -158,8 +159,8 @@ public class Logic implements LogicInterface {
     @Override
     public KeyEventFeedback executeKeyEvent(KeyCode whichKey) throws LogicException {
         KeyEventFeedback fb = null;
-        if(whichKey == TOGGLE_FILTER_STATE_KEY){
-            fb = (KeyEventFeedback)cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
+        if (whichKey == TOGGLE_FILTER_STATE_KEY) {
+            fb = (KeyEventFeedback) cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
         }
         return fb;
     }

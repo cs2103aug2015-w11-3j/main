@@ -20,10 +20,10 @@ public class FilterAction implements Action {
     private ViewType cSortBy;
 
     
-    public FilterAction(Command command, TasksBag internalBag, ViewType sortBy) throws LogicException {
+    public FilterAction(Command command, TasksBag internalBag) throws LogicException {
         cCommand = command;
         cBag = internalBag;
-        cSortBy = sortBy;
+        cSortBy = cCommand.getViewType();
     }
 
     @Override
@@ -49,8 +49,8 @@ public class FilterAction implements Action {
         }
 
         // both search string and filter date will be reset
-        cBag.setSearchState(null);
-        cBag.setFilterDateState(null, null);
+        //cBag.setSearchState(null);
+        //cBag.setFilterDateState(null, null);
         return new CommandFeedback(cCommand, cBag, msg);
     }
 
