@@ -14,25 +14,18 @@ public class DateParser implements CelebiDateParser {
 	
 	// For separating intra-date tokens, matching characters {'-'|'_'|' '|'/'|'\'|'.'|':'}
 	private static final String REGEX_DATETIME_DELIM = 
-	"[\\Q-_/\\.: \\E]+";
+		"[\\Q-_/\\.: \\E]+";
 	private final Pattern P_DATETIME_DELIM;
 	
 	// For separating date and time portions, matching chars {','|';'}
 	private static final String REGEX_DATETIME_SEP =
-	"\\s*[;,]+\\s*";
+		"\\s*[;,]+\\s*";
 	private final Pattern P_DATETIME_SEP;
 	
 	// placeholder strings for pattern matching tokenisation
 	public static final String DATETIME_DELIM = "*";
 	public static final String DATETIME_SEP = "|";
 	
-	// for UPDATE cmd removing of dates (task conversion event->deadline->float)
-	private static final String[] EMPTY_DATE_TOKENS = {
-		"none",
-		"remove",
-		"clear",
-		"empty"
-	};
 
 	/////////////////////////////////////////////////////////////////
 	// Worker classes for parsing different date formats
@@ -91,6 +84,7 @@ public class DateParser implements CelebiDateParser {
 	
 	public static void main (String[] args) {
 		DateParser df = new DateParser();
+		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		while (true) {
 			try {
