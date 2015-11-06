@@ -7,10 +7,12 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
@@ -22,6 +24,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.ViewType;
@@ -99,7 +102,7 @@ public class CelebiViewController {
 
     // private void temp(ObservableV)
     private void initializeCelebiTable() {
-        celebiTable.setFixedCellSize(26.2);
+        //celebiTable.setCellSize(26.2);
 
         PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
         celebiTable.setRowFactory(tableview -> {
@@ -179,6 +182,21 @@ public class CelebiViewController {
      */
     private void initializeTaskNameColumn() {
         taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+    	taskNameColumn.setCellFactory(col -> {
+    		return new TableCell<Task, String>() {
+    			@Override
+    			protected void updateItem(String item, boolean empty) {
+    				super.updateItem(item, empty);
+    				Text nameText = new Text();
+    				nameText.setText(item);
+    				setGraphic(nameText);
+    				setPrefHeight(26.2);
+    				nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
+    				nameText.textProperty().bind(itemProperty());
+    			}
+    		};
+        	//cellData.getValue().nameProperty();	
+        });
     }
 
     /**
