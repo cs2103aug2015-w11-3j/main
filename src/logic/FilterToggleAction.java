@@ -40,8 +40,8 @@ public class FilterToggleAction implements Action {
                 msg = USR_MSG_FILTER_TODAY;
                 break;
         }
-        cBag.setSearchState(null);
-        cBag.setFilterDateState(null, null);
+        //cBag.setSearchState(null);
+        //cBag.setFilterDateState(null, null);
         fb = new KeyEventFeedback(cBag, cKey, msg);
         return fb;
     }

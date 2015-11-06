@@ -51,7 +51,7 @@ public interface CommandInterface {
 	
 	public TasksBag.ViewType getViewType ();
 	
-	public CelebiViewController.SKIN getTheme ();
+	public CelebiViewController.Skin getTheme ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters

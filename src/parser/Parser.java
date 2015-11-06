@@ -641,10 +641,10 @@ public class Parser implements ParserInterface {
 		Command cmd = new Command(Command.Type.THEME, userRawInput);
 		if (args.equals("day")) {
 
-			cmd.setTheme(CelebiViewController.SKIN.DAY);
+			cmd.setTheme(CelebiViewController.Skin.DAY);
 		} else if (args.equals("night")) {
 
-			cmd.setTheme(CelebiViewController.SKIN.NIGHT);
+			cmd.setTheme(CelebiViewController.Skin.NIGHT);
 		}
 		return cmd;
 	}

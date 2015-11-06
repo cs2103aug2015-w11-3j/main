@@ -9,7 +9,7 @@ public class ThemeChangeAction implements Action {
 
     private Command cCommand;
     private TasksBag cBag;
-    private CelebiViewController.SKIN cSkin;
+    private CelebiViewController.Skin cSkin;
 
     public ThemeChangeAction(Command comd, TasksBag bag) {
         cCommand = comd;

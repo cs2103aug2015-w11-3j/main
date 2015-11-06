@@ -71,18 +71,15 @@ public class UI implements UIInterface {
                     Platform.exit();
                     break;
                 case THEME:
+                    CelebiViewController.Skin skin = fb.getCommand().getTheme();
+                    // YUKAAA TODO
                     break;
-                    //fb.get
-            }
-            
-            if (fb.getCommand().getCmdType() == Command.Type.QUIT) {
-                System.out.println("Quit entered.");
-                Platform.exit();
-            } else {
-                cb = fb.getcBag();
-                display(cb);
-                usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
-                controller.appendFeedback(usrMsg);
+                default:
+                    cb = fb.getcBag();
+                    display(cb);
+                    usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+                    controller.appendFeedback(usrMsg);
+                    break;
             }
         } catch (LogicException e) {
 
