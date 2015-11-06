@@ -192,21 +192,21 @@ public class LogicTest {
     @Test
     public void Delete() {
         // Boundary for fail. Empty entry
-        testFailException("d -1", IntegrityCommandException.class);
-        testFailException("d 0", IntegrityCommandException.class);
-        testFailException("d 1", IntegrityCommandException.class);
+        testFailException("d -1", IllegalAccessCommandException.class);
+        testFailException("d 0", IllegalAccessCommandException.class);
+        testFailException("d 1", IllegalAccessCommandException.class);
 
         testPass("add one");
         // Boundary for fail. 0 and 2 with size 1
-        testFailException("d 0", IntegrityCommandException.class);
-        testFailException("d 2", IntegrityCommandException.class);
+        testFailException("d 0", IllegalAccessCommandException.class);
+        testFailException("d 2", IllegalAccessCommandException.class);
     }
 
     @Test
     public void Mark() {
         Task t;
         // Boundary for 0 entry but trying to mark
-        testFailException("mark 0", IntegrityCommandException.class);
+        testFailException("mark 0", IllegalAccessCommandException.class);
 
         testPass("add one");
         testPass("mark 1");
@@ -215,7 +215,7 @@ public class LogicTest {
         Assert.assertEquals(true, t.isComplete());
 
         // fail test under INCOMPLETE(default) filter of tasksbag
-        testFailException("mark 1", IntegrityCommandException.class);
+        testFailException("mark 1", IllegalAccessCommandException.class);
 
         logic.getTaskBag().setView(TasksBag.ViewType.COMPLETE_TASKS);
 
@@ -230,7 +230,7 @@ public class LogicTest {
     public void Unmark() {
         // Boundary for 0 entry but trying to unmark
         Task t;
-        testFailException("unmark 0", IntegrityCommandException.class);
+        testFailException("unmark 0", IllegalAccessCommandException.class);
 
         testPass("add one");
         testFailException("unmark 1", AlreadyUnmarkedException.class);

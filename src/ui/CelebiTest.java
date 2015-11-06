@@ -9,9 +9,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class CelebiTest extends FxRobot {

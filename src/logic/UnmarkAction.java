@@ -7,7 +7,7 @@ import common.Task;
 import common.TasksBag;
 import common.Utilities;
 import logic.exceptions.AlreadyUnmarkedException;
-import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
@@ -28,7 +28,7 @@ public class UnmarkAction implements UndoableAction {
 
     private Logger log;
 
-    public UnmarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
+    public UnmarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         cCommand = command;
         cCurBag = internalBag.getFiltered();
         cIntBag = internalBag;
@@ -38,12 +38,12 @@ public class UnmarkAction implements UndoableAction {
         int UID = cCommand.getTaskUID();
 
         if (UID <= 0) {
-            throw new IntegrityCommandException(USR_MSG_INDEX_ERR);
+            throw new IllegalAccessCommandException(USR_MSG_INDEX_ERR);
         }
 
         if (UID > cCurBag.size()) {
             log.warning("Exceeded size" + UID + " " + cCurBag.size());
-            throw new IntegrityCommandException(USR_MSG_INDEX_ERR);
+            throw new IllegalAccessCommandException(USR_MSG_INDEX_ERR);
         }
 
         // UID - 1 to get array index

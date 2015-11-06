@@ -1,12 +1,8 @@
 //@@author A0131891E
 package parser;
 
-import common.Utilities;
 import java.text.ParseException;
-import java.util.Calendar;
-import static java.util.Calendar.*;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 

@@ -2,19 +2,14 @@
 package parser;
 
 import java.text.DateFormat;
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import common.Configuration;
-import common.Time;
 import common.Utilities;
 
-import java.util.regex.Matcher;
 import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
 
