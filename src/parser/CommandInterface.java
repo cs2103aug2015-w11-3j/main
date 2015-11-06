@@ -2,6 +2,7 @@
 package parser;
 
 import common.Task;
+import common.TasksBag;
 import parser.Command.Type;
 
 import java.nio.file.Path;
@@ -45,7 +46,9 @@ public interface CommandInterface {
 	 * Will be null if the user is requesting the general help (to list all cmds)
 	 * @return Command.Type (enum), or null if general help requested
 	 */
-	public Type getHelpCmdType();
+	public Type getHelpCmdType ();
+	
+	public TasksBag.ViewType getViewType ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters

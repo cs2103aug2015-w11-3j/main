@@ -30,7 +30,7 @@ public class Command implements CommandInterface {
 	private int _taskUID;
 	private Task.DataType _taskField;
 	private Type _helpCmdType;
-	private TasksBag.ViewType _showType;
+	private TasksBag.ViewType _viewType;
 	
 	// field values
 	private String _name;
@@ -56,6 +56,9 @@ public class Command implements CommandInterface {
 	}
 	void setTaskField (Task.DataType f) {
 		_taskField = f;
+	}
+	void setViewType (TasksBag.ViewType v) {
+		_viewType = v;
 	}
 	
 	void setText (String name) {
@@ -103,6 +106,10 @@ public class Command implements CommandInterface {
 	public Task.DataType getTaskField () {
 		return _taskField;
 	}
+	@Override
+	public TasksBag.ViewType getViewType () {
+		return _viewType;
+	}
 	
 	// Field values
 
@@ -121,9 +128,6 @@ public class Command implements CommandInterface {
 	@Override
 	public Path getPath() {
 		return _path;
-	}
-	public TasksBag.ViewType getViewType () {
-		return _showType;
 	}
 
 //	@Override

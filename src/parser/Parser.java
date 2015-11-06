@@ -1,18 +1,22 @@
 //@@author A0131891E
 package parser;
 
-//import com.sun.javafx.css.Combinator;
-import common.Task;
-import common.Utilities;
+import static common.Utilities.arrayContains;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
-import static java.util.regex.Pattern.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import static common.Utilities.*;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.regex.*;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+//import com.sun.javafx.css.Combinator;
+import common.Task;
+import common.TasksBag;
+import common.Utilities;
+import common.TasksBag;
 
 public class Parser implements ParserInterface {
 	
@@ -327,7 +331,7 @@ public class Parser implements ParserInterface {
 			return Command.Type.REDO;			
 		}
 		if (arrayContains(Aliases.CMD_SHOW, token)) {
-			return Command.Type.show_temp;			
+			return Command.Type.SHOW;			
 		}
 		if (arrayContains(Aliases.CMD_SEARCH, token)) {
 			return Command.Type.SEARCH;			
@@ -370,7 +374,7 @@ public class Parser implements ParserInterface {
 			case INVALID :
 				return makeInvalid();
 				//break;
-			case show_temp :
+			case SHOW :
 				return parseShow(args);
 				//break;
 			case REDO :
@@ -511,13 +515,13 @@ public class Parser implements ParserInterface {
 		assert(args != null);
 		args = args.trim().toLowerCase();
 		if (arrayContains(Aliases.VIEW_DEFAULT, args)) {
-			return makeShow(Command.Type.SHOW_DEFAULT);
+			return makeShow(TasksBag.ViewType.TODAY);
 		}
 		if (arrayContains(Aliases.VIEW_INCOMPLETE, args)) {
-			return makeShow(Command.Type.SHOW_INCOMPLETE);
+			return makeShow(TasksBag.ViewType.INCOMPLETE_TASKS);
 		}
 		if (arrayContains(Aliases.VIEW_COMPLETE, args)) {
-			return makeShow(Command.Type.SHOW_COMPLETE);
+			return makeShow(TasksBag.ViewType.COMPLETE_TASKS);
 		}
 		return makeInvalid();
 	}
@@ -714,8 +718,9 @@ public class Parser implements ParserInterface {
 		return cmd;
 	}
 	@Override
-	public Command makeShow (Command.Type showtype) {
-		Command cmd = new Command(showtype, userRawInput);
+	public Command makeShow (TasksBag.ViewType view) {
+		Command cmd = new Command(Command.Type.SHOW, userRawInput);
+		cmd.setViewType(view);
 		return cmd;		
 	}
 	@Override
