@@ -71,7 +71,7 @@ public class CelebiViewController {
     private static final String DAY_KEYWORD_COLOR = "#529228";
     private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
 
-    private static enum SKIN {
+    public static enum SKIN {
         DAY, NIGHT
     }
 
