@@ -76,8 +76,10 @@ public class CelebiViewController {
     private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
     
     private static final Color DAY_NORMAL_TASK_COLOR = Color.rgb(86, 87, 85);
+    private static final Color DAY_COMPLETED_TASK_COLOR = Color.rgb(82, 146, 40);
     private static final Color DAY_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
     private static final Color NIGHT_NORMAL_TASK_COLOR = Color.rgb(236, 240, 241);
+    private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(22, 160, 133);
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
 
     public static enum Skin {
@@ -121,15 +123,12 @@ public class CelebiViewController {
             };
             ChangeListener<Boolean> completeChangeListener = (observable, oldIsComplete, newIsComplete) -> {
                 row.pseudoClassStateChanged(complete, newIsComplete);
-                if (newIsComplete) {
-                	row.pseudoClassStateChanged(overdue, false);
-                }
             };
 
             row.itemProperty().addListener((observable, previousTask, currentTask) -> {
                 if (previousTask != null) {
                     previousTask.endProperty().removeListener(endChangeListener);
-                    previousTask.isCompletedProperty().removeListener(completeChangeListener);;
+                    previousTask.isCompletedProperty().removeListener(completeChangeListener);
                 }
 
                 if (currentTask != null) {
@@ -140,7 +139,7 @@ public class CelebiViewController {
                     	row.pseudoClassStateChanged(complete, true);
                     	row.pseudoClassStateChanged(overdue, false);
                     }
-                    if (currentTask.getEnd() != null) {
+                    else if (currentTask.getEnd() != null) {
                     	row.pseudoClassStateChanged(complete, false);
                     	row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
                     } 
@@ -222,7 +221,10 @@ public class CelebiViewController {
     				if (task != null) {
     					switch(skinMode) {
 							case DAY:
-								if (task.isOverDue()) {
+								if (task.isCompleted()) {
+									nameText.setFill(DAY_COMPLETED_TASK_COLOR);
+								}
+								else if (task.isOverDue()) {
 									nameText.setFill(DAY_OVERDUE_TASK_COLOR);
 								}
 								else {
@@ -230,7 +232,10 @@ public class CelebiViewController {
 								}
 								break;
 							case NIGHT:
-								if (task.isOverDue()) {
+								if (task.isCompleted()) {
+									nameText.setFill(NIGHT_COMPLETED_TASK_COLOR);
+								}
+								else if (task.isOverDue()) {
 									nameText.setFill(NIGHT_OVERDUE_TASK_COLOR);
 								}
 								else {

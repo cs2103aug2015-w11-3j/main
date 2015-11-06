@@ -64,7 +64,7 @@ public class Task {
 
     // setters
     public void setComplete(boolean isComplete) {
-        cIsCompleted.set(isComplete);
+    	cIsCompleted.set(isComplete);
     }
 
     public void setId(int id) {
