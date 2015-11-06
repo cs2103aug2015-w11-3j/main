@@ -150,7 +150,7 @@ public class LogicTest {
         for (int i = 0; i < rndVal; i++) {
             tempTask = temp.getTask(i);
 
-            Assert.assertEquals(false, tempTask.isComplete());
+            Assert.assertEquals(false, tempTask.isCompleted());
             Assert.assertEquals(null, tempTask.getStart());
             Assert.assertEquals(null, tempTask.getEnd());
             Assert.assertEquals("name " + i, tempTask.getName());
@@ -192,63 +192,63 @@ public class LogicTest {
     @Test
     public void Delete() {
         // Boundary for fail. Empty entry
-        testFailException("d -1", IntegrityCommandException.class);
-        testFailException("d 0", IntegrityCommandException.class);
-        testFailException("d 1", IntegrityCommandException.class);
+        testFailException("d -1", IllegalAccessCommandException.class);
+        testFailException("d 0", IllegalAccessCommandException.class);
+        testFailException("d 1", IllegalAccessCommandException.class);
 
         testPass("add one");
         // Boundary for fail. 0 and 2 with size 1
-        testFailException("d 0", IntegrityCommandException.class);
-        testFailException("d 2", IntegrityCommandException.class);
+        testFailException("d 0", IllegalAccessCommandException.class);
+        testFailException("d 2", IllegalAccessCommandException.class);
     }
 
     @Test
     public void Mark() {
         Task t;
         // Boundary for 0 entry but trying to mark
-        testFailException("mark 0", IntegrityCommandException.class);
+        testFailException("mark 0", IllegalAccessCommandException.class);
 
         testPass("add one");
         testPass("mark 1");
 
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(true, t.isComplete());
+        Assert.assertEquals(true, t.isCompleted());
 
         // fail test under INCOMPLETE(default) filter of tasksbag
-        testFailException("mark 1", IntegrityCommandException.class);
+        testFailException("mark 1", IllegalAccessCommandException.class);
 
-        logic.getTaskBag().setFilterState(TasksBag.FilterBy.COMPLETE_TASKS);
+        logic.getTaskBag().setView(TasksBag.ViewType.COMPLETED);
 
         testFailException("mark 1", AlreadyMarkedException.class);
 
         // Can access task bag due to COMPLETE filter now
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(true, t.isComplete());
+        Assert.assertEquals(true, t.isCompleted());
     }
 
     @Test
     public void Unmark() {
         // Boundary for 0 entry but trying to unmark
         Task t;
-        testFailException("unmark 0", IntegrityCommandException.class);
+        testFailException("unmark 0", IllegalAccessCommandException.class);
 
         testPass("add one");
         testFailException("unmark 1", AlreadyUnmarkedException.class);
 
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(false, t.isComplete());
+        Assert.assertEquals(false, t.isCompleted());
 
         // Unmark twice onto same object. Should throw exception
         testFailException("unmark 1", AlreadyUnmarkedException.class);
 
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(false, t.isComplete());
+        Assert.assertEquals(false, t.isCompleted());
 
         // Mark and unmarking
         testPass("mark 1");
         testPass("show done");
         testPass("unmark 1");
-        Assert.assertEquals(false, t.isComplete());
+        Assert.assertEquals(false, t.isCompleted());
     }
 
     @Test
@@ -280,7 +280,7 @@ public class LogicTest {
         testFailException("a task; from 2015_1_32, 10:00", UnknownCommandException.class);
         testFailException("a task; from 2015_00_1, 10:00", UnknownCommandException.class);
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
-        
+
         // @yijin Currently failing
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
         testFailException("a task; from 2015_2_-1, 10:00", UnknownCommandException.class);
@@ -410,8 +410,11 @@ public class LogicTest {
         try {
             logic.executeCommand(failCommand);
         } catch (LogicException e) {
-            e.getClass().equals(whatException);
-            return;
+            Assert.assertEquals(whatException, e.getClass());
+            if (e.getClass().equals(whatException)) {
+                return;
+            }
+            Assert.fail("Should have thrown " + whatException.getName() + " for: " + failCommand);
         }
         Assert.fail("Should have thrown " + whatException.getName() + " for: " + failCommand);
     }

@@ -13,8 +13,6 @@ import java.util.Scanner;
 import common.Configuration;
 import common.Time;
 public class ConvenienceDateFormat implements CelebiDateParser {
-
-	private static final String[] k = {};
 	
 	public ConvenienceDateFormat () {
 		// TODO Auto-generated constructor stub
@@ -140,6 +138,7 @@ public class ConvenienceDateFormat implements CelebiDateParser {
 	}
 	
 	public static void main (String[] args) {
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat df = new SimpleDateFormat("EEE");
 		while (true) {

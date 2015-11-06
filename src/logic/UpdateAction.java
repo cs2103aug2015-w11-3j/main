@@ -4,7 +4,7 @@ package logic;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
-import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.InvalidDateException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -25,7 +25,7 @@ public class UpdateAction implements UndoableAction {
     private StorageInterface cStore;
     private Task cWhichTask;
     private Task cOldTask;
-    
+
     public UpdateAction(Command command, TasksBag bag, StorageInterface stor) throws LogicException {
         cCommand = command;
         cCurBag = bag.getFiltered();
@@ -36,12 +36,12 @@ public class UpdateAction implements UndoableAction {
 
         // Lower bound
         if (UID <= 0) {
-            throw new IntegrityCommandException(USR_MSG_UPDATE_OOB);
+            throw new IllegalAccessCommandException(USR_MSG_UPDATE_OOB);
         }
-        
+
         // Upper bound
         if (UID > cCurBag.size()) {
-            throw new IntegrityCommandException(USR_MSG_UPDATE_OOB);
+            throw new IllegalAccessCommandException(USR_MSG_UPDATE_OOB);
         }
 
         // UID - 1 to get actual array mapping
@@ -50,7 +50,7 @@ public class UpdateAction implements UndoableAction {
         cWhichTask = cCurBag.getTask(UID);
 
         verifyUpdateData();
-        
+
         cOldTask = cWhichTask.clone();
     }
 
@@ -60,7 +60,11 @@ public class UpdateAction implements UndoableAction {
             case DATE_END:
                 // Check date if end date is valid to determine if task should
                 // be updated.
-                assert cCommand.getEnd() != null;
+            	
+            	// allow null values to change from event->startonly or deadline->float
+                if (cCommand.getEnd() == null) {
+                	break;
+                }
 
                 isValid = Utilities.verifyDate(cWhichTask.getStart(), cCommand.getEnd());
                 if (isValid == false) {
@@ -71,7 +75,11 @@ public class UpdateAction implements UndoableAction {
             case DATE_START:
                 // Check date if start date is valid to determine if task should
                 // be updated.
-                assert cCommand.getStart() != null;
+            	
+            	// allow null values to change from event->deadline or startonly-float
+                if (cCommand.getStart() == null) {
+                	break;
+                }
 
                 isValid = Utilities.verifyDate(cCommand.getStart(), cWhichTask.getEnd());
                 if (isValid == false) {

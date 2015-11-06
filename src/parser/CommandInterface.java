@@ -2,7 +2,9 @@
 package parser;
 
 import common.Task;
+import common.TasksBag;
 import parser.Command.Type;
+import ui.view.CelebiViewController;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -45,7 +47,11 @@ public interface CommandInterface {
 	 * Will be null if the user is requesting the general help (to list all cmds)
 	 * @return Command.Type (enum), or null if general help requested
 	 */
-	public Type getHelpCmdType();
+	public Type getSecondaryCmdType ();
+	
+	public TasksBag.ViewType getViewType ();
+	
+	public CelebiViewController.Skin getTheme ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters

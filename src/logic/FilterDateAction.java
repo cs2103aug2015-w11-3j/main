@@ -5,7 +5,6 @@ import java.util.Date;
 
 import common.TasksBag;
 import common.Utilities;
-import logic.exceptions.LogicException;
 import parser.Command;
 import ui.view.DateFormatter;
 
@@ -20,7 +19,7 @@ public class FilterDateAction implements Action {
     private Date cStart;
     private Date cEnd;
 
-    public FilterDateAction(Command command, TasksBag internalBag) throws LogicException {
+    public FilterDateAction(Command command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
         cStart = cCommand.getStart();
@@ -28,7 +27,7 @@ public class FilterDateAction implements Action {
     }
 
     @Override
-    public CommandFeedback execute() throws LogicException {
+    public CommandFeedback execute() {
         CommandFeedback fb;
 
         cBag.setFilterDateState(cStart, cEnd);

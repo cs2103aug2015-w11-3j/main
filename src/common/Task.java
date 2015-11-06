@@ -3,7 +3,10 @@ package common;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -22,7 +25,7 @@ public class Task {
     }
 
     public static enum Type {
-        FLOATING, NOEND, DEADLINE, EVENT
+        FLOATING, STARTONLY, DEADLINE, EVENT
     }
 
     private int cId;
@@ -35,7 +38,7 @@ public class Task {
     private ObjectProperty<Type> cType;
 
     private boolean cIsImportant;
-    private boolean cIsCompleted;
+    private BooleanProperty cIsCompleted;
 
     /*
      * Abstract data structure used is Set. Primary operations: find, remove,
@@ -52,6 +55,7 @@ public class Task {
         cStart = new SimpleObjectProperty<Date>(start);
         cEnd = new SimpleObjectProperty<Date>(end);
         cType = new SimpleObjectProperty<Type>(Type.FLOATING);
+        cIsCompleted = new SimpleBooleanProperty(false);
         updateType();
 
         // cStart = new SimpleObjectProperty<LocalDate>(localStart);
@@ -60,7 +64,7 @@ public class Task {
 
     // setters
     public void setComplete(boolean isComplete) {
-        cIsCompleted = isComplete;
+    	cIsCompleted.set(isComplete);
     }
 
     public void setId(int id) {
@@ -85,8 +89,8 @@ public class Task {
 
     // @@author A0131891E
     // getters
-    public boolean isComplete() {
-        return cIsCompleted;
+    public boolean isCompleted() {
+        return cIsCompleted.get();
     }
 
     public int getId() {
@@ -135,6 +139,10 @@ public class Task {
         updateType();
         return cType;
     }
+    
+    public BooleanProperty isCompletedProperty() {
+    	return cIsCompleted;
+    }
 
     public boolean isImportant() {
         return cIsImportant;
@@ -148,7 +156,7 @@ public class Task {
     public Task clone() {
         Task newTask = new Task(cName.get(), cStart.get(), cEnd.get());
         newTask.setImportant(cIsImportant);
-        newTask.setComplete(cIsCompleted);
+        newTask.setComplete(cIsCompleted.get());
         return newTask;
     }
 
@@ -176,15 +184,19 @@ public class Task {
     }
 
     private void updateType() {
-        if (cStart.get() == null && cEnd.get() == null) {
-            cType.set(Type.FLOATING);
-        } else if (cStart.get() != null && cEnd.get() == null) {
-            cType.set(Type.NOEND);
-        } else if (cStart.get() == null && cEnd.get() != null) {
-            cType.set(Type.DEADLINE);
-        } else {
-            cType.set(Type.EVENT);
-        }
+    	
+    	if (cStart.get() == null) {
+    		if (cEnd.get() == null) {
+                cType.set(Type.FLOATING);
+    		} else {
+    			cType.set(Type.DEADLINE);
+    		}
+    		
+    	} else if (cEnd.get() == null) {
+            cType.set(Type.STARTONLY);    		
+    	} else {
+    		cType.set(Type.EVENT);
+    	}
     }
 
     public boolean isWithinDate(Date cFilterDateStart, Date cFilterDateEnd) {
@@ -215,26 +227,34 @@ public class Task {
     }
 
     /*
-    public boolean isToday() {
-        if (hasDate() == false) {
-            return false;
-        } 
+     * public boolean isToday() { if (hasDate() == false) { return false; }
+     * 
+     * Date compare = getAnyDate(); assert compare != null;
+     * 
+     * Date today = new Date(); return today.getDate() == compare.getDate(); }
+     */
 
-        Date compare = getAnyDate();
-        assert compare != null;
-
-        Date today = new Date();
-        return today.getDate() == compare.getDate();
-    }
-    */
-    
     /**
-     * Obtains the available date that this task contains. Always gets the start
-     * date before end
+     * Obtains the available date that this task contains. Always gets the end
+     * date before start
      * 
      * @return
      */
-    private Date getAnyDate() {
+    public Date getEndThenStartDate() {
+        Date rtn = cEnd.get();
+        if (rtn == null) {
+            rtn = cStart.get();
+        }
+        return rtn;
+    }
+
+    /**
+     * Obtains the available date that this task contains. Always gets the end
+     * date before start
+     * 
+     * @return
+     */
+    public Date getStartThenEndDate() {
         Date rtn = cStart.get();
         if (rtn == null) {
             rtn = cEnd.get();
@@ -248,19 +268,34 @@ public class Task {
      * @return
      */
     public boolean isWithinDays(int noOfDays) {
-        Date date = getAnyDate();
+        Date date = getEndThenStartDate();
         if (date == null) {
             return false;
         }
 
         Date cur = new Date();
-            
+
         long days = convertDaysToLong(noOfDays);
-        long daysDifference = date.getTime() - cur.getTime(); 
+        long daysDifference = date.getTime() - cur.getTime();
         if (daysDifference > 0 && daysDifference < days) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Checks if the task is overdue
+     * 
+     * @return
+     */
+    public boolean isOverDue() {
+        if (getEnd() == null) {
+            return false;
+        } else if (getEnd().before(new Date())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private long convertDaysToLong(int days) {
@@ -272,5 +307,29 @@ public class Task {
         int seconds = 60;
         int milliseconds = 1000;
         return days * hours * minutes * seconds * milliseconds;
+    }
+
+    /**
+     * Compares if both tasks have overlapping dates.
+     * 
+     * @param toCompare
+     *            task to be compared
+     * @return true if both tasks have overlapping dates. false if either is not
+     *         event type task
+     */
+    public boolean clashesWith(Task toCompare) {
+        if (toCompare.getType() != Type.EVENT) {
+            return false;
+        }
+        if (this.getType() != Type.EVENT) {
+            return false;
+        }
+        boolean compareIsInThis = isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getStart())
+                || isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getEnd());
+
+        boolean thisIsInCompare = isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getStart())
+                || isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getEnd());
+
+        return compareIsInThis || thisIsInCompare;
     }
 }
