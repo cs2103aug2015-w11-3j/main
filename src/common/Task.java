@@ -25,7 +25,7 @@ public class Task {
     }
 
     public static enum Type {
-        FLOATING, NOEND, DEADLINE, EVENT
+        FLOATING, STARTONLY, DEADLINE, EVENT
     }
 
     private int cId;
@@ -184,15 +184,19 @@ public class Task {
     }
 
     private void updateType() {
-        if (cStart.get() == null && cEnd.get() == null) {
-            cType.set(Type.FLOATING);
-        } else if (cStart.get() != null && cEnd.get() == null) {
-            cType.set(Type.NOEND);
-        } else if (cStart.get() == null && cEnd.get() != null) {
-            cType.set(Type.DEADLINE);
-        } else {
-            cType.set(Type.EVENT);
-        }
+    	
+    	if (cStart.get() == null) {
+    		if (cEnd.get() == null) {
+                cType.set(Type.FLOATING);
+    		} else {
+    			cType.set(Type.DEADLINE);
+    		}
+    		
+    	} else if (cEnd.get() == null) {
+            cType.set(Type.STARTONLY);    		
+    	} else {
+    		cType.set(Type.EVENT);
+    	}
     }
 
     public boolean isWithinDate(Date cFilterDateStart, Date cFilterDateEnd) {
@@ -278,21 +282,20 @@ public class Task {
         }
         return false;
     }
-    
+
     /**
      * Checks if the task is overdue
+     * 
      * @return
      */
     public boolean isOverDue() {
-    	if(getEnd() == null) {
-    		return false;
-    	}
-    	else if(getEnd().before(new Date())) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+        if (getEnd() == null) {
+            return false;
+        } else if (getEnd().before(new Date())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private long convertDaysToLong(int days) {
@@ -308,22 +311,25 @@ public class Task {
 
     /**
      * Compares if both tasks have overlapping dates.
-     * @param toCompare task to be compared
-     * @return true if both tasks have overlapping dates. false if either is not event type task
+     * 
+     * @param toCompare
+     *            task to be compared
+     * @return true if both tasks have overlapping dates. false if either is not
+     *         event type task
      */
-    public boolean clashesWith(Task toCompare){
-        if(toCompare.getType() != Type.EVENT){
+    public boolean clashesWith(Task toCompare) {
+        if (toCompare.getType() != Type.EVENT) {
             return false;
         }
-        if(this.getType() != Type.EVENT){
+        if (this.getType() != Type.EVENT) {
             return false;
         }
-        boolean compareIsInThis = isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getStart()) || 
-                isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getEnd());
-        
-        boolean thisIsInCompare = isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getStart()) || 
-                isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getEnd());
-        
+        boolean compareIsInThis = isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getStart())
+                || isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getEnd());
+
+        boolean thisIsInCompare = isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getStart())
+                || isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getEnd());
+
         return compareIsInThis || thisIsInCompare;
     }
 }

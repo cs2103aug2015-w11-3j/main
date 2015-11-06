@@ -31,7 +31,6 @@ public class DateFormatter {
 			return NULL_DATE;
 		}
 		date.setTime(d);
-		String temp;
 		if (now.get(YEAR) != date.get(YEAR)) {
 			return YEAR_LVL.format(d);
 		}
@@ -50,6 +49,13 @@ public class DateFormatter {
 		return TODAY_LEVEL.format(d);
 	}
 	
+	// Overloaded, generates suffix string for number/last digit
+	@SuppressWarnings("unused")
+	private static String numeralSuffix (String number) {
+		assert(number != null);
+		final char lastDigit = number.charAt(number.length() - 1);
+		return numeralSuffix(lastDigit);
+	}
 	private static String numeralSuffix (char lastDigit) {
 		switch (lastDigit) {
 			case '1' :
@@ -64,6 +70,7 @@ public class DateFormatter {
 	}
 	
 	public static void main (String[] args) {
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		DateFormatter df = new DateFormatter();
 		DateParser dp = new DateParser();

@@ -1,7 +1,6 @@
 //@@author A0131891E
 package parser;
 
-import static common.Utilities.arrayContains;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import java.nio.file.Path;
@@ -11,9 +10,7 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Collections;
 import java.util.Collection;
-import java.util.Set;
 
 //import com.sun.javafx.css.Combinator;
 import common.Task;
@@ -45,7 +42,7 @@ public class Parser implements ParserInterface {
 	
 	private static final String REGEX_VALID_NAME = "[^;]+";
 	private static final String REGEX_UNVALIDATED_DATE = ".+"; // still needs to get parsed by date formatter
-	private static final String REGEX_UID = "-?\\d+";
+	private static final String REGEX_UID = "-?\\d+"; // supports negative numbers for logic to throw exception
 	
 	private static final String REGEX_GRP_NAME = regexNamedGrp(REGEX_VALID_NAME, GRPNAME_NAME);
 	private static final String REGEX_GRP_START = regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_START);
@@ -60,55 +57,52 @@ public class Parser implements ParserInterface {
 	
 	// <name>
 	private final Pattern P_ADD_FLT;
-	private static final String REGEX_ADD_FLT = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_NAME)
-		.append('$')
-		.toString();
+	private static final String REGEX_ADD_FLT = concatArgs(
+		'^',
+		REGEX_GRP_NAME,
+		'$'
+	);
+		
 	
 	// <name>; <start field identifier> <start>
 	private final Pattern P_ADD_START;
-	private static final String REGEX_ADD_START = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_NAME)
-		.append(REGEX_NAME_DATE_DELIM)
-		.append(REGEX_MATCHING_START_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_START)
-		.append('$')
-		.toString();
+	private static final String REGEX_ADD_START = concatArgs(
+		'^',
+		REGEX_GRP_NAME,
+		REGEX_NAME_DATE_DELIM,
+		REGEX_MATCHING_START_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_START,
+		'$'
+	);
 
 	// <name>; <end field identifier> <end>
 	private final Pattern P_ADD_END;
-	private static final String REGEX_ADD_END = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_NAME)
-		.append(REGEX_NAME_DATE_DELIM)
-		.append(REGEX_MATCHING_END_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_END)
-		.append('$')
-		.toString();
+	private static final String REGEX_ADD_END = concatArgs(
+		'^',
+		REGEX_GRP_NAME,
+		REGEX_NAME_DATE_DELIM,
+		REGEX_MATCHING_END_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_END,
+		'$'
+	);
 
 	// <name>; <start field identifier> <start> <end field identifier> <end>
 	private final Pattern P_ADD_EVT;
-	private static final String REGEX_ADD_EVT = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_NAME)
-		.append(REGEX_NAME_DATE_DELIM)
-		.append(REGEX_MATCHING_START_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_START)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_MATCHING_END_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_END)
-		.append('$')
-		.toString();
+	private static final String REGEX_ADD_EVT = concatArgs(
+		'^',
+		REGEX_GRP_NAME,
+		REGEX_NAME_DATE_DELIM,
+		REGEX_MATCHING_START_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_START,
+		REGEX_WHITESPACE,
+		REGEX_MATCHING_END_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_END,
+		'$'
+	);
 
 	////////////////////////////////////////////////////////////////
 	// UPD command parsing parameters
@@ -120,49 +114,45 @@ public class Parser implements ParserInterface {
 	
 	// <field> <uid> <newval>
 	private final Pattern P_UPD_NAME;
-	private static final String REGEX_UPD_NAME = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_UID)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_MATCHING_NAME_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_NEW_NAME)
-		.append('$')
-		.toString();
+	private static final String REGEX_UPD_NAME = concatArgs(
+		'^',
+		REGEX_GRP_UID,
+		REGEX_WHITESPACE,
+		REGEX_MATCHING_NAME_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_NEW_NAME,
+		'$'
+	);
 	private final Pattern P_UPD_START;
-	private static final String REGEX_UPD_START = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_UID)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_MATCHING_START_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_NEW_DATE)
-		.append('$')
-		.toString();
+	private static final String REGEX_UPD_START = concatArgs(
+		'^',
+		REGEX_GRP_UID,
+		REGEX_WHITESPACE,
+		REGEX_MATCHING_START_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_NEW_DATE,
+		'$'
+	);
 	private final Pattern P_UPD_END;
-	private static final String REGEX_UPD_END = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_UID)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_MATCHING_END_FIELD_ALIAS)
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_NEW_DATE)
-		.append('$')
-		.toString();
+	private static final String REGEX_UPD_END = concatArgs(
+		'^',
+		REGEX_GRP_UID,
+		REGEX_WHITESPACE,
+		REGEX_MATCHING_END_FIELD_ALIAS,
+		REGEX_WHITESPACE,
+		REGEX_GRP_NEW_DATE,
+		'$'
+	);
 
 	////////////////////////////////////////////////////////////////
-	// UID arg only command (DEL, MARK, UNMARK) parsing parameters
+	// UID arg only command (DEL, MARK, UNMARK, parsing parameters
 	////////////////////////////////////////////////////////////////
 	
-	private static final String REGEX_UID_ONLY = 
-		(new StringBuilder())
-		.append('^')
-		.append(REGEX_GRP_UID)
-		.append('$')
-		.toString();
+	private static final String REGEX_UID_ONLY = concatArgs(
+		'^',
+		REGEX_GRP_UID,
+		'$'
+	);
 
 	private final Pattern P_DEL;
 	private static final String REGEX_DEL = REGEX_UID_ONLY;
@@ -182,45 +172,39 @@ public class Parser implements ParserInterface {
 	private static final String REGEX_GRP_FIL_HI_BOUND = 
 			regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_FIL_HI_BOUND);
 	
-	// before|bef <key(date)>
+	// before|bef <key(date,>
 	private final Pattern P_FILTER_BEF;
-	private static final String REGEX_FILTER_BEF = 
-		(new StringBuilder())
-		.append('^')
-		.append(regexContaining(Aliases.FILTER_ARG_BEF))
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_FIL_HI_BOUND)
-		.append('$')
-		.toString();
-			//"^(?:before|bef)\\s+(?<key>.+)$";
+	private static final String REGEX_FILTER_BEF = concatArgs(
+		'^',
+		regexContaining(Aliases.FILTER_ARG_BEF),
+		REGEX_WHITESPACE,
+		REGEX_GRP_FIL_HI_BOUND,
+		'$'
+	);
 
-	// after|aft <key(date)>
+	// after|aft <key(date,>
 	private final Pattern P_FILTER_AFT;
-	private static final String REGEX_FILTER_AFT = 
-		(new StringBuilder())
-		.append('^')
-		.append(regexContaining(Aliases.FILTER_ARG_AFT))
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_FIL_LO_BOUND)
-		.append('$')
-		.toString();
-			//"^(?:after|aft)\\s+(?<key>.+)$";
+	private static final String REGEX_FILTER_AFT = concatArgs(
+		'^',
+		regexContaining(Aliases.FILTER_ARG_AFT),
+		REGEX_WHITESPACE,
+		REGEX_GRP_FIL_LO_BOUND,
+		'$'
+	);
 	
-	// between|b/w|btw|from|start <key1(date)> and|to|till|until|end <key2(date)>
+	// between|b/w|btw|from|start <key1(date,> and|to|till|until|end <key2(date,>
 	private final Pattern P_FILTER_BTW;
-	private static final String REGEX_FILTER_BTW = 
-		(new StringBuilder())
-		.append('^')
-		.append(regexContaining(Aliases.FILTER_ARG_BTW_START))
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_FIL_LO_BOUND)
-		.append(REGEX_WHITESPACE)
-		.append(regexContaining(Aliases.FILTER_ARG_BTW_END))
-		.append(REGEX_WHITESPACE)
-		.append(REGEX_GRP_FIL_HI_BOUND)
-		.append('$')
-		.toString();
-			//"^(?:between|b/w|btw|from|start)\\s+(?<key1>.+)\\s+(?:and|to|till|until|end)\\s+(?<key2>.+)$";
+	private static final String REGEX_FILTER_BTW = concatArgs(
+		'^',
+		regexContaining(Aliases.FILTER_ARG_BTW_START),
+		REGEX_WHITESPACE,
+		REGEX_GRP_FIL_LO_BOUND,
+		REGEX_WHITESPACE,
+		regexContaining(Aliases.FILTER_ARG_BTW_END),
+		REGEX_WHITESPACE,
+		REGEX_GRP_FIL_HI_BOUND,
+		'$'
+	);
 	
 	
 	/////////////////////////////////////////////////////////////////
@@ -290,6 +274,13 @@ public class Parser implements ParserInterface {
 		sb.append(')');
 		return sb.toString();
 }
+	private static final String concatArgs (Object... args) {
+		final StringBuilder sb = new StringBuilder();
+		for (Object item : args) {
+			sb.append(item);
+		}
+		return sb.toString();
+	}
 	
 	@Override
 	public Command parseCommand (String rawInput) {
@@ -308,7 +299,7 @@ public class Parser implements ParserInterface {
 	
 	private Command.Type getCmdType (String token) {
 		assert(token != null);
-		token = token.toLowerCase();
+		token = cleanText(token);
 		// CUD
 		if (Aliases.CMD_ADD.contains(token)) {
 			return Command.Type.ADD;
@@ -488,26 +479,33 @@ public class Parser implements ParserInterface {
 		
 		int uid;
 		Matcher m;
+		final String newName;
+		final Date newStart;
+		final Date newEnd;
+		String newValue;
 		
 		m = P_UPD_NAME.matcher(args);
 		if (m.matches()) {
-			final String newName = m.group(GRPNAME_NEWVAL).trim();
 			uid = Integer.parseInt(m.group(GRPNAME_UID));
+			newValue = m.group(GRPNAME_NEWVAL);
+			newName = newValue.trim();
 			return makeUpdateName(uid, newName);
 		}
 
 		try {
 			m = P_UPD_START.matcher(args);
 			if (m.matches()) {
-				final Date newStart = parseDate(m.group(GRPNAME_NEWVAL), true);
 				uid = Integer.parseInt(m.group(GRPNAME_UID));
+				newValue = m.group(GRPNAME_NEWVAL);
+				newStart = parseUpdDate(newValue);
 				return makeUpdateStart(uid, newStart);
 			}
 	
 			m = P_UPD_END.matcher(args);
 			if (m.matches()) {
-				final Date newEnd = parseDate(m.group(GRPNAME_NEWVAL), false);
 				uid = Integer.parseInt(m.group(GRPNAME_UID));
+				newValue = m.group(GRPNAME_NEWVAL);
+				newEnd = parseUpdDate(newValue);
 				return makeUpdateEnd(uid, newEnd);
 			}
 		} catch (ParseException pe) {
@@ -521,7 +519,7 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseShow (String args) {
 		assert(args != null);
-		args = args.trim().toLowerCase();
+		args = cleanText(args);
 		if (Aliases.VIEW_DEFAULT.contains(args)) {
 			return makeShow(TasksBag.ViewType.TODAY);
 		}
@@ -621,7 +619,7 @@ public class Parser implements ParserInterface {
 		args = args.trim();
 		if (args.length() != 0) {
 			try {
-				Path p = parsePath(parseText(args));
+				Path p = parsePath(args.trim());
 				return makeMove(p);
 			} catch (ParseException pe) {
 				;
@@ -644,8 +642,7 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseTheme (String args) {
 		assert(args != null);
-		args = args.trim();
-		args = args.toLowerCase();
+		args = cleanText(args);
 		if (Aliases.THEME_DAY.contains(args)) {
 			return makeTheme(Skin.DAY);
 		}
@@ -655,9 +652,10 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	
-	String parseText (String token) {
+	// cleans a string by trimming trailing whitespace and shifting alpha to lowercase
+	String cleanText (String token) {
 		assert(token != null);
-		return token.trim();
+		return token.trim().toLowerCase();
 	}
 	Date parseDate (String token, boolean isStart) throws ParseException {
 		assert(token != null);
@@ -666,6 +664,15 @@ public class Parser implements ParserInterface {
 	Path parsePath (String token) throws ParseException {
 		assert(token != null);
 		return Paths.get(token.trim());
+	}
+	// Used only in parseUpdate: allows special datestrings
+	// to signify removal of a date field from the task.
+	// Allows conversion from event->deadline/startonly->float
+	private Date parseUpdDate (String dateStr) throws ParseException {
+		if (Aliases.DATE_CLEAR.contains(cleanText(dateStr))) {
+			return null;
+		}
+		return parseDate(dateStr, true);
 	}
 	
 	@Override
@@ -793,6 +800,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		Parser p = new Parser();
 		while (true) {

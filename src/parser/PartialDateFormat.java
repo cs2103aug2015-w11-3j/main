@@ -149,6 +149,7 @@ public class PartialDateFormat implements CelebiDateParser {
 		return null;
 	}
 	public static void main (String[] args) {
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		PartialDateFormat pdf = new PartialDateFormat();
 		while (true) {

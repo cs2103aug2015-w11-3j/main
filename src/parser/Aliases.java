@@ -10,6 +10,8 @@ import java.util.Arrays;
  * Token parsing logic will reference the data here, so
  * you can easily add/remove/change/view aliases here and
  * have any changes propogate to the relevant classes. 
+ * 
+ * NOTE: ALIAS STRINGS CANNOT CONTAIN WHITESPACE
  */
 public final class Aliases {
 	// Disable instantiation
@@ -195,6 +197,18 @@ public final class Aliases {
         "black"
 	);
 	
+
+    /////////////////////////////////////////////////////////
+    // Aliases for special update date values to remove date
+    /////////////////////////////////////////////////////////
+	// for UPDATE cmd removing of dates (task conversion event->deadline->float)
+	static final Set<String> DATE_CLEAR = createSet(
+		"nil",
+		"none",
+		"remove",
+		"clear",
+		"empty"
+	);
 	/**
 	 * @return a NEW Set containing all valid command tokens
 	 * 
