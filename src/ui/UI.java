@@ -20,7 +20,7 @@ public class UI implements UIInterface {
     private static final String UI_TXT_FEEDBACK = "Celebi: %1$s";
     private static final String UI_TXT_WELCOME = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
     private static final String UI_TXT_TABEVENT = "You pressed tab!\n";
-    
+
     LogicInterface logic;
     private CelebiViewController controller;
     private TasksBag cb = new TasksBag();
@@ -63,33 +63,16 @@ public class UI implements UIInterface {
         String usrMsg = "";
         try {
             fb = logic.executeCommand(userInput);
-            
-            switch(fb.getCommand().getCmdType()){
+
+            switch (fb.getCommand().getCmdType()) {
                 case QUIT:
-                    System.out.println("Quit entered.");
-                    Platform.exit();
+                    doQuit();
                     break;
                 case THEME:
-                    CelebiViewController.Skin skin = fb.getCommand().getTheme();
-                    switch(skin){
-                        case DAY:
-                            controller.switchDaySkin();
-                            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
-                            controller.appendFeedback(usrMsg);
-                            break;
-                            
-                        case NIGHT:
-                            controller.switchNightSkin();
-                            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
-                            controller.appendFeedback(usrMsg);
-                            break;
-                    }
+                    doTheme(fb);
                     break;
                 default:
-                    cb = fb.getcBag();
-                    display(cb);
-                    usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
-                    controller.appendFeedback(usrMsg);
+                    doDefault(fb);
                     break;
             }
         } catch (LogicException e) {
@@ -98,6 +81,36 @@ public class UI implements UIInterface {
         } catch (Exception e) {
             log.severe(e.toString());
         }
+    }
+
+    private void doDefault(CommandFeedback fb) {
+        String usrMsg;
+        cb = fb.getcBag();
+        display(cb);
+        usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+        controller.appendFeedback(usrMsg);
+    }
+
+    private void doQuit() {
+        System.out.println("Quit entered.");
+        Platform.exit();
+    }
+
+    private void doTheme(CommandFeedback fb) {
+        String usrMsg;
+        CelebiViewController.Skin skin = fb.getCommand().getTheme();
+        switch (skin) {
+            case DAY:
+                controller.switchDaySkin();
+                break;
+
+            case NIGHT:
+                controller.switchNightSkin();
+                break;
+        }
+
+        usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+        controller.appendFeedback(usrMsg);
     }
 
     /**
