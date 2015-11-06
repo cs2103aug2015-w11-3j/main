@@ -1,6 +1,7 @@
 package ui.view;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
@@ -24,6 +25,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import common.Task;
 import common.TasksBag;
@@ -64,7 +66,7 @@ public class CelebiViewController {
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    private static final String[][] VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
+    private static final Set<String> VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
     private static final String NIGHT_CELEBI_COLOR = "#16a085";
@@ -188,7 +190,15 @@ public class CelebiViewController {
     			protected void updateItem(String item, boolean empty) {
     				super.updateItem(item, empty);
     				Text nameText = new Text();
-    				nameText.setText(item);
+    				Task task = (Task)getTableRow().getItem();
+    				if (task != null) {
+    					if (task.isOverDue()) {
+    						nameText.setFill(Color.rgb(158, 158, 156));
+    					}
+    					else {
+    						nameText.setFill(Color.rgb(86, 87, 85));
+    					}
+    				}
     				setGraphic(nameText);
     				setPrefHeight(26.2);
     				nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
@@ -355,14 +365,7 @@ public class CelebiViewController {
     private boolean isCmdToken(String firstWord) {
         assert (firstWord != null);
         firstWord = firstWord.toLowerCase();
-        for (String[] tokens : VALID_CMD_TOKENS) {
-            for (String token : tokens) {
-                if (firstWord.equals(token)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return VALID_CMD_TOKENS.contains(firstWord);
     }
 
     // @@author A0133895U

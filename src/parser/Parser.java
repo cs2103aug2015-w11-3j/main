@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Collections;
+import java.util.Set;
 
 //import com.sun.javafx.css.Combinator;
 import common.Task;
@@ -24,6 +26,7 @@ public class Parser implements ParserInterface {
 	// Patterns for user command arguments matching (trim results)
 	/////////////////////////////////////////////////////////////////
 
+	
 	// for whitespace work
 	private final Pattern P_WHITESPACE;
 	private static final String REGEX_WHITESPACE = 
@@ -265,14 +268,14 @@ public class Parser implements ParserInterface {
 		System.out.println("Parser Init complete");
 	}
 
-	private static final String regexContaining (String[] tokens) {
+	private static final String regexContaining (Set<String> tokens) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(?:");
 		for (String tok : tokens) {
 			sb.append("\\Q").append(tok).append("\\E"); // necesary escaping
 			sb.append('|');
 		}
-		if (tokens.length > 0) { 
+		if (tokens.size() > 0) { 
 			sb.deleteCharAt(sb.length() - 1);
 		}
 		sb.append(')');
@@ -306,46 +309,46 @@ public class Parser implements ParserInterface {
 		assert(token != null);
 		token = token.toLowerCase();
 		
-		if (arrayContains(Aliases.CMD_ADD, token)) {
+		if (Aliases.CMD_ADD.contains(token)) {
 			return Command.Type.ADD;
 		}
-		if (arrayContains(Aliases.CMD_DEL, token)) {
+		if (Aliases.CMD_DEL.contains(token)) {
 			return Command.Type.DELETE;
 		}
-		if (arrayContains(Aliases.CMD_UPD, token)) {
+		if (Aliases.CMD_UPD.contains(token)) {
 			return Command.Type.UPDATE;
 		}
-		if (arrayContains(Aliases.CMD_QUIT, token)) {
+		if (Aliases.CMD_QUIT.contains(token)) {
 			return Command.Type.QUIT;	
 		}
-		if (arrayContains(Aliases.CMD_MARK, token)) {
+		if (Aliases.CMD_MARK.contains(token)) {
 			return Command.Type.MARK;
 		}
-		if (arrayContains(Aliases.CMD_UNMARK, token)) {
+		if (Aliases.CMD_UNMARK.contains(token)) {
 			return Command.Type.UNMARK;
 		}
-		if (arrayContains(Aliases.CMD_UNDO, token)) {
+		if (Aliases.CMD_UNDO.contains(token)) {
 			return Command.Type.UNDO;
 		}
-		if (arrayContains(Aliases.CMD_REDO, token)) {
+		if (Aliases.CMD_REDO.contains(token)) {
 			return Command.Type.REDO;			
 		}
-		if (arrayContains(Aliases.CMD_SHOW, token)) {
+		if (Aliases.CMD_SHOW.contains(token)) {
 			return Command.Type.SHOW;			
 		}
-		if (arrayContains(Aliases.CMD_SEARCH, token)) {
+		if (Aliases.CMD_SEARCH.contains(token)) {
 			return Command.Type.SEARCH;			
 		}
-		if (arrayContains(Aliases.CMD_FILTER, token)) {
+		if (Aliases.CMD_FILTER.contains(token)) {
 			return Command.Type.FILTER_DATE;
 		}
-		if (arrayContains(Aliases.CMD_MOVE, token)) {
+		if (Aliases.CMD_MOVE.contains(token)) {
 			return Command.Type.MOVE;
 		}
-		if (arrayContains(Aliases.CMD_HELP, token)) {
+		if (Aliases.CMD_HELP.contains(token)) {
 			return Command.Type.HELP;
 		}
-		if (arrayContains(Aliases.CMD_THEME, token)) {
+		if (Aliases.CMD_THEME.contains(token)) {
 			return Command.Type.THEME;
 		}
 		switch (token) {
@@ -521,15 +524,16 @@ public class Parser implements ParserInterface {
 	private Command parseShow (String args) {
 		assert(args != null);
 		args = args.trim().toLowerCase();
-		if (arrayContains(Aliases.VIEW_DEFAULT, args)) {
+		if (Aliases.VIEW_DEFAULT.contains(args)) {
 			return makeShow(TasksBag.ViewType.TODAY);
 		}
-		if (arrayContains(Aliases.VIEW_INCOMPLETE, args)) {
+		if (Aliases.VIEW_INCOMPLETE.contains(args)) {
 			return makeShow(TasksBag.ViewType.INCOMPLETE_TASKS);
 		}
-		if (arrayContains(Aliases.VIEW_COMPLETE, args)) {
+		if (Aliases.VIEW_COMPLETE.contains(args)) {
 			return makeShow(TasksBag.ViewType.COMPLETE_TASKS);
 		}
+
 		return makeInvalid();
 	}
 	private Command parseRedo (String args) {
@@ -637,11 +641,12 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	private Command parseTheme (String args) {
+		assert(args != null);
 		args = args.toLowerCase();
-		if (arrayContains(Aliases.THEME_DAY, args)) {
+		if (Aliases.THEME_DAY.contains(args)) {
 			return makeTheme(Skin.DAY);
 		}
-		if (arrayContains(Aliases.THEME_NIGHT, args)) {
+		if (Aliases.THEME_NIGHT.contains(args)) {
 			return makeTheme(Skin.NIGHT);
 		}
 		return makeInvalid();
@@ -650,13 +655,13 @@ public class Parser implements ParserInterface {
 /*	Task.DataType parseFieldKey (String token) throws ParseException {
 		assert(token != null);
 		token = token.toLowerCase();
-		if (arrayContains(Aliases.FIELD_NAME, token)) {
+		if (Aliases.FIELD_NAME.contains(token)) {
 			return Task.DataType.NAME;
 		}
-		if (arrayContains(Aliases.FIELD_START_DATE, token)) {
+		if (Aliases.FIELD_START_DATE.contains(token)) {
 			return Task.DataType.DATE_START;
 		}
-		if (arrayContains(Aliases.FIELD_END_DATE, token)) {
+		if (Aliases.FIELD_END_DATE.contains(token)) {
 			return Task.DataType.DATE_END;
 		}
 		throw new ParseException("", -1);
