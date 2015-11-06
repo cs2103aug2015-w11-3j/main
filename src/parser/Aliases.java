@@ -86,7 +86,10 @@ public final class Aliases {
 	};
 	static final String[] CMD_ALIAS = {
 		"map",
-		"alias"
+		"alias",
+		"shortcut",
+		"point",
+		"->"
 	};
 	static final String[] CMD_HELP = {
 		"help",
@@ -212,7 +215,8 @@ public final class Aliases {
 		"none",
 		"remove",
 		"clear",
-		"empty"
+		"empty",
+		"reset"
 	};
 	
 	private static Aliases instance = null;

@@ -15,7 +15,7 @@ public class AliasAction implements Action {
 
 	private static final String RESERVED_ALIAS = "alias";
 	private static final String USR_MSG_ALIAS_CLEAR = "All custom alias mappings cleared";
-	private static final String USR_MSG_ALIAS_RESERVED = "You cannot set an alias for the keyword \"alias\"";
+	private static final String USR_MSG_ALIAS_RESERVED = "You cannot use the reserved keyword \"alias\" as an alias";
 	private static final String USR_MSG_ALIAS_SUCCESS = "Alias mapping created: %s --> %s";
 	
     private Command cCommand;
@@ -48,7 +48,7 @@ public class AliasAction implements Action {
 		assert newAlias != null && !"".equals(newAlias) && aliasTarget != Command.Type.INVALID;
 		
 		if (RESERVED_ALIAS.equals(newAlias)) {
-			throw new IllegalAliasException(USR_MSG_ALIAS_RESERVED);
+			return new CommandFeedback(cCommand, cBag, USR_MSG_ALIAS_RESERVED);
 		}
 		
 		try {
