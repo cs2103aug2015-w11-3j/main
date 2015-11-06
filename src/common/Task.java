@@ -215,19 +215,13 @@ public class Task {
     }
 
     /*
-    public boolean isToday() {
-        if (hasDate() == false) {
-            return false;
-        } 
+     * public boolean isToday() { if (hasDate() == false) { return false; }
+     * 
+     * Date compare = getAnyDate(); assert compare != null;
+     * 
+     * Date today = new Date(); return today.getDate() == compare.getDate(); }
+     */
 
-        Date compare = getAnyDate();
-        assert compare != null;
-
-        Date today = new Date();
-        return today.getDate() == compare.getDate();
-    }
-    */
-    
     /**
      * Obtains the available date that this task contains. Always gets the end
      * date before start
@@ -241,7 +235,7 @@ public class Task {
         }
         return rtn;
     }
-    
+
     /**
      * Obtains the available date that this task contains. Always gets the end
      * date before start
@@ -262,15 +256,15 @@ public class Task {
      * @return
      */
     public boolean isWithinDays(int noOfDays) {
-        Date date = getStartThenEndDate();
+        Date date = getEndThenStartDate();
         if (date == null) {
             return false;
         }
 
         Date cur = new Date();
-            
+
         long days = convertDaysToLong(noOfDays);
-        long daysDifference = date.getTime() - cur.getTime(); 
+        long daysDifference = date.getTime() - cur.getTime();
         if (daysDifference > 0 && daysDifference < days) {
             return true;
         }
@@ -286,5 +280,26 @@ public class Task {
         int seconds = 60;
         int milliseconds = 1000;
         return days * hours * minutes * seconds * milliseconds;
+    }
+
+    /**
+     * Compares if both tasks have overlapping dates.
+     * @param toCompare task to be compared
+     * @return true if both tasks have overlapping dates. false if either is not event type task
+     */
+    public boolean clashesWith(Task toCompare){
+        if(toCompare.getType() != Type.EVENT){
+            return false;
+        }
+        if(this.getType() != Type.EVENT){
+            return false;
+        }
+        boolean compareIsInThis = isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getStart()) || 
+                isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getEnd());
+        
+        boolean thisIsInCompare = isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getStart()) || 
+                isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getEnd());
+        
+        return compareIsInThis || thisIsInCompare;
     }
 }
