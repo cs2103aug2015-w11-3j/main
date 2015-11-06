@@ -86,104 +86,119 @@ public final class Aliases {
 		"-h"
 	};
 	static final String[] CMD_THEME = {
+		"skin",
 		"theme",
 		"color",
 		"colour"
 	};
 	static final String[][] TOKENS_CMD = {
-			CMD_ADD,
-			CMD_DEL,
-			CMD_UPD,
-			CMD_QUIT,
-			CMD_MARK,
-			CMD_UNMARK,
-			CMD_UNDO,
-			CMD_REDO,
-			CMD_SHOW,
-			CMD_SEARCH,
-			CMD_FILTER,
-			CMD_MOVE,
-			CMD_HELP,
-			CMD_THEME
+		CMD_ADD,
+		CMD_DEL,
+		CMD_UPD,
+		CMD_QUIT,
+		CMD_MARK,
+		CMD_UNMARK,
+		CMD_UNDO,
+		CMD_REDO,
+		CMD_SHOW,
+		CMD_SEARCH,
+		CMD_FILTER,
+		CMD_MOVE,
+		CMD_HELP,
+		CMD_THEME
 	};
 	
 	/////////////////////////////////////////////////////
 	// Aliases for Task field tokens
 	/////////////////////////////////////////////////////
 	static final String[] FIELD_NAME = {
-			"name",
-			"title",
-			"text",
-			"descr",
-			"description"
+		"name",
+		"title",
+		"text",
+		"descr",
+		"description"
 	};
 	static final String[] FIELD_START_DATE = {
-			"at",
-			"start",
-			"from",
-			"begin",
-			"on"
+		"at",
+		"start",
+		"from",
+		"begin",
+		"on"
 	};
 	static final String[] FIELD_END_DATE = {
-			"by",
-			"finish",
-			"to",
-			"end",
-			"due",
-			"till",
-			"until"
+		"by",
+		"finish",
+		"to",
+		"end",
+		"due",
+		"till",
+		"until"
 	};
 
 	/////////////////////////////////////////////////////
 	// Aliases for show command arguments
 	/////////////////////////////////////////////////////
 	static final String[] VIEW_DEFAULT = {
-			"",
-			"urgent",
-			"default",
-			"upcoming",
+		"",
+		"urgent",
+		"default",
+		"upcoming",
 	};
 	static final String[] VIEW_INCOMPLETE = {
-			"undone",
-			"open",
-			"incomplete",
-			"unfinished",
-			"pending"
+		"undone",
+		"open",
+		"incomplete",
+		"unfinished",
+		"pending"
 	};
 	static final String[] VIEW_COMPLETE = {
-			"done",
-			"closed",
-			"complete",
-			"completed",
-			"finished"
+		"done",
+		"closed",
+		"complete",
+		"completed",
+		"finished"
 	};
 	
 	/////////////////////////////////////////////////////
-	// Aliases for show command arguments
+	// Aliases for filter command delimiters
 	/////////////////////////////////////////////////////
 	static final String[] FILTER_ARG_BEF = {
-			"bef",
-			"before"
+		"bef",
+		"before"
 	};
 	static final String[] FILTER_ARG_AFT = {
-			"aft",
-			"after"
+		"aft",
+		"after"
 	};
 	static final String[] FILTER_ARG_BTW_START = {
-			"from",
-			"start",
-			"b/w",
-			"btw",
-			"between",
-			"range",
-			"within"
+		"from",
+		"start",
+		"b/w",
+		"btw",
+		"between",
+		"range",
+		"within"
 	};
 	static final String[] FILTER_ARG_BTW_END = {
-			"to",
-			"end",
-			"and",
-			"till",
-			"until"
+		"to",
+		"end",
+		"and",
+		"till",
+		"until"
+	};
+
+        /////////////////////////////////////////////////////
+        // Aliases for themes
+        /////////////////////////////////////////////////////
+	static final String[] THEME_DAY = {
+        "day",
+        "light",
+        "bright"
+	};
+	static final String[] THEME_NIGHT = {
+        "night",
+        "shadow",
+        "dark"
 	};
 	
 	/*

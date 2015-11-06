@@ -4,6 +4,7 @@ package parser;
 import java.nio.file.Path;
 import java.util.Date;
 
+import static ui.view.CelebiViewController.Skin;
 import common.TasksBag;
 
 public interface ParserInterface {
@@ -29,6 +30,7 @@ public interface ParserInterface {
 	public Command makeFilterDate (Date rangeStart, Date rangeEnd);
 	public Command makeMove (Path newPath);
 	public Command makeHelp (Command.Type helpTarget);
+	public Command makeTheme (Skin theme);
 	
 	// to debug command
 	public static void printCmd (Command c) {

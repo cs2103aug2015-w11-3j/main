@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
-import ui.view.CelebiViewController;
+import static ui.view.CelebiViewController.Skin;
 
 public class Parser implements ParserInterface {
 	
@@ -637,15 +637,14 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	private Command parseTheme (String args) {
-		Command cmd = new Command(Command.Type.THEME, userRawInput);
-		if (args.equals("day")) {
-
-			cmd.setTheme(CelebiViewController.Skin.DAY);
-		} else if (args.equals("night")) {
-
-			cmd.setTheme(CelebiViewController.Skin.NIGHT);
+		args = args.toLowerCase();
+		if (arrayContains(Aliases.THEME_DAY, args)) {
+			return makeTheme(Skin.DAY);
 		}
-		return cmd;
+		if (arrayContains(Aliases.THEME_NIGHT, args)) {
+			return makeTheme(Skin.NIGHT);
+		}
+		return makeInvalid();
 	}
 	
 /*	Task.DataType parseFieldKey (String token) throws ParseException {
@@ -788,6 +787,12 @@ public class Parser implements ParserInterface {
 		Command cmd = new Command(Command.Type.HELP, userRawInput);
 		cmd.setHelpCmdType(helpTarget);
 		return cmd;
+	}
+	@Override
+	public Command makeTheme (Skin theme) {
+            Command cmd = new Command(Command.Type.THEME, userRawInput);
+	    cmd.setTheme(theme);
+	    return cmd;
 	}
 	
 	public static void printCmd (Command c) {
