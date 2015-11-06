@@ -91,15 +91,19 @@ abstract class Database {
 	}
 	
 	static boolean disconnect () {
-		db = null;
-		dbReader.close();
-		dbReader = null;
-		dbData = null;
-		dbIndex = null;
-		
-		isConnected = false;
-		
-		return true;
+		if (isConnected) {
+			db = null;
+			dbReader.close();
+			dbReader = null;
+			dbData = null;
+			dbIndex = null;
+			
+			isConnected = false;
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	static List<TaskJson> selectAll () {
@@ -161,11 +165,13 @@ abstract class Database {
 		return true;
 	}
 	
-	static boolean moveTo(String destination) throws IOException {
-		File newDb = new File(destination, FILENAME);
+	static boolean moveTo(String destination, boolean isTestMode) throws IOException {
+		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
+		File newDb = new File(destination, fileName);
+		
 		Files.move(db.toPath(), newDb.toPath());
 		db = newDb;
-
+		
 		dbReader = new Scanner(db);
 		dbReader.useDelimiter("\\Z");
 		return true;
@@ -179,6 +185,7 @@ abstract class Database {
 			
 			dbWriter.write(text);
 			dbWriter.close();
+			
 			dbWriter = null;
 			return true;
 		} catch (IOException e) {

@@ -33,6 +33,10 @@ public class StorageTest {
 			+ "\"NAME\":\"test valid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\"}";
 	
+	private final String VALID_TASK_2 = "{\"ID\":\"2\","
+			+ "\"NAME\":\"test valid task 2\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
+			+ "\"IS_COMPLETED\":\"false\"}";
+	
 	private final String INVALID_TASK_NO_ID = "{ "
 			+ "\"NAME\":\"test invalid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
 			+ "\"IS_COMPLETED\":\"false\" }";
@@ -99,28 +103,31 @@ public class StorageTest {
 	private final String TESTFILE_CONTENT_INITIAL = "[]";
 	
 	private final String NOT_EXSITS_FILEPATH = "/notExists";	
+	private final String MOVE_TO_FILEPATH = "/newPath/";	
 	
 	private ConfigurationInterface config;
 	private String defaultPath;
 	private File defaultFile;
-	private StorageInterface storage;
+	private Storage storage;
 	
     @Before 
     public void openTestMode() throws IOException {    	
-    	storage = Storage.getStorage();
     	config = Configuration.getInstance();
     	defaultPath = config.getDefaultUsrFileDirectory();
     	defaultFile = new File(defaultPath, TEST_FILENAME);
     	    	
     	resetDefaultPath();
-    	createIfNotExists(defaultFile);
+    	createFileIfNotExists(defaultFile);
+    	writeToFile(defaultFile, TESTFILE_CONTENT_INITIAL);
     	
-        Storage.openTestMode();
+    	storage = Storage.getStorage();
+    	storage.openTestMode();
     }
     
     @After 
     public void closeTestMode() {
-        Storage.closeTestMode();
+    	storage.closeTestMode();
+    	storage.close();
     }
     
     @Test
@@ -199,7 +206,6 @@ public class StorageTest {
     	for (int i = 0; i < INVALID_TASKS.length; i++) {    		
     		writeToFile(defaultFile, "[" + VALID_TASK + INVALID_TASKS[i] + "]");
         	
-        	storage = Storage.getStorage();
         	storage.init();
         	
         	tb = new TasksBag();
@@ -210,48 +216,190 @@ public class StorageTest {
         	Assert.assertEquals(fileContent, "[" + VALID_TASK +"]");
        	}
     }
+    
+    @Test
+    /* Test if file content is valid
+     * Expected: load successfully
+     */ 
+    public void testLoadValidTasks() throws IOException {
+    	TasksBag tb;
 
-    @Test 
-    public void test() {
-        TasksBag cb;
-        int size;
-
-        Storage s = Storage.getStorage();
-        s.init();
-        Task c1 = new Task("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0));
-        Task c2 = new Task("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0));
-        Task c3 = new Task("storage dummy test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0));
-
-        boolean result = s.save(c1);
-        Assert.assertEquals(true, result);
-
-        s.save(c2);
-        s.save(c3);
-
-        cb = new TasksBag();
-        s.load("", cb);
-        size = cb.size();
-        Assert.assertEquals(3, size);
-
-        c1.setName("new");
-        s.save(c1);
-
-        cb = new TasksBag();
-        s.load("", cb);
-
-        Task ct = cb.getTask(0);
-        String ctName = ct.getName();
-        Assert.assertEquals("new", ctName);
-
-        s.delete(c2);
-
-        cb = new TasksBag();
-        s.load("", cb);
-        size = cb.size();
-        Assert.assertEquals(2, size);
-
-        s.close();
+		writeToFile(defaultFile, "[" + VALID_TASK + VALID_TASK_2 + "]");
+    	
+    	storage.init();
+    	
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(2, tb.size());
     }
+    
+    @Test
+    /* Test if save a new task
+     * Expected: load the saved task
+     */ 
+    public void testSaveNew() throws IOException {
+    	TasksBag tb;
+    	Task task = new Task("test", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
+    	Task outTask;
+    	storage.init();
+    	
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 0);
+
+    	boolean result = storage.save(task);
+        Assert.assertTrue(result);
+    	
+        tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 1);
+    	
+    	outTask = tb.getTask(0);
+    	assertTaskIdentical(task, outTask);
+    }
+    
+    @Test
+    /* Test if save a new task
+     * Expected: load the saved task
+     */ 
+    public void testSaveUpdate() throws IOException {
+    	Task task = new Task("test", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
+    	storage.init();
+    	
+    	testSaved(task, 0);
+    	
+    	task.setName("haha");
+    	testSaved(task, 0);
+    	
+    	task.setStart(createDate(2015, 5, 10, 0, 0, 0));
+    	testSaved(task, 0);
+    	
+    	task.setEnd(createDate(2016, 5, 10, 1, 0, 0));
+    	testSaved(task, 0);
+    	
+    	task.setComplete(true);;
+    	testSaved(task, 0);
+    }
+    
+    @Test
+    /* Test if delete a task
+     * Expected: task gets removed from the storage file
+     */ 
+    public void testDelete() throws IOException {
+    	TasksBag tb;
+    	Task task = new Task("test", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
+    	storage.init();
+    	storage.save(task);
+    	
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 1);
+    	
+    	storage.delete(task);
+        tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 0);
+    }
+    
+    @Test
+    /* Test if delete a task
+     * Expected: task gets removed from the storage file
+     */ 
+    public void testRestore() throws IOException {
+    	TasksBag tb;
+    	Task task = new Task("test", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
+    	Task outTask;
+    	storage.init();
+    	storage.save(task);
+    	
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 1);
+    	
+    	storage.delete(task);
+        tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 0);
+    	
+    	storage.save(task);
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 1);
+    	outTask = tb.getTask(0);
+    	assertTaskIdentical(task, outTask);
+    }
+    
+    @Test
+    /* Test if move storage file
+     * Expected: task gets removed from the storage file
+     */ 
+    public void testMoveSuccess() throws IOException {
+    	TasksBag tb;
+    	Task task = new Task("test", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
+    	Task outTask;
+    	File newPath = new File(MOVE_TO_FILEPATH);
+    	File newFile = new File(MOVE_TO_FILEPATH, TEST_FILENAME);
+    	boolean result;
+    	
+    	storage.init();
+    	storage.save(task);
+    	
+    	createFolderIfNotExists(newPath);
+    	deleteIfExists(newFile);
+    	
+    	result = storage.moveFileTo(MOVE_TO_FILEPATH);
+    	Assert.assertTrue(result);
+    	assertFileExists(newFile);
+
+    	tb = new TasksBag();
+    	storage.load("", tb);
+    	Assert.assertEquals(tb.size(), 1);
+   
+    	outTask = tb.getTask(0);
+    	assertTaskIdentical(task, outTask);
+    }
+
+//    @Test 
+//    public void test() {
+//        TasksBag cb;
+//        int size;
+//
+//        Storage s = Storage.getStorage();
+//        s.init();
+//        Task c1 = new Task("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0));
+//        Task c2 = new Task("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0));
+//        Task c3 = new Task("storage dummy test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0));
+//
+//        boolean result = s.save(c1);
+//        Assert.assertEquals(true, result);
+//
+//        s.save(c2);
+//        s.save(c3);
+//
+//        cb = new TasksBag();
+//        s.load("", cb);
+//        size = cb.size();
+//        Assert.assertEquals(3, size);
+//
+//        c1.setName("new");
+//        s.save(c1);
+//
+//        cb = new TasksBag();
+//        s.load("", cb);
+//
+//        Task ct = cb.getTask(0);
+//        String ctName = ct.getName();
+//        Assert.assertEquals("new", ctName);
+//
+//        s.delete(c2);
+//
+//        cb = new TasksBag();
+//        s.load("", cb);
+//        size = cb.size();
+//        Assert.assertEquals(2, size);
+//
+//        s.close();
+//    }
     
     /* Test if file exists but the content is corrupted, 
      * input could be empty, invalid JSON format or invalid Task format
@@ -262,7 +410,6 @@ public class StorageTest {
     	    	
     	writeToFile(defaultFile, content);
     	
-    	storage = Storage.getStorage();
     	storage.init();
     	
     	tb = new TasksBag();
@@ -271,6 +418,17 @@ public class StorageTest {
     
     	fileContent = readFile(defaultFile);
     	Assert.assertEquals(fileContent, TESTFILE_CONTENT_INITIAL);
+    }
+    
+    private void testSaved(Task task, int index) throws IOException {
+    	TasksBag tb = new TasksBag();
+    	Task outTask;
+    	
+    	storage.save(task);
+    	storage.load("", tb);
+    	
+    	outTask = tb.getTask(index);
+    	assertTaskIdentical(task, outTask);
     }
     
     private void writeToFile(File f, String content) throws IOException {
@@ -299,9 +457,9 @@ public class StorageTest {
     }
 
     // private methods
-    private static Date createDate(int year, int month, int day, int hour, int minute) {
+    private static Date createDate(int year, int month, int day, int hour, int minute, int second) {
         Calendar calender = Calendar.getInstance();
-        calender.set(year, month, day, hour, minute);
+        calender.set(year, month, day, hour, minute, second);
         return new Date(calender.getTimeInMillis());
     }
     
@@ -323,7 +481,7 @@ public class StorageTest {
     	Assert.assertFalse(f.exists());
     }
     
-    private static void createIfNotExists(File f) throws IOException {
+    private void createFileIfNotExists(File f) throws IOException {
     	if (!f.exists()) {
     		f.createNewFile();
     	}
@@ -331,7 +489,39 @@ public class StorageTest {
     	assertFileExists(f);
     }
     
+    private void createFolderIfNotExists(File f) throws IOException {
+    	f.delete();
+    	
+    	if (f.exists() && !f.isDirectory()) {
+    		f.delete();
+    	}
+ 
+    	if (!f.exists()) {
+    		f.mkdir();
+    	}
+
+    	assertFileExists(f);
+    }
+    
+    
+    
     private static void assertFileExists(File f) {
     	Assert.assertTrue(f.exists());
+    }
+    
+    private static void assertTaskIdentical(Task task1, Task task2) {
+    	System.out.println(task1.getId());
+    	Assert.assertEquals(task1.getId(), task2.getId());
+    	Assert.assertEquals(task1.getName(), task2.getName());
+    	Assert.assertEquals(task1.isComplete(), task2.isComplete());
+    	
+    	assertDateEqual(task1.getStart(), task2.getStart());
+    	assertDateEqual(task1.getEnd(), task2.getEnd());
+    }
+    
+    private static void assertDateEqual(Date d1, Date d2) {
+    	int result = d1.compareTo(d2);
+    	
+    	Assert.assertEquals(result, 1);
     }
 }
