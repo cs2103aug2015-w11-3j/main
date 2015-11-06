@@ -270,21 +270,20 @@ public class Task {
         }
         return false;
     }
-    
+
     /**
      * Checks if the task is overdue
+     * 
      * @return
      */
     public boolean isOverDue() {
-    	if(getEnd() == null) {
-    		return false;
-    	}
-    	else if(getEnd().before(new Date())) {
-    		return true;
-    	}
-    	else {
-    		return false;
-    	}
+        if (getEnd() == null) {
+            return false;
+        } else if (getEnd().before(new Date())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private long convertDaysToLong(int days) {
@@ -300,22 +299,25 @@ public class Task {
 
     /**
      * Compares if both tasks have overlapping dates.
-     * @param toCompare task to be compared
-     * @return true if both tasks have overlapping dates. false if either is not event type task
+     * 
+     * @param toCompare
+     *            task to be compared
+     * @return true if both tasks have overlapping dates. false if either is not
+     *         event type task
      */
-    public boolean clashesWith(Task toCompare){
-        if(toCompare.getType() != Type.EVENT){
+    public boolean clashesWith(Task toCompare) {
+        if (toCompare.getType() != Type.EVENT) {
             return false;
         }
-        if(this.getType() != Type.EVENT){
+        if (this.getType() != Type.EVENT) {
             return false;
         }
-        boolean compareIsInThis = isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getStart()) || 
-                isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getEnd());
-        
-        boolean thisIsInCompare = isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getStart()) || 
-                isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getEnd());
-        
+        boolean compareIsInThis = isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getStart())
+                || isWithinBothDates(toCompare.getStart(), toCompare.getEnd(), this.getEnd());
+
+        boolean thisIsInCompare = isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getStart())
+                || isWithinBothDates(this.getStart(), this.getEnd(), toCompare.getEnd());
+
         return compareIsInThis || thisIsInCompare;
     }
 }

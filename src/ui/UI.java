@@ -87,7 +87,7 @@ public class UI implements UIInterface {
     private void doDefault(CommandFeedback fb) {
         String usrMsg;
         String warningMsg = fb.getWarningMsg(); // TODO Yuka the warning msg will be found here. Just print it out.
-        
+        System.out.println("Warning is: " + warningMsg);        // TODO remove after actual implementation
         cb = fb.getcBag();
         display(cb);
         

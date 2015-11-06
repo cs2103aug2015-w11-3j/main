@@ -21,6 +21,8 @@ public class AddAction implements UndoableAction {
     private static final String USR_MSG_ADD_OK = "Added %1$s!";
     private static final String USR_MSG_ADD_UNDO = "Undo adding %1$s!";
     private static final String USR_MSG_ADD_DATE_ERROR = "Failed to add! Start date is after end date!";
+    private static final String USR_MSG_ADD_CLASH_WARNING_SINGLE = "Task clashes with %1$s!";
+    private static final String USR_MSG_ADD_CLASH_WARNING_MANY = "Task clashes with %1$s and %2$s more!";
 
     private Command cCommand;
     private TasksBag cBag;
@@ -42,26 +44,41 @@ public class AddAction implements UndoableAction {
         } else {
             throw new IntegrityCommandException(USR_MSG_ADD_DATE_ERROR);
         }
-        ObservableList<Task> clashList = cBag.findClashesWithIncomplete(cWhichTask);
-        if(clashList != null){
-            System.out.println("askjdasd");
-            System.out.println(clashList.size());
-        }
-        
     }
 
     @Override
     public CommandFeedback execute() throws LogicException {
         String formattedString;
+        String warningString;
         CommandFeedback fb;
 
         cBag.addTask(cWhichTask);
         cStore.save(cWhichTask);
 
+        warningString = processWarningMsg();
+        
         formattedString = Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
-        fb = new CommandFeedback(cCommand, cBag, formattedString);
+        fb = new CommandFeedback(cCommand, cBag, formattedString, warningString);
 
         return fb;
+    }
+
+    private String processWarningMsg() {
+        String warningString;
+        ObservableList<Task> clashList = cBag.findClashesWithIncomplete(cWhichTask);
+        
+        if(clashList == null || clashList.size() == 0){
+            return "";
+        }
+        
+        Task firstTask = clashList.get(0);
+        if(clashList.size() > 1){
+            int noOfOtherClashes = clashList.size() - 1;
+            warningString = Utilities.formatString(USR_MSG_ADD_CLASH_WARNING_MANY, firstTask.getName(), noOfOtherClashes);
+        } else {            
+            warningString = Utilities.formatString(USR_MSG_ADD_CLASH_WARNING_SINGLE, firstTask.getName());
+        }
+        return warningString;
     }
 
     @Override

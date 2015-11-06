@@ -146,8 +146,18 @@ public class TasksBag implements Iterable<Task> {
     private void filterTasksToday(ObservableList<Task> container) {
         // count # of floating
         ObservableList<Task> taskFloat = getIncompleteFloatingTasks();
+        ObservableList<Task> taskFloat2 = new TaskBagBuilder(this).noDate().isNotComplete()
+                .hasSearchKeyword(getSearchState()).build();
+        // if (curTask.isComplete() == false && curTask.hasDate() == false &&
+        // curTask.hasKeyword(cSearchState)) {
+
+        System.out.println("Builder diff: " + taskFloat.size() + " " + taskFloat2.size());
         // count # of dateline/event
         ObservableList<Task> taskNonFloat = getIncompleteDatedTasksWithDayLimit(DEFAULT_DAY_RANGE);
+        ObservableList<Task> taskNonFloat2 = new TaskBagBuilder(this).hasDate().isNotComplete()
+                .hasSearchKeyword(getSearchState()).isWithinDayLimit(DEFAULT_DAY_RANGE).build();
+        
+        System.out.println("Builder diff: " + taskNonFloat.size() + " " + taskNonFloat2.size());
 
         int totalCount = taskFloat.size() + taskNonFloat.size();
         System.out.println(taskFloat.size());
@@ -361,7 +371,6 @@ public class TasksBag implements Iterable<Task> {
         ObservableList<Task> clashList = FXCollections.observableArrayList();
         ObservableList<Task> lists = getInCompleteDateTasksAll();
 
-        System.out.println(lists.size());
         if (t.getType() != Type.EVENT) {
             return clashList;
         }

@@ -25,7 +25,7 @@ public class UpdateAction implements UndoableAction {
     private StorageInterface cStore;
     private Task cWhichTask;
     private Task cOldTask;
-    
+
     public UpdateAction(Command command, TasksBag bag, StorageInterface stor) throws LogicException {
         cCommand = command;
         cCurBag = bag.getFiltered();
@@ -38,7 +38,7 @@ public class UpdateAction implements UndoableAction {
         if (UID <= 0) {
             throw new IllegalAccessCommandException(USR_MSG_UPDATE_OOB);
         }
-        
+
         // Upper bound
         if (UID > cCurBag.size()) {
             throw new IllegalAccessCommandException(USR_MSG_UPDATE_OOB);
@@ -50,7 +50,7 @@ public class UpdateAction implements UndoableAction {
         cWhichTask = cCurBag.getTask(UID);
 
         verifyUpdateData();
-        
+
         cOldTask = cWhichTask.clone();
     }
 
