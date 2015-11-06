@@ -12,6 +12,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.Set;
 
 //import com.sun.javafx.css.Combinator;
@@ -268,7 +269,7 @@ public class Parser implements ParserInterface {
 		System.out.println("Parser Init complete");
 	}
 
-	private static final String regexContaining (Set<String> tokens) {
+	private static final String regexContaining (Collection<String> tokens) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(?:");
 		for (String tok : tokens) {
@@ -308,7 +309,7 @@ public class Parser implements ParserInterface {
 	private Command.Type getCmdType (String token) {
 		assert(token != null);
 		token = token.toLowerCase();
-		
+		// CUD
 		if (Aliases.CMD_ADD.contains(token)) {
 			return Command.Type.ADD;
 		}
@@ -318,47 +319,48 @@ public class Parser implements ParserInterface {
 		if (Aliases.CMD_UPD.contains(token)) {
 			return Command.Type.UPDATE;
 		}
-		if (Aliases.CMD_QUIT.contains(token)) {
-			return Command.Type.QUIT;	
-		}
+		// completing tasks
 		if (Aliases.CMD_MARK.contains(token)) {
 			return Command.Type.MARK;
 		}
 		if (Aliases.CMD_UNMARK.contains(token)) {
 			return Command.Type.UNMARK;
 		}
+		// undo/redo
 		if (Aliases.CMD_UNDO.contains(token)) {
 			return Command.Type.UNDO;
 		}
 		if (Aliases.CMD_REDO.contains(token)) {
 			return Command.Type.REDO;			
 		}
+		// display
 		if (Aliases.CMD_SHOW.contains(token)) {
 			return Command.Type.SHOW;			
 		}
+		// filter text/date
 		if (Aliases.CMD_SEARCH.contains(token)) {
 			return Command.Type.SEARCH;			
 		}
 		if (Aliases.CMD_FILTER.contains(token)) {
 			return Command.Type.FILTER_DATE;
 		}
+		if (Aliases.CMD_CLEAR.contains(token)) {
+			return Command.Type.CLEAR_FILTERS;
+		}
+		// misc
 		if (Aliases.CMD_MOVE.contains(token)) {
 			return Command.Type.MOVE;
 		}
 		if (Aliases.CMD_HELP.contains(token)) {
 			return Command.Type.HELP;
 		}
+		if (Aliases.CMD_QUIT.contains(token)) {
+			return Command.Type.QUIT;	
+		}
 		if (Aliases.CMD_THEME.contains(token)) {
 			return Command.Type.THEME;
 		}
-		switch (token) {
-		case "clr" :
-		case "cls" :
-		case "clear" :
-		case "reset" :
-			return Command.Type.CLEAR_FILTERS;
-			
-		}
+		// user is an idiot?
 		return Command.Type.INVALID;
 	}
 
@@ -420,10 +422,6 @@ public class Parser implements ParserInterface {
 		return null;
 	}
 
-	private Command parseClear (String args) {
-		assert(args != null);
-		return new Command(Command.Type.CLEAR_FILTERS, userRawInput);
-	}
 	private Command parseAdd (String args) {
 		assert(args != null);
 		args = args.trim();
@@ -614,6 +612,10 @@ public class Parser implements ParserInterface {
 		
 		return makeInvalid();
 	}
+	private Command parseClear (String args) {
+		assert(args != null);
+		return makeClear();
+	}
 	private Command parseMove (String args) {
 		assert(args != null);
 		args = args.trim();
@@ -642,6 +644,7 @@ public class Parser implements ParserInterface {
 	}
 	private Command parseTheme (String args) {
 		assert(args != null);
+		args = args.trim();
 		args = args.toLowerCase();
 		if (Aliases.THEME_DAY.contains(args)) {
 			return makeTheme(Skin.DAY);
@@ -652,32 +655,6 @@ public class Parser implements ParserInterface {
 		return makeInvalid();
 	}
 	
-/*	Task.DataType parseFieldKey (String token) throws ParseException {
-		assert(token != null);
-		token = token.toLowerCase();
-		if (Aliases.FIELD_NAME.contains(token)) {
-			return Task.DataType.NAME;
-		}
-		if (Aliases.FIELD_START_DATE.contains(token)) {
-			return Task.DataType.DATE_START;
-		}
-		if (Aliases.FIELD_END_DATE.contains(token)) {
-			return Task.DataType.DATE_END;
-		}
-		throw new ParseException("", -1);
-	}*/
-	/*Object parseFieldValue (Task.DataType key, String valStr) throws ParseException, IllegalArgumentException {
-		assert(key != null && valStr != null);
-		switch (key) {
-			case NAME : 
-				return parseText(valStr);
-			case DATE_START :	// Fallthrough
-			case DATE_END : 
-				return parseDate(valStr);
-			default :
-				throw new IllegalArgumentException("key must be amongst : NAME, DATE_START, DATE_END");
-		}
-	}*/
 	String parseText (String token) {
 		assert(token != null);
 		return token.trim();
@@ -730,16 +707,6 @@ public class Parser implements ParserInterface {
 		return cmd;
 	}
 	@Override
-	public Command makeQuit () {
-		Command cmd = new Command(Command.Type.QUIT, userRawInput);
-		return cmd;
-	}
-	@Override
-	public Command makeInvalid () {
-		Command cmd = new Command(Command.Type.INVALID, userRawInput);
-		return cmd;
-	}
-	@Override
 	public Command makeShow (TasksBag.ViewType view) {
 		Command cmd = new Command(Command.Type.SHOW, userRawInput);
 		cmd.setViewType(view);
@@ -782,6 +749,11 @@ public class Parser implements ParserInterface {
 		return cmd;
 	}
 	@Override
+	public Command makeClear () {
+		Command cmd = new Command(Command.Type.CLEAR_FILTERS, userRawInput);
+		return cmd;
+	}
+	@Override
 	public Command makeMove (Path newPath) {
 		Command cmd = new Command(Command.Type.MOVE, userRawInput);
 		cmd.setPath(newPath);
@@ -794,10 +766,20 @@ public class Parser implements ParserInterface {
 		return cmd;
 	}
 	@Override
+	public Command makeQuit () {
+		Command cmd = new Command(Command.Type.QUIT, userRawInput);
+		return cmd;
+	}
+	@Override
 	public Command makeTheme (Skin theme) {
             Command cmd = new Command(Command.Type.THEME, userRawInput);
 	    cmd.setTheme(theme);
 	    return cmd;
+	}
+	@Override
+	public Command makeInvalid () {
+		Command cmd = new Command(Command.Type.INVALID, userRawInput);
+		return cmd;
 	}
 	
 	public static void printCmd (Command c) {
