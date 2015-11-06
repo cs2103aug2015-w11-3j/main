@@ -4,7 +4,7 @@ package logic;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
-import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.InvalidDateException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -36,12 +36,12 @@ public class UpdateAction implements UndoableAction {
 
         // Lower bound
         if (UID <= 0) {
-            throw new IntegrityCommandException(USR_MSG_UPDATE_OOB);
+            throw new IllegalAccessCommandException(USR_MSG_UPDATE_OOB);
         }
         
         // Upper bound
         if (UID > cCurBag.size()) {
-            throw new IntegrityCommandException(USR_MSG_UPDATE_OOB);
+            throw new IllegalAccessCommandException(USR_MSG_UPDATE_OOB);
         }
 
         // UID - 1 to get actual array mapping

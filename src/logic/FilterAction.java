@@ -3,7 +3,6 @@ package logic;
 
 import common.TasksBag;
 import common.TasksBag.ViewType;
-import logic.exceptions.LogicException;
 import parser.Command;
 
 /**
@@ -20,14 +19,14 @@ public class FilterAction implements Action {
     private ViewType cSortBy;
 
     
-    public FilterAction(Command command, TasksBag internalBag) throws LogicException {
+    public FilterAction(Command command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
         cSortBy = cCommand.getViewType();
     }
 
     @Override
-    public CommandFeedback execute() throws LogicException {
+    public CommandFeedback execute() {
         String msg = "";
         switch (cSortBy) {
             case COMPLETE_TASKS:

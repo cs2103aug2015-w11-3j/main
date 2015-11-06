@@ -4,16 +4,15 @@ import java.util.Date;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
@@ -23,10 +22,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.ViewType;
@@ -75,11 +73,11 @@ public class CelebiViewController {
     private static final String DAY_KEYWORD_COLOR = "#529228";
     private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
 
-    public static enum SKIN {
+    public static enum Skin {
         DAY, NIGHT
     }
 
-    private SKIN skinMode = SKIN.DAY;
+    private Skin skinMode = Skin.DAY;
     private String currentCelebiColor = DAY_CELEBI_COLOR;
     private String currentUserColor = DAY_USER_COLOR;
     private String currentKeywordColor = DAY_KEYWORD_COLOR;
@@ -104,7 +102,7 @@ public class CelebiViewController {
 
     // private void temp(ObservableV)
     private void initializeCelebiTable() {
-        celebiTable.setFixedCellSize(26.2);
+        //celebiTable.setCellSize(26.2);
 
         PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
         celebiTable.setRowFactory(tableview -> {
@@ -184,6 +182,21 @@ public class CelebiViewController {
      */
     private void initializeTaskNameColumn() {
         taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+    	taskNameColumn.setCellFactory(col -> {
+    		return new TableCell<Task, String>() {
+    			@Override
+    			protected void updateItem(String item, boolean empty) {
+    				super.updateItem(item, empty);
+    				Text nameText = new Text();
+    				nameText.setText(item);
+    				setGraphic(nameText);
+    				setPrefHeight(26.2);
+    				nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
+    				nameText.textProperty().bind(itemProperty());
+    			}
+    		};
+        	//cellData.getValue().nameProperty();	
+        });
     }
 
     /**

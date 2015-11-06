@@ -9,7 +9,6 @@ import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
 import parser.Command;
-import parser.Command.Type;
 import parser.Parser;
 import parser.ParserInterface;
 import storage.Storage;

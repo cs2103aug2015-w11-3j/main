@@ -12,7 +12,6 @@ import logic.KeyEventFeedback;
 import logic.Logic;
 import logic.LogicInterface;
 import logic.exceptions.LogicException;
-import parser.Command;
 import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
@@ -20,8 +19,8 @@ public class UI implements UIInterface {
     private static final String UI_TXT_USRCMD = "You: %1$s\n";
     private static final String UI_TXT_FEEDBACK = "Celebi: %1$s";
     private static final String UI_TXT_WELCOME = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
-    private static final String UI_TXT_TABEVENT = "You pressed tab\n";
-    
+    private static final String UI_TXT_TABEVENT = "You pressed tab!\n";
+
     LogicInterface logic;
     private CelebiViewController controller;
     private TasksBag cb = new TasksBag();
@@ -64,33 +63,57 @@ public class UI implements UIInterface {
         String usrMsg = "";
         try {
             fb = logic.executeCommand(userInput);
-            
-            switch(fb.getCommand().getCmdType()){
+
+            switch (fb.getCommand().getCmdType()) {
                 case QUIT:
-                    System.out.println("Quit entered.");
-                    Platform.exit();
+                    doQuit();
                     break;
                 case THEME:
+                    doTheme(fb);
                     break;
-                    //fb.get
-            }
-            
-            if (fb.getCommand().getCmdType() == Command.Type.QUIT) {
-                System.out.println("Quit entered.");
-                Platform.exit();
-            } else {
-                cb = fb.getcBag();
-                display(cb);
-                usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
-                controller.appendFeedback(usrMsg);
+                default:
+                    doDefault(fb);
+                    break;
             }
         } catch (LogicException e) {
-
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.appendFeedback(usrMsg);
         } catch (Exception e) {
             log.severe(e.toString());
         }
+    }
+
+    private void doDefault(CommandFeedback fb) {
+        String usrMsg;
+        String warningMsg = fb.getWarningMsg(); // TODO Yuka the warning msg will be found here. Just print it out.
+        
+        cb = fb.getcBag();
+        display(cb);
+        
+        usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+        controller.appendFeedback(usrMsg);
+    }
+
+    private void doQuit() {
+        System.out.println("Quit entered.");
+        Platform.exit();
+    }
+
+    private void doTheme(CommandFeedback fb) {
+        String usrMsg;
+        CelebiViewController.Skin skin = fb.getCommand().getTheme();
+        switch (skin) {
+            case DAY:
+                controller.switchDaySkin();
+                break;
+
+            case NIGHT:
+                controller.switchNightSkin();
+                break;
+        }
+
+        usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+        controller.appendFeedback(usrMsg);
     }
 
     /**
@@ -112,7 +135,7 @@ public class UI implements UIInterface {
         controller.refreshSelection(cb);
         controller.updateFilterDisplay(cb);
         controller.updateTableItems(cb.getList());
-        controller.switchNightSkin();
+        controller.switchDaySkin();
     }
 
     public ObservableList<Task> getCelebiList() {
