@@ -276,6 +276,22 @@ public class Task {
         }
         return false;
     }
+    
+    /**
+     * Checks if the task is overdue
+     * @return
+     */
+    public boolean isOverDue() {
+    	if(getEnd() == null) {
+    		return false;
+    	}
+    	else if(getEnd().before(new Date())) {
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    }
 
     private long convertDaysToLong(int days) {
         if (days <= 0) {
