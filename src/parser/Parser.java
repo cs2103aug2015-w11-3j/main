@@ -42,12 +42,12 @@ public class Parser implements ParserInterface {
 	
 	private static final String REGEX_VALID_NAME = "[^;]+";
 	private static final String REGEX_UNVALIDATED_DATE = ".+"; // still needs to get parsed by date formatter
-	private static final String REGEX_VALID_UID = "\\d+";
+	private static final String REGEX_UID = "-?\\d+";
 	
 	private static final String REGEX_GRP_NAME = regexNamedGrp(REGEX_VALID_NAME, GRPNAME_NAME);
 	private static final String REGEX_GRP_START = regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_START);
 	private static final String REGEX_GRP_END = regexNamedGrp(REGEX_UNVALIDATED_DATE, GRPNAME_END);
-	private static final String REGEX_GRP_UID = regexNamedGrp(REGEX_VALID_UID, GRPNAME_UID);
+	private static final String REGEX_GRP_UID = regexNamedGrp(REGEX_UID, GRPNAME_UID);
 	
 	////////////////////////////////////////////////////////////////
 	// ADD command parsing parameters
