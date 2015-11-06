@@ -78,6 +78,12 @@ public final class Aliases {
 		"fil",
 		"filter"
 	);
+	static final Set<String> CMD_CLEAR = createSet(
+		"clr",
+		"cls",
+		"clear",
+		"reset"
+	);
 	static final Set<String> CMD_MOVE = createSet(
 		"mv",
 		"move"
@@ -189,8 +195,10 @@ public final class Aliases {
         "black"
 	);
 	
-	/*
-	 * returns a Set containing all valid command tokens
+	/**
+	 * @return a NEW Set containing all valid command tokens
+	 * 
+	 * Changes to the returned set will not mutate data in this class.
 	 * Currently used by ui.view.CelebiViewController
 	 * for real-time user input command syntax highlighting.
 	 */
@@ -213,6 +221,18 @@ public final class Aliases {
 	}
 	
 	@SafeVarargs
+	/**
+	 * Used to generate sets to hold aliases.
+	 * 
+	 * In principle, we want sets since we are doing a pure token search
+	 * In reality, the hashing for each .contains() call probably takes a longer
+	 * time then a simple for loop over an array doing a .equals check for each item.
+	 * 
+	 * For the sake of extensibility and to support the most used operation (search), 
+	 * we go with the Set interface instead of array.
+	 * @param elements
+	 * @return Set containing those elements
+	 */
 	private static final <E> Set<E> createSet (E... elements) {
 		return new LinkedHashSet<E>(Arrays.asList(elements));
 	}

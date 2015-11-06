@@ -4,8 +4,10 @@ package common;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Observable;
 import java.util.logging.Logger;
 
+import common.Task.Type;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -126,7 +128,7 @@ public class TasksBag implements Iterable<Task> {
     private void filterTasksComplete(ObservableList<Task> container) {
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+            if (curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDateIfWithinFilter(curTask)) {
                 container.add(curTask);
             }
         }
@@ -135,7 +137,7 @@ public class TasksBag implements Iterable<Task> {
     private void filterTasksIncomplete(ObservableList<Task> container) {
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
+            if (curTask.isComplete() == false && curTask.hasKeyword(cSearchState) && checkDateIfWithinFilter(curTask)) {
                 container.add(curTask);
             }
         }
@@ -145,7 +147,7 @@ public class TasksBag implements Iterable<Task> {
         // count # of floating
         ObservableList<Task> taskFloat = getIncompleteFloatingTasks();
         // count # of dateline/event
-        ObservableList<Task> taskNonFloat = getIncompleteDatedTasks();
+        ObservableList<Task> taskNonFloat = getIncompleteDatedTasksWithDayLimit(DEFAULT_DAY_RANGE);
 
         int totalCount = taskFloat.size() + taskNonFloat.size();
         System.out.println(taskFloat.size());
@@ -190,17 +192,30 @@ public class TasksBag implements Iterable<Task> {
     }
 
     /**
-     * Counts the number of tasks which are incomplete and has at least 1 date
+     * Counts the number of tasks which are incomplete and has at least noOfDays
+     * date
      * 
      * @return
      */
-    private ObservableList<Task> getIncompleteDatedTasks() {
+    private ObservableList<Task> getIncompleteDatedTasksWithDayLimit(int noOfDays) {
         ObservableList<Task> taskList = FXCollections.observableArrayList();
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isWithinDays(DEFAULT_DAY_RANGE)
+            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isWithinDays(noOfDays)
                     && curTask.hasKeyword(cSearchState)) {
+                taskList.add(curTask);
+            }
+        }
+        return taskList;
+    }
+
+    private ObservableList<Task> getInCompleteDateTasksAll() {
+        ObservableList<Task> taskList = FXCollections.observableArrayList();
+
+        for (int i = 0; i < tasks.size(); i++) {
+            Task curTask = tasks.get(i);
+            if (curTask.isComplete() == false && curTask.hasDate()) {
                 taskList.add(curTask);
             }
         }
@@ -224,7 +239,7 @@ public class TasksBag implements Iterable<Task> {
         return taskList;
     }
 
-    private boolean checkDate(Task curTask) {
+    private boolean checkDateIfWithinFilter(Task curTask) {
         if (cFilterDateEnd == null || cFilterDateStart == null) {
             return true;
         } else {
@@ -342,11 +357,20 @@ public class TasksBag implements Iterable<Task> {
         }
     }
 
-    /*
-     * Used. Not supporting filter state none private void
-     * filterTaskNone(ObservableList<Task> container) { for (int i = 0; i <
-     * tasks.size(); i++) { Task curTask = tasks.get(i); if
-     * (curTask.hasKeyword(cSearchState) && checkDate(curTask)) {
-     * container.add(curTask); } } }
-     */
+    public ObservableList<Task> findClashesWithIncomplete(Task t) {
+        ObservableList<Task> clashList = FXCollections.observableArrayList();
+        ObservableList<Task> lists = getInCompleteDateTasksAll();
+
+        System.out.println(lists.size());
+        if (t.getType() != Type.EVENT) {
+            return clashList;
+        }
+
+        lists.forEach(curTask -> {
+            if (t.clashesWith(curTask)) {
+                clashList.add(curTask);
+            }
+        });
+        return clashList;
+    }
 }

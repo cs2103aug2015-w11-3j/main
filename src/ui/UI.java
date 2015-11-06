@@ -79,6 +79,7 @@ public class UI implements UIInterface {
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.appendFeedback(usrMsg);
         } catch (Exception e) {
+            e.printStackTrace();
             log.severe(e.toString());
         }
     }

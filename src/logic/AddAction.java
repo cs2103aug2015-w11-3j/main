@@ -2,10 +2,12 @@
 package logic;
 
 import java.util.Date;
+import java.util.Observable;
 
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
+import javafx.collections.ObservableList;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -40,7 +42,12 @@ public class AddAction implements UndoableAction {
         } else {
             throw new IntegrityCommandException(USR_MSG_ADD_DATE_ERROR);
         }
-
+        ObservableList<Task> clashList = cBag.findClashesWithIncomplete(cWhichTask);
+        if(clashList != null){
+            System.out.println("askjdasd");
+            System.out.println(clashList.size());
+        }
+        
     }
 
     @Override
