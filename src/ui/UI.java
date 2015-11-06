@@ -135,7 +135,7 @@ public class UI implements UIInterface {
         controller.refreshSelection(cb);
         controller.updateFilterDisplay(cb);
         controller.updateTableItems(cb.getList());
-        controller.switchDaySkin();
+        //controller.switchDaySkin();
     }
 
     public ObservableList<Task> getCelebiList() {

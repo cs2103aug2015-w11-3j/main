@@ -74,6 +74,11 @@ public class CelebiViewController {
     private static final String NIGHT_USER_COLOR = "#ecf0f1";
     private static final String DAY_KEYWORD_COLOR = "#529228";
     private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
+    
+    private static final Color DAY_NORMAL_TASK_COLOR = Color.rgb(86, 87, 85);
+    private static final Color DAY_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
+    private static final Color NIGHT_NORMAL_TASK_COLOR = Color.rgb(236, 240, 241);
+    private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
 
     public static enum Skin {
         DAY, NIGHT
@@ -184,30 +189,47 @@ public class CelebiViewController {
      */
     private void initializeTaskNameColumn() {
         taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-    	taskNameColumn.setCellFactory(col -> {
+    	setTaskNameAppearence();
+    }
+
+	private void setTaskNameAppearence() {
+		taskNameColumn.setCellFactory(col -> {
     		return new TableCell<Task, String>() {
     			@Override
     			protected void updateItem(String item, boolean empty) {
     				super.updateItem(item, empty);
     				Text nameText = new Text();
     				Task task = (Task)getTableRow().getItem();
+    				// set the color of task name
     				if (task != null) {
-    					if (task.isOverDue()) {
-    						nameText.setFill(Color.rgb(158, 158, 156));
-    					}
-    					else {
-    						nameText.setFill(Color.rgb(86, 87, 85));
+    					switch(skinMode) {
+							case DAY:
+								if (task.isOverDue()) {
+									nameText.setFill(DAY_OVERDUE_TASK_COLOR);
+								}
+								else {
+									nameText.setFill(DAY_NORMAL_TASK_COLOR);
+								}
+								break;
+							case NIGHT:
+								if (task.isOverDue()) {
+									nameText.setFill(NIGHT_OVERDUE_TASK_COLOR);
+								}
+								else {
+									nameText.setFill(NIGHT_NORMAL_TASK_COLOR);
+								}
     					}
     				}
     				setGraphic(nameText);
     				setPrefHeight(26.2);
+    				// wrap the task name
     				nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
     				nameText.textProperty().bind(itemProperty());
     			}
     		};
         	//cellData.getValue().nameProperty();	
         });
-    }
+	}
 
     /**
      * initialize id column to display 1,2,3,...till number of tasks
@@ -505,17 +527,21 @@ public class CelebiViewController {
         String css = Main.class.getResource("view/style_night.css").toExternalForm();
         rootPane.getStylesheets().clear();
         rootPane.getStylesheets().add(css);
+        skinMode = Skin.NIGHT;
         currentCelebiColor = NIGHT_CELEBI_COLOR;
         currentUserColor = NIGHT_USER_COLOR;
         currentKeywordColor = NIGHT_KEYWORD_COLOR;
+        setTaskNameAppearence();
     }
 
     public void switchDaySkin() {
         String css = Main.class.getResource("view/application.css").toExternalForm();
         rootPane.getStylesheets().clear();
         rootPane.getStylesheets().add(css);
+        skinMode = Skin.DAY;
         currentCelebiColor = DAY_CELEBI_COLOR;
         currentUserColor = DAY_USER_COLOR;
         currentKeywordColor = DAY_KEYWORD_COLOR;
+        setTaskNameAppearence();
     }
 }
