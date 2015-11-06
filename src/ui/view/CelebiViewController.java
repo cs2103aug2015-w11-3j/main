@@ -24,6 +24,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import common.Task;
 import common.TasksBag;
@@ -188,7 +189,15 @@ public class CelebiViewController {
     			protected void updateItem(String item, boolean empty) {
     				super.updateItem(item, empty);
     				Text nameText = new Text();
-    				nameText.setText(item);
+    				Task task = (Task)getTableRow().getItem();
+    				if (task != null) {
+    					if (task.isOverDue()) {
+    						nameText.setFill(Color.rgb(158, 158, 156));
+    					}
+    					else {
+    						nameText.setFill(Color.rgb(86, 87, 85));
+    					}
+    				}
     				setGraphic(nameText);
     				setPrefHeight(26.2);
     				nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
