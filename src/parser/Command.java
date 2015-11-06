@@ -15,7 +15,8 @@ public class Command implements CommandInterface {
 		MARK, UNMARK,
 		QUIT, 
 		INVALID,
-		MOVE, HELP
+		MOVE, HELP, 
+		THEME_DAY, THEME_NIGHT
 	}
 
 	// Immutable, every command has these
