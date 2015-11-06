@@ -54,7 +54,7 @@ abstract class Database {
 		return true;	
 	}
 	
-	static boolean load () throws BadFileContentException {
+	static boolean load () {
 		if (!isConnected) {
 			return false;
 		} 
@@ -83,7 +83,7 @@ abstract class Database {
 			save();
 			return true;
 		} catch (ClassCastException e) {
-			throw new BadFileContentException("Bad file format");
+			return false;
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
