@@ -22,7 +22,7 @@ public class Task {
     }
 
     public static enum Type {
-        FLOATING, NOEND, DEADLINE, EVENT
+        FLOATING, STARTONLY, DEADLINE, EVENT
     }
 
     private int cId;
@@ -176,15 +176,19 @@ public class Task {
     }
 
     private void updateType() {
-        if (cStart.get() == null && cEnd.get() == null) {
-            cType.set(Type.FLOATING);
-        } else if (cStart.get() != null && cEnd.get() == null) {
-            cType.set(Type.NOEND);
-        } else if (cStart.get() == null && cEnd.get() != null) {
-            cType.set(Type.DEADLINE);
-        } else {
-            cType.set(Type.EVENT);
-        }
+    	
+    	if (cStart.get() == null) {
+    		if (cEnd.get() == null) {
+                cType.set(Type.FLOATING);
+    		} else {
+    			cType.set(Type.DEADLINE);
+    		}
+    		
+    	} else if (cEnd.get() == null) {
+            cType.set(Type.STARTONLY);    		
+    	} else {
+    		cType.set(Type.EVENT);
+    	}
     }
 
     public boolean isWithinDate(Date cFilterDateStart, Date cFilterDateEnd) {

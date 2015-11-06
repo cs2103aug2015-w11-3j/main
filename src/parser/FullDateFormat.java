@@ -117,19 +117,16 @@ public class FullDateFormat implements CelebiDateParser {
 
 	// Expl testing
 	public static void main (String[] args) throws Exception {
+		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		CelebiDateParser fdf = new FullDateFormat();
-		DateFormat df;
 		while (true) {
 			try {
-				//df = new SimpleDateFormat(in.nextLine());
-				//System.out.println(df.parse(in.nextLine()));
 			System.out.println(fdf.parseDate(in.nextLine(), true));
 			} catch (ParseException e) {
 				System.out.println(e);
 			}
 		}
-//		System.out.println((new SimpleDateFormat()).getCalendar() instanceof GregorianCalendar);
 	}
 
 }
