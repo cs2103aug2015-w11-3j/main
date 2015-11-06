@@ -112,29 +112,47 @@ public class CelebiViewController {
         //celebiTable.setCellSize(26.2);
 
         PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
+        PseudoClass complete = PseudoClass.getPseudoClass("complete");
         celebiTable.setRowFactory(tableview -> {
             TableRow<Task> row = new TableRow<>();
 
-            ChangeListener<Date> changeListener = (observable, oldEndDate, newEndDate) -> {
+            ChangeListener<Date> endChangeListener = (observable, oldEndDate, newEndDate) -> {
                 row.pseudoClassStateChanged(overdue, newEndDate.before(new Date()));
+            };
+            ChangeListener<Boolean> completeChangeListener = (observable, oldIsComplete, newIsComplete) -> {
+                row.pseudoClassStateChanged(complete, newIsComplete);
+                if (newIsComplete) {
+                	row.pseudoClassStateChanged(overdue, false);
+                }
             };
 
             row.itemProperty().addListener((observable, previousTask, currentTask) -> {
                 if (previousTask != null) {
-                    previousTask.endProperty().removeListener(changeListener);
+                    previousTask.endProperty().removeListener(endChangeListener);
+                    previousTask.isCompletedProperty().removeListener(completeChangeListener);;
                 }
 
                 if (currentTask != null) {
-                    currentTask.endProperty().addListener(changeListener);
+                    currentTask.endProperty().addListener(endChangeListener);
+                    currentTask.isCompletedProperty().addListener(completeChangeListener);
 
+                    if (currentTask.isCompleted()) {
+                    	row.pseudoClassStateChanged(complete, true);
+                    	row.pseudoClassStateChanged(overdue, false);
+                    }
                     if (currentTask.getEnd() != null) {
-                        row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
-                    } else {
-                        row.pseudoClassStateChanged(overdue, false);
+                    	row.pseudoClassStateChanged(complete, false);
+                    	row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
+                    } 
+                    else {
+                    	row.pseudoClassStateChanged(complete, false);
+                    	row.pseudoClassStateChanged(overdue, false);
                     }
 
-                } else {
-                    row.pseudoClassStateChanged(overdue, false);
+                } 
+                else {
+                	row.pseudoClassStateChanged(complete, false);
+                	row.pseudoClassStateChanged(overdue, false);
                 }
             });
             return row;

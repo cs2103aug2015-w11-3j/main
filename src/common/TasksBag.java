@@ -128,7 +128,7 @@ public class TasksBag implements Iterable<Task> {
     private void filterTasksComplete(ObservableList<Task> container) {
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() && curTask.hasKeyword(cSearchState) && checkDateIfWithinFilter(curTask)) {
+            if (curTask.isCompleted() && curTask.hasKeyword(cSearchState) && checkDateIfWithinFilter(curTask)) {
                 container.add(curTask);
             }
         }
@@ -137,7 +137,7 @@ public class TasksBag implements Iterable<Task> {
     private void filterTasksIncomplete(ObservableList<Task> container) {
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasKeyword(cSearchState) && checkDateIfWithinFilter(curTask)) {
+            if (curTask.isCompleted() == false && curTask.hasKeyword(cSearchState) && checkDateIfWithinFilter(curTask)) {
                 container.add(curTask);
             }
         }
@@ -202,7 +202,7 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() && curTask.isWithinDays(noOfDays)
+            if (curTask.isCompleted() == false && curTask.hasDate() && curTask.isWithinDays(noOfDays)
                     && curTask.hasKeyword(cSearchState)) {
                 taskList.add(curTask);
             }
@@ -215,7 +215,7 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate()) {
+            if (curTask.isCompleted() == false && curTask.hasDate()) {
                 taskList.add(curTask);
             }
         }
@@ -232,7 +232,7 @@ public class TasksBag implements Iterable<Task> {
 
         for (int i = 0; i < tasks.size(); i++) {
             Task curTask = tasks.get(i);
-            if (curTask.isComplete() == false && curTask.hasDate() == false && curTask.hasKeyword(cSearchState)) {
+            if (curTask.isCompleted() == false && curTask.hasDate() == false && curTask.hasKeyword(cSearchState)) {
                 taskList.add(curTask);
             }
         }

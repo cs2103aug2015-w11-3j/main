@@ -150,7 +150,7 @@ public class LogicTest {
         for (int i = 0; i < rndVal; i++) {
             tempTask = temp.getTask(i);
 
-            Assert.assertEquals(false, tempTask.isComplete());
+            Assert.assertEquals(false, tempTask.isCompleted());
             Assert.assertEquals(null, tempTask.getStart());
             Assert.assertEquals(null, tempTask.getEnd());
             Assert.assertEquals("name " + i, tempTask.getName());
@@ -212,7 +212,7 @@ public class LogicTest {
         testPass("mark 1");
 
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(true, t.isComplete());
+        Assert.assertEquals(true, t.isCompleted());
 
         // fail test under INCOMPLETE(default) filter of tasksbag
         testFailException("mark 1", IllegalAccessCommandException.class);
@@ -223,7 +223,7 @@ public class LogicTest {
 
         // Can access task bag due to COMPLETE filter now
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(true, t.isComplete());
+        Assert.assertEquals(true, t.isCompleted());
     }
 
     @Test
@@ -236,19 +236,19 @@ public class LogicTest {
         testFailException("unmark 1", AlreadyUnmarkedException.class);
 
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(false, t.isComplete());
+        Assert.assertEquals(false, t.isCompleted());
 
         // Unmark twice onto same object. Should throw exception
         testFailException("unmark 1", AlreadyUnmarkedException.class);
 
         t = logic.getTaskBag().getTask(0);
-        Assert.assertEquals(false, t.isComplete());
+        Assert.assertEquals(false, t.isCompleted());
 
         // Mark and unmarking
         testPass("mark 1");
         testPass("show done");
         testPass("unmark 1");
-        Assert.assertEquals(false, t.isComplete());
+        Assert.assertEquals(false, t.isCompleted());
     }
 
     @Test

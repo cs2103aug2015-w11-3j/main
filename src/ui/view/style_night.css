@@ -46,6 +46,10 @@
 	-fx-fill: #9e9c9c;
 }
 
+.table-row-cell:complete .text {
+	-fx-fill: #1abc9c;
+}
+
 .table-row-cell .text 
 {
 	-fx-fill: #ecf0f1;

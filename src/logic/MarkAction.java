@@ -57,7 +57,7 @@ public class MarkAction implements UndoableAction {
         String formattedString;
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
-        if(cWhichTask.isComplete()){ 
+        if(cWhichTask.isCompleted()){ 
             formattedString = Utilities.formatString(USR_MSG_MARK_FAIL, cWhichTask.getName());
             throw new AlreadyMarkedException(formattedString);
         } else { 

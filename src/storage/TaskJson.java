@@ -39,7 +39,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 		String name = c.getName();
 		String start = formatDate(c.getStart());
 		String end = formatDate(c.getEnd());
-		String isCompleted = c.isComplete() ? VALUE_TRUE : VALUE_FALSE;
+		String isCompleted = c.isCompleted() ? VALUE_TRUE : VALUE_FALSE;
 		
 		put(KEY_NAME_ID, id);
 		put(KEY_NAME_NAME, name);
