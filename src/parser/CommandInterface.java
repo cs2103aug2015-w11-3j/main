@@ -4,6 +4,7 @@ package parser;
 import common.Task;
 import common.TasksBag;
 import parser.Command.Type;
+import ui.view.CelebiViewController;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -49,6 +50,8 @@ public interface CommandInterface {
 	public Type getHelpCmdType ();
 	
 	public TasksBag.ViewType getViewType ();
+	
+	public CelebiViewController.SKIN getTheme ();
 	
 	///////////////////////////////////////////////////
 	// Celebi field value getters
