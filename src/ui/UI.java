@@ -79,6 +79,7 @@ public class UI implements UIInterface {
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.appendFeedback(usrMsg);
         } catch (Exception e) {
+            e.printStackTrace();
             log.severe(e.toString());
         }
     }
@@ -135,7 +136,7 @@ public class UI implements UIInterface {
         controller.refreshSelection(cb);
         controller.updateFilterDisplay(cb);
         controller.updateTableItems(cb.getList());
-        controller.switchDaySkin();
+        //controller.switchDaySkin();
     }
 
     public ObservableList<Task> getCelebiList() {
