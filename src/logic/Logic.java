@@ -109,6 +109,13 @@ public class Logic implements LogicInterface {
                 break;
             case INVALID:
                 throw new UnknownCommandException(USR_MSG_UNKNOWN_COMMAND);
+            case THEME_DAY:                     // Flow through
+            case THEME_NIGHT:
+                fb = cInvoker.placeAction(new ThemeChangeAction(rtnCmd, cInternalBag));
+                break;
+            case CLEAR_FILTERS:
+                fb = cInvoker.placeAction(new FilterClearAction(rtnCmd, cInternalBag));
+                break;
             default:
                 assert false : rtnCmd.getCmdType();
                 fb = new CommandFeedback(rtnCmd, cInternalBag);
