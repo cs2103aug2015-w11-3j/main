@@ -100,8 +100,21 @@ public class StorageTest {
 	
 	private final String NOT_EXSITS_FILEPATH = "/notExists";	
 	
+	private ConfigurationInterface config;
+	private String defaultPath;
+	private File defaultFile;
+	private StorageInterface storage;
+	
     @Before 
-    public void openTestMode() throws IOException {
+    public void openTestMode() throws IOException {    	
+    	storage = Storage.getStorage();
+    	config = Configuration.getInstance();
+    	defaultPath = config.getDefaultUsrFileDirectory();
+    	defaultFile = new File(defaultPath, TEST_FILENAME);
+    	    	
+    	resetDefaultPath();
+    	createIfNotExists(defaultFile);
+    	
         Storage.openTestMode();
     }
     
@@ -116,65 +129,39 @@ public class StorageTest {
      *           re-create storage file
      */
     public void testInvalidPath() throws IOException {
-    	ConfigurationInterface config = Configuration.getInstance();
-    	String defaultPath = config.getDefaultUsrFileDirectory();
-    	String currentConfigPath;
     	File path = new File(NOT_EXSITS_FILEPATH);
-    	File defaultFile = new File(defaultPath, TEST_FILENAME);
-    	StorageInterface storage;
     	
     	config.setUsrFileDirector(NOT_EXSITS_FILEPATH);
+    	Assert.assertEquals(config.getUsrFileDirectory(), NOT_EXSITS_FILEPATH);
     	
-    	// check path in configuration has been reset to a non-existing path
-    	currentConfigPath = config.getUsrFileDirectory();
-    	Assert.assertEquals(currentConfigPath, NOT_EXSITS_FILEPATH);
-    	
-    	// check this path does not exist
     	deleteIfExists(path);
-    	Assert.assertFalse(path.exists());
     	
     	// check the default file in default location does not exist, 
     	// in order to make sure it is 're-created' below
     	deleteIfExists(defaultFile);
-    	Assert.assertFalse(defaultFile.exists());
     	
     	storage = Storage.getStorage();
     	storage.init();
     	
-    	// check path in configuration has been reset to default
-    	currentConfigPath = config.getUsrFileDirectory();
-    	Assert.assertEquals(currentConfigPath, defaultPath);
+    	Assert.assertEquals(config.getUsrFileDirectory(), defaultPath);
     	
-    	// check the file in default path has been re-created
-    	Assert.assertTrue(defaultFile.exists());
+    	assertFileExists(defaultFile);
     }
     
     @Test
     /* Test if path exists but the storage file does not exist
      * Expected: re-create the storage file
      */
-    public void testStorageFileNotExists() throws IOException {
-    	ConfigurationInterface config = Configuration.getInstance();
-    	String defaultPath = config.getDefaultUsrFileDirectory();
-    	String currentConfigPath;
-    	File defaultFile = new File(defaultPath, TEST_FILENAME);
-    	StorageInterface storage;
-    	
-    	// check path in configuration has been reset to default
-    	config.resetStorageLocation();
-    	currentConfigPath = config.getUsrFileDirectory();
-    	Assert.assertEquals(currentConfigPath, defaultPath);
-    	
+    public void testStorageFileNotExists() throws IOException {    	
     	// check the default file in default location does not exist, 
     	// in order to make sure it is 're-created' below
     	deleteIfExists(defaultFile);
-    	Assert.assertFalse(defaultFile.exists());
     	
     	storage = Storage.getStorage();
     	storage.init();
     	
     	// check the file in default path has been re-created
-    	Assert.assertTrue(defaultFile.exists());
+    	assertFileExists(defaultFile);
     }
     
     @Test
@@ -205,12 +192,23 @@ public class StorageTest {
     /* Test if file content is JSON Array but some entries cannot be parsed to tasks
      * Expected: those entries failed to be parsed are discarded, without affecting others
      */ 
-    public void testLoadInvalidTask() throws IOException {
-    	for (int i = 0; i < INVALID_TASKS.length; i++) {
-    		String content = "[" + VALID_TASK + INVALID_TASKS[i] + "]";
-    		
-    		testInvalidTask(content);
-    	}
+    public void testLoadInvalidTasks() throws IOException {
+    	TasksBag tb;
+    	String fileContent;
+
+    	for (int i = 0; i < INVALID_TASKS.length; i++) {    		
+    		writeToFile(defaultFile, "[" + VALID_TASK + INVALID_TASKS[i] + "]");
+        	
+        	storage = Storage.getStorage();
+        	storage.init();
+        	
+        	tb = new TasksBag();
+        	storage.load("", tb);
+        	Assert.assertEquals(1, tb.size());
+        
+        	fileContent = readFile(defaultFile);
+        	Assert.assertEquals(fileContent, "[" + VALID_TASK +"]");
+       	}
     }
 
     @Test 
@@ -259,19 +257,10 @@ public class StorageTest {
      * input could be empty, invalid JSON format or invalid Task format
      */ 
     private void testInvalidLoad(String content) throws IOException {
-    	ConfigurationInterface config = Configuration.getInstance();
-    	String path = config.getUsrFileDirectory();
-    	StorageInterface storage;
     	TasksBag tb;
     	String fileContent;
-    	
-    	File storageFile = new File(path, TEST_FILENAME);
-    	createIfNotExists(storageFile);
-    	Assert.assertTrue(storageFile.exists());
-    	
-    	writeToFile(storageFile, content);
-    	fileContent = readFile(storageFile);
-    	Assert.assertEquals(fileContent, content);
+    	    	
+    	writeToFile(defaultFile, content);
     	
     	storage = Storage.getStorage();
     	storage.init();
@@ -280,42 +269,19 @@ public class StorageTest {
     	storage.load("", tb);
     	Assert.assertEquals(0, tb.size());
     
-    	fileContent = readFile(storageFile);
+    	fileContent = readFile(defaultFile);
     	Assert.assertEquals(fileContent, TESTFILE_CONTENT_INITIAL);
-    }
-    
-    private void testInvalidTask(String content) throws IOException {
-    	ConfigurationInterface config = Configuration.getInstance();
-    	String path = config.getUsrFileDirectory();
-    	StorageInterface storage;
-    	TasksBag tb;
-    	String fileContent;
-    	
-    	System.out.println(content);
-    	
-    	File storageFile = new File(path, TEST_FILENAME);
-    	createIfNotExists(storageFile);
-    	Assert.assertTrue(storageFile.exists());
-    	
-    	writeToFile(storageFile, content);
-    	fileContent = readFile(storageFile);
-    	Assert.assertEquals(fileContent, content);
-    	
-    	storage = Storage.getStorage();
-    	storage.init();
-    	
-    	tb = new TasksBag();
-    	storage.load("", tb);
-    	Assert.assertEquals(1, tb.size());
-    
-    	fileContent = readFile(storageFile);
-    	Assert.assertEquals(fileContent, "[" + VALID_TASK +"]");
     }
     
     private void writeToFile(File f, String content) throws IOException {
     	Writer writer = new BufferedWriter(new FileWriter(f));
+    	String fileContent;
+    	
     	writer.write(content);
     	writer.close();
+    	
+    	fileContent = readFile(f);
+    	Assert.assertEquals(fileContent, content);
     }
     
     private String readFile(File f) throws FileNotFoundException {
@@ -339,15 +305,33 @@ public class StorageTest {
         return new Date(calender.getTimeInMillis());
     }
     
+    private void resetDefaultPath() throws IOException {
+    	String currentConfigPath;
+    	String defaultPath = config.getDefaultUsrFileDirectory();
+    	
+    	config.resetStorageLocation();
+    	
+    	currentConfigPath = config.getUsrFileDirectory();
+    	Assert.assertEquals(currentConfigPath, defaultPath);
+    }
+    
     private static void deleteIfExists(File f) {
     	if (f.exists()) {
     		f.delete();
     	}
+    	
+    	Assert.assertFalse(f.exists());
     }
     
     private static void createIfNotExists(File f) throws IOException {
     	if (!f.exists()) {
     		f.createNewFile();
     	}
+    	
+    	assertFileExists(f);
+    }
+    
+    private static void assertFileExists(File f) {
+    	Assert.assertTrue(f.exists());
     }
 }
