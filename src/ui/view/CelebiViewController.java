@@ -1,6 +1,7 @@
 package ui.view;
 
 import java.util.Date;
+import java.util.Set;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
@@ -64,7 +65,7 @@ public class CelebiViewController {
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    private static final String[][] VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
+    private static final Set<String> VALID_CMD_TOKENS = Aliases.getValidCmdTokens();
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
     private static final String NIGHT_CELEBI_COLOR = "#16a085";
@@ -355,14 +356,7 @@ public class CelebiViewController {
     private boolean isCmdToken(String firstWord) {
         assert (firstWord != null);
         firstWord = firstWord.toLowerCase();
-        for (String[] tokens : VALID_CMD_TOKENS) {
-            for (String token : tokens) {
-                if (firstWord.equals(token)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return VALID_CMD_TOKENS.contains(firstWord);
     }
 
     // @@author A0133895U
