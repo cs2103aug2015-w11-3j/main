@@ -58,7 +58,7 @@ public class UnmarkAction implements UndoableAction {
         
         // Should not unmark again if it is already unmarked.
         // Does not go into undo queue if already unmarked.
-        if (cWhichTask.isComplete() == false) {
+        if (cWhichTask.isCompleted() == false) {
             formattedString = Utilities.formatString(USR_MSG_UNMARK_FAIL, cWhichTask.getName());
             throw new AlreadyUnmarkedException(formattedString);
         } else {
