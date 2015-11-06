@@ -20,7 +20,7 @@ public class UI implements UIInterface {
     private static final String UI_TXT_USRCMD = "You: %1$s\n";
     private static final String UI_TXT_FEEDBACK = "Celebi: %1$s";
     private static final String UI_TXT_WELCOME = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
-    private static final String UI_TXT_TABEVENT = "You pressed tab\n";
+    private static final String UI_TXT_TABEVENT = "You pressed tab!\n";
     
     LogicInterface logic;
     private CelebiViewController controller;

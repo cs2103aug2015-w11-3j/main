@@ -6,6 +6,8 @@ import parser.Command;
 
 public class FilterClearAction implements Action {
     
+    private static final String USR_MSG_FILTER_CLEAR = "Cleared searches and filters!";
+
     private Command cCommand;
     private TasksBag cBag;
 
@@ -16,9 +18,11 @@ public class FilterClearAction implements Action {
 
     @Override
     public Feedback execute() throws LogicException {
+        String msg = USR_MSG_FILTER_CLEAR;
+        
         cBag.setSearchState(null);
         cBag.setFilterDateState(null, null);
-        CommandFeedback fb = new CommandFeedback(cCommand, cBag);
+        CommandFeedback fb = new CommandFeedback(cCommand, cBag, msg);
         return fb;
     }
 
