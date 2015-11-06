@@ -341,6 +341,13 @@ public class Parser implements ParserInterface {
 		if (arrayContains(Aliases.CMD_HELP, token)) {
 			return Command.Type.HELP;
 		}
+		switch (token) {
+		case "clr" :
+		case "cls" :
+		case "clear" :
+		case "reset" :
+			return Command.Type.CLEAR_FILTERS;
+		}
 		return Command.Type.INVALID;
 	}
 
@@ -390,6 +397,8 @@ public class Parser implements ParserInterface {
 			case HELP:
 				return parseHelp(args);
 				//break;
+			case CLEAR_FILTERS:
+				return parseClear(args);
 			default :
 				break;
 			}
@@ -397,6 +406,10 @@ public class Parser implements ParserInterface {
 		return null;
 	}
 
+	private Command parseClear (String args) {
+		assert(args != null);
+		return new Command(Command.Type.CLEAR_FILTERS, userRawInput);
+	}
 	private Command parseAdd (String args) {
 		assert(args != null);
 		args = args.trim();
