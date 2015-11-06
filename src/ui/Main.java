@@ -12,6 +12,7 @@ import ui.view.CelebiViewController;
 public class Main extends Application {	
 	private Stage primaryStage;
     private BorderPane rootLayout;
+    private AnchorPane celebiPane;
     private Scene scene;
     
     @Override
@@ -99,6 +100,18 @@ public class Main extends Application {
 
     public static void main(String[] args) {
     	launch(args);
+    }
+    
+    public BorderPane getRootLayout() {
+    	return rootLayout;
+    }
+    
+    public AnchorPane getCelebiLayout() {
+    	return celebiPane;
+    }
+    
+    public Scene getScene() {
+    	return scene;
     }
 }
 

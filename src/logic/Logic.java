@@ -38,7 +38,7 @@ public class Logic implements LogicInterface {
     public void init() {
 
         cStorage = Storage.getStorage();
-        cStorage.init(false);
+        cStorage.init();
         cParser = Parser.getParser();
         cParser.init();
 
@@ -159,7 +159,7 @@ public class Logic implements LogicInterface {
     public KeyEventFeedback executeKeyEvent(KeyCode whichKey) throws LogicException {
         KeyEventFeedback fb = null;
         if(whichKey == TOGGLE_FILTER_STATE_KEY){
-            fb = (KeyEventFeedback)cInvoker.placeAction(new FilterToggle(cInternalBag, whichKey));
+            fb = (KeyEventFeedback)cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
         }
         return fb;
     }

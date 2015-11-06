@@ -4,6 +4,7 @@ package common;
 import java.io.IOException;
 
 public interface ConfigurationInterface {	
+	public String getDefaultUsrFileDirectory();
     public String getUsrFileDirectory();
     public Time getDefaultStartTime();
     public Time getDefaultEndTime();
