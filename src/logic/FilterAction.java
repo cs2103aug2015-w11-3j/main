@@ -2,7 +2,7 @@
 package logic;
 
 import common.TasksBag;
-import common.TasksBag.FilterBy;
+import common.TasksBag.ViewType;
 import logic.exceptions.LogicException;
 import parser.Command;
 
@@ -17,9 +17,10 @@ public class FilterAction implements Action {
 
     private Command cCommand;
     private TasksBag cBag;
-    private FilterBy cSortBy;
+    private ViewType cSortBy;
 
-    public FilterAction(Command command, TasksBag internalBag, FilterBy sortBy) throws LogicException {
+    
+    public FilterAction(Command command, TasksBag internalBag, ViewType sortBy) throws LogicException {
         cCommand = command;
         cBag = internalBag;
         cSortBy = sortBy;
@@ -31,15 +32,15 @@ public class FilterAction implements Action {
         switch (cSortBy) {
             case COMPLETE_TASKS:
                 msg = USR_MSG_FILTER_COMPLETE;
-                cBag.setFilterState(FilterBy.COMPLETE_TASKS);
+                cBag.setView(ViewType.COMPLETE_TASKS);
                 break;
             case INCOMPLETE_TASKS:
                 msg = USR_MSG_FILTER_INCOMPLETE;
-                cBag.setFilterState(FilterBy.INCOMPLETE_TASKS);
+                cBag.setView(ViewType.INCOMPLETE_TASKS);
                 break;
             case TODAY:
                 msg = USR_MSG_FILTER_TODAY;
-                cBag.setFilterState(FilterBy.TODAY);
+                cBag.setView(ViewType.TODAY);
                 break;
             default:
                 assert false;

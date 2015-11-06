@@ -19,70 +19,76 @@ public final class Aliases {
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
 	static final String[] CMD_ADD = {
-			"a",
-			"add",
-			"new",
-			"create"
+		"a",
+		"add",
+		"new",
+		"create"
 	};
 	static final String[] CMD_UPD = {
-			"upd",
-			"update",
-			"set",
-			"edit"
+		"upd",
+		"update",
+		"set",
+		"edit"
 	};
 	static final String[] CMD_DEL = {
-			"d",
-			"del",
-			"delete",
-			"rm",
-			"remove"
+		"d",
+		"del",
+		"delete",
+		"rm",
+		"remove"
 	};
 	static final String[] CMD_QUIT = {
-			"q",	
-			"quit",
-			"exit"
+		"q",	
+		"quit",
+		"exit"
 	};
 	static final String[] CMD_MARK = {
-			"done",
-			"finish",
-			"mark",
-			"complete"
+		"done",
+		"finish",
+		"mark",
+		"complete"
 	};
 	static final String[] CMD_UNMARK = {
-			"unmark",
-			"reopen",
-			"uncomplete"
+		"unmark",
+		"reopen",
+		"uncomplete"
 	};
 	static final String[] CMD_UNDO = {
-			"u",
-			"un",
-			"undo"
+		"u",
+		"un",
+		"undo"
 	};
 	static final String[] CMD_REDO = {
-			"redo",
-			"re" 
+		"redo",
+		"re" 
 	};
 	static final String[] CMD_SHOW = {
-			"show",
-			"view",
-			"display"
+		"show",
+		"view",
+		"display"
 	};
 	static final String[] CMD_SEARCH = {
-			"s",
-			"search",
+		"s",
+		"search",
 	};
 	static final String[] CMD_FILTER = {
-			"f",
-			"fil",
-			"filter"
+		"f",
+		"fil",
+		"filter"
 	};
 	static final String[] CMD_MOVE = {
-			"mv",
-			"move"
+		"mv",
+		"move"
 	};
 	static final String[] CMD_HELP = {
-			"help",
-			"?"
+		"help",
+		"?",
+		"-h"
+	};
+	static final String[] CMD_THEME = {
+		"theme",
+		"color",
+		"colour"
 	};
 	static final String[][] TOKENS_CMD = {
 			CMD_ADD,
@@ -97,7 +103,8 @@ public final class Aliases {
 			CMD_SEARCH,
 			CMD_FILTER,
 			CMD_MOVE,
-			CMD_HELP
+			CMD_HELP,
+			CMD_THEME
 	};
 	
 	/////////////////////////////////////////////////////

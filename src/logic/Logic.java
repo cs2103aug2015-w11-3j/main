@@ -4,7 +4,7 @@ package logic;
 import java.util.logging.Logger;
 import javafx.scene.input.KeyCode;
 import common.TasksBag;
-import common.TasksBag.FilterBy;
+import common.TasksBag.ViewType;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
@@ -20,7 +20,7 @@ public class Logic implements LogicInterface {
     private static final String USR_MSG_UNKNOWN_COMMAND = "I couldn't understand you... (>.<)";
 
     // The default view when UI first query the bag
-    private static final FilterBy DEFAULT_UI_VIEW = TasksBag.FilterBy.TODAY;
+    private static final ViewType DEFAULT_UI_VIEW = TasksBag.ViewType.TODAY;
     private static final KeyCode TOGGLE_FILTER_STATE_KEY = KeyCode.TAB;
     private StorageInterface cStorage;
     private ParserInterface cParser;
@@ -74,14 +74,11 @@ public class Logic implements LogicInterface {
             case DELETE:
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
-            case SHOW_COMPLETE:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, TasksBag.FilterBy.COMPLETE_TASKS));
+            case SHOW:
+                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, TasksBag.ViewType.COMPLETE_TASKS));
                 break;
             case UPDATE:
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
-                break;
-            case SHOW_INCOMPLETE:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, TasksBag.FilterBy.INCOMPLETE_TASKS));
                 break;
             case MARK:
                 fb = cInvoker.placeAction(new MarkAction(rtnCmd, cInternalBag, cStorage));
@@ -106,9 +103,6 @@ public class Logic implements LogicInterface {
                 break;
             case SEARCH:
                 fb = cInvoker.placeAction(new SearchAction(rtnCmd, cInternalBag));
-                break;
-            case SHOW_DEFAULT:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag, DEFAULT_UI_VIEW));
                 break;
             case HELP:
                 fb = cInvoker.placeAction(new HelpAction(rtnCmd, cInternalBag));
@@ -147,7 +141,7 @@ public class Logic implements LogicInterface {
 
     @Override
     public TasksBag getDefaultBag() {
-        cInternalBag.setFilterState(DEFAULT_UI_VIEW);
+        cInternalBag.setView(DEFAULT_UI_VIEW);
         return cInternalBag.getFiltered();
     }
 

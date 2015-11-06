@@ -25,7 +25,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import common.Task;
 import common.TasksBag;
-import common.TasksBag.FilterBy;
+import common.TasksBag.ViewType;
 import common.TasksBag.FilterDateState;
 import ui.Main;
 import ui.UIInterface;
@@ -410,12 +410,12 @@ public class CelebiViewController {
      */
     public void refreshSelection(TasksBag bag) {
         SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
-        FilterBy state = bag.getState();
-        if (state == common.TasksBag.FilterBy.TODAY) {
+        ViewType state = bag.getView();
+        if (state == common.TasksBag.ViewType.TODAY) {
             selectionModel.select(0);
-        } else if (state == common.TasksBag.FilterBy.INCOMPLETE_TASKS) {
+        } else if (state == common.TasksBag.ViewType.INCOMPLETE_TASKS) {
             selectionModel.select(1);
-        } else if (state == common.TasksBag.FilterBy.COMPLETE_TASKS) {
+        } else if (state == common.TasksBag.ViewType.COMPLETE_TASKS) {
             selectionModel.select(2);
         }
     }

@@ -14,7 +14,7 @@ import javafx.collections.ObservableList;
  */
 public class TasksBag implements Iterable<Task> {
 
-    public static enum FilterBy {
+    public static enum ViewType {
         COMPLETE_TASKS, INCOMPLETE_TASKS, TODAY
     }
 
@@ -26,7 +26,7 @@ public class TasksBag implements Iterable<Task> {
     private static final int TASKS_LIMIT = 15;
     private static final int DEFAULT_DAY_RANGE = 3;
 
-    private FilterBy cFilterState = null; // setting to default
+    private ViewType cViewType = null; // setting to default
     private String cSearchState = null;
     private ObservableList<Task> tasks;
     private Date cFilterDateStart;
@@ -37,7 +37,7 @@ public class TasksBag implements Iterable<Task> {
     public TasksBag() {
         tasks = FXCollections.observableArrayList();
         log = Logger.getLogger("TasksBag");
-        cFilterState = FilterBy.INCOMPLETE_TASKS; // setting to default
+        cViewType = ViewType.INCOMPLETE_TASKS; // setting to default
     }
 
     public FilterDateState getDateState() {
@@ -75,9 +75,9 @@ public class TasksBag implements Iterable<Task> {
         return tasks;
     }
 
-    public void setFilterState(FilterBy attribute) {
+    public void setView(ViewType attribute) {
         assert attribute != null;
-        cFilterState = attribute;
+        cViewType = attribute;
     }
 
     public void setSearchState(String keyword) {
@@ -93,7 +93,7 @@ public class TasksBag implements Iterable<Task> {
 
         ObservableList<Task> newContainer = FXCollections.observableArrayList();
 
-        switch (cFilterState) {
+        switch (cViewType) {
             case COMPLETE_TASKS:
                 filterTasksComplete(newContainer);
                 break;
@@ -113,7 +113,7 @@ public class TasksBag implements Iterable<Task> {
         // Transfer the current state to the new bag
         // UI uses the sort state to identify current tab
         TasksBag rtnBag = new TasksBag(newContainer);
-        rtnBag.setFilterState(cFilterState);
+        rtnBag.setView(cViewType);
         rtnBag.setSearchState(cSearchState);
         rtnBag.setFilterDateState(cFilterDateStart, cFilterDateEnd);
         return rtnBag;
@@ -286,8 +286,8 @@ public class TasksBag implements Iterable<Task> {
         return tasks.iterator();
     }
 
-    public FilterBy getState() {
-        return cFilterState;
+    public ViewType getView() {
+        return cViewType;
     }
 
     public boolean isEmpty() {
@@ -324,20 +324,20 @@ public class TasksBag implements Iterable<Task> {
         return cSearchState;
     }
 
-    public void toggleFilter() {
-        switch (cFilterState) {
+    public void toggleView() {
+        switch (cViewType) {
             case COMPLETE_TASKS:
-                cFilterState = FilterBy.INCOMPLETE_TASKS;
+                cViewType = ViewType.INCOMPLETE_TASKS;
                 break;
             case INCOMPLETE_TASKS:
-                cFilterState = FilterBy.TODAY;
+                cViewType = ViewType.TODAY;
                 break;
             case TODAY:
-                cFilterState = FilterBy.COMPLETE_TASKS;
+                cViewType = ViewType.COMPLETE_TASKS;
                 break;
             default:
                 log.severe("Default filter state encountered during toggleFilter.");
-                cFilterState = FilterBy.TODAY;
+                cViewType = ViewType.TODAY;
                 break;
         }
     }

@@ -217,7 +217,7 @@ public class LogicTest {
         // fail test under INCOMPLETE(default) filter of tasksbag
         testFailException("mark 1", IntegrityCommandException.class);
 
-        logic.getTaskBag().setFilterState(TasksBag.FilterBy.COMPLETE_TASKS);
+        logic.getTaskBag().setView(TasksBag.ViewType.COMPLETE_TASKS);
 
         testFailException("mark 1", AlreadyMarkedException.class);
 

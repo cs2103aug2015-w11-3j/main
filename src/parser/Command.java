@@ -4,21 +4,24 @@ package parser;
 import java.nio.file.Path;
 import java.util.Date;
 import common.Task;
+import common.TasksBag;
+import ui.view.CelebiViewController;
 
 public class Command implements CommandInterface {
 
 	public static enum Type {
 		ADD, DELETE, UPDATE, 
-		show_temp, SHOW_INCOMPLETE, SHOW_COMPLETE, SHOW_DEFAULT,
+		SHOW,
 		SEARCH, FILTER_DATE, CLEAR_FILTERS,
-		UNDO,REDO,
+		UNDO, REDO,
 		MARK, UNMARK,
 		QUIT, 
 		INVALID,
 		MOVE, HELP, 
-		THEME_DAY, THEME_NIGHT
+		THEME
 	}
 
+	
 	// Immutable, every command has these
 	private final String _userInput;
 	private final Type _cmdType;
@@ -27,6 +30,7 @@ public class Command implements CommandInterface {
 	private int _taskUID;
 	private Task.DataType _taskField;
 	private Type _helpCmdType;
+	private TasksBag.ViewType _showType;
 	
 	// field values
 	private String _name;
@@ -117,6 +121,9 @@ public class Command implements CommandInterface {
 	@Override
 	public Path getPath() {
 		return _path;
+	}
+	public TasksBag.ViewType getViewType () {
+		return _showType;
 	}
 
 //	@Override

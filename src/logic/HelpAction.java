@@ -65,24 +65,14 @@ public class HelpAction implements Action {
             case SEARCH:
                 msg = buildString(HelpStrings.HELP_FORMAT_SEARCH);
                 break;
-            case SHOW_COMPLETE:
+            case SHOW :
                 msg = buildString(HelpStrings.HELP_FORMAT_SHOW);
                 break;
-            case SHOW_DEFAULT:
-                msg = buildString(HelpStrings.HELP_FORMAT_SHOW);
-                break;
-            case SHOW_INCOMPLETE:
-                msg = buildString(HelpStrings.HELP_FORMAT_SHOW);
-                break;
-            case UNDO:
+            case UNDO :
                 msg = buildString(HelpStrings.HELP_FORMAT_UNDO);
                 break;
             case UNMARK:
                 msg = buildString(HelpStrings.HELP_FORMAT_UNMARK);
-                break;
-            case show_temp:
-            	assert false; // should never happen; show_temp is a parse hack needs to be refactored :P
-                msg = buildString(HelpStrings.HELP_FORMAT_HELP_TEMP);
                 break;
             case UPDATE:
                 msg = buildString(HelpStrings.HELP_FORMAT_UPD);
