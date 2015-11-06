@@ -31,6 +31,7 @@ public class Command implements CommandInterface {
 	private Task.DataType _taskField;
 	private Type _helpCmdType;
 	private TasksBag.ViewType _viewType;
+	private CelebiViewController.SKIN _theme;
 	
 	// field values
 	private String _name;
@@ -59,6 +60,9 @@ public class Command implements CommandInterface {
 	}
 	void setViewType (TasksBag.ViewType v) {
 		_viewType = v;
+	}
+	void setTheme (CelebiViewController.SKIN theme) {
+		_theme = theme;
 	}
 	
 	void setText (String name) {
@@ -109,6 +113,10 @@ public class Command implements CommandInterface {
 	@Override
 	public TasksBag.ViewType getViewType () {
 		return _viewType;
+	}
+	@Override
+	public CelebiViewController.SKIN getTheme () {
+		return _theme;
 	}
 	
 	// Field values
