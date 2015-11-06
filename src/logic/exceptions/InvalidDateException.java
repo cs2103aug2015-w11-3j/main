@@ -1,7 +1,7 @@
 //@@author A0125546E
 package logic.exceptions;
 
-public class InvalidDateException extends LogicException {
+public class InvalidDateException extends IntegrityCommandException {
 
     private static final long serialVersionUID = -7002613567304746646L;
 
