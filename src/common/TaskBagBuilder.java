@@ -23,7 +23,7 @@ public class TaskBagBuilder {
         ObservableList<Task> taskList = FXCollections.observableArrayList();
 
         list.forEach(task -> {
-            if (task.isComplete() == false) {
+            if (task.isCompleted() == false) {
                 taskList.add(task);
             }
         });
@@ -35,7 +35,7 @@ public class TaskBagBuilder {
         ObservableList<Task> taskList = FXCollections.observableArrayList();
 
         list.forEach(task -> {
-            if (task.isComplete()) {
+            if (task.isCompleted()) {
                 taskList.add(task);
             }
         });
