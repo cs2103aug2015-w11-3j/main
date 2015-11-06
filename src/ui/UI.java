@@ -85,8 +85,11 @@ public class UI implements UIInterface {
 
     private void doDefault(CommandFeedback fb) {
         String usrMsg;
+        String warningMsg = fb.getWarningMsg(); // TODO Yuka the warning msg will be found here. Just print it out.
+        
         cb = fb.getcBag();
         display(cb);
+        
         usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
         controller.appendFeedback(usrMsg);
     }
