@@ -229,12 +229,26 @@ public class Task {
     */
     
     /**
-     * Obtains the available date that this task contains. Always gets the start
-     * date before end
+     * Obtains the available date that this task contains. Always gets the end
+     * date before start
      * 
      * @return
      */
-    private Date getAnyDate() {
+    public Date getEndThenStartDate() {
+        Date rtn = cEnd.get();
+        if (rtn == null) {
+            rtn = cStart.get();
+        }
+        return rtn;
+    }
+    
+    /**
+     * Obtains the available date that this task contains. Always gets the end
+     * date before start
+     * 
+     * @return
+     */
+    public Date getStartThenEndDate() {
         Date rtn = cStart.get();
         if (rtn == null) {
             rtn = cEnd.get();
@@ -248,7 +262,7 @@ public class Task {
      * @return
      */
     public boolean isWithinDays(int noOfDays) {
-        Date date = getAnyDate();
+        Date date = getStartThenEndDate();
         if (date == null) {
             return false;
         }

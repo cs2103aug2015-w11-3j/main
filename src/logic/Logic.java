@@ -74,8 +74,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag));// ,
-                                                                                  // TasksBag.ViewType.COMPLETE_TASKS));
+                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag));
                 break;
             case UPDATE:
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
