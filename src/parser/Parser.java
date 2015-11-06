@@ -17,7 +17,6 @@ import common.Task;
 import common.TasksBag;
 import common.Utilities;
 import ui.view.CelebiViewController;
-import common.TasksBag;
 
 public class Parser implements ParserInterface {
 	

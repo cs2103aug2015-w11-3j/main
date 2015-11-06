@@ -1,7 +1,6 @@
 package logic;
 
 import common.TasksBag;
-import logic.exceptions.LogicException;
 import parser.Command;
 
 public class FilterClearAction implements Action {
@@ -17,7 +16,7 @@ public class FilterClearAction implements Action {
     }
 
     @Override
-    public Feedback execute() throws LogicException {
+    public Feedback execute() {
         String msg = USR_MSG_FILTER_CLEAR;
         
         cBag.setSearchState(null);

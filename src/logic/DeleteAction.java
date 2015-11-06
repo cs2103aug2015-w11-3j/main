@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
+import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
@@ -41,8 +42,9 @@ public class DeleteAction implements UndoableAction {
      *            Storage pointer
      * @throws IntegrityCommandException
      *             When provided with an index that will access OOB values
+     * @throws IllegalAccessCommandException 
      */
-    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
+    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         assert internalBag != null;
         assert stor != null;
         assert command != null;
@@ -57,11 +59,11 @@ public class DeleteAction implements UndoableAction {
         int UID = cCommand.getTaskUID();
 
         if (UID <= 0) {
-            throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
+            throw new IllegalAccessCommandException(USR_MSG_DELETE_OOB);
         }
 
         if (UID > cCurBag.size()) {
-            throw new IntegrityCommandException(USR_MSG_DELETE_OOB);
+            throw new IllegalAccessCommandException(USR_MSG_DELETE_OOB);
         }
 
         // UID - 1 to get array index

@@ -12,7 +12,6 @@ import logic.KeyEventFeedback;
 import logic.Logic;
 import logic.LogicInterface;
 import logic.exceptions.LogicException;
-import parser.Command;
 import ui.view.CelebiViewController;
 
 public class UI implements UIInterface {
@@ -72,7 +71,19 @@ public class UI implements UIInterface {
                     break;
                 case THEME:
                     CelebiViewController.Skin skin = fb.getCommand().getTheme();
-                    // YUKAAA TODO
+                    switch(skin){
+                        case DAY:
+                            controller.switchDaySkin();
+                            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+                            controller.appendFeedback(usrMsg);
+                            break;
+                            
+                        case NIGHT:
+                            controller.switchNightSkin();
+                            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+                            controller.appendFeedback(usrMsg);
+                            break;
+                    }
                     break;
                 default:
                     cb = fb.getcBag();
@@ -82,7 +93,6 @@ public class UI implements UIInterface {
                     break;
             }
         } catch (LogicException e) {
-
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.appendFeedback(usrMsg);
         } catch (Exception e) {
