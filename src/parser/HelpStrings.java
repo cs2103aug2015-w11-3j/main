@@ -1,8 +1,6 @@
 //@@author A0131891E
 package parser;
 
-import common.Utilities;
-
 public class HelpStrings {
     /////////////////////////////////////////////////////////////////
     // Human-readable strings for command formats (used by logic.HelpAction)

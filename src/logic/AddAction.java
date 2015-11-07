@@ -65,7 +65,7 @@ public class AddAction implements UndoableAction {
     private String processWarningMsg() {
         // Over due has a higher priority than clashes
         if (cWhichTask.isOverDue()) {
-            return "";
+            return USR_MSG_ADD_WARNING_OVERDUE;
         }
 
         String warningString;

@@ -7,7 +7,6 @@ import common.Configuration;
 import common.Log;
 import common.TasksBag;
 import common.Utilities;
-import logic.exceptions.IllegalAliasException;
 import logic.exceptions.LogicException;
 import parser.Command;
 

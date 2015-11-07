@@ -1,7 +1,6 @@
 //@@author A0125546E
 package logic;
 
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 import common.TasksBag;
@@ -166,14 +165,5 @@ public class Logic implements LogicInterface {
             fb = (KeyEventFeedback) cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
         }
         return fb;
-    }
-    
-    public static void main(String[] args) throws Exception {
-    	Logic bla = new Logic();
-    	bla.init();
-    	Scanner in = new Scanner(System.in);
-    	while (true) {
-    		bla.executeCommand(in.nextLine());
-    	}
     }
 }

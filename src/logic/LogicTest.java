@@ -21,7 +21,6 @@ import common.TasksBag;
 import logic.exceptions.AlreadyMarkedException;
 import logic.exceptions.AlreadyUnmarkedException;
 import logic.exceptions.IllegalAccessCommandException;
-import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
@@ -164,6 +163,7 @@ public class LogicTest {
         String symbols = ",./<>?:'\"[]{}\\|=+=~-_!@#$%^&*()`";
         testPass("add " + symbols);
         Task addedTask = logic.getTaskBag().getTask(0);
+        System.out.println(addedTask.getName());
         Assert.assertTrue(symbols.equals(addedTask.getName()));
         testPass("delete 1");
     }
@@ -426,6 +426,7 @@ public class LogicTest {
 
         try {
             Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            fd.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
