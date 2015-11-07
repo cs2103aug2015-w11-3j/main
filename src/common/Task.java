@@ -64,7 +64,7 @@ public class Task {
 
     // setters
     public void setComplete(boolean isComplete) {
-    	cIsCompleted.set(isComplete);
+        cIsCompleted.set(isComplete);
     }
 
     public void setId(int id) {
@@ -139,9 +139,9 @@ public class Task {
         updateType();
         return cType;
     }
-    
+
     public BooleanProperty isCompletedProperty() {
-    	return cIsCompleted;
+        return cIsCompleted;
     }
 
     public boolean isImportant() {
@@ -183,20 +183,21 @@ public class Task {
         return false;
     }
 
+    // TODO REFACTOR
     private void updateType() {
-    	
-    	if (cStart.get() == null) {
-    		if (cEnd.get() == null) {
+
+        if (cStart.get() == null) {
+            if (cEnd.get() == null) {
                 cType.set(Type.FLOATING);
-    		} else {
-    			cType.set(Type.DEADLINE);
-    		}
-    		
-    	} else if (cEnd.get() == null) {
-            cType.set(Type.STARTONLY);    		
-    	} else {
-    		cType.set(Type.EVENT);
-    	}
+            } else {
+                cType.set(Type.DEADLINE);
+            }
+
+        } else if (cEnd.get() == null) {
+            cType.set(Type.STARTONLY);
+        } else {
+            cType.set(Type.EVENT);
+        }
     }
 
     public boolean isWithinDate(Date cFilterDateStart, Date cFilterDateEnd) {
@@ -241,9 +242,9 @@ public class Task {
      * @return
      */
     public Date getEndThenStartDate() {
-        Date rtn = cEnd.get();
+        Date rtn = this.getEnd();// cEnd.get();
         if (rtn == null) {
-            rtn = cStart.get();
+            rtn = this.getStart();////cStart.get();
         }
         return rtn;
     }
@@ -255,9 +256,9 @@ public class Task {
      * @return
      */
     public Date getStartThenEndDate() {
-        Date rtn = cStart.get();
+        Date rtn = this.getStart();//cStart.get();
         if (rtn == null) {
-            rtn = cEnd.get();
+            rtn = this.getEnd();//cEnd.get();
         }
         return rtn;
     }
