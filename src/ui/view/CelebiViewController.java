@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -23,6 +25,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
