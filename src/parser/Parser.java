@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -290,17 +291,19 @@ public class Parser implements ParserInterface {
 	);
 	
 	
+	private static final Map<String, Command.Type> DEFAULT_ALIAS_MAP = Aliases.getInstance().getAliasMap();
+	private static final Set<String> RESERVED_CMD_KEYWORDS = Aliases.getInstance().getReservedCmdTokens();
+	
 	/////////////////////////////////////////////////////////////////
 	// instance fields
 	/////////////////////////////////////////////////////////////////
 	private String userRawInput;
 	private static Parser parserInstance;
 	private final CelebiDateParser DATE_FORMATTER;
-	private final Map<String, Command.Type> DEFAULT_ALIAS_MAP;
+
 	/////////////////////////////////////////////////////////////////
 	
 	private Parser () {
-		DEFAULT_ALIAS_MAP = Aliases.getInstance().getAliasMap();
 		
 		userRawInput = "no user input received";
 		
@@ -398,7 +401,9 @@ public class Parser implements ParserInterface {
 		token = cleanText(token);
 		
 		Command.Type cmdType = Configuration.getInstance().getCmdTypeFromUserAlias(token);
-		if (cmdType != null && !token.equals("alias")) { // final check to prevent alias overwrite
+		
+		// includes redundancy check to make sure user aliases do not overwrite reserved cmd keywords
+		if (cmdType != null && !RESERVED_CMD_KEYWORDS.contains(token)) { 
 			return cmdType;
 		}
 				
@@ -555,7 +560,7 @@ public class Parser implements ParserInterface {
 			if (m.matches()) {
 				uid = Integer.parseInt(m.group(GRPNAME_UID));
 				newValue = m.group(GRPNAME_NEWVAL);
-				newStart = parseUpdDate(newValue);
+				newStart = parseUpdDate(newValue, true);
 				return makeUpdateStart(uid, newStart);
 			}
 	
@@ -563,7 +568,7 @@ public class Parser implements ParserInterface {
 			if (m.matches()) {
 				uid = Integer.parseInt(m.group(GRPNAME_UID));
 				newValue = m.group(GRPNAME_NEWVAL);
-				newEnd = parseUpdDate(newValue);
+				newEnd = parseUpdDate(newValue, false);
 				return makeUpdateEnd(uid, newEnd);
 			}
 		} catch (ParseException pe) {
@@ -770,14 +775,14 @@ public class Parser implements ParserInterface {
 	// Used only in parseUpdate: allows special datestrings
 	// to signify removal of a date field from the task.
 	// Allows conversion from event->deadline/startonly->float
-	private Date parseUpdDate (String dateStr) throws ParseException {
+	private Date parseUpdDate (String dateStr, boolean isStart) throws ParseException {
 		assert(dateStr != null);
 		cleanText(dateStr);
 		final List<String> clearDateAliases = Arrays.asList(Aliases.CLEAR_VAL);
 		if (clearDateAliases.contains(dateStr)) {
 			return null;
 		}
-		return parseDate(dateStr, true);
+		return parseDate(dateStr, isStart);
 	}
 	
 	@Override
