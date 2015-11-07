@@ -504,7 +504,7 @@ public class CelebiViewController {
      * 
      * @param newFeedback
      */
-    public void appendFeedback(String newFeedback) {
+    public void showFeedback(String newFeedback) {
         // if the text to be appended is the only line in feedback area, set its
         // color green
         if (feedbackArea.getText().equals("")) {
@@ -519,7 +519,7 @@ public class CelebiViewController {
         }
     }
 
-    public void appendWarning(String newWarning) {
+    public void showWarning(String newWarning) {
         feedbackArea.appendText("\n");
         feedbackArea.appendText(newWarning);
         feedbackArea.setStyle(2, "-fx-fill: " + currentWarningColor + ";");
