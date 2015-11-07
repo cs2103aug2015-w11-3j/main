@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -13,6 +15,7 @@ import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -20,6 +23,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -225,7 +229,7 @@ public class CelebiViewController {
     }
 
     /**
-     * Initialize command field with enter action and keyword highlighting
+     * Initialize command field with enter action and keyword highlighting and scroll bar disabler
      * checker
      */
     private void initializeCommandField() {
@@ -234,6 +238,7 @@ public class CelebiViewController {
 
         setPressedEvent();
         setKeywordHighlightChecker();
+        setCommandScrollBarDisabler();
     }
 
     private void setTabPressedEvent() {
@@ -245,6 +250,19 @@ public class CelebiViewController {
         });
     }
 
+    /**
+     * Disable the scroll bar when it appears
+     */
+    private void setCommandScrollBarDisabler() {
+    	commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
+    		if (commandArea.lookup(".scroll-bar") != null) {
+    			ScrollBar scrollBarv = (ScrollBar)commandArea.lookup(".scroll-bar");
+    			scrollBarv.setDisable(false);
+    			scrollBarv.setId("command-scroll-bar");
+    		}
+    	});
+    }
+    
     private void setKeywordHighlightChecker() {
         commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
             String firstWord;
