@@ -2,6 +2,7 @@
 package logic;
 
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystemException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
@@ -19,7 +20,7 @@ public class MoveFileAction implements Action {
     private static final String USR_MSG_MOVE_OK = "Storage file moved!";
     private static final String USR_MSG_MOVE_ERROR_FILE_EXISTING = "Storage file in %1s already exists";
     private static final String USR_MSG_MOVE_ERROR_INVALID_PATH = "The directory %1s does not exists";
-    private static final String USR_MSG_MOVE_INVALID_PATH = "Invalid Path!";
+    private static final String USR_MSG_MOVE_ERROR_WRONG_TYPE = "The directory $1s is a file, not folder";
     
     private Command cCommand;
     private StorageInterface cStore;
@@ -53,12 +54,11 @@ public class MoveFileAction implements Action {
         } catch (NoSuchFileException e) {
         	String fommatted = Utilities.formatString(USR_MSG_MOVE_ERROR_INVALID_PATH, cPath.toString());
         	throw new LogicException(fommatted);
+        } catch (FileSystemException e) {
+        	String fommatted = Utilities.formatString(USR_MSG_MOVE_ERROR_WRONG_TYPE, cPath.toString());
+        	throw new LogicException(fommatted);
         } catch (Exception e) {
-        	System.out.println(e);
-        	System.out.println("sb2");
-        	return new CommandFeedback(cCommand, cBag, USR_MSG_MOVE_OK);
-
-//        	throw new LogicException(USR_MSG_MOVE_ERROR);
+        	return new CommandFeedback(cCommand, cBag, USR_MSG_MOVE_ERROR);
         }
     }
 }

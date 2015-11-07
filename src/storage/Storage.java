@@ -92,11 +92,11 @@ public class Storage implements StorageInterface {
     }
     
     // Methods below are only used for Storage unit tests
-    static void openTestMode() {
+    void openTestMode() {
     	_isTestMode = true;
     }
     
-    static void closeTestMode() {
+    void closeTestMode() {
     	_isTestMode = false;
     }
 }
