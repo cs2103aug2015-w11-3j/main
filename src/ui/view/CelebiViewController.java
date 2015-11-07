@@ -38,6 +38,7 @@ import parser.Command;
 import parser.HelpStrings;
 
 public class CelebiViewController {
+
     // @@author A0133895U
     Main mainApp;
     UIInterface ui;
@@ -70,7 +71,7 @@ public class CelebiViewController {
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
-    
+
     private Map<String, Command.Type> VALID_CMD_TOKENS;
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
@@ -81,15 +82,17 @@ public class CelebiViewController {
     private static final String NIGHT_WARNING_COLOR = "#ca2f5b";
     private static final String DAY_KEYWORD_COLOR = "#529228";
     private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
-    
+
     private static final Color DAY_NORMAL_TASK_COLOR = Color.rgb(86, 87, 85);
     private static final Color DAY_COMPLETED_TASK_COLOR = Color.rgb(82, 146, 40);
     private static final Color DAY_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
     private static final Color NIGHT_NORMAL_TASK_COLOR = Color.rgb(236, 240, 241);
     private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(22, 160, 133);
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
-    
+
     private static final Font DEFAULT_FONT = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 13);
+    private static final String DATE_FILTER_NONE = "none";
+    private static final String SEARCH_FILTER_NONE = "none";
 
     public static enum Skin {
         DAY, NIGHT
@@ -107,7 +110,7 @@ public class CelebiViewController {
      */
     @FXML
     private void initialize() {
-    	initializeCelebiTable();
+        initializeCelebiTable();
         initializeTableColumns();
         initializeCommandPane();
         initializeCommandField();
@@ -115,7 +118,7 @@ public class CelebiViewController {
         initializeFeedbackArea();
 
         VALID_CMD_TOKENS = Aliases.getInstance().getAliasMap();
-        
+
         Platform.runLater(() -> {
             commandArea.requestFocus();
         });
@@ -123,13 +126,13 @@ public class CelebiViewController {
 
     // private void temp(ObservableV)
     private void initializeCelebiTable() {
-        //celebiTable.setCellSize(26.2);
+        // celebiTable.setCellSize(26.2);
         initializeRowPseudoclassListeners();
         disableTableColumnReordering();
     }
 
-	private void disableTableColumnReordering() {
-		TableColumn[] columns = { spaceColumn, idColumn, taskNameColumn, startTimeColumn, endTimeColumn };
+    private void disableTableColumnReordering() {
+        TableColumn[] columns = { spaceColumn, idColumn, taskNameColumn, startTimeColumn, endTimeColumn };
         celebiTable.getColumns().addListener(new ListChangeListener<TableColumn>() {
             public boolean reordered = false;
 
@@ -143,16 +146,16 @@ public class CelebiViewController {
                 }
             }
         });
-	}
+    }
 
-	private void initializeRowPseudoclassListeners() {
-		PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
+    private void initializeRowPseudoclassListeners() {
+        PseudoClass overdue = PseudoClass.getPseudoClass("overdue");
         PseudoClass complete = PseudoClass.getPseudoClass("complete");
         addRowPseudoClassListeners(overdue, complete);
-	}
+    }
 
-	private void addRowPseudoClassListeners(PseudoClass overdue, PseudoClass complete) {
-		celebiTable.setRowFactory(tableview -> {
+    private void addRowPseudoClassListeners(PseudoClass overdue, PseudoClass complete) {
+        celebiTable.setRowFactory(tableview -> {
             TableRow<Task> row = new TableRow<>();
 
             ChangeListener<Date> endChangeListener = (observable, oldEndDate, newEndDate) -> {
@@ -173,27 +176,24 @@ public class CelebiViewController {
                     currentTask.isCompletedProperty().addListener(completeChangeListener);
 
                     if (currentTask.isCompleted()) {
-                    	row.pseudoClassStateChanged(complete, true);
-                    	row.pseudoClassStateChanged(overdue, false);
-                    }
-                    else if (currentTask.getEnd() != null) {
-                    	row.pseudoClassStateChanged(complete, false);
-                    	row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
-                    } 
-                    else {
-                    	row.pseudoClassStateChanged(complete, false);
-                    	row.pseudoClassStateChanged(overdue, false);
+                        row.pseudoClassStateChanged(complete, true);
+                        row.pseudoClassStateChanged(overdue, false);
+                    } else if (currentTask.getEnd() != null) {
+                        row.pseudoClassStateChanged(complete, false);
+                        row.pseudoClassStateChanged(overdue, currentTask.getEnd().before(new Date()));
+                    } else {
+                        row.pseudoClassStateChanged(complete, false);
+                        row.pseudoClassStateChanged(overdue, false);
                     }
 
-                } 
-                else {
-                	row.pseudoClassStateChanged(complete, false);
-                	row.pseudoClassStateChanged(overdue, false);
+                } else {
+                    row.pseudoClassStateChanged(complete, false);
+                    row.pseudoClassStateChanged(overdue, false);
                 }
             });
             return row;
         });
-	}
+    }
 
     /**
      * Initialize the table columns by setting the field that each column uses
@@ -228,63 +228,60 @@ public class CelebiViewController {
      */
     private void initializeTaskNameColumn() {
         taskNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-    	setTaskNameAppearence();
+        setTaskNameAppearence();
     }
 
-	private void setTaskNameAppearence() {
-		taskNameColumn.setCellFactory(col -> {
-    		return new TableCell<Task, String>() {
-    			@Override
-    			protected void updateItem(String item, boolean empty) {
-    				super.updateItem(item, empty);
-    				Text nameText = new Text();
-    				Task task = (Task)getTableRow().getItem();
-    				if (task != null) {
-    					setColorForTaskName(nameText, task);
-    					nameText.setFont(DEFAULT_FONT);
-    					setGraphic(nameText);
-        				setPrefHeight(26.2);
-        				// wrap the task name
-        				nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
-        				nameText.textProperty().bind(itemProperty());
-    				}
-    			}
-    		};
-        	//cellData.getValue().nameProperty();	
+    private void setTaskNameAppearence() {
+        taskNameColumn.setCellFactory(col -> {
+            return new TableCell<Task, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    Text nameText = new Text();
+                    Task task = (Task) getTableRow().getItem();
+                    if (task != null) {
+                        setColorForTaskName(nameText, task);
+                        nameText.setFont(DEFAULT_FONT);
+                        setGraphic(nameText);
+                        setPrefHeight(26.2);
+                        // wrap the task name
+                        nameText.wrappingWidthProperty().bind(taskNameColumn.widthProperty().subtract(15));
+                        nameText.textProperty().bind(itemProperty());
+                    }
+                }
+            };
+            // cellData.getValue().nameProperty();
         });
-	}
-	
-	private void setColorForTaskName(Text nameText, Task task) {
-		switch(skinMode) {
-			case DAY:
-				if (task.isCompleted()) {
-					nameText.setFill(DAY_COMPLETED_TASK_COLOR);
-				}
-				else if (task.isOverDue()) {
-					nameText.setFill(DAY_OVERDUE_TASK_COLOR);
-				}
-				else {
-					nameText.setFill(DAY_NORMAL_TASK_COLOR);
-				}
-				break;
-			case NIGHT:
-				if (task.isCompleted()) {
-					nameText.setFill(NIGHT_COMPLETED_TASK_COLOR);
-				}
-				else if (task.isOverDue()) {
-					nameText.setFill(NIGHT_OVERDUE_TASK_COLOR);
-				}
-				else {
-					nameText.setFill(NIGHT_NORMAL_TASK_COLOR);
-				}
-		}
-	}
+    }
+
+    private void setColorForTaskName(Text nameText, Task task) {
+        switch (skinMode) {
+            case DAY:
+                if (task.isCompleted()) {
+                    nameText.setFill(DAY_COMPLETED_TASK_COLOR);
+                } else if (task.isOverDue()) {
+                    nameText.setFill(DAY_OVERDUE_TASK_COLOR);
+                } else {
+                    nameText.setFill(DAY_NORMAL_TASK_COLOR);
+                }
+                break;
+            case NIGHT:
+                if (task.isCompleted()) {
+                    nameText.setFill(NIGHT_COMPLETED_TASK_COLOR);
+                } else if (task.isOverDue()) {
+                    nameText.setFill(NIGHT_OVERDUE_TASK_COLOR);
+                } else {
+                    nameText.setFill(NIGHT_NORMAL_TASK_COLOR);
+                }
+        }
+    }
 
     /**
      * initialize id column to display 1,2,3,...till number of tasks
      */
     private void initializeIdColumn() {
-    	idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue()) + 1));
+        idColumn.setCellValueFactory(
+                column -> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue()) + 1));
     }
 
     /**
@@ -301,15 +298,15 @@ public class CelebiViewController {
                     setDateDisplay(item, empty);
                 }
 
-				private void setDateDisplay(Date item, boolean empty) {
-					if (item == null || empty) {
+                private void setDateDisplay(Date item, boolean empty) {
+                    if (item == null || empty) {
                         setText(null);
                         setStyle("");
                     } else {
                         // Format date.
                         setText(df.formatDate(item));
                     }
-				}
+                }
             };
         });
     }
@@ -325,8 +322,8 @@ public class CelebiViewController {
     }
 
     /**
-     * Initialize command field with enter action and keyword highlighting and scroll bar disabler
-     * checker
+     * Initialize command field with enter action and keyword highlighting and
+     * scroll bar disabler checker
      */
     private void initializeCommandField() {
         commandArea.requestFocus();
@@ -337,28 +334,19 @@ public class CelebiViewController {
         setCommandScrollBarDisabler();
     }
 
-    private void setTabPressedEvent() {
-        commandArea.setOnKeyPressed((keyEvent) -> {
-            KeyCode code = keyEvent.getCode();
-
-            // take only tab event. Else would interact with other key presses
-            
-        });
-    }
-
     /**
      * Disable the scroll bar when it appears
      */
     private void setCommandScrollBarDisabler() {
-    	commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
-    		if (commandArea.lookup(".scroll-bar") != null) {
-    			ScrollBar scrollBarv = (ScrollBar)commandArea.lookup(".scroll-bar");
-    			scrollBarv.setDisable(false);
-    			scrollBarv.setId("command-scroll-bar");
-    		}
-    	});
+        commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (commandArea.lookup(".scroll-bar") != null) {
+                ScrollBar scrollBarv = (ScrollBar) commandArea.lookup(".scroll-bar");
+                scrollBarv.setDisable(false);
+                scrollBarv.setId("command-scroll-bar");
+            }
+        });
     }
-    
+
     private void setKeywordHighlightChecker() {
         commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
             String firstWord;
@@ -385,11 +373,10 @@ public class CelebiViewController {
     private void checkToolTip(String firstWord) {
         // show the tool-tip
         String toolTip = HelpStrings.getHelpToolTip(firstWord);
-        if(toolTip == null){
+        if (toolTip == null) {
             popupLabel.setVisible(false);
             popupLabel.setText("");
-        }
-        else{
+        } else {
             popupLabel.setVisible(true);
             popupLabel.setText(toolTip);
         }
@@ -419,7 +406,7 @@ public class CelebiViewController {
     private void setPressedEvent() {
         commandArea.setOnKeyPressed((keyEvent) -> {
             KeyCode code = keyEvent.getCode();
-            
+
             if (code == KeyCode.ENTER) {
                 // when enter is hit, pass the user input to UI
                 String text = commandArea.getText();
@@ -427,7 +414,7 @@ public class CelebiViewController {
                 commandArea.clear();
                 keyEvent.consume();
             }
-            
+
             if (code == KeyCode.TAB) {
                 ui.passKeyEvent(code);
                 keyEvent.consume();
@@ -520,11 +507,11 @@ public class CelebiViewController {
             feedbackArea.setStyle(1, "-fx-fill: " + currentCelebiColor + ";");
         }
     }
-    
+
     public void appendWarning(String newWarning) {
-    	feedbackArea.appendText("\n");
-    	feedbackArea.appendText(newWarning);
-    	feedbackArea.setStyle(2, "-fx-fill: " + currentWarningColor + ";");
+        feedbackArea.appendText("\n");
+        feedbackArea.appendText(newWarning);
+        feedbackArea.setStyle(2, "-fx-fill: " + currentWarningColor + ";");
     }
 
     public void clearFeedback() {
@@ -539,27 +526,40 @@ public class CelebiViewController {
     public void refreshSelection(TasksBag bag) {
         SingleSelectionModel<Tab> selectionModel = statePane.getSelectionModel();
         ViewType state = bag.getView();
-        switch(state) {
-        case DEFAULT:
-        	selectionModel.select(0);
-        	break;
-        case INCOMPLETE:
-        	selectionModel.select(1);
-        	break;
-        case COMPLETED:
-        	selectionModel.select(2);
+        switch (state) {
+            case DEFAULT:
+                selectionModel.select(0);
+                break;
+            case INCOMPLETE:
+                selectionModel.select(1);
+                break;
+            case COMPLETED:
+                selectionModel.select(2);
         }
     }
 
     public void updateFilterDisplay(TasksBag bag) {
+        String displayString = "";
         String dateFilterString = getDateFilterString(bag);
         String searchKeywordString = getSearchKeywordString(bag);
-        String displayString = "Now filtering: " + dateFilterString + ".   Now searching: " + searchKeywordString + ".";
+
+        if (dateFilterString == DATE_FILTER_NONE) {
+
+        } else {
+            displayString = "Now filtering: " + dateFilterString + ". ";
+        }
+
+        if (searchKeywordString == SEARCH_FILTER_NONE) {
+
+        } else {
+            displayString = displayString + "Now searching: " + searchKeywordString + ".";
+        }
+
         filterLabel.setText(displayString);
     }
 
     public String getDateFilterString(TasksBag bag) {
-        String MESSAGE_NONE = "none";
+        String MESSAGE_NONE = DATE_FILTER_NONE;
         String MESSAGE_AFTER = "after %1$s";
         String MESSAGE_BEFORE = "before %1$s";
         String MESSAGE_BETWEEN = "from %1$s to %2$s";
@@ -570,7 +570,7 @@ public class CelebiViewController {
         String formattedStart = df.formatDate(start);
         String formattedEnd = df.formatDate(end);
 
-        String dateFilterString = "none";
+        String dateFilterString = DATE_FILTER_NONE;
         switch (state) {
             case NONE:
                 dateFilterString = MESSAGE_NONE;
@@ -593,7 +593,7 @@ public class CelebiViewController {
     public String getSearchKeywordString(TasksBag bag) {
         String keyword = bag.getSearchState();
         if (keyword == null || keyword.equals("")) {
-            keyword = "none";
+            keyword = SEARCH_FILTER_NONE;
         }
         return keyword;
     }
