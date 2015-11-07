@@ -75,6 +75,8 @@ public class CelebiViewController {
     private static final String NIGHT_CELEBI_COLOR = "#16a085";
     private static final String DAY_USER_COLOR = "#000000";
     private static final String NIGHT_USER_COLOR = "#ecf0f1";
+    private static final String DAY_WARNING_COLOR = "#c74122";
+    private static final String NIGHT_WARNING_COLOR = "#ca2f5b";
     private static final String DAY_KEYWORD_COLOR = "#529228";
     private static final String NIGHT_KEYWORD_COLOR = "#1abc9c";
     
@@ -92,6 +94,7 @@ public class CelebiViewController {
     private Skin skinMode = Skin.DAY;
     private String currentCelebiColor = DAY_CELEBI_COLOR;
     private String currentUserColor = DAY_USER_COLOR;
+    private String currentWarningColor = DAY_WARNING_COLOR;
     private String currentKeywordColor = DAY_KEYWORD_COLOR;
 
     /**
@@ -498,10 +501,15 @@ public class CelebiViewController {
             feedbackArea.setStyle(1, "-fx-fill: " + currentCelebiColor + ";");
         }
     }
+    
+    public void appendWarning(String newWarning) {
+    	feedbackArea.appendText("\n");
+    	feedbackArea.appendText(newWarning);
+    	feedbackArea.setStyle(2, "-fx-fill: " + currentWarningColor + ";");
+    }
 
     public void clearFeedback() {
         feedbackArea.clear();
-        ;
     }
 
     /**
@@ -578,6 +586,7 @@ public class CelebiViewController {
         skinMode = Skin.NIGHT;
         currentCelebiColor = NIGHT_CELEBI_COLOR;
         currentUserColor = NIGHT_USER_COLOR;
+        currentWarningColor = NIGHT_WARNING_COLOR;
         currentKeywordColor = NIGHT_KEYWORD_COLOR;
         setTaskNameAppearence();
     }
@@ -589,6 +598,7 @@ public class CelebiViewController {
         skinMode = Skin.DAY;
         currentCelebiColor = DAY_CELEBI_COLOR;
         currentUserColor = DAY_USER_COLOR;
+        currentWarningColor = DAY_WARNING_COLOR;
         currentKeywordColor = DAY_KEYWORD_COLOR;
         setTaskNameAppearence();
     }

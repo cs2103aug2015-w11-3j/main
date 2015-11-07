@@ -18,6 +18,7 @@ public class UI implements UIInterface {
 
     private static final String UI_TXT_USRCMD = "You: %1$s\n";
     private static final String UI_TXT_FEEDBACK = "Celebi: %1$s";
+    private static final String UI_TXT_WARNING = "Warning: %1$s";
     private static final String UI_TXT_WELCOME = "Celebi: Welcome to Celebi! Is there anything that Celebi can help you?";
     private static final String UI_TXT_TABEVENT = "You pressed tab!\n";
 
@@ -85,14 +86,17 @@ public class UI implements UIInterface {
     }
 
     private void doDefault(CommandFeedback fb) {
-        String usrMsg;
-        String warningMsg = fb.getWarningMsg(); // TODO Yuka the warning msg will be found here. Just print it out.
-        System.out.println("Warning is: " + warningMsg);        // TODO remove after actual implementation
+        String usrMsg, warningMsg;
         cb = fb.getcBag();
         display(cb);
         
         usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
+        warningMsg = Utilities.formatString(UI_TXT_WARNING, fb.getWarningMsg());
+        
         controller.appendFeedback(usrMsg);
+        if(fb.getWarningMsg() != null && fb.getWarningMsg() != "") {
+        	controller.appendWarning(warningMsg);
+        }
     }
 
     private void doQuit() {
