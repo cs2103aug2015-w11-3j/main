@@ -231,6 +231,8 @@
 
 #command-area > .text-area > .scroll-pane > .scroll-bar:horizontal {
     -fx-opacity: 0;
+   }
+   
 #command-scroll-bar *.increment-button,
 #command-scroll-bar *.decrement-button {
 	-fx-background-color: transparent;
