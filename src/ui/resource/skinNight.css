@@ -277,3 +277,10 @@
 	-fx-text-fill: #96abc1;
 	-fx-font-size: 9pt;
 }
+#popupLabel{
+    -fx-text-fill: #96abc1;
+    -fx-font-size: 12pt;
+    -fx-background-color: black;
+    -fx-background-radius: 4px;
+    visibility: false;
+}
