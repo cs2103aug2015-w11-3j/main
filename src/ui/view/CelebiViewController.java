@@ -276,8 +276,7 @@ public class CelebiViewController {
      * initialize id column to display 1,2,3,...till number of tasks
      */
     private void initializeIdColumn() {
-        idColumn.setCellValueFactory(
-                column -> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue()) + 1));
+    	idColumn.setCellValueFactory(column -> new ReadOnlyObjectWrapper<Number>(celebiTable.getItems().indexOf(column.getValue()) + 1));
     }
 
     /**
@@ -472,6 +471,8 @@ public class CelebiViewController {
 
     public void updateTableItems(ObservableList<Task> celebiList) {
         celebiTable.setItems(celebiList);
+        celebiTable.getColumns().get(0).setVisible(false);
+        celebiTable.getColumns().get(0).setVisible(true);
     }
 
     public void clearCommand() {
