@@ -39,43 +39,43 @@ public class HelpAction implements Action {
         String msg;
         switch(cCommand.getSecondaryCmdType()){
             case ADD:
-                msg = buildString(HelpStrings.HELP_FORMAT_ADD);
+                msg = buildString(HelpStrings.FORMAT_ADD);
                 break;
             case DELETE:
-                msg = buildString(HelpStrings.HELP_FORMAT_DEL);
+                msg = buildString(HelpStrings.FORMAT_DELETE);
                 break;
             case FILTER_DATE:
-                msg = buildString(HelpStrings.HELP_FORMAT_FILTER);
+                msg = buildString(HelpStrings.FORMAT_FILTER);
                 break;
             case HELP:
-                msg = buildString(HelpStrings.HELP_FORMAT_HELP);
+                msg = buildString(HelpStrings.FORMAT_HELP);
                 break;
             case MARK:
-                msg = buildString(HelpStrings.HELP_FORMAT_MARK);
+                msg = buildString(HelpStrings.FORMAT_MARK);
                 break;
             case MOVE:
-                msg = buildString(HelpStrings.HELP_FORMAT_MOVE);
+                msg = buildString(HelpStrings.FORMAT_MOVE);
                 break;
             case QUIT:
-                msg = buildString(HelpStrings.HELP_FORMAT_QUIT);
+                msg = buildString(HelpStrings.FORMAT_QUIT);
                 break;
             case REDO:
-                msg = buildString(HelpStrings.HELP_FORMAT_REDO);
+                msg = buildString(HelpStrings.FORMAT_REDO);
                 break;
             case SEARCH:
-                msg = buildString(HelpStrings.HELP_FORMAT_SEARCH);
+                msg = buildString(HelpStrings.FORMAT_SEARCH);
                 break;
             case SHOW :
-                msg = buildString(HelpStrings.HELP_FORMAT_SHOW);
+                msg = buildString(HelpStrings.FORMAT_SHOW);
                 break;
             case UNDO :
-                msg = buildString(HelpStrings.HELP_FORMAT_UNDO);
+                msg = buildString(HelpStrings.FORMAT_UNDO);
                 break;
             case UNMARK:
-                msg = buildString(HelpStrings.HELP_FORMAT_UNMARK);
+                msg = buildString(HelpStrings.FORMAT_UNMARK);
                 break;
             case UPDATE:
-                msg = buildString(HelpStrings.HELP_FORMAT_UPD);
+                msg = buildString(HelpStrings.FORMAT_UPDATE);
                 break;
             case INVALID:       // Fallthrough
             	assert false; // should never happen; no help for invalid commands
