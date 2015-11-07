@@ -1,10 +1,12 @@
 //@@author A0125546E
 package logic;
 
+import java.util.Scanner;
 import java.util.logging.Logger;
-import javafx.scene.input.KeyCode;
+
 import common.TasksBag;
 import common.TasksBag.ViewType;
+import javafx.scene.input.KeyCode;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
@@ -164,5 +166,14 @@ public class Logic implements LogicInterface {
             fb = (KeyEventFeedback) cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
         }
         return fb;
+    }
+    
+    public static void main(String[] args) throws Exception {
+    	Logic bla = new Logic();
+    	bla.init();
+    	Scanner in = new Scanner(System.in);
+    	while (true) {
+    		bla.executeCommand(in.nextLine());
+    	}
     }
 }

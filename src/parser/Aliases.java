@@ -21,9 +21,29 @@ public final class Aliases {
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
 	
-	// cannot be used as alias
+	// cannot be used as alias (reserved)
+	// make sure to update for new commands
 	static final String[] CMD_RESERVED = {
-		""
+		"add",
+		"edit",
+		"delete",
+		
+		"show",
+		
+		"mark",
+		"unmark",
+		
+		"undo",
+		"redo",
+		
+		"search",
+		"filter",
+		"clear",
+		
+		"skin",
+		"help",
+		"exit",
+		"move"
 	};
 	
 	static final String[] CMD_ADD = {
