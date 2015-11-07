@@ -9,13 +9,10 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import common.Configuration;
 //import com.sun.javafx.css.Combinator;
 import common.Task;
 import common.TasksBag;
@@ -28,7 +25,6 @@ public class Parser implements ParserInterface {
 	// Patterns for user command arguments matching (trim results)
 	/////////////////////////////////////////////////////////////////
 
-	
 	// for whitespace work
 	private final Pattern P_WHITESPACE;
 	private static final String REG_WHITESPACE = 
@@ -291,22 +287,20 @@ public class Parser implements ParserInterface {
 	);
 	
 	
-	private static final Map<String, Command.Type> DEFAULT_ALIAS_MAP = Aliases.getInstance().getAliasMap();
-	private static final Set<String> RESERVED_CMD_KEYWORDS = Aliases.getInstance().getReservedCmdTokens();
-	
 	/////////////////////////////////////////////////////////////////
 	// instance fields
 	/////////////////////////////////////////////////////////////////
 	private String userRawInput;
 	private static Parser parserInstance;
 	private final CelebiDateParser DATE_FORMATTER;
+	private final Aliases ALIASES;
 
 	/////////////////////////////////////////////////////////////////
 	
 	private Parser () {
 		
 		userRawInput = "no user input received";
-		
+		ALIASES = AliasesImpl.getInstance();
 		DATE_FORMATTER = new DateParser();
 		
 		P_WHITESPACE = Pattern.compile(REG_WHITESPACE);
@@ -400,19 +394,8 @@ public class Parser implements ParserInterface {
 		assert(token != null);
 		token = cleanText(token);
 		
-		Command.Type cmdType = Configuration.getInstance().getCmdTypeFromUserAlias(token);
-		
-		// includes redundancy check to make sure user aliases do not overwrite reserved cmd keywords
-		if (cmdType != null && !RESERVED_CMD_KEYWORDS.contains(token)) { 
-			return cmdType;
-		}
-				
-		cmdType = DEFAULT_ALIAS_MAP.get(token);
-		if (cmdType != null) {
-			return cmdType;
-		}
-		// user is an idiot?
-		return Command.Type.INVALID;
+		final Command.Type cmdType = ALIASES.getCmdFromAlias(token);
+		return cmdType == null ? null : cmdType;
 	}
 
 	private Command passArgs (Command.Type type, String args) {
@@ -760,7 +743,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	// cleans a string by trimming trailing whitespace and shifting alpha to lowercase
-	String cleanText (String token) {
+	public static String cleanText (String token) {
 		assert(token != null);
 		return token.trim().toLowerCase();
 	}
@@ -768,7 +751,7 @@ public class Parser implements ParserInterface {
 		assert(token != null);
 		return DATE_FORMATTER.parseDate(token, isStart);
 	}
-	Path parsePath (String token) throws ParseException {
+	public static Path parsePath (String token) throws ParseException {
 		assert(token != null);
 		return Paths.get(token.trim());
 	}

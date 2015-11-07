@@ -6,16 +6,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Scanner;
-import java.util.Map;
-import java.util.Set;
 import java.util.LinkedHashMap;
-
-import parser.Aliases;
-import parser.Command;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import parser.Aliases;
+import parser.AliasesImpl;
+import parser.Command;
 
 /*
  * Possible errors and solutions: 
@@ -44,8 +45,6 @@ public class Configuration implements ConfigurationInterface {
     private static final String MESSAGE_RESET_DEFAULT_START_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_START_TIME;
     private static final String MESSAGE_RESET_DEFAULT_END_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_END_TIME;
     private static final String MESSAGE_RESET_NEW_ALIAS_MAP = "";
-
-    private static final Set<String> RESERVED_ALIASES = Aliases.getInstance().getReservedCmdTokens();
     
     private static Configuration instance = null;
 
@@ -54,6 +53,7 @@ public class Configuration implements ConfigurationInterface {
     private Writer configWriter;
     private String configStorageLocation, configDefaultStartTime, configDefaultEndTime;
     private Map<String, String> configUserCmdAliases;
+    private final Aliases ALIASES;
 
     public static ConfigurationInterface getInstance() {
         if (instance == null) {
@@ -71,6 +71,7 @@ public class Configuration implements ConfigurationInterface {
         } catch (Exception e) {
             System.out.println(e);
         }
+        ALIASES = AliasesImpl.getInstance();
     }
 
     private void findConfigFile() throws IOException {
@@ -159,12 +160,8 @@ public class Configuration implements ConfigurationInterface {
     	return configUserCmdAliases.containsKey(alias);
     }
     @Override
-    public Command.Type getCmdTypeFromUserAlias(String alias) {
-    	String typeName = configUserCmdAliases.get(alias);
-    	if (typeName == null) {
-    		return null;
-    	}
-    	return Enum.valueOf(Command.Type.class, typeName);
+    public String getUserAliasTargetName(String alias) {
+    	return configUserCmdAliases.get(alias);
     }
     
     // setters
@@ -202,17 +199,17 @@ public class Configuration implements ConfigurationInterface {
     
     //@@author A0131891E
     @Override
-    public void setUserAlias(String alias, Command.Type mappedCmd) throws IOException {
-    	assert(alias != null 
-    			&& mappedCmd != null 
-    			&& mappedCmd != Command.Type.INVALID
+    public void setUserAlias(String alias, String targetName) throws IOException {
+    	assert( alias != null 
+    			&& targetName != null 
     			&& !alias.equals("")
-    			&& !alias.toLowerCase().equals("alias"));
+    			&& !targetName.equals("")
+    			);
     	
-    	configUserCmdAliases.put(alias, mappedCmd.name());
+    	configUserCmdAliases.put(alias, targetName);
     	
     	writeBack();
-    	Log.log("new alias mapping added: " + alias + "-->" + mappedCmd.name());
+    	Log.log("new alias mapping added: " + alias + "-->" + targetName);
     }
     //@@author A0131891E
     @Override
@@ -296,7 +293,7 @@ public class Configuration implements ConfigurationInterface {
 			}
 			
 			// check alias
-			if (RESERVED_ALIASES.contains(entry.getKey())) {
+			if (ALIASES.isReservedCmdAlias((String)entry.getKey())) {
 				return false; // reserved alias names cannot be redirected
 			}
 		}
