@@ -1,24 +1,31 @@
 //@@author A0131891E
 package parser;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
+import java.io.IOException;
 
 /**
- * This class holds all user input token aliases.
- * Token parsing logic will reference the data here, so
- * you can easily add/remove/change/view aliases here and
- * have any changes propogate to the relevant classes. 
+ * Handles all alias mapping and storage
  * 
- * NOTE: ALIAS STRINGS CANNOT CONTAIN WHITESPACE
  */
-public final class Aliases {
+public abstract class Aliases {
 
+	/////////////////////////////////////////////////////
+	// Methods command tokens
+	/////////////////////////////////////////////////////
+	
+	public boolean isCmdAlias (String alias) {
+		return isCustomAlias(alias) || isDefaultAlias(alias);
+	};
+	public abstract boolean isCustomAlias (String alias);
+	public abstract boolean isDefaultAlias (String alias);
+	public abstract boolean isReservedCmdAlias (String alias);
+	
+	public abstract Command.Type getCmdFromAlias (String alias);
+	
+	public abstract void setCustomAlias (String alias, Command.Type target) throws IOException;
+	public abstract void clearCustomAliases () throws IOException;
+	
+	
 	/////////////////////////////////////////////////////
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
@@ -247,81 +254,4 @@ public final class Aliases {
 		"reset"
 	};
 	
-	private static Aliases instance = null;
-	public static Aliases getInstance () {
-	    
-		if (instance == null) {
-		
-		    System.out.println("iasdasdnit"); 
-		    instance = new Aliases();
-		}
-		return instance;
-	}
-	
-	// Stores the default alias->command.type mapping
-	private final Map<String, Command.Type> ALIAS_MAP_CMD_TYPE;
-	
-	private Aliases () {
-		
-		ALIAS_MAP_CMD_TYPE = new LinkedHashMap<>();
-		mapCmdTypeAliases();
-		
-	}
-	
-	private final void mapCmdTypeAliases () {
-
-		mapAliases(CMD_ADD, Command.Type.ADD);
-		mapAliases(CMD_UPD, Command.Type.UPDATE);
-		mapAliases(CMD_DEL, Command.Type.DELETE);
-		
-		mapAliases(CMD_MARK, Command.Type.MARK);
-		mapAliases(CMD_UNMARK, Command.Type.UNMARK);
-		
-		mapAliases(CMD_UNDO, Command.Type.UNDO);
-		mapAliases(CMD_REDO, Command.Type.REDO);
-		
-		mapAliases(CMD_SHOW, Command.Type.SHOW);
-		
-		mapAliases(CMD_SEARCH, Command.Type.SEARCH);
-		mapAliases(CMD_FILTER, Command.Type.FILTER_DATE);
-		mapAliases(CMD_CLEAR, Command.Type.CLEAR_FILTERS);
-		
-		mapAliases(CMD_MOVE, Command.Type.MOVE);
-		mapAliases(CMD_ALIAS, Command.Type.ALIAS);
-		
-		mapAliases(CMD_HELP, Command.Type.HELP);
-		mapAliases(CMD_THEME, Command.Type.THEME);
-		
-		mapAliases(CMD_QUIT, Command.Type.QUIT);
-	}
-	
-	
-	private final void mapAliases (String[] aliases, Command.Type cmdType) {
-		mapAliasesToValue(ALIAS_MAP_CMD_TYPE, cmdType, Arrays.asList(aliases));
-	}
-	
-	// getter returns clone to preserve immutability
-	public final Map<String, Command.Type> getAliasMap () {
-		return new LinkedHashMap<>(ALIAS_MAP_CMD_TYPE);
-	}
-	public final Set<String> getReservedCmdTokens () {
-		return new LinkedHashSet<>(Arrays.asList(CMD_RESERVED));
-	}
-	
-	/**
-	 * Maps every key in keys to value, inside map.
-	 * If any duplicate is detected in the map, assertion kills program.
-	 * Since this is used only for alias mapping, any detected duplicates
-	 * imply an error on the dev's part in specifying the aliases above.
-	 * @param map : mappings are stored here.
-	 * @param value : to be mapped by all aliases
-	 * @param aliases : to be mapped to value
-	 */
-	private static final <V> void mapAliasesToValue (Map<String, V> map, V value, Collection<String> aliases) {
-		assert(map != null && aliases != null && value != null);
-		for (String alias : aliases) {
-		    V var = map.put(alias, value);
-			assert var == null : "duplicate key binding " + alias ; // no duplicates allowed
-		}
-	}
 }

@@ -1,11 +1,13 @@
 package ui.view;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
-import javafx.animation.FadeTransition;
+import common.Task;
+import common.TasksBag;
+import common.TasksBag.FilterDateState;
+import common.TasksBag.ViewType;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -27,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
 import javafx.util.Duration;
 import common.Configuration;
 import common.Task;
@@ -37,7 +40,7 @@ import common.TasksBag.FilterDateState;
 import ui.Main;
 import ui.UIInterface;
 import parser.Aliases;
-import parser.Command;
+import parser.AliasesImpl;
 import parser.HelpStrings;
 
 public class CelebiViewController {
@@ -45,7 +48,8 @@ public class CelebiViewController {
     // @@author A0133895U
     Main mainApp;
     UIInterface ui;
-    final DateFormatter df = new DateFormatter();
+    private static final DateFormatter df = new DateFormatter();
+    private static final Aliases ALIASES = AliasesImpl.getInstance();
 
     @FXML
     private AnchorPane rootPane;
@@ -75,7 +79,6 @@ public class CelebiViewController {
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
 
-    private Map<String, Command.Type> VALID_CMD_TOKENS;
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
     private static final String NIGHT_CELEBI_COLOR = "#16a085";
@@ -122,7 +125,6 @@ public class CelebiViewController {
         initializeFeedbackArea();
         
         initializePopupLabel();
-        VALID_CMD_TOKENS = Aliases.getInstance().getAliasMap();
 
         Platform.runLater(() -> {
             commandArea.requestFocus();
@@ -360,8 +362,11 @@ public class CelebiViewController {
         commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
             String firstWord;
             firstWord = extractFirstWord(newValue);
+            if ("".equals(firstWord)) {
+            	return; // catches commandArea resetting when enter is pressed.
+            }
             checkToolTip(firstWord);
-            if (isCmdToken(firstWord)) {
+            if (ALIASES.isCmdAlias(firstWord)) {
                 // highlight the first word
                 commandArea.setStyle(0, firstWord.length(),
                         "-fx-font-weight: bold; -fx-fill: " + currentKeywordColor + ";");
@@ -380,6 +385,9 @@ public class CelebiViewController {
     }
 
     private void checkToolTip(String firstWord) {
+    	if (firstWord == null || "".equals(firstWord)) {
+    		return; // catches command input field clearing change
+    	}
         // show the tool-tip
         String toolTip = HelpStrings.getHelpToolTip(firstWord);
         if (toolTip == null) {
@@ -443,15 +451,6 @@ public class CelebiViewController {
          */
     }
 
-    // @@author A0131891E
-    // Helped you link the highlighting check to my parser's token string array.
-    // Next time if I change the accepted token strings, it will automatically
-    // reflect in the UI.
-    private boolean isCmdToken(String firstWord) {
-        assert (firstWord != null);
-        firstWord = firstWord.toLowerCase();
-        return Configuration.getInstance().isUserAlias(firstWord) || VALID_CMD_TOKENS.containsKey(firstWord);
-    }
 
     // @@author A0133895U
     private void initializeFeedbackPane() {

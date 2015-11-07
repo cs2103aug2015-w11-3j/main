@@ -1,7 +1,10 @@
 //@@author A0131891E
 package parser;
 
-public class HelpStrings {
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
+public final class HelpStrings {
     /////////////////////////////////////////////////////////////////
     // Human-readable strings for command formats (used by logic.HelpAction)
     /////////////////////////////////////////////////////////////////
@@ -24,13 +27,26 @@ public class HelpStrings {
     public static final String HELP_FORMAT_THEME = "Change Colour Theme: \"%1$s day/night\"";
     public static final String HELP_FORMAT_CLEAR = "Clear Current Search/Filters: \"%1$s\"";
     public static final String HELP_FORMAT_ALIAS = "Set Alias for Command: \"%1$s <target command> <new alias>\"   \"%1$s reset\"";
+    
+    private static final Pattern P_NO_WHITESPACE = Pattern.compile("\\S++");
 
     public static String getHelpToolTip(String hint){
+    	assert hint != null 
+    			&& P_NO_WHITESPACE.matcher(hint).matches()
+    			&& !"".equals(hint) : "\""+hint+"\"";
+    			
+    	hint = Parser.cleanText(hint);
         switch(hint){
             case "add":
                 return HELP_FORMAT_ADD;
         }
         return null;
     }
-    
+ 
+    public static void main (String[] args) {
+    	Scanner in = new Scanner(System.in);
+    	while(true) {
+    		System.out.println(in.nextLine().matches("\\S++"));
+    	}
+    }
 }

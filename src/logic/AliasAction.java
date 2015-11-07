@@ -2,15 +2,14 @@
 package logic;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.regex.Pattern;
 
-import common.Configuration;
 import common.Log;
 import common.TasksBag;
 import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.Aliases;
+import parser.AliasesImpl;
 import parser.Command;
 
 public class AliasAction implements Action {
@@ -19,8 +18,9 @@ public class AliasAction implements Action {
 	private static final String USR_MSG_ALIAS_RESERVED = "You cannot use the reserved keyword \"%s\" as an alias. Reserved keywords are shown in \"help\"";
 	private static final String USR_MSG_ALIAS_SUCCESS = "Alias mapping created: %s --> %s";
 	
-	private static final Set<String> RESERVED_ALIASES = Aliases.getInstance().getReservedCmdTokens();
-	private static final Pattern P_ILLEGAL_ALIAS = Pattern.compile("\\s|\\p{Lu}");
+	private static final Pattern P_VALID_ALIAS = Pattern.compile("^[\\S&&[^\\p{javaUpperCase}]]$");
+	
+	private static final Aliases ALIASES = AliasesImpl.getInstance();
 	
     private Command cCommand;
     private TasksBag cBag;
@@ -41,7 +41,7 @@ public class AliasAction implements Action {
 		// user wants to clear alias mappings
 		if (aliasTarget == null) { 
 			try {
-				Configuration.getInstance().clearUserAliases();
+				ALIASES.clearCustomAliases();
 			} catch (IOException ioe) {
 				Log.log(ioe.toString());
 				ioe.printStackTrace();
@@ -53,16 +53,16 @@ public class AliasAction implements Action {
 		assert newAlias != null // if aliasTarget != null, must have newAlias.
 				&& !"".equals(newAlias) // parser won't parse empty string as alias
 				&& aliasTarget != Command.Type.INVALID // parser shouldnt give INVALID
-				&& !P_ILLEGAL_ALIAS.matcher(newAlias).matches(); // parser will remove whitespace and tolowercase
+				&& P_VALID_ALIAS.matcher(newAlias).matches(); // parser should have removed whitespace and tolowercase
 		
 		// Don't allow user to user to re-map reserved keywords
-		if (RESERVED_ALIASES.contains(newAlias)) {
+		if (ALIASES.isReservedCmdAlias(newAlias)) {
 			return new CommandFeedback(cCommand, cBag, Utilities.formatString(USR_MSG_ALIAS_RESERVED, newAlias));
 		}
 		
 		// Add new alias mapping and save to config file
 		try {
-			Configuration.getInstance().setUserAlias(newAlias, aliasTarget);
+			ALIASES.setCustomAlias(newAlias, aliasTarget);
 		} catch (IOException ioe) {
 			Log.log(ioe.toString());
 			ioe.printStackTrace();
@@ -70,5 +70,6 @@ public class AliasAction implements Action {
 		}
 		return new CommandFeedback(cCommand, cBag, Utilities.formatString(USR_MSG_ALIAS_SUCCESS, newAlias, aliasTarget));
 	}
+	
 
 }
