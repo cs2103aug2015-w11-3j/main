@@ -173,10 +173,11 @@ abstract class Database {
 		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
 		File newDb = new File(destination, fileName);
 		
+		dbReader.close();
 		Files.move(db.toPath(), newDb.toPath());		
 		db = newDb;
 				
-		dbReader.close();
+		
 		dbReader = new Scanner(db);
 		dbReader.useDelimiter("\\Z");
 		return true;
