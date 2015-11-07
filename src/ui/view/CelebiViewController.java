@@ -32,6 +32,7 @@ import common.Configuration;
 import common.Task;
 import common.TasksBag;
 import common.TasksBag.ViewType;
+import common.Utilities;
 import common.TasksBag.FilterDateState;
 import ui.Main;
 import ui.UIInterface;
@@ -385,6 +386,8 @@ public class CelebiViewController {
             //popupLabel.setText("");
             popupFader.fadeOut();
         } else {
+            
+            toolTip = Utilities.textSpacer(toolTip, 1);
             popupLabel.setText(toolTip);
             popupFader.fadeIn();
         }
