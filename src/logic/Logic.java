@@ -9,7 +9,7 @@ import javafx.scene.input.KeyCode;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
-import parser.Command;
+import parser.CommandImpl;
 import parser.Parser;
 import parser.ParserInterface;
 import storage.Storage;
@@ -59,12 +59,12 @@ public class Logic implements LogicInterface {
     public CommandFeedback executeCommand(String userString) throws LogicException {
         assert userString != null;
 
-        Command rtnCmd = cParser.parseCommand(userString);
+        CommandImpl rtnCmd = cParser.parseCommand(userString);
         log.info("executing " + userString);
         return executeParsed(rtnCmd);
     }
 
-    private CommandFeedback executeParsed(Command rtnCmd) throws LogicException {
+    private CommandFeedback executeParsed(CommandImpl rtnCmd) throws LogicException {
 
         Feedback fb;
         switch (rtnCmd.getCmdType()) {

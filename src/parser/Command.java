@@ -3,11 +3,12 @@ package parser;
 
 import java.nio.file.Path;
 import java.util.Date;
+
 import common.Task;
 import common.TasksBag;
-import ui.view.CelebiViewController;
+import static ui.view.CelebiViewController.Skin;
 
-public class Command implements CommandInterface {
+public abstract class Command {
 
 	public static enum Type {
 		ADD, DELETE, UPDATE, 
@@ -20,127 +21,104 @@ public class Command implements CommandInterface {
 		MOVE, HELP, ALIAS,
 		THEME
 	}
-
 	
-	// Immutable, every command has these
 	private final String _userInput;
 	private final Type _cmdType;
 	
-	// identifiers
-	private int _taskUID;
-	private Task.DataType _taskField;
-	private Type _secondaryCmdType;
-	private TasksBag.ViewType _viewType;
-	private CelebiViewController.Skin _theme;
-	
-	// field values
-	private String _name;
-	private Date _startDate, _endDate;
-	private Path _path;
-//	private String _keyword;
-
-	////////////////////////////////////////////////////////////////////////////////////	
-	// Constructor (package private)
-	////////////////////////////////////////////////////////////////////////////////////
-	Command (Command.Type cmd, String userInput) {
-		_cmdType = cmd;
-		_userInput = userInput;
-		_taskUID = -1;
+	Command (Type type, String rawInput) {
+		_userInput = rawInput;
+		_cmdType = type;
 	}
 	
-	////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS / INITIALISERS (package private)
-	////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////
+	// Invalid Command handling
+	///////////////////////////////////////////////////
 	
-	void setTaskUID (int uid) {
-		_taskUID = uid;
-	}
-	void setTaskField (Task.DataType f) {
-		_taskField = f;
-	}
-	void setViewType (TasksBag.ViewType v) {
-		_viewType = v;
-	}
-	void setTheme (CelebiViewController.Skin theme) {
-		_theme = theme;
-	}
-	
-	void setText (String name) {
-		_name = name;
-	}
-	void setStart (Date d) {
-		_startDate = d == null ? null : (Date) d.clone();
-	}
-	void setEnd (Date d) {
-		_endDate = d == null ? null : (Date) d.clone();
-	}
-	void setSecondaryCmdType (Type t) {
-		assert(t != Type.INVALID);
-		_secondaryCmdType = t;
-	}
-	void setPath (Path p) {
-		_path = p;
-	}
-	
-	////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS
-	////////////////////////////////////////////////////////////////////////////////////
-
-	// Full user input that triggered this command
-	@Override
+	/** INVALID
+	 * 
+	 * Provides user's raw input string for if input string cannot be parsed into recognised command type
+	 * @return String
+	 */
 	public String getRawUserInput () {
 		return _userInput;
 	}
 	
+	
+	///////////////////////////////////////////////////
 	// Identifiers
-
-	@Override
-	public Type getSecondaryCmdType() {
-		return _secondaryCmdType;
-	}
-	@Override
+	///////////////////////////////////////////////////
+	
+	/** ALL
+	 * Identifies the type of command for further processing
+	 * @return Command.Type (enum), null if NA
+	 */
 	public Type getCmdType () {
 		return _cmdType;
 	}
-	@Override
-	public int getTaskUID () {
-		return _taskUID;
-	}
-	@Override
-	public Task.DataType getTaskField () {
-		return _taskField;
-	}
-	@Override
-	public TasksBag.ViewType getViewType () {
-		return _viewType;
-	}
-	@Override
-	public CelebiViewController.Skin getTheme () {
-		return _theme;
-	}
 	
-	// Field values
-
-	@Override
-	public String getText () {
-		return _name;
-	}
-	@Override
-	public Date getStart () {
-		return _startDate == null ? null : (Date)_startDate.clone();
-	}
-	@Override
-	public Date getEnd () {
-		return _endDate == null ? null : (Date)_endDate.clone();
-	}
-	@Override
-	public Path getPath() {
-		return _path;
-	}
-
-//	@Override
-//	public String getSearchKeyword() {
-//		return _keyword;
-//	}
-
+	/** DELETE, UPDATE, MARK, UNMARK
+	 * Identifies a specific Celebi task object by index on UI for further processing.
+	 * Uses the index as shown on the UI to the user, Logic must perform UID->real ID mapping.
+	 * @return int, -1 if not applicable
+	 */
+	public abstract int getTaskUID ();
+	abstract void setTaskUID (int uid);
+	
+	/** UPDATE
+	 * Identifies a specific field type within the Celebi object for field-level processing.
+	 * @return Task.DataType (enum), null if NA
+	 */
+	public abstract Task.DataType getTaskField ();
+	abstract void setTaskField (Task.DataType field);
+	
+	/** HELP, ALIAS
+	 * Identifies a command type for command type specific operations
+	 * Will be null if the user is requesting the general help (to list all cmds)
+	 * @return Command.Type (enum), or null if general help requested
+	 */
+	public abstract Type getSecondaryCmdType ();
+	abstract void setSecondaryCmdType (Type type);
+	
+	/** SHOW
+	 * Identifies which of the 3 view tabs the user wishes to switch to.
+	 * @return TasksBag.ViewType for setting view
+	 */
+	public abstract TasksBag.ViewType getViewType ();
+	abstract void setViewType (TasksBag.ViewType tab);
+	
+	/** THEME
+	 * Identifies which theme the user wishes to switch to
+	 * @return CelebiViewController.Skin
+	 */
+	public abstract Skin getTheme ();
+	abstract void setTheme (Skin theme);
+	
+	///////////////////////////////////////////////////
+	// User defined data getters
+	//
+	// NULL values will be returned if those fields are not applicable.
+	// Mutable values will be cloned; internal fields are always safe from mutation.
+	///////////////////////////////////////////////////
+	
+	/**
+	 * 
+	 * @return String data
+	 */
+	public abstract String getText ();
+	abstract void setText (String text);
+	
+	// also represents start of date range for filtering by date
+	public abstract Date getStart ();
+	abstract void setStart (Date start);
+	
+	// also represents end of date range for filtering by date
+	public abstract Date getEnd ();
+	abstract void setEnd (Date end);
+	
+	// used for changing save location
+	public abstract Path getPath();
+	abstract void setPath (Path p);
+	
+	// For search {{ use getText }}
+	//public String getSearchKeyword ();
 }

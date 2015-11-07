@@ -4,16 +4,16 @@ package logic;
 import common.TasksBag;
 import common.Utilities;
 import logic.exceptions.LogicException;
-import parser.Command;
+import parser.CommandImpl;
 
 public class SearchAction implements Action {
     private static final String USR_MSG_SEARCH_COMPLETE = "Search for %1$s";
 
-    private Command cCommand;
+    private CommandImpl cCommand;
     private TasksBag cBag;
     private String cKeyword;
 
-    public SearchAction(Command command, TasksBag internalBag) throws LogicException {
+    public SearchAction(CommandImpl command, TasksBag internalBag) throws LogicException {
         cCommand = command;
         cBag = internalBag;
         cKeyword = command.getText();

@@ -11,6 +11,7 @@ import logic.exceptions.LogicException;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
+import parser.CommandImpl;
 
 public class AliasAction implements Action {
 
@@ -22,13 +23,13 @@ public class AliasAction implements Action {
 	
 	private static final Aliases ALIASES = AliasesImpl.getInstance();
 	
-    private Command cCommand;
+    private CommandImpl cCommand;
     private TasksBag cBag;
     
     private String newAlias;
     private Command.Type aliasTarget;
     
-	public AliasAction(Command cmd, TasksBag internalBag) {
+	public AliasAction(CommandImpl cmd, TasksBag internalBag) {
         cCommand = cmd;
         cBag = internalBag;
         newAlias = cmd.getText();

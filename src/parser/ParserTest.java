@@ -47,7 +47,7 @@ public class ParserTest {
 	@Test
 	public void testInvalidCmdToken () {
 		StringBuilder testInput;
-		Command cmd;
+		CommandImpl cmd;
 		// test random inputs with guaranteed invalid command tokens 
 		for (int i = 0; i < NUM_RANDOM_RETESTS; i++) {
 			testInput = new StringBuilder(randInvalidCmdToken());
@@ -108,7 +108,7 @@ public class ParserTest {
 	@Test
 	public void testAddWithValidName () {
 		// 
-		Command cmd = P.parseCommand("add ");
+		CommandImpl cmd = P.parseCommand("add ");
 	}
 
 	//private String getRandomVa
