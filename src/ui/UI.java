@@ -33,7 +33,8 @@ public class UI implements UIInterface {
         logic = new Logic();
         logic.init();
 
-        String s = Configuration.getInstance().getUsrFileDirectory();
+        ConfigurationInterface config = Configuration.getInstance();
+        String s = config.getUsrFileDirectory();
 
         while (logic.initData(s) == false) {
             // Failed to load data, query user to give filename

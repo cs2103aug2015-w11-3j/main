@@ -1,6 +1,8 @@
 package ui;
 import java.io.IOException;
 
+import common.Configuration;
+import common.ConfigurationInterface;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -69,7 +71,19 @@ public class Main extends Application {
             
             // Give the controller access to the main app and UI.
             CelebiViewController controller = loader.getController();
-            controller.switchDaySkin();
+            ConfigurationInterface config = Configuration.getInstance();
+            CelebiViewController.Skin skin = config.getSkin();
+            
+            switch (skin) {
+    	        case NIGHT:
+    	            controller.switchNightSkin();
+    	            break;
+    	
+    	        case DAY:
+    	        default: 
+    	        	controller.switchDaySkin();
+    	    }
+            
             controller.setUI(mUI);
             controller.setMainApp(this);
             

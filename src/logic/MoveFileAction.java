@@ -19,7 +19,7 @@ public class MoveFileAction implements Action {
     private static final String USR_MSG_MOVE_ERROR = "Failed to move storage file";
     private static final String USR_MSG_MOVE_OK = "Storage file moved!";
     private static final String USR_MSG_MOVE_ERROR_FILE_EXISTING = "Storage file in %1s already exists";
-    private static final String USR_MSG_MOVE_ERROR_INVALID_PATH = "The directory %1s does not exists";
+    private static final String USR_MSG_MOVE_ERROR_INVALID_PATH = "The directory %1s does not exist";
     private static final String USR_MSG_MOVE_ERROR_WRONG_TYPE = "The directory %1s is a file, not folder";
     
     private Command cCommand;
