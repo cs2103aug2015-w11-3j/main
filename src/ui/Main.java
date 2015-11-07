@@ -21,12 +21,12 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
-        this.primaryStage.initStyle(StageStyle.UTILITY);
+        this.primaryStage.initStyle(StageStyle.TRANSPARENT);
         
-        Font.loadFont(Main.class.getResource("resource/Oxygen regular.TTF").toExternalForm(), 10);
-        Font.loadFont(Main.class.getResource("resource/Oxygen 700.TTF").toExternalForm(), 10);
-        
+        Font.loadFont(Main.class.getResource("resource/Oxygen regular.ttf").toExternalForm(), 10);
+        Font.loadFont(Main.class.getResource("resource/Oxygen 700.ttf").toExternalForm(), 10);
         initRootLayout();
+        
         showCelebiView();
     }
 
