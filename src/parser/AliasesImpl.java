@@ -139,6 +139,6 @@ public class AliasesImpl extends Aliases {
 	
 	private static boolean validAliasFormat (String testee) {
 		// not null and no whitespace
-		return testee != null && testee.matches("\\S++");
+		return testee != null && testee.matches("\\S*+");
 	}
 }

@@ -395,7 +395,7 @@ public class Parser implements ParserInterface {
 		token = cleanText(token);
 		
 		final Command.Type cmdType = ALIASES.getCmdFromAlias(token);
-		return cmdType == null ? null : cmdType;
+		return cmdType == null ? Command.Type.INVALID : cmdType;
 	}
 
 	private Command passArgs (Command.Type type, String args) {
