@@ -17,7 +17,7 @@ import org.json.simple.JSONValue;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
-import ui.view.CelebiViewController;
+import static ui.view.CelebiViewController.Skin;;
 
 /*
  * Possible errors and solutions: 
@@ -35,8 +35,8 @@ public class Configuration implements ConfigurationInterface {
     private static final String KEY_ALIAS_MAPPINGS = "ALIAS_MAPPINGS";
     private static final String KEY_SKIN = "SKIN";
     
-    private static final String VALUE_SKIN_DAY = "DAY";
-    private static final String VALUE_SKIN_NIGHT = "NIGHT";
+    private static final String VALUE_SKIN_DAY = Skin.DAY.name();
+    private static final String VALUE_SKIN_NIGHT = Skin.NIGHT.name();
     
     private static final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
     private static final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
