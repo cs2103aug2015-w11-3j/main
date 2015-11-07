@@ -170,22 +170,8 @@ public class Configuration implements ConfigurationInterface {
     }
     
     @Override
-    public CelebiViewController.Skin getSkin() {
-    	String upper = configSkin.toUpperCase();
-    	CelebiViewController.Skin skin;
-    	
-    	switch (upper) {
-    		case VALUE_SKIN_DAY:
-    			skin = CelebiViewController.Skin.DAY;
-    			break;
-    		case VALUE_SKIN_NIGHT:
-    			skin = CelebiViewController.Skin.NIGHT;
-    			break;
-    		default:
-    			skin = CelebiViewController.Skin.DAY;
-    	}
-    	
-    	return skin;
+    public String getSkin() {
+    	return configSkin;
     }
 
 	//@@author A0131891E
@@ -235,11 +221,12 @@ public class Configuration implements ConfigurationInterface {
     }
     
     @Override
-    public void setSkin(CelebiViewController.Skin skin) throws IOException {
-		configSkin = skin.toString();
-		
-		writeBack();
-		Log.log("skin reset to " + configSkin, this.getClass());
+    public void setSkin(String skin) throws IOException {
+    	if (isValidSkin(skin)) {
+    		configSkin = skin;
+    		writeBack();
+    		Log.log("skin reset to " + configSkin, this.getClass());
+    	}
     }
     
     //@@author A0131891E
@@ -266,9 +253,8 @@ public class Configuration implements ConfigurationInterface {
     	Log.log("alias mapping removed: " + alias);
     }
     
-    // resetters
+    // resetterss
     //@@author A0133920N
-
     
     private void resetAll() throws IOException {
         // set all properties to default value

@@ -42,7 +42,7 @@ public class ThemeChangeAction implements Action {
         }
         
         try {
-        	cConfig.setSkin(cSkin);
+        	cConfig.setSkin(cSkin.toString());
         } catch (IOException e) {
         	msg = msg + USR_MSG_FAIL_SAVE;
         }
