@@ -1,15 +1,5 @@
 package ui;
 
-import java.io.IOException;
-
-import org.junit.Test;
-
-
-import org.fxmisc.richtext.InlineCssTextArea;
-
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-
 /*
 public class UITest extends GuiTest {
 

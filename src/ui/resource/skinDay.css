@@ -1,10 +1,6 @@
-.root{
-    -fx-font-size: 9.5pt;
-    -fx-font-family: "Oxygen";
-}
-
 .text{
-	-fx-font-family: "Oxygen";
+	-fx-font-family: Oxygen;
+	-fx-font-size: 13px;
 }
 
 .background {
@@ -261,5 +257,5 @@
     -fx-font-size: 12pt;
     -fx-background-color: black;
     -fx-background-radius: 4px;
-    visibility: false;
+    /*visibility: null;*/
 }
