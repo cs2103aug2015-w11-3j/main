@@ -5,20 +5,14 @@ import java.util.Map;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -27,7 +21,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -370,18 +363,8 @@ public class CelebiViewController {
         commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
             String firstWord;
             firstWord = extractFirstWord(newValue);
+            checkToolTip(firstWord);
             if (isCmdToken(firstWord)) {
-                // show the tool-tip
-                String toolTip = HelpStrings.getHelpToolTip(firstWord);
-                if(toolTip == null){
-                    popupLabel.setVisible(false);
-                    popupLabel.setText("");
-                }
-                else{
-                    popupLabel.setVisible(true);
-                    popupLabel.setText(toolTip);
-                }
-                
                 // highlight the first word
                 commandArea.setStyle(0, firstWord.length(),
                         "-fx-font-weight: bold; -fx-fill: " + currentKeywordColor + ";");
@@ -397,6 +380,19 @@ public class CelebiViewController {
                         "-fx-font-weight: normal; -fx-fill: " + currentUserColor + ";");
             }
         });
+    }
+
+    private void checkToolTip(String firstWord) {
+        // show the tool-tip
+        String toolTip = HelpStrings.getHelpToolTip(firstWord);
+        if(toolTip == null){
+            popupLabel.setVisible(false);
+            popupLabel.setText("");
+        }
+        else{
+            popupLabel.setVisible(true);
+            popupLabel.setText(toolTip);
+        }
     }
 
     /**
