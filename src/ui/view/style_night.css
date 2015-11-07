@@ -229,6 +229,25 @@
 	-fx-opacity: 0;
 }
 
+#command-area > .text-area > .scroll-pane > .scroll-bar:horizontal {
+    -fx-opacity: 0;
+#command-scroll-bar *.increment-button,
+#command-scroll-bar *.decrement-button {
+	-fx-background-color: transparent;
+	-fx-background-radius: 0;
+	-fx-background-insets: 0;
+	-fx-padding: 0;
+}
+
+#command-area .text-area .content {
+	-fx-cursor: #ffffff;
+}
+
+#command-scroll-bar {
+	-fx-background-color: transparent;
+	-fx-opacity: 0;
+}
+
 #command-scroll-bar *.increment-button,
 #command-scroll-bar *.decrement-button {
 	-fx-background-color: transparent;
