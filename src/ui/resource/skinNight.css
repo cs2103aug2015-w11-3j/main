@@ -1,6 +1,5 @@
 .text{
 	-fx-font-family: Oxygen;
-	-fx-font-size: 13px;
 }
 
 .background {
@@ -125,8 +124,8 @@
 }
 
 .table-view .column-header .label {
-    -fx-font-size: 10pt;
-    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 14px;
+    -fx-text-fill: #f0f6f7;
     -fx-alignment: center-left;
     -fx-opacity: 1;
 }
@@ -199,7 +198,7 @@
 
 .tab:selected .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: #dcdfe1;
+    -fx-text-fill: #ecf0f1;
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
@@ -285,7 +284,7 @@
 
 #popupLabel{
     -fx-text-fill: #ffffff;
-    -fx-font-size: 12pt;
+    -fx-font-size: 13px;
     -fx-background-color: #1abc9c;
     -fx-background-radius: 4px;
     -fx-padding: 1 8 1 8;

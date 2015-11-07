@@ -1,6 +1,6 @@
 .text{
 	-fx-font-family: Oxygen;
-	-fx-font-size: 13px;
+	
 }
 
 .root-background {
@@ -130,7 +130,7 @@
 }
 
 .table-view .column-header .label {
-    -fx-font-size: 10pt;
+    -fx-font-size: 14px;
     -fx-text-fill: #529228;
     -fx-alignment: center-left;
     -fx-opacity: 1;
@@ -264,8 +264,8 @@
 
 #popupLabel{
     -fx-text-fill: #ffffff;
-    -fx-font-size: 12pt;
-    -fx-background-color: #7db657;
+    -fx-font-size: 13px;
+    -fx-background-color: #529228;
     -fx-background-radius: 4px;
     -fx-padding: 1 10 1 10;
 }
