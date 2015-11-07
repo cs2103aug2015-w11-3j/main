@@ -7,7 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystemException;
+import java.nio.file.NoSuchFileException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
@@ -356,7 +358,7 @@ public class StorageTest {
     	outTask = tb.getTask(0);
     	assertTaskIdentical(task, outTask);
     	
-    	deleteFolderIfExists(newPath);
+    	deleteIfExists(newPath);
     }
     
     @Test
@@ -381,48 +383,89 @@ public class StorageTest {
     		Assert.fail(String.format("A FileSystemException should have been thrown, but get %s", e.getClass().getName()));
     	}
     }
+    
+    @Test
+    /* Test if move storage file to a location which is not a folder
+     * Expected: throw an exception indicating
+     */ 
+    public void testMoveFailNoDir() throws IOException {
+    	File newPath = new File(MOVE_TO_FILEPATH);
+    	
+    	deleteIfExists(newPath);
+    	
+    	storage.init();
+    	
+    	try {
+    		storage.moveFileTo(MOVE_TO_FILEPATH);
+    		Assert.fail("A NoSuchFileException should have been thrown");
+    	} catch (NoSuchFileException e) {
+    		return;
+    	} catch (Exception e) {
+    		Assert.fail(String.format("A NoSuchFileException should have been thrown, but get %s", e.getClass().getName()));
+    	}
+    }
+    
+    @Test
+    /* Test if move storage file to a location which is not a folder
+     * Expected: throw an exception indicating
+     */ 
+    public void testMoveFailAlreadyExists() throws IOException {
+    	File newPath = new File(MOVE_TO_FILEPATH);
+    	File newFile = new File(MOVE_TO_FILEPATH, TEST_FILENAME);
+    	
+    	createFolderIfNotExists(newPath);
+    	createFileIfNotExists(newFile);
+    	
+    	storage.init();
+    	
+    	try {
+    		storage.moveFileTo(MOVE_TO_FILEPATH);
+    		Assert.fail("A FileAlreadyExistsException should have been thrown");
+    	} catch (FileAlreadyExistsException e) {
+    		return;
+    	} catch (Exception e) {
+    		Assert.fail(String.format("A FileAlreadyExistsException should have been thrown, but get %s", e.getClass().getName()));
+    	}
+    }
 
-//    @Test 
-//    public void test() {
-//        TasksBag cb;
-//        int size;
-//
-//        Storage s = Storage.getStorage();
-//        s.init();
-//        Task c1 = new Task("storage dummy test1", createDate(2015, 10, 10, 0, 0), createDate(2015, 11, 11, 0, 0));
-//        Task c2 = new Task("storage dummy test2", createDate(2016, 10, 10, 0, 0), createDate(2016, 11, 11, 0, 0));
-//        Task c3 = new Task("storage dummy test3", createDate(2017, 10, 10, 0, 0), createDate(2017, 11, 11, 0, 0));
-//
-//        boolean result = s.save(c1);
-//        Assert.assertEquals(true, result);
-//
-//        s.save(c2);
-//        s.save(c3);
-//
-//        cb = new TasksBag();
-//        s.load("", cb);
-//        size = cb.size();
-//        Assert.assertEquals(3, size);
-//
-//        c1.setName("new");
-//        s.save(c1);
-//
-//        cb = new TasksBag();
-//        s.load("", cb);
-//
-//        Task ct = cb.getTask(0);
-//        String ctName = ct.getName();
-//        Assert.assertEquals("new", ctName);
-//
-//        s.delete(c2);
-//
-//        cb = new TasksBag();
-//        s.load("", cb);
-//        size = cb.size();
-//        Assert.assertEquals(2, size);
-//
-//        s.close();
-//    }
+    @Test 
+    public void testComplicatedCases() {
+        TasksBag tb;
+
+        Storage s = Storage.getStorage();
+        s.init();
+        Task c1 = new Task("storage test1", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
+        Task c2 = new Task("storage test2", createDate(2016, 10, 10, 0, 0, 0), createDate(2016, 11, 11, 0, 0, 0));
+        Task c3 = new Task("storage test3", createDate(2017, 10, 10, 0, 0, 0), createDate(2017, 11, 11, 0, 0, 0));
+
+        boolean result = s.save(c1);
+        Assert.assertEquals(true, result);
+
+        s.save(c2);
+        s.save(c3);
+
+        tb = new TasksBag();
+        s.load("", tb);
+        Assert.assertEquals(tb.size(), 3);
+
+        c1.setName("new");
+        s.save(c1);
+
+        tb = new TasksBag();
+        s.load("", tb);
+
+        Task ct = tb.getTask(0);
+        String ctName = ct.getName();
+        Assert.assertEquals("new", ctName);
+
+        s.delete(c2);
+
+        tb = new TasksBag();
+        s.load("", tb);
+        Assert.assertEquals(tb.size(), 2);
+
+        s.close();
+    }
     
     /* Test if file exists but the content is corrupted, 
      * input could be empty, invalid JSON format or invalid Task format
@@ -496,20 +539,25 @@ public class StorageTest {
     	Assert.assertEquals(currentConfigPath, defaultPath);
     }
     
-    private static void deleteIfExists(File f) {
-    	if (f.exists()) {
-    		f.delete();
+    private void deleteIfExists(File f) {
+    	if (!f.exists()) {
+    		return;
     	}
     	
-    	System.out.println(f.getName());
     	if (f.isDirectory()) {
-    		System.out.println(f.list()[0]);
+    		deleteFolder(f);
+    	} else {
+    		deleteFile(f);
     	}
     	
     	Assert.assertFalse(f.exists());
     }
     
-    private void deleteFolderIfExists(File f) {
+    private void deleteFile(File f) {
+    	f.delete();
+    }
+    
+    private void deleteFolder(File f) {
     	String[] children = f.list(); 
     	for (int i=0; i<children.length; i++) { 
     	    new File(f, children[i]).delete(); 
