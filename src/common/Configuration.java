@@ -17,7 +17,6 @@ import org.json.simple.JSONValue;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
-import ui.view.CelebiViewController;
 
 /*
  * Possible errors and solutions: 
