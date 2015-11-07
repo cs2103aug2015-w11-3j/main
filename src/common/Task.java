@@ -64,7 +64,7 @@ public class Task {
 
     // setters
     public void setComplete(boolean isComplete) {
-    	cIsCompleted.set(isComplete);
+        cIsCompleted.set(isComplete);
     }
 
     public void setId(int id) {
@@ -139,9 +139,9 @@ public class Task {
         updateType();
         return cType;
     }
-    
+
     public BooleanProperty isCompletedProperty() {
-    	return cIsCompleted;
+        return cIsCompleted;
     }
 
     public boolean isImportant() {
@@ -184,19 +184,18 @@ public class Task {
     }
 
     private void updateType() {
-    	
-    	if (cStart.get() == null) {
-    		if (cEnd.get() == null) {
-                cType.set(Type.FLOATING);
-    		} else {
-    			cType.set(Type.DEADLINE);
-    		}
-    		
-    	} else if (cEnd.get() == null) {
-            cType.set(Type.STARTONLY);    		
-    	} else {
-    		cType.set(Type.EVENT);
-    	}
+
+        if (cStart.get() == null && cEnd.get() == null) {
+            cType.set(Type.FLOATING);
+        } else if (cStart.get() == null && cEnd.get() != null) {
+            cType.set(Type.DEADLINE);
+        } else if (cStart.get() != null && cEnd.get() == null) {
+            cType.set(Type.STARTONLY);
+        } else if (cStart.get() != null && cEnd.get() != null) {
+            cType.set(Type.EVENT);
+        } else {
+            assert false;
+        }
     }
 
     public boolean isWithinDate(Date cFilterDateStart, Date cFilterDateEnd) {
@@ -226,19 +225,9 @@ public class Task {
         return cType.get() != Type.FLOATING;
     }
 
-    /*
-     * public boolean isToday() { if (hasDate() == false) { return false; }
-     * 
-     * Date compare = getAnyDate(); assert compare != null;
-     * 
-     * Date today = new Date(); return today.getDate() == compare.getDate(); }
-     */
-
     /**
      * Obtains the available date that this task contains. Always gets the end
      * date before start
-     * 
-     * @return
      */
     public Date getEndThenStartDate() {
         Date rtn = cEnd.get();
@@ -249,10 +238,8 @@ public class Task {
     }
 
     /**
-     * Obtains the available date that this task contains. Always gets the end
-     * date before start
-     * 
-     * @return
+     * Obtains the available date that this task contains. Always gets the start
+     * date before end
      */
     public Date getStartThenEndDate() {
         Date rtn = cStart.get();
@@ -264,8 +251,6 @@ public class Task {
 
     /**
      * Checks if any date of the task is within x days
-     * 
-     * @return
      */
     public boolean isWithinDays(int noOfDays) {
         Date date = getEndThenStartDate();
@@ -286,7 +271,7 @@ public class Task {
     /**
      * Checks if the task is overdue
      * 
-     * @return
+     * @return true when endDate is before current time else false
      */
     public boolean isOverDue() {
         if (getEnd() == null) {
