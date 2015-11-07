@@ -107,6 +107,10 @@ abstract class Database {
 	}
 	
 	static List<TaskJson> selectAll () {
+		if (!isConnected) {
+			return new ArrayList<TaskJson>();
+		} 
+		
 		return new ArrayList<TaskJson>(dbData);
 	}
 	
@@ -169,8 +173,10 @@ abstract class Database {
 		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
 		File newDb = new File(destination, fileName);
 		
-		Files.move(db.toPath(), newDb.toPath());
+		Files.move(db.toPath(), newDb.toPath());		
 		db = newDb;
+		
+		System.out.println(db.getName());
 		
 		dbReader = new Scanner(db);
 		dbReader.useDelimiter("\\Z");

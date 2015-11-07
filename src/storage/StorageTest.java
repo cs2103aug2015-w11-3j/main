@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.FileSystemException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
@@ -99,10 +100,10 @@ public class StorageTest {
 			INVALID_TASK_NO_END_DATE, INVALID_TASK_INVALID_DATE_1, INVALID_TASK_INVALID_DATE_2,
 			INVALID_TASK_INVALID_DATE_3, INVALID_TASK_NO_IS_COMPLETE, INVALID_TASK_INVALID_IS_COMPLETE};
 	
-	private final String TESTFILE_CONTENT_INITIAL = "[]";
+	private final static String TESTFILE_CONTENT_INITIAL = "[]";
 	
-	private final String NOT_EXSITS_FILEPATH = "notExists";	
-	private final String MOVE_TO_FILEPATH = "newPath";	
+	private final static String NOT_EXSITS_FILEPATH = "notExists";	
+	private final static String MOVE_TO_FILEPATH = "newPath";	
 	
 	private ConfigurationInterface config;
 	private String defaultPath;
@@ -338,7 +339,6 @@ public class StorageTest {
     	Task outTask;
     	File newPath = new File(MOVE_TO_FILEPATH);
     	File newFile = new File(MOVE_TO_FILEPATH, TEST_FILENAME);
-    	boolean result;
     	
     	storage.init();
     	storage.save(task);
@@ -346,8 +346,7 @@ public class StorageTest {
     	createFolderIfNotExists(newPath);
     	deleteIfExists(newFile);
     	
-    	result = storage.moveFileTo(MOVE_TO_FILEPATH);
-    	Assert.assertTrue(result);
+    	storage.moveFileTo(MOVE_TO_FILEPATH);
     	assertFileExists(newFile);
 
     	tb = new TasksBag();
@@ -356,6 +355,31 @@ public class StorageTest {
    
     	outTask = tb.getTask(0);
     	assertTaskIdentical(task, outTask);
+    	
+    	deleteFolderIfExists(newPath);
+    }
+    
+    @Test
+    /* Test if move storage file to a location which is not a folder
+     * Expected: throw an exception indicating
+     */ 
+    public void testMoveFailNotFolder() throws IOException {
+    	File newPath = new File(MOVE_TO_FILEPATH);
+    	File newFile = new File(MOVE_TO_FILEPATH, TEST_FILENAME);
+    	
+    	createFileIfNotExists(newPath);
+    	deleteIfExists(newFile);
+    	
+    	storage.init();
+    	
+    	try {
+    		storage.moveFileTo(MOVE_TO_FILEPATH);
+    		Assert.fail("A FileSystemException should have been thrown");
+    	} catch (FileSystemException e) {
+    		return;
+    	} catch (Exception e) {
+    		Assert.fail(String.format("A FileSystemException should have been thrown, but get %s", e.getClass().getName()));
+    	}
     }
 
 //    @Test 
@@ -477,7 +501,21 @@ public class StorageTest {
     		f.delete();
     	}
     	
+    	System.out.println(f.getName());
+    	if (f.isDirectory()) {
+    		System.out.println(f.list()[0]);
+    	}
+    	
     	Assert.assertFalse(f.exists());
+    }
+    
+    private void deleteFolderIfExists(File f) {
+    	String[] children = f.list(); 
+    	for (int i=0; i<children.length; i++) { 
+    	    new File(f, children[i]).delete(); 
+    	}
+    	
+    	f.delete();
     }
     
     private void createFileIfNotExists(File f) throws IOException {
@@ -501,8 +539,6 @@ public class StorageTest {
 
     	assertFileExists(f);
     }
-    
-    
     
     private static void assertFileExists(File f) {
     	Assert.assertTrue(f.exists());
