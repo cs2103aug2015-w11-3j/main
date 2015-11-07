@@ -175,9 +175,8 @@ abstract class Database {
 		
 		Files.move(db.toPath(), newDb.toPath());		
 		db = newDb;
-		
-		System.out.println(db.getName());
-		
+				
+		dbReader.close();
 		dbReader = new Scanner(db);
 		dbReader.useDelimiter("\\Z");
 		return true;
