@@ -107,8 +107,6 @@ public class UpdateAction implements UndoableAction {
         String formattedString;
         String warningString;
         
-        
-        
         switch (cCommand.getTaskField()) {
             case DATE_END:
 
@@ -196,7 +194,7 @@ public class UpdateAction implements UndoableAction {
     private String processWarningMsg() {
         String warningString;
         ObservableList<Task> clashList = cIntBag.findClashesWithIncomplete(cWhichTask);
-        System.out.println(clashList.size());
+        
         if(clashList == null || clashList.size() == 0){
             return "";
         }
@@ -205,10 +203,11 @@ public class UpdateAction implements UndoableAction {
         if(clashList.size() > 1){
             int noOfOtherClashes = clashList.size() - 1;
             warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_MANY, firstTask.getName(), noOfOtherClashes);
+            
         } else {            
+            
             warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_SINGLE, firstTask.getName());
         }
-        System.out.println(warningString);
         return warningString;
     }
 
