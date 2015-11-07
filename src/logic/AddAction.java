@@ -2,8 +2,6 @@
 package logic;
 
 import java.util.Date;
-import java.util.Observable;
-
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
@@ -21,8 +19,9 @@ public class AddAction implements UndoableAction {
     private static final String USR_MSG_ADD_OK = "Added %1$s!";
     private static final String USR_MSG_ADD_UNDO = "Undo adding %1$s!";
     private static final String USR_MSG_ADD_DATE_ERROR = "Failed to add! Start date is after end date!";
-    private static final String USR_MSG_ADD_CLASH_WARNING_SINGLE = "Task clashes with %1$s!";
-    private static final String USR_MSG_ADD_CLASH_WARNING_MANY = "Task clashes with %1$s and %2$s more!";
+    private static final String USR_MSG_ADD_WARNING_CLASH_SINGLE = "Your task clashes with %1$s!";
+    private static final String USR_MSG_ADD_WARNING_CLASH_MANY = "Your task clashes with %1$s and %2$s more!";
+    private static final String USR_MSG_ADD_WARNING_OVERDUE = "Your task is already over due!";
 
     private Command cCommand;
     private TasksBag cBag;
@@ -56,7 +55,7 @@ public class AddAction implements UndoableAction {
         cStore.save(cWhichTask);
 
         warningString = processWarningMsg();
-        
+
         formattedString = Utilities.formatString(USR_MSG_ADD_OK, cWhichTask.getName());
         fb = new CommandFeedback(cCommand, cBag, formattedString, warningString);
 
@@ -64,19 +63,25 @@ public class AddAction implements UndoableAction {
     }
 
     private String processWarningMsg() {
-        String warningString;
-        ObservableList<Task> clashList = cBag.findClashesWithIncomplete(cWhichTask);
-        
-        if(clashList == null || clashList.size() == 0){
+        // Over due has a higher priority than clashes
+        if (cWhichTask.isOverDue()) {
             return "";
         }
-        
+
+        String warningString;
+        ObservableList<Task> clashList = cBag.findClashesWithIncomplete(cWhichTask);
+
+        if (clashList == null || clashList.size() == 0) {
+            return "";
+        }
+
         Task firstTask = clashList.get(0);
-        if(clashList.size() > 1){
+        if (clashList.size() > 1) {
             int noOfOtherClashes = clashList.size() - 1;
-            warningString = Utilities.formatString(USR_MSG_ADD_CLASH_WARNING_MANY, firstTask.getName(), noOfOtherClashes);
-        } else {            
-            warningString = Utilities.formatString(USR_MSG_ADD_CLASH_WARNING_SINGLE, firstTask.getName());
+            warningString = Utilities.formatString(USR_MSG_ADD_WARNING_CLASH_MANY, firstTask.getName(),
+                    noOfOtherClashes);
+        } else {
+            warningString = Utilities.formatString(USR_MSG_ADD_WARNING_CLASH_SINGLE, firstTask.getName());
         }
         return warningString;
     }
