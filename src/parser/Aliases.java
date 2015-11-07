@@ -1,10 +1,12 @@
 //@@author A0131891E
 package parser;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -301,6 +303,9 @@ public final class Aliases {
 	// getter returns clone to preserve immutability
 	public final Map<String, Command.Type> getAliasMap () {
 		return new LinkedHashMap<>(ALIAS_MAP_CMD_TYPE);
+	}
+	public final Set<String> getReservedCmdTokens () {
+		return new LinkedHashSet<>(Arrays.asList(CMD_RESERVED));
 	}
 	
 	/**

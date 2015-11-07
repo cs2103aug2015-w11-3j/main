@@ -10,6 +10,8 @@ import java.util.Scanner;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashMap;
+
+import parser.Aliases;
 import parser.Command;
 
 import org.json.simple.JSONObject;
@@ -43,6 +45,8 @@ public class Configuration implements ConfigurationInterface {
     private static final String MESSAGE_RESET_DEFAULT_END_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_END_TIME;
     private static final String MESSAGE_RESET_NEW_ALIAS_MAP = "";
 
+    private static final Set<String> RESERVED_ALIASES = Aliases.getInstance().getReservedCmdTokens();
+    
     private static Configuration instance = null;
 
     private File configFile;
@@ -269,20 +273,34 @@ public class Configuration implements ConfigurationInterface {
 		}
 		@SuppressWarnings("unchecked")
 		final Set<Map.Entry> entries = aliasMap.entrySet();
+		
+		// check each entry
 		for (Map.Entry entry : entries) {
-			if (entry.getKey() instanceof String && entry.getValue() instanceof String) {
-				if ("".equals(entry.getKey()) || "alias".equals(entry.getKey())) {
-					return false; // should have no empty string mappings or reserved alias.
+			
+			if ( !(entry.getKey() instanceof String) || !(entry.getValue() instanceof String) ) {
+				return false; // keys and vals must be Strings
+			}
+			
+			if ( entry.getKey().equals("") || entry.getValue().equals("") ) {
+				return false; // should have no empty string as key or value
+			}
+			
+			// check target command
+			try {
+				Command.Type target = Enum.valueOf(Command.Type.class, (String) entry.getValue());
+				if (target == Command.Type.INVALID) {
+					return false; // cannot map to invalid command
 				}
-				try {
-					Enum.valueOf(Command.Type.class, (String) entry.getValue());
-				} catch (IllegalArgumentException iae) {
-					return false; // name not in command.type enum
-				}
-			} else {
-				return false; // key or value are not strings
+			} catch (IllegalArgumentException iae) {
+				return false; // value not a valid Command.Type enum value
+			}
+			
+			// check alias
+			if (RESERVED_ALIASES.contains(entry.getKey())) {
+				return false; // reserved alias names cannot be redirected
 			}
 		}
+	
 		return true; // all tests passed, phew!
 	}
 	

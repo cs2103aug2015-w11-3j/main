@@ -8,9 +8,10 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -290,17 +291,19 @@ public class Parser implements ParserInterface {
 	);
 	
 	
+	private static final Map<String, Command.Type> DEFAULT_ALIAS_MAP = Aliases.getInstance().getAliasMap();
+	private static final Set<String> RESERVED_CMD_KEYWORDS = Aliases.getInstance().getReservedCmdTokens();
+	
 	/////////////////////////////////////////////////////////////////
 	// instance fields
 	/////////////////////////////////////////////////////////////////
 	private String userRawInput;
 	private static Parser parserInstance;
 	private final CelebiDateParser DATE_FORMATTER;
-	private final Map<String, Command.Type> DEFAULT_ALIAS_MAP;
+
 	/////////////////////////////////////////////////////////////////
 	
 	private Parser () {
-		DEFAULT_ALIAS_MAP = Aliases.getInstance().getAliasMap();
 		
 		userRawInput = "no user input received";
 		
@@ -398,7 +401,9 @@ public class Parser implements ParserInterface {
 		token = cleanText(token);
 		
 		Command.Type cmdType = Configuration.getInstance().getCmdTypeFromUserAlias(token);
-		if (cmdType != null && !token.equals("alias")) { // final check to prevent alias overwrite
+		
+		// includes redundancy check to make sure user aliases do not overwrite reserved cmd keywords
+		if (cmdType != null && !RESERVED_CMD_KEYWORDS.contains(token)) { 
 			return cmdType;
 		}
 				
