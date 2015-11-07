@@ -7,7 +7,7 @@ import common.Task;
 import common.TasksBag;
 import common.Utilities;
 import logic.exceptions.AlreadyMarkedException;
-import logic.exceptions.IntegrityCommandException;
+import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.LogicException;
 import parser.Command;
 import storage.StorageInterface;
@@ -27,7 +27,7 @@ public class MarkAction implements UndoableAction {
     
     private Logger log;
     
-    public MarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IntegrityCommandException {
+    public MarkAction(Command command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         
         cCommand = command;
         cCurBag = internalBag.getFiltered();
@@ -38,12 +38,12 @@ public class MarkAction implements UndoableAction {
         int UID = cCommand.getTaskUID();
 
         if (UID <= 0) {
-            throw new IntegrityCommandException(USR_MSG_INDEX_ERR);
+            throw new IllegalAccessCommandException(USR_MSG_INDEX_ERR);
         }
 
         if (UID > cCurBag.size()) {
             log.warning("Exceeded size" + UID + " " + cCurBag.size());
-            throw new IntegrityCommandException(USR_MSG_INDEX_ERR);
+            throw new IllegalAccessCommandException(USR_MSG_INDEX_ERR);
         }
 
         // UID - 1 to get  array index
@@ -57,7 +57,7 @@ public class MarkAction implements UndoableAction {
         String formattedString;
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
-        if(cWhichTask.isComplete()){ 
+        if(cWhichTask.isCompleted()){ 
             formattedString = Utilities.formatString(USR_MSG_MARK_FAIL, cWhichTask.getName());
             throw new AlreadyMarkedException(formattedString);
         } else { 

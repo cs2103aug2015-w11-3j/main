@@ -54,7 +54,7 @@ abstract class Database {
 		return true;	
 	}
 	
-	static boolean load () throws BadFileContentException {
+	static boolean load () {
 		if (!isConnected) {
 			return false;
 		} 
@@ -75,12 +75,15 @@ abstract class Database {
 			dbIndex = new HashMap<Integer, TaskJson>();
 			for (int i = 0; i < parsedResult.size(); i ++) {
 				TaskJson cj = new TaskJson((JSONObject)parsedResult.get(i));
-				dbData.add(cj);
-				dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
+				if(cj.isValid()) {
+					dbData.add(cj);
+					dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
+				}
 			}
+			save();
 			return true;
 		} catch (ClassCastException e) {
-			throw new BadFileContentException("Bad file format");
+			return false;
 		} catch (Exception e) {
 			System.out.println(e);
 			return false;
@@ -88,18 +91,26 @@ abstract class Database {
 	}
 	
 	static boolean disconnect () {
-		db = null;
-		dbReader.close();
-		dbReader = null;
-		dbData = null;
-		dbIndex = null;
-		
-		isConnected = false;
-		
-		return true;
+		if (isConnected) {
+			db = null;
+			dbReader.close();
+			dbReader = null;
+			dbData = null;
+			dbIndex = null;
+			
+			isConnected = false;
+			
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	static List<TaskJson> selectAll () {
+		if (!isConnected) {
+			return new ArrayList<TaskJson>();
+		} 
+		
 		return new ArrayList<TaskJson>(dbData);
 	}
 	
@@ -158,11 +169,15 @@ abstract class Database {
 		return true;
 	}
 	
-	static boolean moveTo(String destination) throws IOException {
-		File newDb = new File(destination, FILENAME);
-		Files.move(db.toPath(), newDb.toPath());
+	static boolean moveTo(String destination, boolean isTestMode) throws IOException {
+		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
+		File newDb = new File(destination, fileName);
+		
+		Files.move(db.toPath(), newDb.toPath());		
 		db = newDb;
-
+		
+		System.out.println(db.getName());
+		
 		dbReader = new Scanner(db);
 		dbReader.useDelimiter("\\Z");
 		return true;
@@ -176,6 +191,7 @@ abstract class Database {
 			
 			dbWriter.write(text);
 			dbWriter.close();
+			
 			dbWriter = null;
 			return true;
 		} catch (IOException e) {

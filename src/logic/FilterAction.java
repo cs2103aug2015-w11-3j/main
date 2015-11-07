@@ -2,8 +2,7 @@
 package logic;
 
 import common.TasksBag;
-import common.TasksBag.FilterBy;
-import logic.exceptions.LogicException;
+import common.TasksBag.ViewType;
 import parser.Command;
 
 /**
@@ -17,29 +16,30 @@ public class FilterAction implements Action {
 
     private Command cCommand;
     private TasksBag cBag;
-    private FilterBy cSortBy;
+    private ViewType cSortBy;
 
-    public FilterAction(Command command, TasksBag internalBag, FilterBy sortBy) throws LogicException {
+    
+    public FilterAction(Command command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
-        cSortBy = sortBy;
+        cSortBy = cCommand.getViewType();
     }
 
     @Override
-    public CommandFeedback execute() throws LogicException {
+    public CommandFeedback execute() {
         String msg = "";
         switch (cSortBy) {
-            case COMPLETE_TASKS:
+            case COMPLETED:
                 msg = USR_MSG_FILTER_COMPLETE;
-                cBag.setFilterState(FilterBy.COMPLETE_TASKS);
+                cBag.setView(ViewType.COMPLETED);
                 break;
-            case INCOMPLETE_TASKS:
+            case INCOMPLETE:
                 msg = USR_MSG_FILTER_INCOMPLETE;
-                cBag.setFilterState(FilterBy.INCOMPLETE_TASKS);
+                cBag.setView(ViewType.INCOMPLETE);
                 break;
-            case TODAY:
+            case DEFAULT:
                 msg = USR_MSG_FILTER_TODAY;
-                cBag.setFilterState(FilterBy.TODAY);
+                cBag.setView(ViewType.DEFAULT);
                 break;
             default:
                 assert false;
@@ -48,8 +48,8 @@ public class FilterAction implements Action {
         }
 
         // both search string and filter date will be reset
-        cBag.setSearchState(null);
-        cBag.setFilterDateState(null, null);
+        //cBag.setSearchState(null);
+        //cBag.setFilterDateState(null, null);
         return new CommandFeedback(cCommand, cBag, msg);
     }
 

@@ -7,6 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
+import java.util.Map;
+import java.util.Set;
+import java.util.LinkedHashMap;
+import parser.Command;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -19,29 +23,34 @@ import org.json.simple.JSONValue;
  */
 public class Configuration implements ConfigurationInterface {
 
-    private final String CONFIG_DIRECTORY = "bin/config.json";
-    private final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
-    private final String KEY_DEFAULT_START_TIME = "DEFAULT_START_TIME";
-    private final String KEY_DEFAULT_END_TIME = "DEFAULT_END_TIME";
+    private static final String CONFIG_DIRECTORY = "bin/config.json";
+    private static final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
+    private static final String KEY_DEFAULT_START_TIME = "DEFAULT_START_TIME";
+    private static final String KEY_DEFAULT_END_TIME = "DEFAULT_END_TIME";
+    private static final String KEY_ALIAS_MAPPINGS = "ALIAS_MAPPINGS";
     
-    private final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
-    private final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
-    private final String DEFAULT_VALUE_DEFAULT_END_TIME = "23:59";
+    private static final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
+    private static final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
+    private static final String DEFAULT_VALUE_DEFAULT_END_TIME = "23:59";
     
-    private final String MESSAGE_INVALID_STORAGE_LOCATION = "%1$s is not a valid path";
-    private final String MESSAGE_INVALID_DEFAULT_START_TIME = "Start time %1$s is invalid";
-    private final String MESSAGE_INVALID_DEFAULT_END_TIME = "End time %1$s is invalid";
+    private static final String MESSAGE_INVALID_STORAGE_LOCATION = "%1$s is not a valid path";
+    private static final String MESSAGE_INVALID_DEFAULT_START_TIME = "Start time %1$s is invalid";
+    private static final String MESSAGE_INVALID_DEFAULT_END_TIME = "End time %1$s is invalid";
+    private static final String MESSAGE_INVALID_ALIAS_MAP = "Corrupted Map (format or values)%s";
     
-    private final String MESSAGE_RESET_STORAGE_LOCATION = "Storage location set to " + DEFAULT_VALUE_STORAGE_LOCATION;
-    private final String MESSAGE_RESET_DEFAULT_START_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_START_TIME;
-    private final String MESSAGE_RESET_DEFAULT_END_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_END_TIME;
+    private static final String MESSAGE_RESET_STORAGE_LOCATION = "Storage location set to " + DEFAULT_VALUE_STORAGE_LOCATION;
+    private static final String MESSAGE_RESET_DEFAULT_START_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_START_TIME;
+    private static final String MESSAGE_RESET_DEFAULT_END_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_END_TIME;
+    private static final String MESSAGE_RESET_NEW_ALIAS_MAP = "";
 
-    static Configuration instance;
+    private static Configuration instance = null;
 
     private File configFile;
     private Scanner configReader;
     private Writer configWriter;
     private String configStorageLocation, configDefaultStartTime, configDefaultEndTime;
+    //TODO new alias code
+    private Map<String, String> configUserCmdAliases;
 
     public static ConfigurationInterface getInstance() {
         if (instance == null) {
@@ -74,7 +83,8 @@ public class Configuration implements ConfigurationInterface {
         configReader.useDelimiter("\\Z");
     }
 
-    private void readProperties() throws IOException {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void readProperties() throws IOException {
         try {
             String plainText = "";
             if (configReader.hasNext()) {
@@ -104,6 +114,13 @@ public class Configuration implements ConfigurationInterface {
             	resetDefaultEndTime();
             	logError(MESSAGE_INVALID_DEFAULT_END_TIME, configDefaultEndTime, MESSAGE_RESET_DEFAULT_END_TIME);
             } 
+
+            //TODO new alias code
+            configUserCmdAliases = (Map) parsedResult.get(KEY_ALIAS_MAPPINGS);
+            if (!isValidAliasMap(configUserCmdAliases)) {
+            	clearUserAliases();
+            	logError(MESSAGE_INVALID_ALIAS_MAP, "", MESSAGE_RESET_NEW_ALIAS_MAP);
+            }
             
             writeBack();
         } catch (ClassCastException e) {
@@ -111,22 +128,44 @@ public class Configuration implements ConfigurationInterface {
         }
     }
 
+    // getters
+
+    @Override
     public String getDefaultUsrFileDirectory() {
     	return DEFAULT_VALUE_STORAGE_LOCATION;
     }
-    
+
+    @Override
     public String getUsrFileDirectory() {
         return configStorageLocation;
     }
-    
+
+    @Override
     public Time getDefaultStartTime() {
         return new Time(configDefaultStartTime);
     }
-    
+
+    @Override
     public Time getDefaultEndTime() {
         return new Time(configDefaultEndTime);
     }
 
+    //TODO new alias code
+    @Override
+    public boolean isUserAlias(String alias) {
+    	return configUserCmdAliases.containsKey(alias);
+    }
+    @Override
+    public Command.Type getCmdTypeFromUserAlias(String alias) {
+    	String typeName = configUserCmdAliases.get(alias);
+    	if (typeName == null) {
+    		return null;
+    	}
+    	return Enum.valueOf(Command.Type.class, typeName);
+    }
+    
+    // setters
+    
     public void setUsrFileDirector(String newDir) throws IOException {
 		configStorageLocation = newDir;
 		
@@ -143,6 +182,7 @@ public class Configuration implements ConfigurationInterface {
             writeBack();
             Log.log("default start time reset to " + newTime, this.getClass());
     	} 
+    	//TODO how would caller know if newTime is accepteed as valid time
     }
     
     public void setDefaultEndTime(String newTime) throws IOException {
@@ -153,19 +193,41 @@ public class Configuration implements ConfigurationInterface {
             writeBack();
             Log.log("default end time reset to " + newTime, this.getClass());
     	}
+    	//TODO how would caller know if newTime is accepteed as valid time
     }
     
-    private void logError(String invalidMsg, String arg, String resetMsg) {
-    	String formatted = Utilities.formatString(invalidMsg, arg);
-    	Log.log(formatted);
-    	Log.log(resetMsg);
+    //TODO new alias code
+    @Override
+    public void setUserAlias(String alias, Command.Type mappedCmd) throws IOException {
+    	assert(alias != null 
+    			&& mappedCmd != null 
+    			&& mappedCmd != Command.Type.INVALID
+    			&& !alias.equals("")
+    			&& !alias.toLowerCase().equals("alias"));
+    	
+    	configUserCmdAliases.put(alias, mappedCmd.name());
+    	
+    	writeBack();
+    	Log.log("new alias mapping added: " + alias + "-->" + mappedCmd.name());
     }
+    @Override
+    public void removeUserAlias(String alias) throws IOException {
+    	assert(alias != null && alias.length() != 0);
+    	configUserCmdAliases.remove(alias);
+    	
+    	writeBack();
+    	Log.log("alias mapping removed: " + alias);
+    }
+    
+    // resetters
     
     private void resetAll() throws IOException {
         // set all properties to default value
     	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
     	configDefaultStartTime = DEFAULT_VALUE_DEFAULT_START_TIME;
     	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
+    	//TODO new alias code
+    	configUserCmdAliases = new LinkedHashMap<>();
 
         // write to the configuration file
         writeBack();
@@ -186,6 +248,41 @@ public class Configuration implements ConfigurationInterface {
     	writeBack();
     }
     
+    //TODO new alias code
+    @Override
+	public void clearUserAliases() throws IOException {
+    	configUserCmdAliases = new LinkedHashMap<>();
+    	writeBack();
+    	Log.log("All user alias mappings cleared");
+    }
+	
+	// file data validation
+	
+	//TODO new alias code
+	@SuppressWarnings("rawtypes")
+	private boolean isValidAliasMap(Map aliasMap) {
+		if (aliasMap == null) {
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		final Set<Map.Entry> entries = aliasMap.entrySet();
+		for (Map.Entry entry : entries) {
+			if (entry.getKey() instanceof String && entry.getValue() instanceof String) {
+				if ("".equals(entry.getKey()) || "alias".equals(entry.getKey())) {
+					return false; // should have no empty string mappings or reserved alias.
+				}
+				try {
+					Enum.valueOf(Command.Type.class, (String) entry.getValue());
+				} catch (IllegalArgumentException iae) {
+					return false; // name not in command.type enum
+				}
+			} else {
+				return false; // key or value are not strings
+			}
+		}
+		return true; // all tests passed, phew!
+	}
+	
     private boolean isValidTime(String str) {
     	if (str == null) {
     		return false;
@@ -195,11 +292,21 @@ public class Configuration implements ConfigurationInterface {
     	return t.isValid();
     }
 
-    private void writeBack() throws IOException {
+    private void logError(String invalidMsg, String arg, String resetMsg) {
+    	String formatted = Utilities.formatString(invalidMsg, arg);
+    	//System.out.println(formatted);
+    	Log.log(formatted);
+    	Log.log(resetMsg);
+    }
+    
+    @SuppressWarnings("unchecked")
+	private void writeBack() throws IOException {
         JSONObject configJson = new JSONObject();
         configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
         configJson.put(KEY_DEFAULT_START_TIME, configDefaultStartTime);
         configJson.put(KEY_DEFAULT_END_TIME, configDefaultEndTime);
+        //TODO new alias code
+        configJson.put(KEY_ALIAS_MAPPINGS, configUserCmdAliases);
 
         configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
         String text = JSONValue.toJSONString(configJson);
@@ -208,4 +315,5 @@ public class Configuration implements ConfigurationInterface {
         configWriter.close();
         configWriter = null;
     }
+
 }

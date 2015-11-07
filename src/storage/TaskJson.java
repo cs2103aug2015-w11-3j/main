@@ -19,6 +19,10 @@ class TaskJson extends LinkedHashMap<String, String>{
 	static final String KEY_NAME_DATE_START = "DATE_START";
 	static final String KEY_NAME_DATE_END = "DATE_END";
 	static final String KEY_NAME_IS_COMPLETED = "IS_COMPLETED";
+	static final String[] KEYS = { 
+		KEY_NAME_ID, KEY_NAME_NAME, KEY_NAME_DATE_START, 
+		KEY_NAME_DATE_END, KEY_NAME_IS_COMPLETED 
+	};
 	
 	static final String VALUE_NULL = "null";
 	static final String VALUE_TRUE = "true";
@@ -27,13 +31,15 @@ class TaskJson extends LinkedHashMap<String, String>{
 	static final String DATE_FOTMAT = "yyyy-MM-dd HH:mm";
 	static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FOTMAT);
 	
-	// constructor
+	boolean _isValid = true;
+	
+	// constructors
 	public TaskJson (Task c) {
 		String id = Integer.toString(c.getId());
 		String name = c.getName();
 		String start = formatDate(c.getStart());
 		String end = formatDate(c.getEnd());
-		String isCompleted = c.isComplete() ? VALUE_TRUE : VALUE_FALSE;
+		String isCompleted = c.isCompleted() ? VALUE_TRUE : VALUE_FALSE;
 		
 		put(KEY_NAME_ID, id);
 		put(KEY_NAME_NAME, name);
@@ -43,20 +49,67 @@ class TaskJson extends LinkedHashMap<String, String>{
 	}
 	
 	public TaskJson (JSONObject j) {
-		put(KEY_NAME_ID, (String)j.get(KEY_NAME_ID));
-		put(KEY_NAME_NAME, (String)j.get(KEY_NAME_NAME));
-		put(KEY_NAME_DATE_START, (String)j.get(KEY_NAME_DATE_START));
-		put(KEY_NAME_DATE_END, (String)j.get(KEY_NAME_DATE_END));
-		put(KEY_NAME_IS_COMPLETED, (String)j.get(KEY_NAME_IS_COMPLETED));
-		
-		// check whether the date of JSON object is valid
-		// if not, set null and rewrite next time
-		if (parseDate(get(KEY_NAME_DATE_START)) == null) {
-			put(KEY_NAME_DATE_START, VALUE_NULL);
+		mapFromJSONObject(j);
+				
+		if (isValid()) {
+			validateId ();
+			validateName ();
+			validateDates ();
+			validateIsCompleted ();
 		}
-		
-		if (parseDate(get(KEY_NAME_DATE_END)) == null) {
-			put(KEY_NAME_DATE_END, VALUE_NULL);
+	}
+	
+	public boolean isValid () {
+		return _isValid;
+	}
+	
+	private void mapFromJSONObject(JSONObject j) {
+		for (int i = 0; i < KEYS.length; i++) {
+			checkAndMapField(j, KEYS[i]);
+		}
+	}
+	
+	private void checkAndMapField (JSONObject j, String key) {
+		if (j.get(key) == null) {
+			_isValid = false;
+		} else {
+			put(key, (String)j.get(key));
+		}
+	}
+	
+	private void validateId () {
+		try {
+			int id = Integer.parseInt(get(KEY_NAME_ID));
+			if (id < 1) {
+				_isValid = false;
+			}
+		} catch (NumberFormatException e) {
+			_isValid = false;
+		}
+	}
+	
+	private void validateName () {
+		if (get(KEY_NAME_NAME).trim().equals("")) {
+			_isValid = false;
+		}
+	}
+	
+	private void validateDates () {
+		Date parsedStart = parseDate(get(KEY_NAME_DATE_START));
+		Date parsedEnd = parseDate(get(KEY_NAME_DATE_END));
+		if (!get(KEY_NAME_DATE_START).equals("null") && parsedStart == null) {
+			_isValid = false;
+		} else if (!get(KEY_NAME_DATE_END).equals("null") && parsedEnd == null) {
+			_isValid = false;
+		} else if (parsedStart != null && parsedEnd != null && parsedStart.compareTo(parsedEnd) > 0) {
+			_isValid = false;
+		}		
+	}
+	
+	private void validateIsCompleted () {
+		if (!get(KEY_NAME_IS_COMPLETED).equals(VALUE_TRUE) && 
+			!get(KEY_NAME_IS_COMPLETED).equals(VALUE_FALSE)) {
+			_isValid = false;
 		}
 	}
 	

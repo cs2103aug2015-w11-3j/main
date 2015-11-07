@@ -4,20 +4,24 @@ package parser;
 import java.nio.file.Path;
 import java.util.Date;
 import common.Task;
+import common.TasksBag;
+import ui.view.CelebiViewController;
 
 public class Command implements CommandInterface {
 
 	public static enum Type {
 		ADD, DELETE, UPDATE, 
-		show_temp, SHOW_INCOMPLETE, SHOW_COMPLETE, SHOW_DEFAULT,
-		SEARCH, FILTER_DATE,
-		UNDO,REDO,
+		SHOW,
+		SEARCH, FILTER_DATE, CLEAR_FILTERS,
+		UNDO, REDO,
 		MARK, UNMARK,
 		QUIT, 
 		INVALID,
-		MOVE, HELP
+		MOVE, HELP, ALIAS,
+		THEME
 	}
 
+	
 	// Immutable, every command has these
 	private final String _userInput;
 	private final Type _cmdType;
@@ -25,7 +29,9 @@ public class Command implements CommandInterface {
 	// identifiers
 	private int _taskUID;
 	private Task.DataType _taskField;
-	private Type _helpCmdType;
+	private Type _secondaryCmdType;
+	private TasksBag.ViewType _viewType;
+	private CelebiViewController.Skin _theme;
 	
 	// field values
 	private String _name;
@@ -52,6 +58,12 @@ public class Command implements CommandInterface {
 	void setTaskField (Task.DataType f) {
 		_taskField = f;
 	}
+	void setViewType (TasksBag.ViewType v) {
+		_viewType = v;
+	}
+	void setTheme (CelebiViewController.Skin theme) {
+		_theme = theme;
+	}
 	
 	void setText (String name) {
 		_name = name;
@@ -62,9 +74,9 @@ public class Command implements CommandInterface {
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
 	}
-	void setHelpCmdType (Type t) {
+	void setSecondaryCmdType (Type t) {
 		assert(t != Type.INVALID);
-		_helpCmdType = t;
+		_secondaryCmdType = t;
 	}
 	void setPath (Path p) {
 		_path = p;
@@ -83,8 +95,8 @@ public class Command implements CommandInterface {
 	// Identifiers
 
 	@Override
-	public Type getHelpCmdType() {
-		return _helpCmdType;
+	public Type getSecondaryCmdType() {
+		return _secondaryCmdType;
 	}
 	@Override
 	public Type getCmdType () {
@@ -97,6 +109,14 @@ public class Command implements CommandInterface {
 	@Override
 	public Task.DataType getTaskField () {
 		return _taskField;
+	}
+	@Override
+	public TasksBag.ViewType getViewType () {
+		return _viewType;
+	}
+	@Override
+	public CelebiViewController.Skin getTheme () {
+		return _theme;
 	}
 	
 	// Field values

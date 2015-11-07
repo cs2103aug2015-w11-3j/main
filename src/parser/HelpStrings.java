@@ -5,7 +5,7 @@ public class HelpStrings {
     /////////////////////////////////////////////////////////////////
     // Human-readable strings for command formats (used by logic.HelpAction)
     /////////////////////////////////////////////////////////////////
-    public static final String HELP_LIST_ALL_CMDS = "< help/quit | add/del/edit | mark/unmark | show | undo/redo | search/filter | move>";
+    public static final String HELP_LIST_ALL_CMDS = "< skin | help/quit | add/del/edit | mark/unmark | show | undo/redo | search/filter/clear | move>";
 
     public static final String HELP_FORMAT_ADD = "\"add <name>\" OR \"add <name>; by <due date>\" OR \"add <name>; from <start date> to <end date>\"";
     public static final String HELP_FORMAT_DEL = "\"del <task ID number>\"";
@@ -20,5 +20,8 @@ public class HelpStrings {
     public static final String HELP_FORMAT_MOVE = "\"move <new save file path>\"";
     public static final String HELP_FORMAT_QUIT = "\"quit\" OR \"q\"";
     public static final String HELP_FORMAT_HELP = "\"help\" OR \"help <command name (from list of cmds from \"help\")>\"";
-    public static final String HELP_FORMAT_HELP_TEMP = null;
+    
+    public static final String HELP_FORMAT_THEME = "\"theme/skin <day/night>\"";
+    public static final String HELP_FORMAT_CLEAR = "\"clr OR clear OR reset\"";
+    public static final String HELP_FORMAT_ALIAS = "\"alias <your new alias> <default command token>\"";
 }

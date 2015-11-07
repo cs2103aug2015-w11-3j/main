@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import ui.view.CelebiViewController;
 
 public class Main extends Application {	
@@ -19,7 +20,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
-
+        this.primaryStage.initStyle(StageStyle.TRANSPARENT);
         initRootLayout();
         
         showCelebiView();

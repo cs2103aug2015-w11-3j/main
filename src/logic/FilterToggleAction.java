@@ -1,7 +1,7 @@
 package logic;
 
 import common.TasksBag;
-import common.TasksBag.FilterBy;
+import common.TasksBag.ViewType;
 import javafx.scene.input.KeyCode;
 import logic.exceptions.LogicException;
 
@@ -21,27 +21,27 @@ public class FilterToggleAction implements Action {
     @Override
     public KeyEventFeedback execute() throws LogicException {
         KeyEventFeedback fb;
-        FilterBy bagState = cBag.getState();
+        ViewType bagState = cBag.getView();
         String msg = "";
 
         // cBag.toggleFilter();
-        cBag.toggleFilter();
+        cBag.toggleView();
 
         switch (bagState) {
-            case COMPLETE_TASKS:
+            case COMPLETED:
                 msg = USR_MSG_FILTER_COMPLETE;
                 break;
 
-            case INCOMPLETE_TASKS:
+            case INCOMPLETE:
                 msg = USR_MSG_FILTER_INCOMPLETE;
                 break;
 
-            case TODAY:
+            case DEFAULT:
                 msg = USR_MSG_FILTER_TODAY;
                 break;
         }
-        cBag.setSearchState(null);
-        cBag.setFilterDateState(null, null);
+        //cBag.setSearchState(null);
+        //cBag.setFilterDateState(null, null);
         fb = new KeyEventFeedback(cBag, cKey, msg);
         return fb;
     }

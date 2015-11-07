@@ -2,19 +2,14 @@
 package parser;
 
 import java.text.DateFormat;
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import common.Configuration;
-import common.Time;
 import common.Utilities;
 
-import java.util.regex.Matcher;
 import java.util.GregorianCalendar;
 import static java.util.Calendar.*;
 
@@ -122,19 +117,16 @@ public class FullDateFormat implements CelebiDateParser {
 
 	// Expl testing
 	public static void main (String[] args) throws Exception {
+		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		CelebiDateParser fdf = new FullDateFormat();
-		DateFormat df;
 		while (true) {
 			try {
-				//df = new SimpleDateFormat(in.nextLine());
-				//System.out.println(df.parse(in.nextLine()));
 			System.out.println(fdf.parseDate(in.nextLine(), true));
 			} catch (ParseException e) {
 				System.out.println(e);
 			}
 		}
-//		System.out.println((new SimpleDateFormat()).getCalendar() instanceof GregorianCalendar);
 	}
 
 }
