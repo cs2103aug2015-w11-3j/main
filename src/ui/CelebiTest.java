@@ -16,10 +16,12 @@ import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.util.WaitForAsyncUtils;
 
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import ui.view.CelebiViewController;
+import ui.view.CelebiViewController.Skin;
 
 public class CelebiTest extends FxRobot {
 	private static Main mainApp;
@@ -74,8 +76,16 @@ public class CelebiTest extends FxRobot {
 	
 	@Test
 	public void changeSkinTest() {
-		InlineCssTextArea commandArea=(InlineCssTextArea)mainApp.getScene().lookup("#command-area");
 		clickOn("#command-area").write("skin night").push(KeyCode.ENTER);
-		//assertTrue(controller.);
+		assertTrue(controller.getSkin() == Skin.NIGHT);
+		write("skin day").push(KeyCode.ENTER);
+		assertTrue(controller.getSkin() == Skin.DAY);
+	}
+	
+	@Test
+	public void commandScrollBarIsHiddenTest() {
+		clickOn("#command-area").write("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+		ScrollBar commandScrollBar = (ScrollBar)mainApp.getScene().lookup("#command-scroll-bar"); 
+		assertTrue(!commandScrollBar.isDisable());
 	}
 }
