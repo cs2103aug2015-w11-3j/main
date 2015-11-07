@@ -31,6 +31,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import common.Configuration;
 import common.Task;
@@ -94,6 +95,8 @@ public class CelebiViewController {
     private static final Color NIGHT_NORMAL_TASK_COLOR = Color.rgb(236, 240, 241);
     private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(22, 160, 133);
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
+    
+    private static final Font DEFAULT_FONT = Font.font("Oxygen", 13);
 
     public static enum Skin {
         DAY, NIGHT
@@ -111,7 +114,7 @@ public class CelebiViewController {
      */
     @FXML
     private void initialize() {
-        initializeCelebiTable();
+    	initializeCelebiTable();
         initializeTableColumns();
         initializeCommandPane();
         initializeCommandField();
@@ -245,6 +248,7 @@ public class CelebiViewController {
     				Task task = (Task)getTableRow().getItem();
     				if (task != null) {
     					setColorForTaskName(nameText, task);
+    					nameText.setFont(DEFAULT_FONT);
     					setGraphic(nameText);
         				setPrefHeight(26.2);
         				// wrap the task name

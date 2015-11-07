@@ -1,6 +1,10 @@
 .root{
     -fx-font-size: 9.5pt;
-    -fx-font-family: 'Oxygen';
+    -fx-font-family: "Oxygen";
+}
+
+.text{
+	-fx-font-family: "Oxygen";
 }
 
 .background {
