@@ -77,7 +77,13 @@ public class Main extends Application {
             // Give the controller access to the main app and UI.
             controller = loader.getController();
             ConfigurationInterface config = Configuration.getInstance();
-            CelebiViewController.Skin skin = config.getSkin();
+            CelebiViewController.Skin skin;
+            
+            try {
+            	skin = Enum.valueOf(CelebiViewController.Skin.class, config.getSkin());
+            } catch (IllegalArgumentException e) {
+            	skin = CelebiViewController.Skin.DAY;
+            }
             
             switch (skin) {
     	        case NIGHT:

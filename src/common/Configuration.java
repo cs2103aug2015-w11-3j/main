@@ -17,7 +17,7 @@ import org.json.simple.JSONValue;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
-import ui.view.CelebiViewController;
+import static ui.view.CelebiViewController.Skin;
 
 /*
  * Possible errors and solutions: 
@@ -35,8 +35,8 @@ public class Configuration implements ConfigurationInterface {
     private static final String KEY_ALIAS_MAPPINGS = "ALIAS_MAPPINGS";
     private static final String KEY_SKIN = "SKIN";
     
-    private static final String VALUE_SKIN_DAY = "DAY";
-    private static final String VALUE_SKIN_NIGHT = "NIGHT";
+    private static final String VALUE_SKIN_DAY = Skin.DAY.name();
+    private static final String VALUE_SKIN_NIGHT = Skin.NIGHT.name();
     
     private static final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
     private static final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
@@ -170,22 +170,8 @@ public class Configuration implements ConfigurationInterface {
     }
     
     @Override
-    public CelebiViewController.Skin getSkin() {
-    	String upper = configSkin.toUpperCase();
-    	CelebiViewController.Skin skin;
-    	
-    	switch (upper) {
-    		case VALUE_SKIN_DAY:
-    			skin = CelebiViewController.Skin.DAY;
-    			break;
-    		case VALUE_SKIN_NIGHT:
-    			skin = CelebiViewController.Skin.NIGHT;
-    			break;
-    		default:
-    			skin = CelebiViewController.Skin.DAY;
-    	}
-    	
-    	return skin;
+    public String getSkin() {
+    	return configSkin;
     }
 
 	//@@author A0131891E
@@ -235,11 +221,12 @@ public class Configuration implements ConfigurationInterface {
     }
     
     @Override
-    public void setSkin(CelebiViewController.Skin skin) throws IOException {
-		configSkin = skin.toString();
-		
-		writeBack();
-		Log.log("skin reset to " + configSkin, this.getClass());
+    public void setSkin(String skin) throws IOException {
+    	if (isValidSkin(skin)) {
+    		configSkin = skin;
+    		writeBack();
+    		Log.log("skin reset to " + configSkin, this.getClass());
+    	}
     }
     
     //@@author A0131891E
@@ -266,9 +253,8 @@ public class Configuration implements ConfigurationInterface {
     	Log.log("alias mapping removed: " + alias);
     }
     
-    // resetters
+    // resetterss
     //@@author A0133920N
-
     
     private void resetAll() throws IOException {
         // set all properties to default value

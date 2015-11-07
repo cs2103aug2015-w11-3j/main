@@ -11,31 +11,31 @@ public interface ParserInterface {
 	
 	// Used in actual program execution flow
 	public void init();
-	public Command parseCommand(String s);
+	public CommandImpl parseCommand(String s);
 	
 	// Manually create commands for logic testing.
-	public Command makeAdd (String name, Date start, Date end);
-	public Command makeUpdateName (int taskUID, String newName);
-	public Command makeUpdateStart (int taskUID, Date newDate);
-	public Command makeUpdateEnd (int taskUID, Date newDate);
-	public Command makeDelete (int taskUID);
-	public Command makeQuit ();
-	public Command makeInvalid ();
-	public Command makeShow (TasksBag.ViewType viewType);
-	public Command makeRedo ();
-	public Command makeUndo ();
-	public Command makeMark (int taskUID);
-	public Command makeUnmark (int taskUID);
-	public Command makeSearch (String searchKey);
-	public Command makeFilterDate (Date rangeStart, Date rangeEnd);
-	public Command makeClear ();
-	public Command makeMove (Path newPath);
-	public Command makeHelp (Command.Type helpTarget);
-	public Command makeTheme (Skin theme);
-	public Command makeAlias (String alias, Command.Type target);
+	public CommandImpl makeAdd (String name, Date start, Date end);
+	public CommandImpl makeUpdateName (int taskUID, String newName);
+	public CommandImpl makeUpdateStart (int taskUID, Date newDate);
+	public CommandImpl makeUpdateEnd (int taskUID, Date newDate);
+	public CommandImpl makeDelete (int taskUID);
+	public CommandImpl makeQuit ();
+	public CommandImpl makeInvalid ();
+	public CommandImpl makeShow (TasksBag.ViewType viewType);
+	public CommandImpl makeRedo ();
+	public CommandImpl makeUndo ();
+	public CommandImpl makeMark (int taskUID);
+	public CommandImpl makeUnmark (int taskUID);
+	public CommandImpl makeSearch (String searchKey);
+	public CommandImpl makeFilterDate (Date rangeStart, Date rangeEnd);
+	public CommandImpl makeClear ();
+	public CommandImpl makeMove (Path newPath);
+	public CommandImpl makeHelp (Command.Type helpTarget);
+	public CommandImpl makeTheme (Skin theme);
+	public CommandImpl makeAlias (String alias, Command.Type target);
 	
 	// to debug command
-	public static void printCmd (Command c) {
+	public static void printCmd (CommandImpl c) {
 		System.out.println("type: " + c.getCmdType());
 		System.out.println("raw: " + c.getRawUserInput());
 		System.out.println("uid: " + c.getTaskUID());

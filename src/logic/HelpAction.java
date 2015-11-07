@@ -5,15 +5,16 @@ import common.TasksBag;
 import logic.exceptions.LogicException;
 import parser.Command;
 import parser.Command.Type;
+import parser.CommandImpl;
 import parser.HelpStrings;
 
 public class HelpAction implements Action {
 
     private static final String USR_MSG_HELP_INVALID = "No help available for this command";
-    private Command cCommand;
+    private CommandImpl cCommand;
     private TasksBag cBag;
     
-    public HelpAction(Command rtnCmd, TasksBag bag) {
+    public HelpAction(CommandImpl rtnCmd, TasksBag bag) {
         cCommand = rtnCmd;
         cBag = bag;
     }
@@ -22,7 +23,7 @@ public class HelpAction implements Action {
     public CommandFeedback execute() throws LogicException {
         String msg = "";
         CommandFeedback fb;
-        Type cmdType = cCommand.getSecondaryCmdType();
+        Command.Type cmdType = cCommand.getSecondaryCmdType();
         
         // General help command requested by user
         if(cmdType == null){

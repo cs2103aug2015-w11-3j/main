@@ -49,8 +49,8 @@ public final class HelpStrings {
     public static String getHelpToolTip(String token){
     	assert(token != null && P_NO_WHITESPACE.matcher(token).matches());
 
-    	Type cmdType = ALIASES.getCmdFromAlias(Parser.cleanText(token));
-    	assert(cmdType != Type.INVALID);
+    	Command.Type cmdType = ALIASES.getCmdFromAlias(Parser.cleanText(token));
+    	assert(cmdType != Command.Type.INVALID);
     	
     	if (cmdType == null) {
     		return null; // cannot parse as command token
@@ -63,27 +63,27 @@ public final class HelpStrings {
     private static Map<Command.Type, String> mapCmdToFormatStrings () {
     	final Map<Command.Type, String> map = new HashMap<>();
     	
-    	map.put( Type.ADD, FORMAT_ADD );
-    	map.put( Type.DELETE, FORMAT_DELETE );
-    	map.put( Type.UPDATE, FORMAT_UPDATE );
+    	map.put( Command.Type.ADD, FORMAT_ADD );
+    	map.put( Command.Type.DELETE, FORMAT_DELETE );
+    	map.put( Command.Type.UPDATE, FORMAT_UPDATE );
     	
-    	map.put( Type.MARK, FORMAT_MARK );
-    	map.put( Type.UNMARK, FORMAT_UNMARK );
+    	map.put( Command.Type.MARK, FORMAT_MARK );
+    	map.put( Command.Type.UNMARK, FORMAT_UNMARK );
     	
-    	map.put( Type.SHOW, FORMAT_SHOW );
+    	map.put( Command.Type.SHOW, FORMAT_SHOW );
     	
-    	map.put( Type.UNDO, FORMAT_UNDO );
-    	map.put( Type.REDO, FORMAT_REDO );
+    	map.put( Command.Type.UNDO, FORMAT_UNDO );
+    	map.put( Command.Type.REDO, FORMAT_REDO );
     	
-    	map.put( Type.SEARCH, FORMAT_SEARCH );
-    	map.put( Type.FILTER_DATE, FORMAT_FILTER );
-    	map.put( Type.CLEAR_FILTERS, FORMAT_CLEAR );
+    	map.put( Command.Type.SEARCH, FORMAT_SEARCH );
+    	map.put( Command.Type.FILTER_DATE, FORMAT_FILTER );
+    	map.put( Command.Type.CLEAR_FILTERS, FORMAT_CLEAR );
     	
-    	map.put( Type.ALIAS, FORMAT_ALIAS );
-    	map.put( Type.THEME, FORMAT_THEME );
-    	map.put( Type.QUIT, FORMAT_QUIT );
-    	map.put( Type.HELP, FORMAT_HELP );
-    	map.put( Type.MOVE, FORMAT_MOVE );
+    	map.put( Command.Type.ALIAS, FORMAT_ALIAS );
+    	map.put( Command.Type.THEME, FORMAT_THEME );
+    	map.put( Command.Type.QUIT, FORMAT_QUIT );
+    	map.put( Command.Type.HELP, FORMAT_HELP );
+    	map.put( Command.Type.MOVE, FORMAT_MOVE );
     	
     	return map;
     }

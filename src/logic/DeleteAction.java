@@ -9,7 +9,7 @@ import common.Utilities;
 import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
-import parser.Command;
+import parser.CommandImpl;
 import storage.StorageInterface;
 
 /***
@@ -22,7 +22,7 @@ public class DeleteAction implements UndoableAction {
     private static final String USR_MSG_DELETE_OK = "Removed %1$s!";
     private static final String USR_MSG_DELETE_UNDO = "Undoing delete %1$s";
 
-    private Command cCommand;
+    private CommandImpl cCommand;
     private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
@@ -44,7 +44,7 @@ public class DeleteAction implements UndoableAction {
      *             When provided with an index that will access OOB values
      * @throws IllegalAccessCommandException 
      */
-    public DeleteAction(Command command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
+    public DeleteAction(CommandImpl command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         assert internalBag != null;
         assert stor != null;
         assert command != null;

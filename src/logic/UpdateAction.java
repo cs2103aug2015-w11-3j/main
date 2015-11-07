@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.InvalidDateException;
 import logic.exceptions.LogicException;
-import parser.Command;
+import parser.CommandImpl;
 import storage.StorageInterface;
 
 public class UpdateAction implements UndoableAction {
@@ -23,14 +23,14 @@ public class UpdateAction implements UndoableAction {
     private static final String USR_MSG_UPDATE_CLASH_WARNING_SINGLE = "Task clashes with %1$s!";
     private static final String USR_MSG_UPDATE_CLASH_WARNING_MANY = "Task clashes with %1$s and %2$s more!";
     
-    private Command cCommand;
+    private CommandImpl cCommand;
     private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cWhichTask;
     private Task cOldTask;
 
-    public UpdateAction(Command command, TasksBag bag, StorageInterface stor) throws LogicException {
+    public UpdateAction(CommandImpl command, TasksBag bag, StorageInterface stor) throws LogicException {
         cCommand = command;
         cCurBag = bag.getFiltered();
         cIntBag = bag;
