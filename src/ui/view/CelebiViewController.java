@@ -362,10 +362,12 @@ public class CelebiViewController {
         commandArea.textProperty().addListener((observable, oldValue, newValue) -> {
             String firstWord;
             firstWord = extractFirstWord(newValue);
+            checkToolTip(firstWord);
+            
             if ("".equals(firstWord)) {
             	return; // catches commandArea resetting when enter is pressed.
             }
-            checkToolTip(firstWord);
+            
             if (ALIASES.isCmdAlias(firstWord)) {
                 // highlight the first word
                 commandArea.setStyle(0, firstWord.length(),
@@ -385,7 +387,7 @@ public class CelebiViewController {
     }
 
     private void checkToolTip(String firstWord) {
-    	if (firstWord == null || "".equals(firstWord)) {
+    	if (firstWord == null) {
     		return; // catches command input field clearing change
     	}
         // show the tool-tip
