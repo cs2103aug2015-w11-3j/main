@@ -101,8 +101,8 @@ public class StorageTest {
 	
 	private final String TESTFILE_CONTENT_INITIAL = "[]";
 	
-	private final String NOT_EXSITS_FILEPATH = "/notExists";	
-	private final String MOVE_TO_FILEPATH = "/newPath/";	
+	private final String NOT_EXSITS_FILEPATH = "notExists";	
+	private final String MOVE_TO_FILEPATH = "newPath";	
 	
 	private ConfigurationInterface config;
 	private String defaultPath;
@@ -330,7 +330,7 @@ public class StorageTest {
     
     @Test
     /* Test if move storage file
-     * Expected: task gets removed from the storage file
+     * Expected: file successfully moved to a new directory
      */ 
     public void testMoveSuccess() throws IOException {
     	TasksBag tb;
@@ -512,7 +512,7 @@ public class StorageTest {
     	System.out.println(task1.getId());
     	Assert.assertEquals(task1.getId(), task2.getId());
     	Assert.assertEquals(task1.getName(), task2.getName());
-    	Assert.assertEquals(task1.isComplete(), task2.isComplete());
+    	Assert.assertEquals(task1.isCompleted(), task2.isCompleted());
     	
     	assertDateEqual(task1.getStart(), task2.getStart());
     	assertDateEqual(task1.getEnd(), task2.getEnd());
