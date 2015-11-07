@@ -5,6 +5,12 @@
 
 .background {
     -fx-background-color: #34495e;
+    -fx-border-width: 0 0 0 0 ;
+}
+
+.header-background {
+	-fx-background-color: #34495e;
+	-fx-border-width: 0 0 0 0 ;
 }
 
 #tableview-background-pane {

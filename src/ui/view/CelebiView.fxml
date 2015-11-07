@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Control?>
 
-<AnchorPane fx:id="rootPane" minHeight="720.0" stylesheets="@../resource/skinDay.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
+<AnchorPane fx:id="rootPane" minHeight="720.0" styleClass="root-background" stylesheets="@../resource/skinDay.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
    <children>
       <AnchorPane prefHeight="650.0" prefWidth="900.0" AnchorPane.topAnchor="50.0">
          <children>
@@ -70,6 +70,7 @@
             </SplitPane>
          </children>
       </AnchorPane>
+      <AnchorPane maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" styleClass="header-background" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          <Label id="popupLabel" fx:id="popupLabel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="57.0" />
    </children>
 </AnchorPane>

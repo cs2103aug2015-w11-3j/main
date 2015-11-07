@@ -3,8 +3,18 @@
 	-fx-font-size: 13px;
 }
 
+.root-background {
+	-fx-background-color: transparent;
+}
+
 .background {
     -fx-background-color: #ffffff;
+    -fx-border-width: 0 0 0 0 ;
+}
+
+.header-background {
+	-fx-background-color: #ffffff;
+	-fx-border-width: 0 0 0 0 ;
 }
 
 #tableview-background-pane {
