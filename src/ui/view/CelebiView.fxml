@@ -18,7 +18,7 @@
                      <children>
                         <AnchorPane layoutX="92.0" layoutY="57.0" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
                            <children>
-                              <TabPane fx:id="statePane" mouseTransparent="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="365.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <TabPane id="tab-pane" fx:id="statePane" mouseTransparent="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="365.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <tabs>
                                     <Tab text="What's up">
                                       <content>

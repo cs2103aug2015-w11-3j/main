@@ -19,12 +19,17 @@ public class Main extends Application {
     private BorderPane rootLayout;
     private AnchorPane celebiPane;
     private Scene scene;
+    private CelebiViewController controller;
     
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
-        this.primaryStage.initStyle(StageStyle.TRANSPARENT);
+        try {
+        	this.primaryStage.initStyle(StageStyle.TRANSPARENT);
+        } catch (Exception e) {
+        	
+        }
         
         Font regularFont = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 10);
         Font boldFont = Font.loadFont(Main.class.getResourceAsStream("Oxygen 700.ttf"), 10);
@@ -70,7 +75,7 @@ public class Main extends Application {
             rootLayout.setCenter(celebiView);
             
             // Give the controller access to the main app and UI.
-            CelebiViewController controller = loader.getController();
+            controller = loader.getController();
             ConfigurationInterface config = Configuration.getInstance();
             CelebiViewController.Skin skin = config.getSkin();
             
@@ -134,6 +139,10 @@ public class Main extends Application {
     
     public Scene getScene() {
     	return scene;
+    }
+    
+    public CelebiViewController getController() {
+    	return controller;
     }
 }
 
