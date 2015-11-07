@@ -126,6 +126,7 @@ public final class Aliases {
 	static final String[] FIELD_START_DATE = {
 		"at",
 		"start",
+		"starting",
 		"from",
 		"begin",
 		"on"
