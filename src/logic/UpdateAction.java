@@ -91,8 +91,6 @@ public class UpdateAction implements UndoableAction {
                 }
 
                 break;
-            case IMPORTANCE:
-                break;
             case NAME:
                 assert cCommand.getText() != null;
                 break;
@@ -109,14 +107,16 @@ public class UpdateAction implements UndoableAction {
         String formattedString;
         String warningString;
         
-        warningString = processWarningMsg();
+        
         
         switch (cCommand.getTaskField()) {
             case DATE_END:
 
                 toBeUpdated.setEnd(cCommand.getEnd());
                 cStore.save(toBeUpdated);
-
+                
+                warningString = processWarningMsg();
+                
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_ENDDATE_OK, toBeUpdated.getName());
                 fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
@@ -126,6 +126,8 @@ public class UpdateAction implements UndoableAction {
                 toBeUpdated.setStart(cCommand.getStart());
                 cStore.save(toBeUpdated);
 
+                warningString = processWarningMsg();
+                
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_STARTDATE_OK, toBeUpdated.getName());
                 fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
                 return fb;
@@ -136,7 +138,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_NAME_OK, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
                 return fb;
             default:
@@ -180,13 +182,6 @@ public class UpdateAction implements UndoableAction {
                 fb = new CommandFeedback(cCommand, cIntBag, formattedString);
 
                 return fb;
-            case IMPORTANCE:
-
-                // TODO Parser not done with this
-                System.out.println("Not done yet");
-                // assert cCommand.get
-                // toBeUpdated.setPriority();
-                break;
             default:
                 assert false : cCommand.getTaskField();
         }
@@ -195,14 +190,13 @@ public class UpdateAction implements UndoableAction {
 
     @Override
     public CommandFeedback redo() throws LogicException {
-        // TODO Auto-generated method stub
         return execute();
     }
     
     private String processWarningMsg() {
         String warningString;
         ObservableList<Task> clashList = cIntBag.findClashesWithIncomplete(cWhichTask);
-        
+        System.out.println(clashList.size());
         if(clashList == null || clashList.size() == 0){
             return "";
         }
@@ -214,6 +208,7 @@ public class UpdateAction implements UndoableAction {
         } else {            
             warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_SINGLE, firstTask.getName());
         }
+        System.out.println(warningString);
         return warningString;
     }
 
