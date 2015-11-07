@@ -49,7 +49,6 @@ public class Configuration implements ConfigurationInterface {
     private Scanner configReader;
     private Writer configWriter;
     private String configStorageLocation, configDefaultStartTime, configDefaultEndTime;
-    //TODO new alias code
     private Map<String, String> configUserCmdAliases;
 
     public static ConfigurationInterface getInstance() {
@@ -150,7 +149,7 @@ public class Configuration implements ConfigurationInterface {
         return new Time(configDefaultEndTime);
     }
 
-    //TODO new alias code
+    //@@author A0131891E
     @Override
     public boolean isUserAlias(String alias) {
     	return configUserCmdAliases.containsKey(alias);
@@ -165,7 +164,8 @@ public class Configuration implements ConfigurationInterface {
     }
     
     // setters
-    
+    //@@author A0133920N
+
     public void setUsrFileDirector(String newDir) throws IOException {
 		configStorageLocation = newDir;
 		
@@ -196,7 +196,7 @@ public class Configuration implements ConfigurationInterface {
     	//TODO how would caller know if newTime is accepteed as valid time
     }
     
-    //TODO new alias code
+    //@@author A0131891E
     @Override
     public void setUserAlias(String alias, Command.Type mappedCmd) throws IOException {
     	assert(alias != null 
@@ -210,6 +210,7 @@ public class Configuration implements ConfigurationInterface {
     	writeBack();
     	Log.log("new alias mapping added: " + alias + "-->" + mappedCmd.name());
     }
+    //@@author A0131891E
     @Override
     public void removeUserAlias(String alias) throws IOException {
     	assert(alias != null && alias.length() != 0);
@@ -220,6 +221,8 @@ public class Configuration implements ConfigurationInterface {
     }
     
     // resetters
+    //@@author A0133920N
+
     
     private void resetAll() throws IOException {
         // set all properties to default value
@@ -248,7 +251,7 @@ public class Configuration implements ConfigurationInterface {
     	writeBack();
     }
     
-    //TODO new alias code
+    //@@author A0131891E
     @Override
 	public void clearUserAliases() throws IOException {
     	configUserCmdAliases = new LinkedHashMap<>();
@@ -258,8 +261,8 @@ public class Configuration implements ConfigurationInterface {
 	
 	// file data validation
 	
-	//TODO new alias code
-	@SuppressWarnings("rawtypes")
+    //@@author A0131891E
+    @SuppressWarnings("rawtypes")
 	private boolean isValidAliasMap(Map aliasMap) {
 		if (aliasMap == null) {
 			return false;
@@ -283,6 +286,8 @@ public class Configuration implements ConfigurationInterface {
 		return true; // all tests passed, phew!
 	}
 	
+    //@@author A0133920N
+
     private boolean isValidTime(String str) {
     	if (str == null) {
     		return false;

@@ -20,6 +20,12 @@ public final class Aliases {
 	/////////////////////////////////////////////////////
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
+	
+	// cannot be used as alias
+	static final String[] CMD_RESERVED = {
+		""
+	};
+	
 	static final String[] CMD_ADD = {
 		"a",
 		"add",
@@ -89,7 +95,6 @@ public final class Aliases {
 		"alias",
 		"shortcut",
 		"point",
-		"->"
 	};
 	static final String[] CMD_HELP = {
 		"help",
