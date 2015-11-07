@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.Control?>
 
-<AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
+<AnchorPane fx:id="rootPane" minHeight="720.0" stylesheets="@../resource/skinDay.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
    <children>
-      <AnchorPane prefHeight="650.0" prefWidth="900.0">
+      <AnchorPane prefHeight="650.0" prefWidth="900.0" AnchorPane.topAnchor="50.0">
          <children>
             <SplitPane id="upper-split-pane" dividerPositions="0.8197226502311248" focusTraversable="false" layoutX="330.0" layoutY="340.0" orientation="VERTICAL" prefHeight="650.0" prefWidth="850.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
@@ -70,6 +70,6 @@
             </SplitPane>
          </children>
       </AnchorPane>
-         <Label id= "popupLabel" fx:id="popupLabel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="57.0" />
+         <Label id="popupLabel" fx:id="popupLabel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="57.0" />
    </children>
 </AnchorPane>
