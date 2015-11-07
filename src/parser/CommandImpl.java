@@ -20,7 +20,6 @@ public class CommandImpl extends Command {
 	private String _name;
 	private Date _startDate, _endDate;
 	private Path _path;
-//	private String _keyword;
 
 	////////////////////////////////////////////////////////////////////////////////////	
 	// Constructor (package private)
@@ -31,8 +30,10 @@ public class CommandImpl extends Command {
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS / INITIALISERS (package private)
+	// SETTERS 
 	////////////////////////////////////////////////////////////////////////////////////
+	
+	// Identifiers 
 	
 	@Override 
 	void setTaskUID (int uid) {
@@ -47,9 +48,16 @@ public class CommandImpl extends Command {
 		_viewType = v;
 	}
 	@Override 
+	void setSecondaryCmdType (Command.Type t) {
+		assert(t != Command.Type.INVALID);
+		_secondaryCmdType = t;
+	}
+	@Override 
 	void setTheme (CelebiViewController.Skin theme) {
 		_theme = theme;
 	}
+	
+	// Data
 	
 	@Override 
 	void setText (String name) {
@@ -62,11 +70,6 @@ public class CommandImpl extends Command {
 	@Override 
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
-	}
-	@Override 
-	void setSecondaryCmdType (Command.Type t) {
-		assert(t != Command.Type.INVALID);
-		_secondaryCmdType = t;
 	}
 	@Override 
 	void setPath (Path p) {
@@ -100,7 +103,7 @@ public class CommandImpl extends Command {
 		return _theme;
 	}
 	
-	// Field values
+	// User data values
 
 	@Override
 	public String getText () {
@@ -118,10 +121,4 @@ public class CommandImpl extends Command {
 	public Path getPath() {
 		return _path;
 	}
-
-//	@Override
-//	public String getSearchKeyword() {
-//		return _keyword;
-//	}
-
 }
