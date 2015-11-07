@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.fxmisc.richtext.InlineCssTextArea;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
@@ -26,6 +27,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import common.Configuration;
 import common.Task;
 import common.TasksBag;
@@ -93,6 +95,7 @@ public class CelebiViewController {
     private static final Font DEFAULT_FONT = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 13);
     private static final String DATE_FILTER_NONE = "none";
     private static final String SEARCH_FILTER_NONE = "none";
+    private LabelFader popupFader;
 
     public static enum Skin {
         DAY, NIGHT
@@ -116,12 +119,17 @@ public class CelebiViewController {
         initializeCommandField();
         initializeFeedbackPane();
         initializeFeedbackArea();
-
+        
+        initializePopupLabel();
         VALID_CMD_TOKENS = Aliases.getInstance().getAliasMap();
 
         Platform.runLater(() -> {
             commandArea.requestFocus();
         });
+    }
+
+    private void initializePopupLabel() {
+        popupFader = new LabelFader(popupLabel);
     }
 
     // private void temp(ObservableV)
@@ -374,11 +382,11 @@ public class CelebiViewController {
         // show the tool-tip
         String toolTip = HelpStrings.getHelpToolTip(firstWord);
         if (toolTip == null) {
-            popupLabel.setVisible(false);
-            popupLabel.setText("");
+            //popupLabel.setText("");
+            popupFader.fadeOut();
         } else {
-            popupLabel.setVisible(true);
             popupLabel.setText(toolTip);
+            popupFader.fadeIn();
         }
     }
 
