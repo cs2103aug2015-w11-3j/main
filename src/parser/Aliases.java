@@ -247,8 +247,11 @@ public final class Aliases {
 	
 	private static Aliases instance = null;
 	public static Aliases getInstance () {
+	    
 		if (instance == null) {
-			instance = new Aliases();
+		
+		    System.out.println("iasdasdnit"); 
+		    instance = new Aliases();
 		}
 		return instance;
 	}
@@ -312,7 +315,8 @@ public final class Aliases {
 	private static final <V> void mapAliasesToValue (Map<String, V> map, V value, Collection<String> aliases) {
 		assert(map != null && aliases != null && value != null);
 		for (String alias : aliases) {
-			assert map.put(alias, value) == null : "duplicate key binding " + alias ; // no duplicates allowed
+		    V var = map.put(alias, value);
+			assert var == null : "duplicate key binding " + alias ; // no duplicates allowed
 		}
 	}
 }
