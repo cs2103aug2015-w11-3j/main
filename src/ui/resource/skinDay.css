@@ -257,4 +257,5 @@
     -fx-font-size: 12pt;
     -fx-background-color: black;
     -fx-background-radius: 4px;
+    visibility: false;
 }

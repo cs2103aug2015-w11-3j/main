@@ -70,6 +70,6 @@
             </SplitPane>
          </children>
       </AnchorPane>
-         <Label id= "popupLabel" fx:id="popupLabel" text = "help text" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="57.0" />
+         <Label id= "popupLabel" fx:id="popupLabel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="57.0" />
    </children>
 </AnchorPane>
