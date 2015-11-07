@@ -632,4 +632,10 @@ public class CelebiViewController {
         currentKeywordColor = DAY_KEYWORD_COLOR;
         setTaskNameAppearence();
     }
+    
+    public void updateUI(TasksBag cb) {
+    	refreshSelection(cb);
+        updateFilterDisplay(cb);
+        updateTableItems(cb.getList());
+    }
 }

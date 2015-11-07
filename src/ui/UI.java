@@ -137,10 +137,7 @@ public class UI implements UIInterface {
      * @param cb
      */
     private void display(TasksBag cb) {
-        controller.refreshSelection(cb);
-        controller.updateFilterDisplay(cb);
-        controller.updateTableItems(cb.getList());
-        //controller.switchDaySkin();
+        controller.updateUI(cb);
     }
 
     public ObservableList<Task> getCelebiList() {
