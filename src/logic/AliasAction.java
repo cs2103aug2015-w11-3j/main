@@ -18,7 +18,7 @@ public class AliasAction implements Action {
 	private static final String USR_MSG_ALIAS_RESERVED = "You cannot use the reserved keyword \"%s\" as an alias. Reserved keywords are shown in \"help\"";
 	private static final String USR_MSG_ALIAS_SUCCESS = "Alias mapping created: %s --> %s";
 	
-	private static final Pattern P_VALID_ALIAS = Pattern.compile("^[\\S&&[^\\p{javaUpperCase}]]$");
+	private static final Pattern P_VALID_ALIAS = Pattern.compile("^[\\S&&[^\\p{javaUpperCase}]]++$");
 	
 	private static final Aliases ALIASES = AliasesImpl.getInstance();
 	

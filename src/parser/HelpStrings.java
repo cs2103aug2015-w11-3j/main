@@ -23,7 +23,7 @@ public final class HelpStrings {
     public static final String FORMAT_MARK = "Marking as Completed: [ %1$s \"task ID number\" ]";
     public static final String FORMAT_UNMARK = "Marking as Incomplete: [ %1$s \"task ID number\" ]";
     
-    public static final String FORMAT_SHOW = "Changing View Tab: [ %1$ default ]   [ %1$s done ]   [ %1$s unfinished ]";
+    public static final String FORMAT_SHOW = "Changing View Tab: [ %1$s default ]   [ %1$s done ]   [ %1$s unfinished ]";
     
     public static final String FORMAT_UNDO = "Undo Previous Changes To Tasks: [ %1$s ]";
     public static final String FORMAT_REDO = "Redo Previously Undone Action: [ %1$s ]";
