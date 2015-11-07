@@ -20,7 +20,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
-        this.primaryStage.initStyle(StageStyle.UTILITY);
+        this.primaryStage.initStyle(StageStyle.TRANSPARENT);
         initRootLayout();
         
         showCelebiView();
