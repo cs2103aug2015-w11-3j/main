@@ -29,11 +29,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
+import javafx.util.Duration;
+import common.Configuration;
+import common.Task;
+import common.TasksBag;
+import common.TasksBag.ViewType;
+import common.Utilities;
+import common.TasksBag.FilterDateState;
+import ui.Main;
+import ui.UIInterface;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.HelpStrings;
-import ui.Main;
-import ui.UIInterface;
 
 public class CelebiViewController {
 
@@ -386,6 +394,8 @@ public class CelebiViewController {
             //popupLabel.setText("");
             popupFader.fadeOut();
         } else {
+            
+            //toolTip = Utilities.textSpacer(toolTip, 1);
             popupLabel.setText(toolTip);
             popupFader.fadeIn();
         }
@@ -493,7 +503,7 @@ public class CelebiViewController {
      * 
      * @param newFeedback
      */
-    public void appendFeedback(String newFeedback) {
+    public void showFeedback(String newFeedback) {
         // if the text to be appended is the only line in feedback area, set its
         // color green
         if (feedbackArea.getText().equals("")) {
@@ -508,7 +518,7 @@ public class CelebiViewController {
         }
     }
 
-    public void appendWarning(String newWarning) {
+    public void showWarning(String newWarning) {
         feedbackArea.appendText("\n");
         feedbackArea.appendText(newWarning);
         feedbackArea.setStyle(2, "-fx-fill: " + currentWarningColor + ";");
@@ -620,5 +630,11 @@ public class CelebiViewController {
         currentWarningColor = DAY_WARNING_COLOR;
         currentKeywordColor = DAY_KEYWORD_COLOR;
         setTaskNameAppearence();
+    }
+    
+    public void updateUI(TasksBag cb) {
+    	refreshSelection(cb);
+        updateFilterDisplay(cb);
+        updateTableItems(cb.getList());
     }
 }

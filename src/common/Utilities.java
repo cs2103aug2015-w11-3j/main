@@ -73,4 +73,23 @@ public final class Utilities {
         return newMatrix;
     }
 
+    /**
+     * Prepend and append empty spaces to the text
+     * @param text to be modified
+     * @param number of spacings to be added
+     */
+    public static String textSpacer(String text, int spacing) {
+        String space = " ";
+        StringBuilder spaces = new StringBuilder(); 
+        StringBuilder returnText = new StringBuilder();
+        for(int i = 0; i < spacing; i++){
+            spaces.append(space);
+        }
+        
+        returnText.append(spaces.toString());
+        returnText.append(text);
+        returnText.append(spaces.toString());
+        return returnText.toString();
+    }
+
 }

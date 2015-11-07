@@ -58,7 +58,7 @@ public class UI implements UIInterface {
         controller.clearFeedback();
 
         String usrCmd = Utilities.formatString(UI_TXT_USRCMD, userInput);
-        controller.appendFeedback(usrCmd);
+        controller.showFeedback(usrCmd);
 
         CommandFeedback fb = null;
         String usrMsg = "";
@@ -78,7 +78,7 @@ public class UI implements UIInterface {
             }
         } catch (LogicException e) {
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
-            controller.appendFeedback(usrMsg);
+            controller.showFeedback(usrMsg);
         } catch (Exception e) {
             e.printStackTrace();
             log.severe(e.toString());
@@ -93,9 +93,9 @@ public class UI implements UIInterface {
         usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
         warningMsg = Utilities.formatString(UI_TXT_WARNING, fb.getWarningMsg());
         
-        controller.appendFeedback(usrMsg);
+        controller.showFeedback(usrMsg);
         if(fb.getWarningMsg() != null && fb.getWarningMsg() != "") {
-        	controller.appendWarning(warningMsg);
+        	controller.showWarning(warningMsg);
         }
     }
 
@@ -118,7 +118,7 @@ public class UI implements UIInterface {
         }
 
         usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
-        controller.appendFeedback(usrMsg);
+        controller.showFeedback(usrMsg);
     }
 
     /**
@@ -128,7 +128,7 @@ public class UI implements UIInterface {
         display(logic.getDefaultBag()); // Get default view
 
         controller.clearFeedback();
-        controller.appendFeedback(UI_TXT_WELCOME);
+        controller.showFeedback(UI_TXT_WELCOME);
     }
 
     /**
@@ -137,10 +137,7 @@ public class UI implements UIInterface {
      * @param cb
      */
     private void display(TasksBag cb) {
-        controller.refreshSelection(cb);
-        controller.updateFilterDisplay(cb);
-        controller.updateTableItems(cb.getList());
-        //controller.switchDaySkin();
+        controller.updateUI(cb);
     }
 
     public ObservableList<Task> getCelebiList() {
@@ -157,7 +154,7 @@ public class UI implements UIInterface {
         controller.clearFeedback();
 
         String usrCmd = Utilities.formatString(UI_TXT_TABEVENT);
-        controller.appendFeedback(usrCmd);
+        controller.showFeedback(usrCmd);
 
         KeyEventFeedback cmd = null;
         String usrMsg = "";
@@ -166,12 +163,12 @@ public class UI implements UIInterface {
             cb = cmd.getcBag();
             display(cb);
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getMsg());
-            controller.appendFeedback(usrMsg);
+            controller.showFeedback(usrMsg);
 
         } catch (LogicException e) {
 
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
-            controller.appendFeedback(usrMsg);
+            controller.showFeedback(usrMsg);
         } catch (Exception e) {
             log.severe(e.toString());
         }

@@ -18,10 +18,13 @@ public class AddAction implements UndoableAction {
 
     private static final String USR_MSG_ADD_OK = "Added %1$s!";
     private static final String USR_MSG_ADD_UNDO = "Undo adding %1$s!";
-    private static final String USR_MSG_ADD_DATE_ERROR = "Failed to add! Start date is after end date!";
+    private static final String USR_MSG_ADD_ERROR_DATE = "Failed to add! Start date is after end date!";
+    private static final String USR_MSG_ADD_ERROR_LONG_NAME = "Failed to add! Your task name is too long! Keep it "
+            + "to less than 50 characters.";
     private static final String USR_MSG_ADD_WARNING_CLASH_SINGLE = "Your task clashes with %1$s!";
     private static final String USR_MSG_ADD_WARNING_CLASH_MANY = "Your task clashes with %1$s and %2$s more!";
     private static final String USR_MSG_ADD_WARNING_OVERDUE = "Your task is already over due!";
+    private static final int NAME_LIMIT = 50; // Hard limit for user's max char
 
     private Command cCommand;
     private TasksBag cBag;
@@ -37,11 +40,14 @@ public class AddAction implements UndoableAction {
         Date startDate = cCommand.getStart();
         Date endDate = cCommand.getEnd();
 
+        if (name.length() > NAME_LIMIT) {
+            throw new IntegrityCommandException(USR_MSG_ADD_ERROR_LONG_NAME);
+        }
         boolean isValidDate = Utilities.verifyDate(startDate, endDate);
         if (isValidDate) {
             cWhichTask = new Task(name, startDate, endDate);
         } else {
-            throw new IntegrityCommandException(USR_MSG_ADD_DATE_ERROR);
+            throw new IntegrityCommandException(USR_MSG_ADD_ERROR_DATE);
         }
     }
 
