@@ -4,6 +4,7 @@ package logic;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
+import javafx.collections.ObservableList;
 import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.InvalidDateException;
 import logic.exceptions.LogicException;
@@ -19,6 +20,9 @@ public class UpdateAction implements UndoableAction {
     private static final String USR_MSG_UPDATE_NAME_OK = "Updated name of %1$s!";
     private static final String USR_MSG_UPDATE_UNDO = "Undo update %1$s!";
 
+    private static final String USR_MSG_UPDATE_CLASH_WARNING_SINGLE = "Task clashes with %1$s!";
+    private static final String USR_MSG_UPDATE_CLASH_WARNING_MANY = "Task clashes with %1$s and %2$s more!";
+    
     private Command cCommand;
     private TasksBag cCurBag;
     private TasksBag cIntBag;
@@ -103,7 +107,10 @@ public class UpdateAction implements UndoableAction {
         Task toBeUpdated = cWhichTask;
         CommandFeedback fb;
         String formattedString;
-
+        String warningString;
+        
+        warningString = processWarningMsg();
+        
         switch (cCommand.getTaskField()) {
             case DATE_END:
 
@@ -111,7 +118,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_ENDDATE_OK, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
                 return fb;
             case DATE_START:
@@ -120,7 +127,7 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_STARTDATE_OK, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
                 return fb;
 
             case NAME:
@@ -129,16 +136,9 @@ public class UpdateAction implements UndoableAction {
                 cStore.save(toBeUpdated);
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_NAME_OK, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
                 return fb;
-            case IMPORTANCE:
-
-                // TODO Parser not done with this
-                System.out.println("Not done yet");
-                // assert cCommand.get
-                // toBeUpdated.setPriority();
-                break;
             default:
                 assert false : cCommand.getTaskField();
         }
@@ -197,6 +197,24 @@ public class UpdateAction implements UndoableAction {
     public CommandFeedback redo() throws LogicException {
         // TODO Auto-generated method stub
         return execute();
+    }
+    
+    private String processWarningMsg() {
+        String warningString;
+        ObservableList<Task> clashList = cIntBag.findClashesWithIncomplete(cWhichTask);
+        
+        if(clashList == null || clashList.size() == 0){
+            return "";
+        }
+        
+        Task firstTask = clashList.get(0);
+        if(clashList.size() > 1){
+            int noOfOtherClashes = clashList.size() - 1;
+            warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_MANY, firstTask.getName(), noOfOtherClashes);
+        } else {            
+            warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_SINGLE, firstTask.getName());
+        }
+        return warningString;
     }
 
 }

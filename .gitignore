@@ -47,3 +47,4 @@ tasks.json
 config.json
 log.txt
 collated/*
+task.json
