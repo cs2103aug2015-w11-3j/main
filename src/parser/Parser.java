@@ -560,7 +560,7 @@ public class Parser implements ParserInterface {
 			if (m.matches()) {
 				uid = Integer.parseInt(m.group(GRPNAME_UID));
 				newValue = m.group(GRPNAME_NEWVAL);
-				newStart = parseUpdDate(newValue);
+				newStart = parseUpdDate(newValue, true);
 				return makeUpdateStart(uid, newStart);
 			}
 	
@@ -568,7 +568,7 @@ public class Parser implements ParserInterface {
 			if (m.matches()) {
 				uid = Integer.parseInt(m.group(GRPNAME_UID));
 				newValue = m.group(GRPNAME_NEWVAL);
-				newEnd = parseUpdDate(newValue);
+				newEnd = parseUpdDate(newValue, false);
 				return makeUpdateEnd(uid, newEnd);
 			}
 		} catch (ParseException pe) {
@@ -775,14 +775,14 @@ public class Parser implements ParserInterface {
 	// Used only in parseUpdate: allows special datestrings
 	// to signify removal of a date field from the task.
 	// Allows conversion from event->deadline/startonly->float
-	private Date parseUpdDate (String dateStr) throws ParseException {
+	private Date parseUpdDate (String dateStr, boolean isStart) throws ParseException {
 		assert(dateStr != null);
 		cleanText(dateStr);
 		final List<String> clearDateAliases = Arrays.asList(Aliases.CLEAR_VAL);
 		if (clearDateAliases.contains(dateStr)) {
 			return null;
 		}
-		return parseDate(dateStr, true);
+		return parseDate(dateStr, isStart);
 	}
 	
 	@Override
