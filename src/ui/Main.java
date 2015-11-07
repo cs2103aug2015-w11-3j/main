@@ -23,8 +23,8 @@ public class Main extends Application {
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
         this.primaryStage.initStyle(StageStyle.TRANSPARENT);
         
-        Font.loadFont(Main.class.getResource("resource/Oxygen regular.ttf").toExternalForm(), 10);
-        Font.loadFont(Main.class.getResource("resource/Oxygen 700.ttf").toExternalForm(), 10);
+        Font regularFont = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 10);
+        Font boldFont = Font.loadFont(Main.class.getResourceAsStream("Oxygen 700.ttf"), 10);
         initRootLayout();
         
         showCelebiView();

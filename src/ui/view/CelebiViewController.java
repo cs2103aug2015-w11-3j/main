@@ -89,7 +89,7 @@ public class CelebiViewController {
     private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(22, 160, 133);
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
     
-    private static final Font DEFAULT_FONT = Font.font("Oxygen", 13);
+    private static final Font DEFAULT_FONT = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 13);
 
     public static enum Skin {
         DAY, NIGHT
