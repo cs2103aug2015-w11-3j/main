@@ -599,7 +599,7 @@ public class CelebiViewController {
     }
 
     public void switchNightSkin() {
-        String css = Main.class.getResource("view/style_night.css").toExternalForm();
+        String css = Main.class.getResource("resource/skinNight.css").toExternalForm();
         rootPane.getStylesheets().clear();
         rootPane.getStylesheets().add(css);
         skinMode = Skin.NIGHT;
@@ -611,7 +611,7 @@ public class CelebiViewController {
     }
 
     public void switchDaySkin() {
-        String css = Main.class.getResource("view/application.css").toExternalForm();
+        String css = Main.class.getResource("resource/skinDay.css").toExternalForm();
         rootPane.getStylesheets().clear();
         rootPane.getStylesheets().add(css);
         skinMode = Skin.DAY;

@@ -1,6 +1,6 @@
 .root{
     -fx-font-size: 9.5pt;
-    -fx-font-family: "Helvetica Bold";
+    -fx-font-family: 'Oxygen';
     -fx-cell-focus-inner-border: #85b9de;
 }
 

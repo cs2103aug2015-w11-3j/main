@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.view.CelebiViewController;
@@ -21,6 +22,9 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
         this.primaryStage.initStyle(StageStyle.TRANSPARENT);
+        
+        Font.loadFont(Main.class.getResource("resource/Oxygen regular.ttf").toExternalForm(), 10);
+        Font.loadFont(Main.class.getResource("resource/Oxygen 700.ttf").toExternalForm(), 10);
         initRootLayout();
         
         showCelebiView();
@@ -63,6 +67,7 @@ public class Main extends Application {
             
             // Give the controller access to the main app and UI.
             CelebiViewController controller = loader.getController();
+            controller.switchDaySkin();
             controller.setUI(mUI);
             controller.setMainApp(this);
             

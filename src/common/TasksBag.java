@@ -111,13 +111,7 @@ public class TasksBag implements Iterable<Task> {
         }
 
         // Sorting by chronological date before returning
-        newContainer.forEach(t  -> {
-            System.out.print(t.getName() + " ");   
-        });
         sortDateChronological(newContainer);
-        newContainer.forEach(t  -> {
-            System.out.print(t.getName() + " ");   
-        });
         // Transfer the current state to the new bag
         // UI uses the sort state to identify current tab
         TasksBag rtnBag = new TasksBag(newContainer);
@@ -288,8 +282,8 @@ public class TasksBag implements Iterable<Task> {
 
         Date firstCom, secCom;
 
-        firstCom = t1.getEndThenStartDate();//getAnyDate(t1);
-        secCom = t2.getEndThenStartDate();//getAnyDate(t2);
+        firstCom = getAnyDate(t1);
+        secCom = getAnyDate(t2);
 
         if (firstCom == null && secCom == null) {
             return 0;
