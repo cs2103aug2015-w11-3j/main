@@ -15,8 +15,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -39,6 +41,7 @@ import ui.Main;
 import ui.UIInterface;
 import parser.Aliases;
 import parser.Command;
+import parser.HelpStrings;
 
 public class CelebiViewController {
     // @@author A0133895U
@@ -68,6 +71,8 @@ public class CelebiViewController {
     private AnchorPane feedbackPane;
     @FXML
     private Label filterLabel;
+    @FXML
+    private Label popupLabel;
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
@@ -362,6 +367,17 @@ public class CelebiViewController {
             String firstWord;
             firstWord = extractFirstWord(newValue);
             if (isCmdToken(firstWord)) {
+                // show the tool-tip
+                String toolTip = HelpStrings.getHelpToolTip(firstWord);
+                if(toolTip == null){
+                    popupLabel.setVisible(false);
+                    popupLabel.setText("");
+                }
+                else{
+                    popupLabel.setVisible(true);
+                    popupLabel.setText(toolTip);
+                }
+                
                 // highlight the first word
                 commandArea.setStyle(0, firstWord.length(),
                         "-fx-font-weight: bold; -fx-fill: " + currentKeywordColor + ";");

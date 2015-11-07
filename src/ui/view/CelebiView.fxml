@@ -6,6 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Control?>
 
 <AnchorPane fx:id="rootPane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.view.CelebiViewController">
    <children>
@@ -51,6 +52,7 @@
                               </TableView>
                            </children>
                         </AnchorPane>
+                        
                         <Label id="filter-label" fx:id="filterLabel" maxWidth="750.0" text="Current filter: None.    Current search: None." AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="50.0" />
                      </children>
                   </AnchorPane>
@@ -68,5 +70,6 @@
             </SplitPane>
          </children>
       </AnchorPane>
+         <Label id= "popupLabel" fx:id="popupLabel" text = "help text" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="57.0" />
    </children>
 </AnchorPane>
