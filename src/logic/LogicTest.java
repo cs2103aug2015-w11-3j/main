@@ -15,12 +15,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import common.Configuration;
 import common.Task;
 import common.TasksBag;
 import logic.exceptions.AlreadyMarkedException;
 import logic.exceptions.AlreadyUnmarkedException;
 import logic.exceptions.IllegalAccessCommandException;
-import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.NoRedoActionException;
 import logic.exceptions.NoUndoActionException;
@@ -163,6 +163,7 @@ public class LogicTest {
         String symbols = ",./<>?:'\"[]{}\\|=+=~-_!@#$%^&*()`";
         testPass("add " + symbols);
         Task addedTask = logic.getTaskBag().getTask(0);
+        System.out.println(addedTask.getName());
         Assert.assertTrue(symbols.equals(addedTask.getName()));
         testPass("delete 1");
     }
@@ -425,12 +426,20 @@ public class LogicTest {
 
         try {
             Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            fd.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         logic = new Logic();
         logic.init();
+        
+        String s = Configuration.getInstance().getUsrFileDirectory();
+
+        while (logic.initData(s) == false) {
+            // Failed to load data, query user to give filename
+            s = "NEW_LOCATION.txt";
+        }
     }
 
     private void cleanUp() {
@@ -439,8 +448,13 @@ public class LogicTest {
         File tempFd = new File(JSON_LOC_TEMP);
         Date timeStamp = new Date();
 
+        File finalDir = new File(JSON_LOC_FINAL);
+        if(finalDir.exists() == false){
+           finalDir.mkdir();
+        }
+        
         File finalLocFd = new File(JSON_LOC_FINAL + timeStamp.getTime() + ".json");
-
+        
         try {
             Files.copy(fd.toPath(), finalLocFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
             Files.copy(tempFd.toPath(), fd.toPath(), StandardCopyOption.REPLACE_EXISTING);

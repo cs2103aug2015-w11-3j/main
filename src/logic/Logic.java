@@ -2,9 +2,10 @@
 package logic;
 
 import java.util.logging.Logger;
-import javafx.scene.input.KeyCode;
+
 import common.TasksBag;
 import common.TasksBag.ViewType;
+import javafx.scene.input.KeyCode;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;

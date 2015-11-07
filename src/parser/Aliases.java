@@ -20,6 +20,32 @@ public final class Aliases {
 	/////////////////////////////////////////////////////
 	// Aliases for command tokens
 	/////////////////////////////////////////////////////
+	
+	// cannot be used as alias (reserved)
+	// make sure to update for new commands
+	static final String[] CMD_RESERVED = {
+		"add",
+		"edit",
+		"delete",
+		
+		"show",
+		
+		"mark",
+		"unmark",
+		
+		"undo",
+		"redo",
+		
+		"search",
+		"filter",
+		"clear",
+		
+		"skin",
+		"help",
+		"exit",
+		"move"
+	};
+	
 	static final String[] CMD_ADD = {
 		"a",
 		"add",
@@ -89,7 +115,6 @@ public final class Aliases {
 		"alias",
 		"shortcut",
 		"point",
-		"->"
 	};
 	static final String[] CMD_HELP = {
 		"help",
@@ -121,6 +146,7 @@ public final class Aliases {
 	static final String[] FIELD_START_DATE = {
 		"at",
 		"start",
+		"starting",
 		"from",
 		"begin",
 		"on"
@@ -221,8 +247,11 @@ public final class Aliases {
 	
 	private static Aliases instance = null;
 	public static Aliases getInstance () {
+	    
 		if (instance == null) {
-			instance = new Aliases();
+		
+		    System.out.println("iasdasdnit"); 
+		    instance = new Aliases();
 		}
 		return instance;
 	}
@@ -286,7 +315,8 @@ public final class Aliases {
 	private static final <V> void mapAliasesToValue (Map<String, V> map, V value, Collection<String> aliases) {
 		assert(map != null && aliases != null && value != null);
 		for (String alias : aliases) {
-			assert map.put(alias, value) == null : "duplicate key binding " + alias ; // no duplicates allowed
+		    V var = map.put(alias, value);
+			assert var == null : "duplicate key binding " + alias ; // no duplicates allowed
 		}
 	}
 }
