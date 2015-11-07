@@ -263,9 +263,10 @@
 }
 
 #popupLabel{
-    -fx-text-fill: #96abc1;
+    -fx-text-fill: #ffffff;
     -fx-font-size: 12pt;
-    -fx-background-color: black;
+    -fx-background-color: #b7e67e;
     -fx-background-radius: 4px;
+    -fx-padding: 1 6 1 6;
     /*visibility: null;*/
 }

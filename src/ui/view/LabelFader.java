@@ -16,6 +16,7 @@ public class LabelFader {
 
     public LabelFader(Label label) {
         cLabel = label;
+        label.setVisible(false);
         cState = State.OFF;
 
         fadeIn = new FadeTransition(Duration.millis(500));
@@ -24,7 +25,8 @@ public class LabelFader {
 
     public void fadeIn() {
         if (cState == State.OFF) {
-            fadeIn.setRate(1);
+            cLabel.setVisible(true);
+        	fadeIn.setRate(1);
             fadeIn.play();
             cState = State.ON;
         }
