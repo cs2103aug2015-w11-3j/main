@@ -17,7 +17,7 @@ import org.json.simple.JSONValue;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
-import static ui.view.CelebiViewController.Skin;;
+import static ui.view.CelebiViewController.Skin;
 
 /*
  * Possible errors and solutions: 
