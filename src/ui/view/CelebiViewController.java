@@ -387,7 +387,7 @@ public class CelebiViewController {
             popupFader.fadeOut();
         } else {
             
-            toolTip = Utilities.textSpacer(toolTip, 1);
+            //toolTip = Utilities.textSpacer(toolTip, 1);
             popupLabel.setText(toolTip);
             popupFader.fadeIn();
         }
