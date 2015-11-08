@@ -31,19 +31,21 @@ public class UI implements UIInterface {
     @Override
     public void init() {
         System.out.println("UI Init");
+        
+        // Initialize logic
         logic = new Logic();
         logic.init();
 
+        // Get configuration
         ConfigurationInterface config = Configuration.getInstance();
         String s = config.getUsrFileDirectory();
 
+        // Failed to load data, query user to give filename
         while (logic.initData(s) == false) {
-            // Failed to load data, query user to give filename
             s = "NEW_LOCATION.txt";
         }
 
         System.out.println("UI Init complete");
-        // logic.executeCommand("display"); can do this for default display?
     }
 
     public UI() {
@@ -59,34 +61,42 @@ public class UI implements UIInterface {
         controller.clearCommand();
         controller.clearFeedback();
 
+        // show the user command
         String usrCmd = Utilities.formatString(UI_TXT_USRCMD, userInput);
         controller.showFeedback(usrCmd);
 
         CommandFeedback fb = null;
         String usrMsg = "";
+        // pass the command to logic and get feedback from it
         try {
             fb = logic.executeCommand(userInput);
 
+            // update UI according to the feedback received
             switch (fb.getCommand().getCmdType()) {
                 case QUIT:
                     doQuit();
                     break;
                 case THEME:
-                    doTheme(fb);
+                    doSkin(fb);
                     break;
                 default:
                     doDefault(fb);
                     break;
             }
         } catch (LogicException e) {
-            usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
+            // show the error message if logic exception caught
+        	usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.showFeedback(usrMsg);
         } catch (Exception e) {
             e.printStackTrace();
             log.severe(e.toString());
         }
     }
-
+    
+    /**
+     * The default action when nothing goes wrong
+     * @param fb
+     */
     private void doDefault(CommandFeedback fb) {
         String usrMsg, warningMsg;
         cb = fb.getcBag();
@@ -95,20 +105,30 @@ public class UI implements UIInterface {
         usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
         warningMsg = Utilities.formatString(UI_TXT_WARNING, fb.getWarningMsg());
         
+        // show user the feedback message and warning message if there is any
         controller.showFeedback(usrMsg);
         if(fb.getWarningMsg() != null && fb.getWarningMsg() != "") {
         	controller.showWarning(warningMsg);
         }
     }
 
+    /**
+     * Quit Celebi action
+     */
     private void doQuit() {
         System.out.println("Quit entered.");
         Platform.exit();
     }
 
-    private void doTheme(CommandFeedback fb) {
+    /**
+     * Change theme action
+     * @param fb
+     */
+    private void doSkin(CommandFeedback fb) {
         String usrMsg;
         CelebiViewController.Skin skin = fb.getCommand().getTheme();
+        
+        // update the skin according to the command feedback
         switch (skin) {
             case DAY:
                 controller.switchDaySkin();
@@ -119,15 +139,17 @@ public class UI implements UIInterface {
                 break;
         }
 
+        // show the feedback message
         usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, fb.getMsg());
         controller.showFeedback(usrMsg);
     }
 
     /**
-     * x Display the default table view
+     * Display the default table view
      */
     public void showWelcomeView() {
-        display(logic.getDefaultBag()); // Get default view
+    	// Get default view
+    	display(logic.getDefaultBag());
 
         controller.clearFeedback();
         controller.showFeedback(UI_TXT_WELCOME);
@@ -150,6 +172,11 @@ public class UI implements UIInterface {
         this.controller = controller;
     }
 
+    
+    //@@author A0125546E
+    /**
+     * Pass the key event to logic
+     */
     @Override
     public void passKeyEvent(KeyCode whichKey) {
         controller.clearCommand();

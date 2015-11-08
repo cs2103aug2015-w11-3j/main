@@ -1,3 +1,4 @@
+// @@author A0133895U
 package ui.view;
 
 import javafx.application.Platform;
@@ -14,11 +15,13 @@ class WindowButtons extends HBox {
 	public WindowButtons(Stage stage) {
 		this.stage = stage;
 		
+		// add in close button
 		Button close = new Button("X");
 		close.setId("close-button");
 		setClickActionExit(close);
 		setMouseOverCursor(close);
 		
+		// add in minimize button
 		Button minimize = new Button("\u2013");
 		setClickActionMinimize(minimize);
 		setMouseOverCursor(minimize);
@@ -45,6 +48,10 @@ class WindowButtons extends HBox {
 		});
 	}
 
+	/**
+	 * When mousing over the buttons, the cursor changes to hand
+	 * @param button
+	 */
 	private void setMouseOverCursor(Button button) {
 		button.setOnMouseEntered(new EventHandler<MouseEvent>() {
     		@Override

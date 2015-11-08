@@ -1,4 +1,7 @@
 // @@author A0133895U
+/**
+ * This is the main application.
+ */
 package ui;
 import java.io.IOException;
 
@@ -31,7 +34,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
+        this.primaryStage.setTitle("Celebi");
         
         setStageTransparent();
         loadFonts();
@@ -40,22 +43,15 @@ public class Main extends Application {
         showCelebiView();
     }
 
+    /**
+     * Set the stage transparent so that the background can be transparent
+     */
 	private void setStageTransparent() {
 		try {
         	this.primaryStage.initStyle(StageStyle.TRANSPARENT);
         } catch (Exception e) {
         	
         }
-	}
-	
-	private void setToolBar(BorderPane borderPane) {
-		ToolBar bar = new ToolBar();
-		int height = 25;
-		bar.setPrefHeight(height);
-		bar.setMinHeight(height);
-		bar.setMaxHeight(height);
-		//bar.getItems().add(new WindowButtons());
-		borderPane.setTop(bar);
 	}
 
 	private void loadFonts() {
@@ -74,7 +70,6 @@ public class Main extends Application {
             rootLayout = (BorderPane) loader.load();
 
             // Show the scene containing the root layout.
-            //setToolBar(rootLayout);
             Scene scene = new Scene(rootLayout);
             scene.setFill(Color.TRANSPARENT);
             primaryStage.setScene(scene);
@@ -86,6 +81,9 @@ public class Main extends Application {
         }
     }
     
+    /**
+     * Show the main view for Celebi
+     */
     public void showCelebiView() {
     	try {    		
     		// Initialize UI
@@ -100,27 +98,11 @@ public class Main extends Application {
             // Set celebi view into the center of root layout.
             rootLayout.setCenter(celebiView);
             
-            // Give the controller access to the main app and UI.
+            // Initialize the controller
             controller = loader.getController();
             controller.setStage(primaryStage);
-            ConfigurationInterface config = Configuration.getInstance();
-            CelebiViewController.Skin skin;
-            try {
-            	skin = Enum.valueOf(CelebiViewController.Skin.class, config.getSkin());
-            } catch (IllegalArgumentException e) {
-            	skin = CelebiViewController.Skin.DAY;
-            }
-            
-            switch (skin) {
-    	        case NIGHT:
-    	            controller.switchNightSkin();
-    	            break;
-    	
-    	        case DAY:
-    	        default: 
-    	        	controller.switchDaySkin();
-    	    }
-            
+            loadSkin();
+            // Give the controller access to the main app and UI.
             controller.setUI(mUI);
             controller.setMainApp(this);
             controller.setWindowBar();
@@ -133,13 +115,31 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
-    
-	
-	
+
     /**
-     * Returns the main stage.
-     * @return
+     * Load the skin from configuration
      */
+	private void loadSkin() {
+		ConfigurationInterface config = Configuration.getInstance();
+		CelebiViewController.Skin skin;
+		try {
+			skin = Enum.valueOf(CelebiViewController.Skin.class, config.getSkin());
+		} catch (IllegalArgumentException e) {
+			skin = CelebiViewController.Skin.DAY;
+		}
+		
+		switch (skin) {
+		    case NIGHT:
+		        controller.switchNightSkin();
+		        break;
+  	
+		    case DAY:
+		    default: 
+		    	controller.switchDaySkin();
+		}
+	}
+    
+
     public Stage getPrimaryStage() {
         return primaryStage;
     }
@@ -164,28 +164,3 @@ public class Main extends Application {
     	return controller;
     }
 }
-
-/*
- * Snippet for GUI
- * 
- * import javafx.application.Application; import javafx.event.ActionEvent;
- * import javafx.event.EventHandler; import javafx.scene.Scene; import
- * javafx.scene.control.Button; import javafx.scene.layout.StackPane; import
- * javafx.stage.Stage;
- * 
- * public class Main extends Application { public static void main(String[]
- * args) { launch(args); }
- * 
- * @Override public void start(Stage primaryStage) { primaryStage.setTitle(
- * "Hello World!"); Button btn = new Button(); btn.setText("Say 'Hello World'");
- * 
- * // Very wow, So new, // Java 8's new feature lambda functions HHAHAHah
- * 
- * btn.setOnAction(new EventHandler<ActionEvent>() {
- * 
- * @Override public void handle(ActionEvent event) { System.out.println(
- * "Hello World!"); } });
- * 
- * StackPane root = new StackPane(); root.getChildren().add(btn);
- * primaryStage.setScene(new Scene(root, 300, 250)); primaryStage.show(); } }
- */
