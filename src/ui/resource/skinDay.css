@@ -277,7 +277,7 @@
 
 .button {
 	-fx-background-color: #ffffff, transparent, #b5d095;
-	-fx-padding: 4px 6px 4px 6px;
+	-fx-padding: 2px 7px 2px 7px;
 	-fx-background-radius: 5, 5, 5;
 	-fx-text-fill: #ffffff;
 }
