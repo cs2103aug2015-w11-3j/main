@@ -1,8 +1,6 @@
 //@@author A0125546E
 package logic;
 
-import java.util.logging.Logger;
-
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
@@ -24,8 +22,6 @@ public class UnmarkAction implements UndoableAction {
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cWhichTask;
-
-    private Logger log;
 
     public UnmarkAction(CommandData command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         cCommand = command;
