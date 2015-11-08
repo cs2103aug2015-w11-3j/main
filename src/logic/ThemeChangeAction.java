@@ -5,9 +5,11 @@ import java.io.IOException;
 import common.Configuration;
 import common.ConfigurationInterface;
 import common.TasksBag;
+import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.CommandImpl;
 import ui.view.CelebiViewController;
+
 //@@author A0125546E
 public class ThemeChangeAction implements Action {
     private static final String USR_MSG_THEME_NIGHT = "Switched to night theme~!";
@@ -19,7 +21,7 @@ public class ThemeChangeAction implements Action {
     private CelebiViewController.Skin cSkin;
 
     public ThemeChangeAction(CommandImpl comd, TasksBag bag) {
-    	cConfig = Configuration.getInstance();
+        cConfig = Configuration.getInstance();
         cCommand = comd;
         cBag = bag;
         cSkin = cCommand.getTheme();
@@ -29,6 +31,7 @@ public class ThemeChangeAction implements Action {
     @Override
     public Feedback execute() throws LogicException {
         String msg = "";
+        String warningMsg = "";
         switch (cSkin) {
             case DAY:
                 msg = USR_MSG_THEME_DAY;
@@ -40,15 +43,21 @@ public class ThemeChangeAction implements Action {
                 break;
 
         }
-        
-        try {
-        	cConfig.setSkin(cSkin.toString());
-        } catch (IOException e) {
-        	msg = msg + USR_MSG_FAIL_SAVE;
-        }
-        
-        CommandFeedback fb = new CommandFeedback(cCommand, cBag, msg);
+
+        warningMsg = processWarning();
+
+        CommandFeedback fb = new CommandFeedback(cCommand, cBag, msg, warningMsg);
         return fb;
+    }
+
+    private String processWarning() {
+        String warningMsg = "";
+        try {
+            cConfig.setSkin(cSkin.toString());
+        } catch (IOException e) {
+            warningMsg = Utilities.formatString(USR_MSG_FAIL_SAVE);
+        }
+        return warningMsg;
     }
 
 }
