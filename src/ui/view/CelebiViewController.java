@@ -639,4 +639,8 @@ public class CelebiViewController {
         updateFilterDisplay(cb);
         updateTableItems(cb.getList());
     }
+
+    public Skin getSkin() {
+    	return skinMode;
+    }
 }

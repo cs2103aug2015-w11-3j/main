@@ -61,7 +61,6 @@ public class DeleteAction implements UndoableAction {
         if (UID <= 0) {
             throw new IllegalAccessCommandException(USR_MSG_DELETE_OOB);
         }
-
         if (UID > cCurBag.size()) {
             throw new IllegalAccessCommandException(USR_MSG_DELETE_OOB);
         }

@@ -48,3 +48,5 @@ config.json
 log.txt
 collated/*
 task.json
+.settings/org.eclipse.jdt.core.prefs
+.settings/org.eclipse.jdt.ui.prefs

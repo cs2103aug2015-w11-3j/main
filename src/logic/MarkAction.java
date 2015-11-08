@@ -25,15 +25,12 @@ public class MarkAction implements UndoableAction {
     private StorageInterface cStore;
     private Task cWhichTask;
     
-    private Logger log;
-    
     public MarkAction(CommandImpl command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         
         cCommand = command;
         cCurBag = internalBag.getFiltered();
         cIntBag = internalBag;
         cStore = stor;
-        log = Logger.getLogger("MarkAction");
         
         int UID = cCommand.getTaskUID();
 
@@ -42,7 +39,6 @@ public class MarkAction implements UndoableAction {
         }
 
         if (UID > cCurBag.size()) {
-            log.warning("Exceeded size" + UID + " " + cCurBag.size());
             throw new IllegalAccessCommandException(USR_MSG_INDEX_ERR);
         }
 

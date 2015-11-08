@@ -15,7 +15,8 @@ import parser.CommandImpl;
 
 public class AliasAction implements Action {
 
-	private static final String USR_MSG_ALIAS_CLEAR = "All custom alias mappings cleared";
+	private static final String USR_MSG_CONFIG_ERROR = "Config saving error: your changes may not persist.";
+    private static final String USR_MSG_ALIAS_CLEAR = "All custom alias mappings cleared";
 	private static final String USR_MSG_ALIAS_RESERVED = "You cannot use the reserved keyword \"%s\" as an alias. Reserved keywords are shown in \"help\"";
 	private static final String USR_MSG_ALIAS_SUCCESS = "Alias mapping created: %s --> %s";
 	
@@ -46,7 +47,7 @@ public class AliasAction implements Action {
 			} catch (IOException ioe) {
 				Log.log(ioe.toString());
 				ioe.printStackTrace();
-				throw new LogicException("Config saving error: your changes may not persist.");
+				throw new LogicException(USR_MSG_CONFIG_ERROR);
 			}
 			return new CommandFeedback(cCommand, cBag, USR_MSG_ALIAS_CLEAR);
 		}
@@ -67,10 +68,9 @@ public class AliasAction implements Action {
 		} catch (IOException ioe) {
 			Log.log(ioe.toString());
 			ioe.printStackTrace();
-			throw new LogicException("Config saving error: your changes may not persist.");
+			throw new LogicException(USR_MSG_CONFIG_ERROR);
 		}
 		return new CommandFeedback(cCommand, cBag, Utilities.formatString(USR_MSG_ALIAS_SUCCESS, newAlias, aliasTarget));
-	}
-	
+    }
 
 }
