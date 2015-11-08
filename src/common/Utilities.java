@@ -91,4 +91,20 @@ public final class Utilities {
         }
         return newMatrix;
     }
+    
+    // @@author A0133920N
+    /**
+     * Concatenates two warning string with space in between 
+     * 
+     * @param w1, w2
+     * @return concatenated warning string
+     */
+    public static final String appendWarningStrings(String w1, String w2) {
+    	assert(w2 != null);
+        if (w1 == null || w1.trim().equals("")) {
+        	return w2;
+        } else {
+        	return w1 + " " + w2;
+        }
+    }
 }

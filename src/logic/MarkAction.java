@@ -17,11 +17,14 @@ public class MarkAction implements UndoableAction {
     private static final String USR_MSG_MARK_FAIL = "Already marked %1$s!";
     private static final String USR_MSG_MARK_UNDO = "Undo mark %1$s!";
     
+    private static final String USR_MSG_MARK_WARNING_STORE_FAIL = "Fail to update the storage file!";
+    
     private CommandData cCommand;
     private TasksBag cCurBag;    
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cWhichTask;
+    private boolean cUpdateSuccess;
     
     public MarkAction(CommandData command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         
@@ -49,6 +52,7 @@ public class MarkAction implements UndoableAction {
     @Override
     public CommandFeedback execute() throws LogicException {
         String formattedString;
+        String warningString = "";
         // Should not mark again if it is already marked.
         // Does not go into undo queue if already marked.
         if(cWhichTask.isCompleted()){ 
@@ -56,11 +60,15 @@ public class MarkAction implements UndoableAction {
             throw new AlreadyMarkedException(formattedString);
         } else { 
             cWhichTask.setComplete(true);
-            cStore.save(cWhichTask);
+            cUpdateSuccess = cStore.save(cWhichTask);
+            
+            if (!cUpdateSuccess) {
+            	warningString = USR_MSG_MARK_WARNING_STORE_FAIL;
+            }
         }
         
         formattedString =  Utilities.formatString(USR_MSG_MARK_OK, cWhichTask.getName());
-        CommandFeedback fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+        CommandFeedback fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
         return fb;
     }
@@ -68,12 +76,18 @@ public class MarkAction implements UndoableAction {
     @Override
     public CommandFeedback undo() {
         assert cWhichTask != null;
+        
+        String warningString = "";
 
         cWhichTask.setComplete(false);
-        cStore.save(cWhichTask);
+        cUpdateSuccess = cStore.save(cWhichTask);
+        
+        if (!cUpdateSuccess) {
+        	warningString = USR_MSG_MARK_WARNING_STORE_FAIL;
+        }
         
         String formattedString =  Utilities.formatString(USR_MSG_MARK_UNDO, cWhichTask.getName());
-        return new CommandFeedback(cCommand, cIntBag, formattedString);
+        return new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
     }
 
     @Override
