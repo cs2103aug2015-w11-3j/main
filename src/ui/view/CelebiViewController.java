@@ -79,6 +79,7 @@ public class CelebiViewController {
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
     private LabelFader popupFader;
+    private Label tablePlaceHolder;
 
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
@@ -135,12 +136,25 @@ public class CelebiViewController {
         popupFader = new LabelFader(popupLabel);
     }
 
-    // private void temp(ObservableV)
     private void initializeCelebiTable() {
         // celebiTable.setCellSize(26.2);
-        initializeRowPseudoclassListeners();
+    	setTablePlaceHolder();
+    	initializeRowPseudoclassListeners();
         disableTableColumnReordering();
     }
+
+	private void setTablePlaceHolder() {
+		tablePlaceHolder = new Label("Come and add something here!\nEnter a question mark if you just met me ;D");
+		switch (skinMode) {
+        	case DAY:
+        		tablePlaceHolder.setTextFill(DAY_COMPLETED_TASK_COLOR);
+        		break;
+        	case NIGHT:
+        		tablePlaceHolder.setTextFill(NIGHT_COMPLETED_TASK_COLOR);
+        		break;
+		}
+		celebiTable.setPlaceholder(tablePlaceHolder);
+	}
 
     private void disableTableColumnReordering() {
         TableColumn[] columns = { spaceColumn, idColumn, taskNameColumn, startTimeColumn, endTimeColumn };
@@ -284,6 +298,7 @@ public class CelebiViewController {
                 } else {
                     nameText.setFill(NIGHT_NORMAL_TASK_COLOR);
                 }
+                break;
         }
     }
 
@@ -617,6 +632,7 @@ public class CelebiViewController {
         currentWarningColor = NIGHT_WARNING_COLOR;
         currentKeywordColor = NIGHT_KEYWORD_COLOR;
         setTaskNameAppearence();
+        setTablePlaceHolder();
     }
 
     public void switchDaySkin() {
@@ -629,6 +645,7 @@ public class CelebiViewController {
         currentWarningColor = DAY_WARNING_COLOR;
         currentKeywordColor = DAY_KEYWORD_COLOR;
         setTaskNameAppearence();
+        setTablePlaceHolder();
     }
     
     public void updateUI(TasksBag cb) {
