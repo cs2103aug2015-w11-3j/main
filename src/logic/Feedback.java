@@ -2,11 +2,11 @@ package logic;
 
 import common.TasksBag;
 
+//@@author A0125546E
 public class Feedback {
     private final TasksBag cBag;
 
     public Feedback(TasksBag bag) {
-
         cBag = bag;
     }
 
@@ -18,5 +18,4 @@ public class Feedback {
     public TasksBag getcBag() {
         return cBag.getFiltered();
     }
-
 }

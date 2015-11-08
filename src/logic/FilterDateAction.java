@@ -5,7 +5,7 @@ import java.util.Date;
 
 import common.TasksBag;
 import common.Utilities;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 import ui.view.DateFormatter;
 
 public class FilterDateAction implements Action {
@@ -14,12 +14,12 @@ public class FilterDateAction implements Action {
     private static final String USR_MSG_FILTER_BEFORE_DATE = "Filtering dates before %1$s";
     private static final String USR_MSG_FILTER_BETWEEN_DATE = "Filtering dates between %1$s and %2$s";
 
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
     private Date cStart;
     private Date cEnd;
 
-    public FilterDateAction(CommandImpl command, TasksBag internalBag) {
+    public FilterDateAction(CommandData command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
         cStart = cCommand.getStart();
@@ -38,7 +38,7 @@ public class FilterDateAction implements Action {
     }
 
     private String getFeedbackText(TasksBag.FilterDateState state) {
-        String rtn = "Filtering date after " + cStart + " to " + cEnd;
+        String rtn = "";
         String formatStart;
         String formatEnd;
         DateFormatter df = new DateFormatter();

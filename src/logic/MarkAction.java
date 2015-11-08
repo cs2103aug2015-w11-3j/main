@@ -9,7 +9,7 @@ import common.Utilities;
 import logic.exceptions.AlreadyMarkedException;
 import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.LogicException;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 import storage.StorageInterface;
 
 public class MarkAction implements UndoableAction {
@@ -19,7 +19,7 @@ public class MarkAction implements UndoableAction {
     private static final String USR_MSG_MARK_FAIL = "Already marked %1$s!";
     private static final String USR_MSG_MARK_UNDO = "Undo mark %1$s!";
     
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cCurBag;    
     private TasksBag cIntBag;
     private StorageInterface cStore;
@@ -27,13 +27,12 @@ public class MarkAction implements UndoableAction {
     
     private Logger log;
     
-    public MarkAction(CommandImpl command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
+    public MarkAction(CommandData command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         
         cCommand = command;
         cCurBag = internalBag.getFiltered();
         cIntBag = internalBag;
         cStore = stor;
-        log = Logger.getLogger("MarkAction");
         
         int UID = cCommand.getTaskUID();
 
@@ -42,7 +41,6 @@ public class MarkAction implements UndoableAction {
         }
 
         if (UID > cCurBag.size()) {
-            log.warning("Exceeded size" + UID + " " + cCurBag.size());
             throw new IllegalAccessCommandException(USR_MSG_INDEX_ERR);
         }
 

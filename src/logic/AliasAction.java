@@ -10,12 +10,12 @@ import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.Aliases;
 import parser.AliasesImpl;
-import parser.Command;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 
 public class AliasAction implements Action {
 
-	private static final String USR_MSG_ALIAS_CLEAR = "All custom alias mappings cleared";
+	private static final String USR_MSG_CONFIG_ERROR = "Config saving error: your changes may not persist.";
+    private static final String USR_MSG_ALIAS_CLEAR = "All custom alias mappings cleared";
 	private static final String USR_MSG_ALIAS_RESERVED = "You cannot use the reserved keyword \"%s\" as an alias. Reserved keywords are shown in \"help\"";
 	private static final String USR_MSG_ALIAS_SUCCESS = "Alias mapping created: %s --> %s";
 	
@@ -23,13 +23,13 @@ public class AliasAction implements Action {
 	
 	private static final Aliases ALIASES = AliasesImpl.getInstance();
 	
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
     
     private String newAlias;
-    private Command.Type aliasTarget;
+    private CommandData.Type aliasTarget;
     
-	public AliasAction(CommandImpl cmd, TasksBag internalBag) {
+	public AliasAction(CommandData cmd, TasksBag internalBag) {
         cCommand = cmd;
         cBag = internalBag;
         newAlias = cmd.getText();
@@ -46,14 +46,14 @@ public class AliasAction implements Action {
 			} catch (IOException ioe) {
 				Log.log(ioe.toString());
 				ioe.printStackTrace();
-				throw new LogicException("Config saving error: your changes may not persist.");
+				throw new LogicException(USR_MSG_CONFIG_ERROR);
 			}
 			return new CommandFeedback(cCommand, cBag, USR_MSG_ALIAS_CLEAR);
 		}
 		
 		assert newAlias != null // if aliasTarget != null, must have newAlias.
 				&& !"".equals(newAlias) // parser won't parse empty string as alias
-				&& aliasTarget != Command.Type.INVALID // parser shouldnt give INVALID
+				&& aliasTarget != CommandData.Type.INVALID // parser shouldnt give INVALID
 				&& P_VALID_ALIAS.matcher(newAlias).matches(); // parser should have removed whitespace and tolowercase
 		
 		// Don't allow user to user to re-map reserved keywords
@@ -67,10 +67,9 @@ public class AliasAction implements Action {
 		} catch (IOException ioe) {
 			Log.log(ioe.toString());
 			ioe.printStackTrace();
-			throw new LogicException("Config saving error: your changes may not persist.");
+			throw new LogicException(USR_MSG_CONFIG_ERROR);
 		}
 		return new CommandFeedback(cCommand, cBag, Utilities.formatString(USR_MSG_ALIAS_SUCCESS, newAlias, aliasTarget));
-	}
-	
+    }
 
 }

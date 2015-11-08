@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import common.Utilities;
-import parser.Command.Type;
+import parser.commands.CommandData;
 
 public final class HelpStrings {
 	
@@ -44,13 +44,13 @@ public final class HelpStrings {
     
     private static final Aliases ALIASES = AliasesImpl.getInstance();
     
-    private static final Map<Command.Type, String> CMD_FORMATS = mapCmdToFormatStrings();
+    private static final Map<CommandData.Type, String> CMD_FORMATS = mapCmdToFormatStrings();
 
     public static String getHelpToolTip(String token){
     	assert(token != null && P_NO_WHITESPACE.matcher(token).matches());
 
-    	Command.Type cmdType = ALIASES.getCmdFromAlias(Parser.cleanText(token));
-    	assert(cmdType != Command.Type.INVALID);
+    	CommandData.Type cmdType = ALIASES.getCmdFromAlias(ParserControllerImpl.cleanText(token));
+    	assert(cmdType != CommandData.Type.INVALID);
     	
     	if (cmdType == null) {
     		return null; // cannot parse as command token
@@ -60,30 +60,30 @@ public final class HelpStrings {
     	return Utilities.formatString(formatStr, token);    	
     }
     
-    private static Map<Command.Type, String> mapCmdToFormatStrings () {
-    	final Map<Command.Type, String> map = new HashMap<>();
+    private static Map<CommandData.Type, String> mapCmdToFormatStrings () {
+    	final Map<CommandData.Type, String> map = new HashMap<>();
     	
-    	map.put( Command.Type.ADD, FORMAT_ADD );
-    	map.put( Command.Type.DELETE, FORMAT_DELETE );
-    	map.put( Command.Type.UPDATE, FORMAT_UPDATE );
+    	map.put( CommandData.Type.ADD, FORMAT_ADD );
+    	map.put( CommandData.Type.DELETE, FORMAT_DELETE );
+    	map.put( CommandData.Type.UPDATE, FORMAT_UPDATE );
     	
-    	map.put( Command.Type.MARK, FORMAT_MARK );
-    	map.put( Command.Type.UNMARK, FORMAT_UNMARK );
+    	map.put( CommandData.Type.MARK, FORMAT_MARK );
+    	map.put( CommandData.Type.UNMARK, FORMAT_UNMARK );
     	
-    	map.put( Command.Type.SHOW, FORMAT_SHOW );
+    	map.put( CommandData.Type.SHOW, FORMAT_SHOW );
     	
-    	map.put( Command.Type.UNDO, FORMAT_UNDO );
-    	map.put( Command.Type.REDO, FORMAT_REDO );
+    	map.put( CommandData.Type.UNDO, FORMAT_UNDO );
+    	map.put( CommandData.Type.REDO, FORMAT_REDO );
     	
-    	map.put( Command.Type.SEARCH, FORMAT_SEARCH );
-    	map.put( Command.Type.FILTER_DATE, FORMAT_FILTER );
-    	map.put( Command.Type.CLEAR_FILTERS, FORMAT_CLEAR );
+    	map.put( CommandData.Type.SEARCH, FORMAT_SEARCH );
+    	map.put( CommandData.Type.FILTER_DATE, FORMAT_FILTER );
+    	map.put( CommandData.Type.CLEAR_FILTERS, FORMAT_CLEAR );
     	
-    	map.put( Command.Type.ALIAS, FORMAT_ALIAS );
-    	map.put( Command.Type.THEME, FORMAT_THEME );
-    	map.put( Command.Type.QUIT, FORMAT_QUIT );
-    	map.put( Command.Type.HELP, FORMAT_HELP );
-    	map.put( Command.Type.MOVE, FORMAT_MOVE );
+    	map.put( CommandData.Type.ALIAS, FORMAT_ALIAS );
+    	map.put( CommandData.Type.THEME, FORMAT_THEME );
+    	map.put( CommandData.Type.QUIT, FORMAT_QUIT );
+    	map.put( CommandData.Type.HELP, FORMAT_HELP );
+    	map.put( CommandData.Type.MOVE, FORMAT_MOVE );
     	
     	return map;
     }
