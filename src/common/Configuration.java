@@ -27,7 +27,7 @@ import static ui.view.CelebiViewController.Skin;
  */
 public class Configuration implements ConfigurationInterface {
 
-    private static final String CONFIG_DIRECTORY = "bin/config.json";
+    private static final String CONFIG_DIRECTORY = "config.json";
     
     private static final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
     private static final String KEY_DEFAULT_START_TIME = "DEFAULT_START_TIME";
@@ -38,7 +38,7 @@ public class Configuration implements ConfigurationInterface {
     private static final String VALUE_SKIN_DAY = Skin.DAY.name();
     private static final String VALUE_SKIN_NIGHT = Skin.NIGHT.name();
     
-    private static final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
+    private static final String DEFAULT_VALUE_STORAGE_LOCATION = "";
     private static final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
     private static final String DEFAULT_VALUE_DEFAULT_END_TIME = "23:59";
     private static final String DEFAULT_VALUE_SKIN = VALUE_SKIN_DAY;
@@ -360,7 +360,6 @@ public class Configuration implements ConfigurationInterface {
 
     private void logError(String invalidMsg, String arg, String resetMsg) {
     	String formatted = Utilities.formatString(invalidMsg, arg);
-    	//System.out.println(formatted);
     	Log.log(formatted);
     	Log.log(resetMsg);
     }
@@ -377,7 +376,6 @@ public class Configuration implements ConfigurationInterface {
 
         configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
         String text = JSONValue.toJSONString(configJson);
-        System.out.println(text);
         configWriter.write(text);
         configWriter.close();
         configWriter = null;
