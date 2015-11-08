@@ -552,7 +552,7 @@ public class CelebiViewController {
 
     public void updateFilterDisplay(TasksBag bag) {
         String displayString = "";
-        String dateFilterString = getDateFilterString(bag);
+        String dateFilterString = getDateFilterString(bag.getDateState(), bag.getStartDate(), bag.getEndDate());
         String searchKeywordString = getSearchKeywordString(bag);
 
         if (dateFilterString == DATE_FILTER_NONE) {
@@ -570,15 +570,12 @@ public class CelebiViewController {
         filterLabel.setText(displayString);
     }
 
-    public String getDateFilterString(TasksBag bag) {
+    public String getDateFilterString(FilterDateState state, Date start, Date end) {
         String MESSAGE_NONE = DATE_FILTER_NONE;
         String MESSAGE_AFTER = "after %1$s";
         String MESSAGE_BEFORE = "before %1$s";
         String MESSAGE_BETWEEN = "from %1$s to %2$s";
 
-        FilterDateState state = bag.getDateState();
-        Date start = bag.getStartDate();
-        Date end = bag.getEndDate();
         String formattedStart = df.formatDate(start);
         String formattedEnd = df.formatDate(end);
 
