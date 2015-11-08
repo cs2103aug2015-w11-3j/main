@@ -14,7 +14,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SingleSelectionModel;
@@ -24,12 +29,16 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import common.Configuration;
 import common.Task;
@@ -48,6 +57,7 @@ public class CelebiViewController {
     // @@author A0133895U
     Main mainApp;
     UIInterface ui;
+    Stage stage;
     private static final DateFormatter df = new DateFormatter();
     private static final Aliases ALIASES = AliasesImpl.getInstance();
 
@@ -126,6 +136,7 @@ public class CelebiViewController {
         initializeFeedbackArea();
         
         initializePopupLabel();
+        //setToolBar();
 
         Platform.runLater(() -> {
             commandArea.requestFocus();
@@ -341,7 +352,7 @@ public class CelebiViewController {
         // add command area into the pane
         commandArea = new InlineCssTextArea();
         AnchorPane.setTopAnchor(commandArea, 5.0);
-        AnchorPane.setBottomAnchor(commandArea, 10.0);
+        AnchorPane.setBottomAnchor(commandArea, 13.0);
         AnchorPane.setLeftAnchor(commandArea, 50.0);
         AnchorPane.setRightAnchor(commandArea, 50.0);
         commandFieldPane.getChildren().add(commandArea);
@@ -504,6 +515,10 @@ public class CelebiViewController {
     public void setUI(UIInterface ui) {
         this.ui = ui;
     }
+    
+    public void setStage(Stage stage) {
+    	this.stage = stage;
+    }
 
     public void updateTableItems(ObservableList<Task> celebiList) {
         celebiTable.setItems(celebiList);
@@ -657,4 +672,76 @@ public class CelebiViewController {
     public Skin getSkin() {
     	return skinMode;
     }
+    
+    class Delta {double x, y;}
+    public void makeDraggable(Stage stage, Node windowBar) {
+    	Delta dragDelta = new Delta();
+    	
+    	windowBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+    		@Override
+    		public void handle(MouseEvent mouseEvent) {
+    			windowBar.setCursor(Cursor.MOVE);
+    			dragDelta.x = stage.getX() - mouseEvent.getScreenX();
+    			dragDelta.y = stage.getY() - mouseEvent.getScreenY();
+    		}
+    	});
+    	
+    	windowBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
+    		@Override
+    		public void handle(MouseEvent mouseEvent) {
+    			stage.setX(mouseEvent.getScreenX() + dragDelta.x);
+    			stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+    		}
+    	});
+    	
+    	windowBar.setOnMouseReleased(new EventHandler<MouseEvent>() {
+    		@Override
+    		public void handle(MouseEvent mouseEvent) {
+    			windowBar.setCursor(Cursor.HAND);
+    		}
+    	});
+    	
+    	windowBar.setOnMouseEntered(new EventHandler<MouseEvent>() {
+    		@Override
+    		public void handle(MouseEvent mouseEvent) {
+    			if(!mouseEvent.isPrimaryButtonDown()) {
+    				windowBar.setCursor(Cursor.HAND);
+    			}
+    		}
+    	});
+    	
+    	windowBar.setOnMouseExited(new EventHandler<MouseEvent>() {
+    		@Override
+    		public void handle(MouseEvent mouseEvent) {
+    			if(!mouseEvent.isPrimaryButtonDown()) {
+    				windowBar.setCursor(Cursor.DEFAULT);
+    			}
+    		}
+    	});
+    }
+    
+    class WindowButtons extends HBox {
+    	public WindowButtons() {
+    		Button close = new Button("X");
+    		close.setOnAction(new EventHandler<ActionEvent>() {
+    			@Override
+    			public void handle(ActionEvent event) {
+    				Platform.exit();
+    			}
+    		});
+    		this.getChildren().add(close);
+    	}
+    }
+    
+    public void setToolBar() {
+		ToolBar bar = new ToolBar();
+		int height = 25;
+		bar.setPrefHeight(height);
+		bar.setMinHeight(height);
+		bar.setMaxHeight(height);
+		bar.getItems().add(new WindowButtons());
+		makeDraggable(stage, bar);
+		BorderPane borderPane = mainApp.getRootLayout();
+		borderPane.setTop(bar);
+	}
 }
