@@ -2,9 +2,7 @@ package ui;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -32,21 +30,15 @@ import javafx.stage.Stage;
 import ui.view.CelebiViewController;
 import ui.view.CelebiViewController.Skin;
 
-public class CelebiTest extends FxRobot {
+public class GUITest extends FxRobot {
 	private static Main mainApp;
 	private static CelebiViewController controller;
 	public static Stage primaryStage;
 	
+	//Setting
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		primaryStage = FxToolkit.registerPrimaryStage();
-		mainApp = (Main)FxToolkit.setupApplication(Main.class);
-		controller = mainApp.getController();
-		Thread.sleep(2000);
-		
-		TabPane tabPane=(TabPane)mainApp.getScene().lookup("#tab-pane");
-		SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-		selectionModel.select(0);
 	}
 	
 	@AfterClass
@@ -54,14 +46,6 @@ public class CelebiTest extends FxRobot {
 		
 	}	
 	
-	@After
-	public void after() {
-		TabPane tabPane=(TabPane)mainApp.getScene().lookup("#tab-pane");
-		SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-		selectionModel.select(0);
-	}
-	
-	/*
 	@Before
 	public void before() {
 		try {
@@ -73,17 +57,16 @@ public class CelebiTest extends FxRobot {
 			e.printStackTrace(System.out);
 		}
 	}
-	
 		
 	@After
     public void after() throws TimeoutException {
         FxToolkit.cleanupStages();
         FxToolkit.hideStage();
     }
-    */
+	
 	
 	@Test
-	public void setTextAreaText() {
+	public void keyEnterTest() {
 		InlineCssTextArea commandArea=(InlineCssTextArea)mainApp.getScene().lookup("#command-area");
    		clickOn("#command-area").write("add").push(KeyCode.ENTER);
    		assertTrue(commandArea.getText().equals("")); 		
@@ -91,6 +74,8 @@ public class CelebiTest extends FxRobot {
 	
 	@Test
 	public void keyTypeTabTest() {
+		switchToDefaultView();
+		
 		TabPane tabPane=(TabPane)mainApp.getScene().lookup("#tab-pane");
 		push(KeyCode.TAB);
 		assertTrue(tabPane.getSelectionModel().getSelectedIndex() == 2);
@@ -102,53 +87,61 @@ public class CelebiTest extends FxRobot {
 	
 	@Test
 	public void changeSkinTest() {
-		clickOn("#command-area").write("skin night").push(KeyCode.ENTER);
+		clickOn("#command-area");
+		
+		// test change night skin
+		write("skin night").push(KeyCode.ENTER);
 		assertTrue(controller.getSkin() == Skin.NIGHT);
+		
+		// test change day skin
 		write("skin day").push(KeyCode.ENTER);
 		assertTrue(controller.getSkin() == Skin.DAY);
 	}
 	
-	/*
 	@Test
 	public void commandScrollBarIsHiddenTest() {
-		assertTrue(mainApp.getScene().lookup("#command-scroll-bar") == null);
+		clickOn("#command-area");
 		
-		clickOn("#command-area").write("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+		// test whether command area scroll bar is hidden when command is
+		// too long
+		write("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
 		ScrollBar commandScrollBar = (ScrollBar)mainApp.getScene().lookup("#command-scroll-bar"); 
 		assertTrue(!commandScrollBar.isDisable());
 		push(KeyCode.ENTER);
 	}
-	*/
 	
-	/*
 	@Test
 	public void addTasksSuccessfulTest() {
-		int TASK_COUNT = 3;
+		int TASK_COUNT = 5;
 		Random rng = new Random();
 		int rndVal = rng.nextInt(TASK_COUNT) + 5;
 		
+		switchToDefaultView();
+		// switch to complete view
 		push(KeyCode.TAB);
 		push(KeyCode.TAB);
 		
 		TableView tableView = (TableView)mainApp.getScene().lookup("#celebi-table-view") ;
 		int beforeNumberOfTasks = tableView.getItems().size();
 
+		// check whether feedback for successful adding is there
         for (int i = 0; i < rndVal; i++) {
         	assertTrue(isTaskAdded("task"+i));
         }
         
+        // check whether the number of items added to the table is correct
         int afterNumberOfTasks = tableView.getItems().size();
         assertTrue(afterNumberOfTasks - beforeNumberOfTasks == rndVal);
         push(KeyCode.TAB);
 	}
-	*/
-	
+
 	@Test
 	public void addLengthyTaskTest() {
 		String lengthyTask1 = generateRandomString(49);
 		String lengthyTask2 = generateRandomString(50);
 		String lengthyTask3 = generateRandomString(51);
 		
+		// check whether string that is longer than 50 characters is rejected
 		assert(!isTaskRejectedDueToLengthyName(lengthyTask1));
 		assert(!isTaskRejectedDueToLengthyName(lengthyTask2));
 		assert(isTaskRejectedDueToLengthyName(lengthyTask3));
@@ -159,6 +152,7 @@ public class CelebiTest extends FxRobot {
 		String DELETE_INDEX_EXCEED_MSG = "You: delete %1$d\nCelebi: Provided index not on list.";
 		int afterNumberOfTasks, beforeNumberOfTasks;
 		
+		switchToDefaultView();
 		push(KeyCode.TAB);
 		push(KeyCode.TAB);
 		clickOn("#command-area");
@@ -187,6 +181,8 @@ public class CelebiTest extends FxRobot {
 	
 	@Test
 	public void filterTest() {
+		switchToDefaultView();
+		
 		String FILTER_MSG = "Now filtering: %1$s. ";
         Label filterLabel = (Label)mainApp.getScene().lookup("#filter-label");
         String formattedDate;
@@ -225,15 +221,69 @@ public class CelebiTest extends FxRobot {
 		Assert.assertEquals("", filterLabel.getText());
 	}
 	
+	@Test
+	public void searchTest() {
+		switchToDefaultView();
+		
+		String SEARCH_MSG = "Now searching: %1$s.";
+        Label filterLabel = (Label)mainApp.getScene().lookup("#filter-label");
+        
+		clickOn("#command-area");
+        
+        // Test default
+     	Assert.assertEquals("", filterLabel.getText());
+     	
+     	// Test searching
+     	write("search task").push(KeyCode.ENTER);
+     	Assert.assertEquals(String.format(SEARCH_MSG, "task"), filterLabel.getText());
+     	
+     	// Test clearing filter
+     	write("clear").push(KeyCode.ENTER);
+     	Assert.assertEquals("", filterLabel.getText());
+	}
 	
-	
-	
+	@Test
+	public void doneTest() {
+		switchToDefaultView();
+		
+		int beforeCompleteTasks, afterCompleteTasks;
+		int beforeIncompleteTasks, afterIncompleteTasks;
+		TableView tableView = (TableView)mainApp.getScene().lookup("#celebi-table-view") ;
+		
+		// switch to complete view
+		push(KeyCode.TAB).push(KeyCode.ENTER);
+		clickOn("#command-area");
+		write("add test done");
+		
+		beforeCompleteTasks = tableView.getItems().size();
+		
+		// switch to incomplete view
+		push(KeyCode.TAB);
+		beforeIncompleteTasks = tableView.getItems().size();
+		
+		write("done 1").push(KeyCode.ENTER);
+		
+		// switch to complete view
+		push(KeyCode.TAB);
+		push(KeyCode.TAB);
+		afterCompleteTasks = tableView.getItems().size();
+		
+		// switch to incomplete view
+		push(KeyCode.TAB);
+		afterIncompleteTasks = tableView.getItems().size();
+		
+		// check if the task inside incomplete view is moved to complete
+		// view successfully
+		Assert.assertEquals(beforeCompleteTasks + 1, afterCompleteTasks);
+		Assert.assertEquals(beforeIncompleteTasks - 1, afterIncompleteTasks);
+	}
 				
-	
-	
-	
-	
-	
+
+	/**
+	 * to generate a random string of given length
+	 * @param length
+	 * @return
+	 */
 	private String generateRandomString(int length) {
 		char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()[]{}".toCharArray();
 		StringBuilder builder = new StringBuilder();
@@ -245,6 +295,11 @@ public class CelebiTest extends FxRobot {
 		return builder.toString();
 	}
 	
+	/**
+	 * to check whether a task is successfully added
+	 * @param taskName
+	 * @return
+	 */
 	private boolean isTaskAdded(String taskName) {
 		String SUCCESSFUL_ADD_MSG = "You: add %1$s\nCelebi: Added %1$s!";
 		InlineCssTextArea feedbackArea=(InlineCssTextArea)mainApp.getScene().lookup("#feedback-area");
@@ -255,6 +310,12 @@ public class CelebiTest extends FxRobot {
     	return isAdded;
 	}
 	
+	/**
+	 * to check whether a task is rejected because its length exceed the
+	 * maximum length allowed
+	 * @param taskName
+	 * @return
+	 */
 	private boolean isTaskRejectedDueToLengthyName(String taskName) {
 		String LENGTHY_FAILURE_ADD_MSG = "You: add %1$s\nCelebi: Failed to add! Your task name is too long! Keep it to less than 50 characters.";
 		InlineCssTextArea feedbackArea=(InlineCssTextArea)mainApp.getScene().lookup("#feedback-area");
@@ -263,5 +324,14 @@ public class CelebiTest extends FxRobot {
 		write("add " + taskName).push(KeyCode.ENTER);
 		boolean isRejected = feedbackArea.getText().equals(String.format(LENGTHY_FAILURE_ADD_MSG, taskName));
 		return isRejected;
+	}
+	
+	/**
+	 * to switch the view to default view
+	 */
+	private void switchToDefaultView() {
+		TabPane tabPane=(TabPane)mainApp.getScene().lookup("#tab-pane");
+		SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+		selectionModel.select(0);
 	}
 }
