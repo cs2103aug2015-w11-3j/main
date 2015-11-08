@@ -96,8 +96,8 @@ public class Storage implements StorageInterface {
     }
 
     @Override
-    public boolean moveFileTo(String destination) throws IOException {
-    	return Database.moveTo(destination, _isTestMode);
+    public void moveFileTo(String destination) throws IOException {
+    	Database.moveTo(destination, _isTestMode);
     }
        
     // Methods below are only used for Storage unit tests

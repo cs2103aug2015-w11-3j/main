@@ -21,6 +21,8 @@ public class DeleteAction implements UndoableAction {
     private static final String USR_MSG_DELETE_OOB = "Provided index not on list.";
     private static final String USR_MSG_DELETE_OK = "Removed %1$s!";
     private static final String USR_MSG_DELETE_UNDO = "Undoing delete %1$s";
+    
+    private static final String USR_MSG_DELETE_WARNING_STORE_FAIL = "Fail to update the storage file!";
 
     private CommandData cCommand;
     private TasksBag cCurBag;
@@ -28,6 +30,8 @@ public class DeleteAction implements UndoableAction {
     private StorageInterface cStore;
     private Task cWhichTask; // The task to be modified
     private int cPosition; // Position of internal bag
+    private boolean cDeleteSuccess;
+    private boolean cAddSuccess;
     Logger log;
 
     /**
@@ -80,15 +84,18 @@ public class DeleteAction implements UndoableAction {
     @Override
     public CommandFeedback execute() throws LogicException {
         String formattedString;
-        CommandFeedback fb;
+        String warningString = "";
 
         cPosition = cIntBag.removeTask(cWhichTask);
-        cStore.delete(cWhichTask);
+        cDeleteSuccess = cStore.delete(cWhichTask);
 
         formattedString = Utilities.formatString(USR_MSG_DELETE_OK, cWhichTask.getName());
-        fb = new CommandFeedback(cCommand, cIntBag, formattedString);
-
-        return fb;
+        
+        if (!cDeleteSuccess) {
+        	warningString = USR_MSG_DELETE_WARNING_STORE_FAIL;
+        }
+        
+        return new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
     }
 
     /**
@@ -98,12 +105,18 @@ public class DeleteAction implements UndoableAction {
     @Override
     public CommandFeedback undo() {
         String formattedString;
+        String warningString = "";
+        
         formattedString = Utilities.formatString(USR_MSG_DELETE_UNDO, cWhichTask.getName());
 
         cIntBag.addTask(cPosition, cWhichTask);
-        cStore.save(cWhichTask);
+        cAddSuccess = cStore.save(cWhichTask);
+        
+        if (!cAddSuccess) {
+        	warningString = USR_MSG_DELETE_WARNING_STORE_FAIL;
+        }
 
-        return new CommandFeedback(cCommand, cIntBag, formattedString);
+        return new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
     }
 
     /**

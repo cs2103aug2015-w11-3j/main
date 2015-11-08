@@ -24,12 +24,15 @@ public class AddAction implements UndoableAction {
     private static final String USR_MSG_ADD_WARNING_CLASH_SINGLE = "Your task clashes with %1$s!";
     private static final String USR_MSG_ADD_WARNING_CLASH_MANY = "Your task clashes with %1$s and %2$s more!";
     private static final String USR_MSG_ADD_WARNING_OVERDUE = "Your task is already over due!";
+    private static final String USR_MSG_ADD_WARNING_STORE_FAIL = "Fail to update the storage file!";
     private static final int NAME_LIMIT = 50; // Hard limit for user's max char
 
     private CommandData cCommand;
     private TasksBag cBag;
     private StorageInterface cStore;
     private Task cWhichTask;
+    private boolean cAddSuccess;
+    private boolean cDeleteSuccess;
 
     public AddAction(CommandData command, TasksBag bag, StorageInterface stor) throws IntegrityCommandException {
         cCommand = command;
@@ -51,9 +54,9 @@ public class AddAction implements UndoableAction {
         String formattedString;
         String warningString;
         CommandFeedback fb;
-
+        
         cBag.addTask(cWhichTask);
-        cStore.save(cWhichTask);
+        cAddSuccess = cStore.save(cWhichTask);
 
         warningString = processWarningMsg();
 
@@ -64,37 +67,53 @@ public class AddAction implements UndoableAction {
     }
 
     private String processWarningMsg() {
+    	String warningStrings = "";
+    	
+    	if (!cAddSuccess) {
+    		warningStrings = Utilities.appendWarningStrings(warningStrings, USR_MSG_ADD_WARNING_STORE_FAIL);
+    	}
+    	
         // Over due has a higher priority than clashes
         if (cWhichTask.isOverDue()) {
-            return USR_MSG_ADD_WARNING_OVERDUE;
+        	warningStrings = Utilities.appendWarningStrings(warningStrings, USR_MSG_ADD_WARNING_OVERDUE);
+        	return warningStrings;
         }
 
-        String warningString;
         ObservableList<Task> clashList = cBag.findClashesWithIncomplete(cWhichTask);
 
         if (clashList == null || clashList.size() == 0) {
-            return "";
+            return warningStrings;
         }
 
         Task firstTask = clashList.get(0);
+        String formatted;
         if (clashList.size() > 1) {
             int noOfOtherClashes = clashList.size() - 1;
-            warningString = Utilities.formatString(USR_MSG_ADD_WARNING_CLASH_MANY, firstTask.getName(),
-                    noOfOtherClashes);
+            formatted = Utilities.formatString(USR_MSG_ADD_WARNING_CLASH_MANY, firstTask.getName(), noOfOtherClashes);
+            warningStrings = Utilities.appendWarningStrings(warningStrings, formatted);
         } else {
-            warningString = Utilities.formatString(USR_MSG_ADD_WARNING_CLASH_SINGLE, firstTask.getName());
+        	formatted = Utilities.formatString(USR_MSG_ADD_WARNING_CLASH_SINGLE, firstTask.getName());
+        	warningStrings = Utilities.appendWarningStrings(warningStrings, formatted);
         }
-        return warningString;
+        return warningStrings;
     }
 
     @Override
     public CommandFeedback undo() {
         assert cWhichTask != null;
+        String formatted;
+        String warning = "";
 
-        cStore.delete(cWhichTask);
+        cDeleteSuccess = cStore.delete(cWhichTask);
         cBag.removeTask(cWhichTask);
-        String formatted = Utilities.formatString(USR_MSG_ADD_UNDO, cWhichTask.getName());
-        return new CommandFeedback(cCommand, cBag, formatted);
+        
+        formatted = Utilities.formatString(USR_MSG_ADD_UNDO, cWhichTask.getName());
+        
+        if (!cDeleteSuccess) {
+        	warning = USR_MSG_ADD_WARNING_STORE_FAIL;
+        }
+        
+        return new CommandFeedback(cCommand, cBag, formatted, warning);
     }
 
     @Override

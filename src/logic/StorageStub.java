@@ -30,8 +30,8 @@ public class StorageStub implements StorageInterface {
     }
 
     @Override
-    public boolean moveFileTo(String destination) {
-        return true;
+    public void moveFileTo(String destination) {
+        
     }
 
     @Override

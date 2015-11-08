@@ -25,6 +25,7 @@ public class UpdateAction implements UndoableAction {
             + "to less than 50 characters.";
     private static final String USR_MSG_UPDATE_CLASH_WARNING_SINGLE = "Task clashes with %1$s!";
     private static final String USR_MSG_UPDATE_CLASH_WARNING_MANY = "Task clashes with %1$s and %2$s more!";
+    private static final String USR_MSG_UPDATE_WARNING_STORE_FAIL = "Fail to update the storage file!";
     private static final int NAME_LIMIT = 50; // Hard limit for user's max char
     
     private CommandData cCommand;
@@ -33,6 +34,7 @@ public class UpdateAction implements UndoableAction {
     private StorageInterface cStore;
     private Task cWhichTask;
     private Task cOldTask;
+    private boolean cUpdateSuccess;
 
     public UpdateAction(CommandData command, TasksBag bag, StorageInterface stor) throws LogicException {
         cCommand = command;
@@ -115,8 +117,7 @@ public class UpdateAction implements UndoableAction {
             case DATE_END:
 
                 toBeUpdated.setEnd(cCommand.getEnd());
-                cStore.save(toBeUpdated);
-                
+                cUpdateSuccess = cStore.save(toBeUpdated);
                 warningString = processWarningMsg();
                 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_ENDDATE_OK, toBeUpdated.getName());
@@ -126,8 +127,7 @@ public class UpdateAction implements UndoableAction {
             case DATE_START:
 
                 toBeUpdated.setStart(cCommand.getStart());
-                cStore.save(toBeUpdated);
-
+                cUpdateSuccess = cStore.save(toBeUpdated);
                 warningString = processWarningMsg();
                 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_STARTDATE_OK, toBeUpdated.getName());
@@ -137,10 +137,11 @@ public class UpdateAction implements UndoableAction {
             case NAME:
 
                 toBeUpdated.setName(cCommand.getText());
-                cStore.save(toBeUpdated);
-
+                cUpdateSuccess = cStore.save(toBeUpdated);
+                warningString = processWarningMsg();
+                
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_NAME_OK, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
                 return fb;
             default:
@@ -155,33 +156,37 @@ public class UpdateAction implements UndoableAction {
         Task toBeUpdated = cWhichTask;
         CommandFeedback fb;
         String formattedString;
+        String warningString = "";
 
         switch (cCommand.getTaskField()) {
             case DATE_END:
 
                 toBeUpdated.setEnd(cOldTask.getEnd());
-                cStore.save(toBeUpdated);
+                cUpdateSuccess = cStore.save(toBeUpdated);
+                warningString = getWarningString();
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
                 return fb;
             case DATE_START:
 
                 toBeUpdated.setStart(cOldTask.getStart());
-                cStore.save(toBeUpdated);
+                cUpdateSuccess = cStore.save(toBeUpdated);
+                warningString = getWarningString();
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
                 return fb;
 
             case NAME:
 
                 toBeUpdated.setName(cOldTask.getName());
-                cStore.save(toBeUpdated);
+                cUpdateSuccess = cStore.save(toBeUpdated);
+                warningString = getWarningString();
 
                 formattedString = Utilities.formatString(USR_MSG_UPDATE_UNDO, toBeUpdated.getName());
-                fb = new CommandFeedback(cCommand, cIntBag, formattedString);
+                fb = new CommandFeedback(cCommand, cIntBag, formattedString, warningString);
 
                 return fb;
             default:
@@ -196,21 +201,26 @@ public class UpdateAction implements UndoableAction {
     }
     
     private String processWarningMsg() {
-        String warningString;
+        String warningString = "";
+        String formatted;
         ObservableList<Task> clashList = cIntBag.findClashesWithIncomplete(cWhichTask);
         
+        if (!cUpdateSuccess) {
+        	warningString = Utilities.appendWarningStrings(warningString, USR_MSG_UPDATE_WARNING_STORE_FAIL);
+        }
+        
         if(clashList == null || clashList.size() == 0){
-            return "";
+            return warningString;
         }
         
         Task firstTask = clashList.get(0);
         if(clashList.size() > 1){
             int noOfOtherClashes = clashList.size() - 1;
-            warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_MANY, firstTask.getName(), noOfOtherClashes);
-            
+            formatted = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_MANY, firstTask.getName(), noOfOtherClashes);
+            warningString = Utilities.appendWarningStrings(warningString, formatted);
         } else {            
-            
-            warningString = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_SINGLE, firstTask.getName());
+        	formatted = Utilities.formatString(USR_MSG_UPDATE_CLASH_WARNING_SINGLE, firstTask.getName());
+        	warningString = Utilities.appendWarningStrings(warningString, formatted);
         }
         return warningString;
     }
@@ -219,5 +229,14 @@ public class UpdateAction implements UndoableAction {
         if (name.length() > NAME_LIMIT) {
             throw new IntegrityCommandException(USR_MSG_UPDATE_ERROR_LONG_NAME);
         }
+    }
+    
+    //@@author A0133920N
+    private String getWarningString() {
+    	if (cUpdateSuccess) {
+    		return "";
+    	} else {
+    		return USR_MSG_UPDATE_WARNING_STORE_FAIL;
+    	}
     }
 }

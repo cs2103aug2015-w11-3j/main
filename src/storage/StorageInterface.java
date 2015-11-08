@@ -14,7 +14,7 @@ public interface StorageInterface {
 	
 	public boolean delete(Task c);
 	
-	public boolean moveFileTo(String destination) throws IOException;
+	public void moveFileTo(String destination) throws IOException;
 	
 	public void close();
 }
