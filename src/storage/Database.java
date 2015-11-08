@@ -118,7 +118,7 @@ abstract class Database {
 		return dbIndex.get(id);
 	}
 	
-	static int insert (TaskJson cj) {
+	static int insert (TaskJson cj) throws IOException {
 		int last; 
 		int dbSize = dbData.size();
 
@@ -139,34 +139,28 @@ abstract class Database {
 		return id;
 	}
 		
-	static boolean update (TaskJson cj) {
+	static void update (TaskJson cj) throws IOException {
 		TaskJson cjInDb = dbIndex.get(cj.getId());
 		cjInDb.update(cj);
 				
 		save ();
-		
-		return true;
 	}
 	
-	static boolean delete (int id) {
+	static void delete (int id) throws IOException {
 		TaskJson cj= dbIndex.get(id);
 		
 		dbData.remove(cj);
 		dbIndex.remove(id);
 		
 		save ();
-
-		return true;
 	}
 	
-	static boolean restore (TaskJson cj) {
+	static void restore (TaskJson cj) throws IOException {
 		dbData.add(cj);
 		dbIndex.put(cj.getId(), cj);
 		orderById();
 		
 		save ();
-		
-		return true;
 	}
 	
 	static boolean moveTo(String destination, boolean isTestMode) throws IOException {
@@ -184,19 +178,15 @@ abstract class Database {
 	}
 		
 	// private methods
-	private static boolean save () {
-		try {
-			dbWriter = new BufferedWriter(new FileWriter(db));
-			String text = JSONValue.toJSONString(dbData);
+	private static boolean save () throws IOException {
+		dbWriter = new BufferedWriter(new FileWriter(db));
+		String text = JSONValue.toJSONString(dbData);
 			
-			dbWriter.write(text);
-			dbWriter.close();
+		dbWriter.write(text);
+		dbWriter.close();
 			
-			dbWriter = null;
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
+		dbWriter = null;
+		return true;
 	}
 	
 	private static void orderById () {

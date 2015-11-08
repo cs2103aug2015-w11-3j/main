@@ -56,17 +56,21 @@ public class Storage implements StorageInterface {
     public boolean save(Task c) {
         TaskJson cj = new TaskJson(c);
         int id = c.getId();
-        if (id <= 0) {
-            id = Database.insert(cj);
-            c.setId(id);
-        } else if (Database.selectById(id) != null) {
-            Database.update(cj);
-        } else {
-            Database.restore(cj);
+        
+        try {
+        	if (id <= 0) {
+                id = Database.insert(cj);
+                c.setId(id);
+            } else if (Database.selectById(id) != null) {
+                Database.update(cj);
+            } else {
+                Database.restore(cj);
+            }
+        } catch (IOException e) {
+        	return false;
         }
-
-        boolean saveSuccessful = true;
-        return saveSuccessful;
+        
+        return true;
     }
 
     @Override
@@ -82,7 +86,12 @@ public class Storage implements StorageInterface {
 
     @Override
     public boolean delete(Task c) {
-        Database.delete(c.getId());
+    	try {
+    		Database.delete(c.getId());
+    	} catch (IOException e) {
+        	return false;
+        }
+        
         return true;
     }
 
