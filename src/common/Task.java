@@ -262,9 +262,17 @@ public class Task {
 
         long days = convertDaysToLong(noOfDays);
         long daysDifference = date.getTime() - cur.getTime();
-        if (daysDifference > 0 && daysDifference < days) {
+
+        // Start only. Comparing if they have passed noOfDays
+        if (this.getType() == Type.STARTONLY && daysDifference < days) {
             return true;
         }
+        
+        // Is not start but within noOfDays range
+        if (this.getType() != Type.STARTONLY && daysDifference > 0 && daysDifference < days) {
+            return true;
+        }
+
         return false;
     }
 

@@ -31,6 +31,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -87,6 +89,8 @@ public class CelebiViewController {
     private Label filterLabel;
     @FXML
     private Label popupLabel;
+    @FXML
+    private ImageView logo;
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
@@ -111,6 +115,8 @@ public class CelebiViewController {
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
 
     private static final Font DEFAULT_FONT = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen regular.ttf"), 13);
+    private static final Image DAY_LOGO = new Image(Main.class.getResourceAsStream("resource/Celebi logo_day.png"));
+    private static final Image NIGHT_LOGO = new Image(Main.class.getResourceAsStream("resource/Celebi logo_night.png"));
     private static final String DATE_FILTER_NONE = "none";
     private static final String SEARCH_FILTER_NONE = "none";
 
@@ -136,9 +142,7 @@ public class CelebiViewController {
         initializeCommandField();
         initializeFeedbackPane();
         initializeFeedbackArea();
-        
         initializePopupLabel();
-        //setToolBar();
 
         Platform.runLater(() -> {
             commandArea.requestFocus();
@@ -150,7 +154,6 @@ public class CelebiViewController {
     }
 
     private void initializeCelebiTable() {
-        // celebiTable.setCellSize(26.2);
     	setTablePlaceHolder();
     	initializeRowPseudoclassListeners();
         disableTableColumnReordering();
@@ -288,7 +291,6 @@ public class CelebiViewController {
                     }
                 }
             };
-            // cellData.getValue().nameProperty();
         });
     }
 
@@ -648,6 +650,7 @@ public class CelebiViewController {
         currentUserColor = NIGHT_USER_COLOR;
         currentWarningColor = NIGHT_WARNING_COLOR;
         currentKeywordColor = NIGHT_KEYWORD_COLOR;
+        logo.setImage(NIGHT_LOGO);
         setTaskNameAppearence();
         setTablePlaceHolder();
     }
@@ -661,6 +664,7 @@ public class CelebiViewController {
         currentUserColor = DAY_USER_COLOR;
         currentWarningColor = DAY_WARNING_COLOR;
         currentKeywordColor = DAY_KEYWORD_COLOR;
+        logo.setImage(DAY_LOGO);
         setTaskNameAppearence();
         setTablePlaceHolder();
     }
@@ -724,7 +728,7 @@ public class CelebiViewController {
     
     class WindowButtons extends HBox {
     	public WindowButtons() {
-    		Button close = new Button("ㄨ");
+    		Button close = new Button("X");
     		close.setId("close-button");
     		close.setOnAction(new EventHandler<ActionEvent>() {
     			@Override
@@ -733,7 +737,7 @@ public class CelebiViewController {
     			}
     		});
     		
-    		Button minimize = new Button("一");
+    		Button minimize = new Button("\u2013");
     		minimize.setOnMouseClicked(new EventHandler<MouseEvent>() {
     			public void handle(MouseEvent event) {
     				stage.setIconified(true);
