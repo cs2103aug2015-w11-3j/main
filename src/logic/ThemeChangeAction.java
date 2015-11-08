@@ -14,7 +14,6 @@ import ui.view.CelebiViewController;
 public class ThemeChangeAction implements Action {
     private static final String USR_MSG_THEME_NIGHT = "Switched to night theme~!";
     private static final String USR_MSG_THEME_DAY = "Switched to day theme~!";
-    private static final String USR_MSG_FAIL_SAVE = "Fail to write new settings into configuration";
     private CommandData cCommand;
     private TasksBag cBag;
     private ConfigurationInterface cConfig;
@@ -53,11 +52,7 @@ public class ThemeChangeAction implements Action {
 
     private String processWarning() {
         String warningMsg = "";
-        try {
-            cConfig.setSkin(cSkin.toString());
-        } catch (IOException e) {
-            warningMsg = Utilities.formatString(USR_MSG_FAIL_SAVE);
-        }
+        cConfig.setSkin(cSkin.toString());
         return warningMsg;
     }
 

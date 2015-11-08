@@ -94,7 +94,7 @@ public class Configuration implements ConfigurationInterface {
         	String plainText = "";
         	
         	configReader = new Scanner(configFile);
-            configReader.useDelimiter("\\Z");
+        	configReader.useDelimiter("\\Z");
             
             if (configReader.hasNext()) {
                 plainText = configReader.next();
