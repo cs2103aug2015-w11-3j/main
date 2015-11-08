@@ -269,3 +269,12 @@
     -fx-background-radius: 4px;
     -fx-padding: 1 10 1 10;
 }
+
+.tool-bar:horizontal {
+	-fx-background-color: #e2edd6;
+	-fx-padding: 0px 0px 0px 870px;
+}
+
+.botton {
+	-fx-background-color: #b7e67e;
+}
