@@ -732,7 +732,7 @@ public class CelebiViewController {
     
     class WindowButtons extends HBox {
     	public WindowButtons() {
-    		Button close = new Button("ㄨ");
+    		Button close = new Button("X");
     		close.setId("close-button");
     		close.setOnAction(new EventHandler<ActionEvent>() {
     			@Override
@@ -741,7 +741,7 @@ public class CelebiViewController {
     			}
     		});
     		
-    		Button minimize = new Button("一");
+    		Button minimize = new Button("–");
     		minimize.setOnMouseClicked(new EventHandler<MouseEvent>() {
     			public void handle(MouseEvent event) {
     				stage.setIconified(true);
