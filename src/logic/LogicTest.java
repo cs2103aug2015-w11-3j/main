@@ -434,7 +434,7 @@ public class LogicTest {
 
         logic = new Logic();
         logic.init();
-        
+        logic.setStorage(new StorageStub());
         String s = Configuration.getInstance().getUsrFileDirectory();
 
         while (logic.initData(s) == false) {
