@@ -40,7 +40,7 @@ public class LogicTest {
 
     @After
     public void cleanUpTest() {
-        cleanUp();
+        //cleanUp();
     }
 
     @Test
@@ -425,22 +425,24 @@ public class LogicTest {
         File tempFd = new File(JSON_LOC_TEMP);
         File fd = new File(JSON_LOC_DEFAULT);
 
+        /*
         try {
-            Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            fd.delete();
+            //Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            //fd.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        while (logic.initData(s) == false) {
+            // Failed to load data, query user to give filename
+            s = "NEW_LOCATION.txt";
+        }
+        */
         logic = new Logic();
         logic.init();
         logic.setStorage(new StorageStub());
         String s = Configuration.getInstance().getUsrFileDirectory();
 
-        while (logic.initData(s) == false) {
-            // Failed to load data, query user to give filename
-            s = "NEW_LOCATION.txt";
-        }
+        
     }
 
     private void cleanUp() {
