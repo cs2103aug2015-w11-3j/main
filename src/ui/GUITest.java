@@ -1,3 +1,10 @@
+// @@author A0133895U
+/*
+ * This is the GUI test for Celebi.
+ * Please first add testFx-3.1.2.jar , testfx-core-4.0.1-alpha.jar , guava-18.0.jar 
+ * that are under lib into path before you run the test.
+ */
+
 package ui;
 
 import static org.junit.Assert.*;
@@ -35,7 +42,7 @@ public class GUITest extends FxRobot {
 	private static CelebiViewController controller;
 	public static Stage primaryStage;
 	
-	//Setting
+	//Setting up
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		primaryStage = FxToolkit.registerPrimaryStage();

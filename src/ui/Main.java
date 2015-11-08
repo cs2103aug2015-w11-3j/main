@@ -1,3 +1,4 @@
+// @@author A0133895U
 package ui;
 import java.io.IOException;
 
@@ -122,7 +123,7 @@ public class Main extends Application {
             
             controller.setUI(mUI);
             controller.setMainApp(this);
-            controller.setToolBar();
+            controller.setWindowBar();
             
             // Give the UI acess to the controller.
             mUI.setController(controller);
