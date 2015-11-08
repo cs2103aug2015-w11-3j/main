@@ -6,6 +6,7 @@ import common.TasksBag;
 import common.Utilities;
 import javafx.collections.ObservableList;
 import logic.exceptions.IllegalAccessCommandException;
+import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.InvalidDateException;
 import logic.exceptions.LogicException;
 import parser.CommandImpl;
@@ -20,9 +21,12 @@ public class UpdateAction implements UndoableAction {
     private static final String USR_MSG_UPDATE_NAME_OK = "Updated name of %1$s!";
     private static final String USR_MSG_UPDATE_UNDO = "Undo update %1$s!";
 
+    private static final String USR_MSG_UPDATE_ERROR_LONG_NAME = "Failed to update! Your task name is too long! Keep it "
+            + "to less than 50 characters.";
     private static final String USR_MSG_UPDATE_CLASH_WARNING_SINGLE = "Task clashes with %1$s!";
     private static final String USR_MSG_UPDATE_CLASH_WARNING_MANY = "Task clashes with %1$s and %2$s more!";
-    
+    private static final int NAME_LIMIT = 50; // Hard limit for user's max char
+
     private CommandImpl cCommand;
     private TasksBag cCurBag;
     private TasksBag cIntBag;
@@ -93,13 +97,13 @@ public class UpdateAction implements UndoableAction {
                 break;
             case NAME:
                 assert cCommand.getText() != null;
+                validateTaskName(cCommand.getText());
                 break;
             default:
                 break;
 
         }
     }
-
     @Override
     public CommandFeedback execute() throws LogicException {
         Task toBeUpdated = cWhichTask;
@@ -211,4 +215,9 @@ public class UpdateAction implements UndoableAction {
         return warningString;
     }
 
+    private void validateTaskName(String name) throws IntegrityCommandException {
+        if (name.length() > NAME_LIMIT) {
+            throw new IntegrityCommandException(USR_MSG_UPDATE_ERROR_LONG_NAME);
+        }
+    }
 }
