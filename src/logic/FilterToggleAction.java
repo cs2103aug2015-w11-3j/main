@@ -4,7 +4,7 @@ import common.TasksBag;
 import common.TasksBag.ViewType;
 import javafx.scene.input.KeyCode;
 import logic.exceptions.LogicException;
-
+//@@author A0125546E
 public class FilterToggleAction implements Action {
     private static final String USR_MSG_FILTER_COMPLETE = "Switching view to completed tasks";
     private static final String USR_MSG_FILTER_INCOMPLETE = "Switching view to incompleted tasks";
@@ -40,8 +40,7 @@ public class FilterToggleAction implements Action {
                 msg = USR_MSG_FILTER_TODAY;
                 break;
         }
-        //cBag.setSearchState(null);
-        //cBag.setFilterDateState(null, null);
+        
         fb = new KeyEventFeedback(cBag, cKey, msg);
         return fb;
     }

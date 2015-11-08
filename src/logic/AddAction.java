@@ -40,15 +40,10 @@ public class AddAction implements UndoableAction {
         Date startDate = cCommand.getStart();
         Date endDate = cCommand.getEnd();
 
-        if (name.length() > NAME_LIMIT) {
-            throw new IntegrityCommandException(USR_MSG_ADD_ERROR_LONG_NAME);
-        }
-        boolean isValidDate = Utilities.verifyDate(startDate, endDate);
-        if (isValidDate) {
-            cWhichTask = new Task(name, startDate, endDate);
-        } else {
-            throw new IntegrityCommandException(USR_MSG_ADD_ERROR_DATE);
-        }
+        validateTaskName(name);
+        validateDate(startDate, endDate);
+        
+        cWhichTask = new Task(name, startDate, endDate);
     }
 
     @Override
@@ -105,5 +100,19 @@ public class AddAction implements UndoableAction {
     @Override
     public CommandFeedback redo() throws LogicException {
         return execute();
+    }
+
+    private void validateDate(Date startDate, Date endDate) throws IntegrityCommandException {
+        boolean isValidDate = Utilities.verifyDate(startDate, endDate);
+        
+        if (isValidDate == false) {
+            throw new IntegrityCommandException(USR_MSG_ADD_ERROR_DATE);
+        }
+    }
+
+    private void validateTaskName(String name) throws IntegrityCommandException {
+        if (name.length() > NAME_LIMIT) {
+            throw new IntegrityCommandException(USR_MSG_ADD_ERROR_LONG_NAME);
+        }
     }
 }

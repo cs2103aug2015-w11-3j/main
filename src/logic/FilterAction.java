@@ -18,7 +18,6 @@ public class FilterAction implements Action {
     private TasksBag cBag;
     private ViewType cSortBy;
 
-    
     public FilterAction(CommandData command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
@@ -46,10 +45,6 @@ public class FilterAction implements Action {
                 break;
 
         }
-
-        // both search string and filter date will be reset
-        //cBag.setSearchState(null);
-        //cBag.setFilterDateState(null, null);
         return new CommandFeedback(cCommand, cBag, msg);
     }
 

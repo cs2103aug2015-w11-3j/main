@@ -13,8 +13,6 @@ import logic.exceptions.NoUndoActionException;
  * 
  * Note the issue when redo-ing on a "switched" filter on the bag. Might cause
  * unintended side effects
- * 
- * @author MonoChrome
  */
 
 public class ActionInvoker {
