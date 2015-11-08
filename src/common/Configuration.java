@@ -264,6 +264,7 @@ public class Configuration implements ConfigurationInterface {
     	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
     	configDefaultStartTime = DEFAULT_VALUE_DEFAULT_START_TIME;
     	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
+    	configSkin = DEFAULT_VALUE_SKIN;
     	//TODO new alias code
     	configUserCmdAliases = new LinkedHashMap<>();
 

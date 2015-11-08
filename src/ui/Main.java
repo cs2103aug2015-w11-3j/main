@@ -4,10 +4,15 @@ import java.io.IOException;
 import common.Configuration;
 import common.ConfigurationInterface;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -25,18 +30,26 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Our Brilliant Celebi >o<!!");
-        try {
+        
+        setStageTransparent();
+        loadFonts();
+        
+        initRootLayout();
+        showCelebiView();
+    }
+
+	private void setStageTransparent() {
+		try {
         	this.primaryStage.initStyle(StageStyle.TRANSPARENT);
         } catch (Exception e) {
         	
         }
-        
-        Font regularFont = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen regular.ttf"), 10);
+	}
+
+	private void loadFonts() {
+		Font regularFont = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen regular.ttf"), 10);
         Font boldFont = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen 700.ttf"), 10);
-        initRootLayout();
-        
-        showCelebiView();
-    }
+	}
 
     /**
      * Initializes the root layout.
@@ -78,7 +91,6 @@ public class Main extends Application {
             controller = loader.getController();
             ConfigurationInterface config = Configuration.getInstance();
             CelebiViewController.Skin skin;
-            
             try {
             	skin = Enum.valueOf(CelebiViewController.Skin.class, config.getSkin());
             } catch (IllegalArgumentException e) {
@@ -107,10 +119,9 @@ public class Main extends Application {
         }
     }
     
-    
-    /*
-    class WindowsButtons extends HBox {
-    	public WindowsButtons() {
+     
+    class WindowsBar extends HBox {
+    	public WindowsBar() {
     		Button close = new Button("X");
     		close.setOnAction(new EventHandler<ActionEvent>() {
     			@Override
@@ -118,9 +129,9 @@ public class Main extends Application {
     				Platform.exit();
     			}
     		});
+    		this.getChildren().add(close);
     	}
     }
-    */
 	
 	
     /**
