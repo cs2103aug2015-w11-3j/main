@@ -422,16 +422,19 @@ public class LogicTest {
     }
 
     private void init() {
+        /*
         File tempFd = new File(JSON_LOC_TEMP);
         File fd = new File(JSON_LOC_DEFAULT);
 
-        /*
+        
         try {
             //Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
             //fd.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        String s = Configuration.getInstance().getUsrFileDirectory();
         while (logic.initData(s) == false) {
             // Failed to load data, query user to give filename
             s = "NEW_LOCATION.txt";
@@ -440,7 +443,6 @@ public class LogicTest {
         logic = new Logic();
         logic.init();
         logic.setStorage(new StorageStub());
-        String s = Configuration.getInstance().getUsrFileDirectory();
 
         
     }
