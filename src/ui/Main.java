@@ -31,8 +31,8 @@ public class Main extends Application {
         	
         }
         
-        Font regularFont = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 10);
-        Font boldFont = Font.loadFont(Main.class.getResourceAsStream("Oxygen 700.ttf"), 10);
+        Font regularFont = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen regular.ttf"), 10);
+        Font boldFont = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen 700.ttf"), 10);
         initRootLayout();
         
         showCelebiView();
