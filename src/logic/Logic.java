@@ -129,7 +129,7 @@ public class Logic implements LogicInterface {
     @Override
     public boolean initData(String s) {
 
-        boolean rtnVal = cStorage.load(s, cInternalBag);
+        boolean rtnVal = cStorage.load(cInternalBag);
         return rtnVal;
     }
 

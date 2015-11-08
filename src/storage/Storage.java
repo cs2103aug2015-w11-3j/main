@@ -70,7 +70,7 @@ public class Storage implements StorageInterface {
     }
 
     @Override
-    public boolean load(String s, TasksBag c) {
+    public boolean load(TasksBag c) {
         List<TaskJson> data = Database.selectAll();
         for (int i = 0; i < data.size(); i++) {
             c.addTask(data.get(i).toCelebi());

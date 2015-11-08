@@ -14,7 +14,7 @@ public class StorageStub implements StorageInterface {
     }
 
     @Override
-    public boolean load(String s, TasksBag c) {
+    public boolean load(TasksBag c) {
         // TODO Auto-generated method stub
         return true;
     }

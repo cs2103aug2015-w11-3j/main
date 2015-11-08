@@ -212,7 +212,7 @@ public class StorageTest {
             storage.init();
 
             tb = new TasksBag();
-            storage.load("", tb);
+            storage.load(tb);
             Assert.assertEquals(1, tb.size());
 
             fileContent = readFile(defaultFile);
@@ -233,7 +233,7 @@ public class StorageTest {
         storage.init();
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(2, tb.size());
         storage.close();
     }
@@ -249,14 +249,14 @@ public class StorageTest {
         storage.init();
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 0);
 
         boolean result = storage.save(task);
         Assert.assertTrue(result);
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 1);
 
         outTask = tb.getTask(0);
@@ -298,12 +298,12 @@ public class StorageTest {
         storage.save(task);
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 1);
 
         storage.delete(task);
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 0);
     }
 
@@ -319,17 +319,17 @@ public class StorageTest {
         storage.save(task);
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 1);
 
         storage.delete(task);
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 0);
 
         storage.save(task);
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 1);
         outTask = tb.getTask(0);
         assertTaskIdentical(task, outTask);
@@ -357,7 +357,7 @@ public class StorageTest {
         assertFileExists(newFile);
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 1);
 
         outTask = tb.getTask(0);
@@ -456,14 +456,14 @@ public class StorageTest {
         s.save(c3);
 
         tb = new TasksBag();
-        s.load("", tb);
+        s.load(tb);
         Assert.assertEquals(tb.size(), 3);
 
         c1.setName("new");
         s.save(c1);
 
         tb = new TasksBag();
-        s.load("", tb);
+        s.load(tb);
 
         Task ct = tb.getTask(0);
         String ctName = ct.getName();
@@ -472,7 +472,7 @@ public class StorageTest {
         s.delete(c2);
 
         tb = new TasksBag();
-        s.load("", tb);
+        s.load(tb);
         Assert.assertEquals(tb.size(), 2);
 
         s.close();
@@ -491,7 +491,7 @@ public class StorageTest {
         storage.init();
 
         tb = new TasksBag();
-        storage.load("", tb);
+        storage.load(tb);
         Assert.assertEquals(0, tb.size());
 
         fileContent = readFile(defaultFile);
@@ -503,7 +503,7 @@ public class StorageTest {
         Task outTask;
 
         storage.save(task);
-        storage.load("", tb);
+        storage.load(tb);
 
         outTask = tb.getTask(index);
         assertTaskIdentical(task, outTask);
