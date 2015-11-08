@@ -1,12 +1,13 @@
 //@@author A0131891E
-package parser;
+package parser.commands;
 
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.Date;
 
 import common.Task;
 import common.TasksBag;
-import static ui.view.CelebiViewController.Skin;
+import ui.view.CelebiViewController.Skin;
 
 /**
  * Base abstract class for the command datatype object.
@@ -25,7 +26,7 @@ import static ui.view.CelebiViewController.Skin;
  * As long as it is converted back into String/Date/whatever as per
  * the getter contracts here.
  */
-public abstract class Command {
+public abstract class CommandData {
 
 	// Uniquely identifies which Action to create in Logic
 	public static enum Type {
@@ -43,7 +44,7 @@ public abstract class Command {
 	private final String _userInput;
 	private final Type _cmdType;
 	
-	Command (Type type, String rawInput) {
+	CommandData (Type type, String rawInput) {
 		_userInput = rawInput;
 		_cmdType = type;
 	}
@@ -76,14 +77,14 @@ public abstract class Command {
 	 * @return int, -1 if not applicable
 	 */
 	public abstract int getTaskUID ();
-	abstract void setTaskUID (int uid);
+	public abstract void setTaskUID (int uid);
 	
 	/** UPDATE
 	 * Identifies a specific field type within the Celebi object for field-level processing.
 	 * @return Task.DataType (enum), null if NA
 	 */
 	public abstract Task.DataType getTaskField ();
-	abstract void setTaskField (Task.DataType field);
+	public abstract void setTaskField (Task.DataType field);
 	
 	/** HELP, ALIAS
 	 * Identifies a command type for command type specific operations
@@ -91,21 +92,21 @@ public abstract class Command {
 	 * @return Command.Type (enum), or null if general help requested
 	 */
 	public abstract Type getSecondaryCmdType ();
-	abstract void setSecondaryCmdType (Type type);
+	public abstract void setSecondaryCmdType (Type type);
 	
 	/** SHOW
 	 * Identifies which of the 3 view tabs the user wishes to switch to.
 	 * @return TasksBag.ViewType for setting view
 	 */
 	public abstract TasksBag.ViewType getViewType ();
-	abstract void setViewType (TasksBag.ViewType tab);
+	public abstract void setViewType (TasksBag.ViewType tab);
 	
 	/** THEME
 	 * Identifies which theme the user wishes to switch to
 	 * @return CelebiViewController.Skin
 	 */
 	public abstract Skin getTheme ();
-	abstract void setTheme (Skin theme);
+	public abstract void setTheme (Skin theme);
 	
 	
 	///////////////////////////////////////////////////////////////////
@@ -120,26 +121,27 @@ public abstract class Command {
 	 * @return String names or search strings or new alias
 	 */
 	public abstract String getText ();
-	abstract void setText (String text);
+	public abstract void setText (String text);
 	
 	/** ADD, UPDATE, FILTER
 	 * Each of the above potentially need a start date to work with	
 	 * @return Date for starting in filter range or task
 	 */
 	public abstract Date getStart ();
-	abstract void setStart (Date start);
+	public abstract void setStart (Date start);
+	//abstract void setStart (Calendar start);
 	
 	/** ADD, UPDATE, FILTER
 	 * Each of the above potentially need an end date to work with	
 	 * @return Date for ending in filter range or task
 	 */
 	public abstract Date getEnd ();
-	abstract void setEnd (Date end);
+	public abstract void setEnd (Date end);
 	
 	/** MOVE
 	 * @return Path to shift task file to
 	 */
 	public abstract Path getPath ();
-	abstract void setPath (Path p);
+	public abstract void setPath (Path p);
 	
 }

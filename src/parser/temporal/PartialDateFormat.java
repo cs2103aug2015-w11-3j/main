@@ -1,5 +1,5 @@
 //@@author A0131891E
-package parser;
+package parser.temporal;
 
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.DAY_OF_WEEK;

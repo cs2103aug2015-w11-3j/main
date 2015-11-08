@@ -11,8 +11,7 @@ import common.ConfigurationInterface;
 import common.TasksBag;
 import common.Utilities;
 import logic.exceptions.LogicException;
-import parser.Command;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 import storage.StorageInterface;
 
 public class MoveFileAction implements Action {
@@ -23,12 +22,12 @@ public class MoveFileAction implements Action {
     private static final String USR_MSG_MOVE_ERROR_INVALID_PATH = "The directory %1s does not exist";
     private static final String USR_MSG_MOVE_ERROR_WRONG_TYPE = "The directory %1s is a file, not folder";
     
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private StorageInterface cStore;
     private TasksBag cBag;
     private Path cPath;
     
-    public MoveFileAction(CommandImpl command, TasksBag bag, StorageInterface stor) {
+    public MoveFileAction(CommandData command, TasksBag bag, StorageInterface stor) {
         cCommand = command;
         cStore = stor;
         cBag = bag;
@@ -37,7 +36,7 @@ public class MoveFileAction implements Action {
 
     @Override
     public CommandFeedback execute() throws LogicException  {
-        assert cCommand.getCmdType() == Command.Type.MOVE : cCommand.getCmdType();
+        assert cCommand.getCmdType() == CommandData.Type.MOVE : cCommand.getCmdType();
         CommandFeedback fb;
         ConfigurationInterface config = Configuration.getInstance();
     	

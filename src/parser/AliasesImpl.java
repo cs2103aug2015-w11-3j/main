@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import common.Configuration;
+import parser.commands.CommandData;
 
 
 public class AliasesImpl extends Aliases {
@@ -26,7 +27,7 @@ public class AliasesImpl extends Aliases {
 	}
 	
 	// Stores the default alias->command.type mapping
-	private final Map<String, Command.Type> DEFAULT_CMD_ALIASES;
+	private final Map<String, CommandData.Type> DEFAULT_CMD_ALIASES;
 	private final Set<String> RESERVED_CMD_ALIASES;
 	
 	private AliasesImpl () {
@@ -36,32 +37,32 @@ public class AliasesImpl extends Aliases {
 	}
 	
 	private void mapCmdTypeAliases () {
-		mapAliases(CMD_ADD, Command.Type.ADD);
-		mapAliases(CMD_UPD, Command.Type.UPDATE);
-		mapAliases(CMD_DEL, Command.Type.DELETE);
+		mapAliases(CMD_ADD, CommandData.Type.ADD);
+		mapAliases(CMD_UPD, CommandData.Type.UPDATE);
+		mapAliases(CMD_DEL, CommandData.Type.DELETE);
 		
-		mapAliases(CMD_MARK, Command.Type.MARK);
-		mapAliases(CMD_UNMARK, Command.Type.UNMARK);
+		mapAliases(CMD_MARK, CommandData.Type.MARK);
+		mapAliases(CMD_UNMARK, CommandData.Type.UNMARK);
 		
-		mapAliases(CMD_UNDO, Command.Type.UNDO);
-		mapAliases(CMD_REDO, Command.Type.REDO);
+		mapAliases(CMD_UNDO, CommandData.Type.UNDO);
+		mapAliases(CMD_REDO, CommandData.Type.REDO);
 		
-		mapAliases(CMD_SHOW, Command.Type.SHOW);
+		mapAliases(CMD_SHOW, CommandData.Type.SHOW);
 		
-		mapAliases(CMD_SEARCH, Command.Type.SEARCH);
-		mapAliases(CMD_FILTER, Command.Type.FILTER_DATE);
-		mapAliases(CMD_CLEAR, Command.Type.CLEAR_FILTERS);
+		mapAliases(CMD_SEARCH, CommandData.Type.SEARCH);
+		mapAliases(CMD_FILTER, CommandData.Type.FILTER_DATE);
+		mapAliases(CMD_CLEAR, CommandData.Type.CLEAR_FILTERS);
 		
-		mapAliases(CMD_MOVE, Command.Type.MOVE);
-		mapAliases(CMD_ALIAS, Command.Type.ALIAS);
+		mapAliases(CMD_MOVE, CommandData.Type.MOVE);
+		mapAliases(CMD_ALIAS, CommandData.Type.ALIAS);
 		
-		mapAliases(CMD_HELP, Command.Type.HELP);
-		mapAliases(CMD_THEME, Command.Type.THEME);
+		mapAliases(CMD_HELP, CommandData.Type.HELP);
+		mapAliases(CMD_THEME, CommandData.Type.THEME);
 		
-		mapAliases(CMD_QUIT, Command.Type.QUIT);
+		mapAliases(CMD_QUIT, CommandData.Type.QUIT);
 	}
 	
-	private void mapAliases (String[] aliases, Command.Type cmdType) {
+	private void mapAliases (String[] aliases, CommandData.Type cmdType) {
 		mapAliasesToValue(DEFAULT_CMD_ALIASES, cmdType, Arrays.asList(aliases));
 	}
 	
@@ -87,36 +88,36 @@ public class AliasesImpl extends Aliases {
 	@Override
 	public boolean isCustomAlias (String alias) {
 		assert(validAliasFormat(alias));
-		alias = Parser.cleanText(alias);
+		alias = ParserControllerImpl.cleanText(alias);
 		return Configuration.getInstance().isUserAlias(alias);
 	}
 	@Override
 	public boolean isDefaultAlias (String alias) {
 		assert(validAliasFormat(alias));
-		alias = Parser.cleanText(alias);
+		alias = ParserControllerImpl.cleanText(alias);
 		return DEFAULT_CMD_ALIASES.containsKey(alias);
 	}
 	@Override
 	public boolean isReservedCmdAlias (String alias) {
 		assert(validAliasFormat(alias));
-		alias = Parser.cleanText(alias);
+		alias = ParserControllerImpl.cleanText(alias);
 		return RESERVED_CMD_ALIASES.contains(alias);
 	}
 	
 	@Override
-	public Command.Type getCmdFromAlias (String alias) {
+	public CommandData.Type getCmdFromAlias (String alias) {
 		assert(validAliasFormat(alias));
-		alias = Parser.cleanText(alias);
+		alias = ParserControllerImpl.cleanText(alias);
 		
 		final String cmdName = Configuration.getInstance().getUserAliasTargetName(alias);
-		Command.Type rtnCmd;
+		CommandData.Type rtnCmd;
 		
 		// check custom user aliases first
 		try { 
 			// includes additional redundant check to make sure reserved aliases aren't overwritten
 			if (cmdName != null && !RESERVED_CMD_ALIASES.contains(alias)) {
-				rtnCmd = Enum.valueOf(Command.Type.class, cmdName);
-				assert(rtnCmd != Command.Type.INVALID);
+				rtnCmd = Enum.valueOf(CommandData.Type.class, cmdName);
+				assert(rtnCmd != CommandData.Type.INVALID);
 				return rtnCmd;
 			}
 		} catch (IllegalArgumentException iae) {
@@ -128,9 +129,9 @@ public class AliasesImpl extends Aliases {
 	}
 	
 	@Override
-	public void setCustomAlias (String alias, Command.Type target) throws IOException {
-		assert(validAliasFormat(alias) && target != null && target != Command.Type.INVALID);
-		alias = Parser.cleanText(alias);
+	public void setCustomAlias (String alias, CommandData.Type target) throws IOException {
+		assert(validAliasFormat(alias) && target != null && target != CommandData.Type.INVALID);
+		alias = ParserControllerImpl.cleanText(alias);
 		Configuration.getInstance().setUserAlias(alias, target.name());
 	}
 	@Override

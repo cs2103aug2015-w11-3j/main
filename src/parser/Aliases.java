@@ -3,6 +3,8 @@ package parser;
 
 import java.io.IOException;
 
+import parser.commands.CommandData;
+
 /**
  * Handles all alias mapping and storage
  * 
@@ -10,7 +12,7 @@ import java.io.IOException;
 public abstract class Aliases {
 
 	/////////////////////////////////////////////////////
-	// Methods command tokens
+	// Methods for command tokens
 	/////////////////////////////////////////////////////
 	
 	public boolean isCmdAlias (String alias) {
@@ -20,9 +22,9 @@ public abstract class Aliases {
 	public abstract boolean isDefaultAlias (String alias);
 	public abstract boolean isReservedCmdAlias (String alias);
 	
-	public abstract Command.Type getCmdFromAlias (String alias);
+	public abstract CommandData.Type getCmdFromAlias (String alias);
 	
-	public abstract void setCustomAlias (String alias, Command.Type target) throws IOException;
+	public abstract void setCustomAlias (String alias, CommandData.Type target) throws IOException;
 	public abstract void clearCustomAliases () throws IOException;
 	
 	

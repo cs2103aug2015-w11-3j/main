@@ -1,5 +1,5 @@
 //@@author A0131891E
-package parser;
+package parser.commands;
 
 import java.nio.file.Path;
 import java.util.Date;
@@ -7,12 +7,12 @@ import common.Task;
 import common.TasksBag;
 import ui.view.CelebiViewController;
 
-public class CommandImpl extends Command {
+public class CommandDataImpl extends CommandData {
 	
 	// identifiers
 	private int _taskUID;
 	private Task.DataType _taskField;
-	private Command.Type _secondaryCmdType;
+	private CommandData.Type _secondaryCmdType;
 	private TasksBag.ViewType _viewType;
 	private CelebiViewController.Skin _theme;
 	
@@ -24,7 +24,7 @@ public class CommandImpl extends Command {
 	////////////////////////////////////////////////////////////////////////////////////	
 	// Constructor (package private)
 	////////////////////////////////////////////////////////////////////////////////////
-	CommandImpl (Command.Type cmd, String userInput) {
+	public CommandDataImpl (CommandData.Type cmd, String userInput) {
 		super(cmd, userInput);
 		_taskUID = -1;
 	}
@@ -35,43 +35,52 @@ public class CommandImpl extends Command {
 	
 	// Identifiers 
 	
-	@Override 
+	@Override
+	public 
 	void setTaskUID (int uid) {
 		_taskUID = uid;
 	}
-	@Override 
+	@Override
+	public 
 	void setTaskField (Task.DataType f) {
 		_taskField = f;
 	}
-	@Override 
+	@Override
+	public 
 	void setViewType (TasksBag.ViewType v) {
 		_viewType = v;
 	}
-	@Override 
-	void setSecondaryCmdType (Command.Type t) {
-		assert(t != Command.Type.INVALID);
+	@Override
+	public 
+	void setSecondaryCmdType (CommandData.Type t) {
+		assert(t != CommandData.Type.INVALID);
 		_secondaryCmdType = t;
 	}
-	@Override 
+	@Override
+	public 
 	void setTheme (CelebiViewController.Skin theme) {
 		_theme = theme;
 	}
 	
 	// Data
 	
-	@Override 
+	@Override
+	public 
 	void setText (String name) {
 		_name = name;
 	}
-	@Override 
+	@Override
+	public 
 	void setStart (Date d) {
 		_startDate = d == null ? null : (Date) d.clone();
 	}
-	@Override 
+	@Override
+	public 
 	void setEnd (Date d) {
 		_endDate = d == null ? null : (Date) d.clone();
 	}
-	@Override 
+	@Override
+	public 
 	void setPath (Path p) {
 		_path = p;
 	}
@@ -83,7 +92,7 @@ public class CommandImpl extends Command {
 	// Identifiers
 
 	@Override
-	public Command.Type getSecondaryCmdType() {
+	public CommandData.Type getSecondaryCmdType() {
 		return _secondaryCmdType;
 	}
 	@Override

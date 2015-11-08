@@ -2,7 +2,7 @@
 package logic;
 
 import common.TasksBag;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 
 /*
  * Wrapper class to contain Command type and 
@@ -10,27 +10,27 @@ import parser.CommandImpl;
  */
 public class CommandFeedback extends Feedback {
 
-    private final CommandImpl cCommand;
+    private final CommandData cCommand;
     private String cMsg;
     private String cWarning;
 
-    public CommandFeedback(CommandImpl comd, TasksBag bag) {
+    public CommandFeedback(CommandData comd, TasksBag bag) {
         super(bag);
         cCommand = comd;
     }
 
-    public CommandFeedback(CommandImpl comd, TasksBag bag, String msg) {
+    public CommandFeedback(CommandData comd, TasksBag bag, String msg) {
         this(comd, bag);
         cMsg = msg;
     }
 
-    public CommandFeedback(CommandImpl comd, TasksBag bag, String msg, String warning) {
+    public CommandFeedback(CommandData comd, TasksBag bag, String msg, String warning) {
         this(comd, bag);
         cMsg = msg;
         cWarning = warning;
     }
 
-    public CommandImpl getCommand() {
+    public CommandData getCommand() {
         return cCommand;
     }
 
