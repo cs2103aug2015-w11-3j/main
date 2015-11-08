@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -28,7 +29,8 @@ import static ui.view.CelebiViewController.Skin;
  */
 public class Configuration implements ConfigurationInterface {
 
-    private static final String CONFIG_DIRECTORY = "config.json";
+	private static final String CURRENT_LOCATION = Paths.get("").toAbsolutePath().toString();
+    private static final String CONFIG_FILE_DIR = CURRENT_LOCATION + File.separator +"config.json";
     
     private static final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
     private static final String KEY_DEFAULT_START_TIME = "DEFAULT_START_TIME";
@@ -39,7 +41,7 @@ public class Configuration implements ConfigurationInterface {
     private static final String VALUE_SKIN_DAY = Skin.DAY.name();
     private static final String VALUE_SKIN_NIGHT = Skin.NIGHT.name();
     
-    private static final String DEFAULT_VALUE_STORAGE_LOCATION = "";
+    private static final String DEFAULT_VALUE_STORAGE_LOCATION = CURRENT_LOCATION;
     private static final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
     private static final String DEFAULT_VALUE_DEFAULT_END_TIME = "23:59";
     private static final String DEFAULT_VALUE_SKIN = VALUE_SKIN_DAY;
@@ -85,7 +87,7 @@ public class Configuration implements ConfigurationInterface {
     }
 
     private void findConfigFile() throws IOException {
-        configFile = new File(CONFIG_DIRECTORY);
+        configFile = new File(CONFIG_FILE_DIR);
 
         if (!configFile.exists()) {
             // if not found, re-create and set to default configuration
@@ -375,7 +377,7 @@ public class Configuration implements ConfigurationInterface {
         //TODO new alias code
         configJson.put(KEY_ALIAS_MAPPINGS, configUserCmdAliases);
 
-        configWriter = new BufferedWriter(new FileWriter(CONFIG_DIRECTORY));
+        configWriter = new BufferedWriter(new FileWriter(CONFIG_FILE_DIR));
         String text = JSONValue.toJSONString(configJson);
         configWriter.write(text);
         configWriter.close();
