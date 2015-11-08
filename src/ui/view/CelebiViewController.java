@@ -142,9 +142,7 @@ public class CelebiViewController {
         initializeCommandField();
         initializeFeedbackPane();
         initializeFeedbackArea();
-        
         initializePopupLabel();
-        //setToolBar();
 
         Platform.runLater(() -> {
             commandArea.requestFocus();
@@ -156,7 +154,6 @@ public class CelebiViewController {
     }
 
     private void initializeCelebiTable() {
-        // celebiTable.setCellSize(26.2);
     	setTablePlaceHolder();
     	initializeRowPseudoclassListeners();
         disableTableColumnReordering();
@@ -294,7 +291,6 @@ public class CelebiViewController {
                     }
                 }
             };
-            // cellData.getValue().nameProperty();
         });
     }
 
@@ -741,7 +737,7 @@ public class CelebiViewController {
     			}
     		});
     		
-    		Button minimize = new Button("–");
+    		Button minimize = new Button("\u2013");
     		minimize.setOnMouseClicked(new EventHandler<MouseEvent>() {
     			public void handle(MouseEvent event) {
     				stage.setIconified(true);
