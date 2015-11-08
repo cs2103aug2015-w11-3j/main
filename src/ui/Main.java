@@ -148,9 +148,6 @@ public class Main extends Application {
     }
     
     public BorderPane getRootLayout() {
-    	System.out.println("WTF");
-    	System.out.println(rootLayout == null);
-    	System.out.println("WTF");
     	return rootLayout;
     }
     

@@ -17,6 +17,7 @@ import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -35,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -722,26 +724,40 @@ public class CelebiViewController {
     
     class WindowButtons extends HBox {
     	public WindowButtons() {
-    		Button close = new Button("X");
+    		Button close = new Button("ㄨ");
+    		close.setId("close-button");
     		close.setOnAction(new EventHandler<ActionEvent>() {
     			@Override
     			public void handle(ActionEvent event) {
     				Platform.exit();
     			}
     		});
+    		
+    		Button minimize = new Button("一");
+    		minimize.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    			public void handle(MouseEvent event) {
+    				stage.setIconified(true);
+    			}
+    		});
+    		
+    		this.setSpacing(5);
+    		this.getChildren().add(minimize);
     		this.getChildren().add(close);
     	}
     }
     
     public void setToolBar() {
-		ToolBar bar = new ToolBar();
+		ToolBar bar = new ToolBar(new WindowButtons());
 		int height = 25;
 		bar.setPrefHeight(height);
 		bar.setMinHeight(height);
 		bar.setMaxHeight(height);
-		bar.getItems().add(new WindowButtons());
+		bar.setId("window-bar");
 		makeDraggable(stage, bar);
-		BorderPane borderPane = mainApp.getRootLayout();
-		borderPane.setTop(bar);
+		
+		AnchorPane.setTopAnchor(bar, 0.0);
+        AnchorPane.setLeftAnchor(bar, 0.0);
+        AnchorPane.setRightAnchor(bar, 0.0);
+        rootPane.getChildren().add(bar);
 	}
 }
