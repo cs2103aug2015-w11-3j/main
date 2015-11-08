@@ -3,41 +3,41 @@ package logic;
 
 import common.TasksBag;
 import common.TasksBag.ViewType;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 
 /**
  * Changes the state of the internal taskbags to given sort state Undo sets the
  * internal bag state to previous state
  */
-public class FilterAction implements Action {
-    private static final String USR_MSG_FILTER_COMPLETE = "Switching view to completed tasks";
-    private static final String USR_MSG_FILTER_INCOMPLETE = "Switching view to incompleted tasks";
-    private static final String USR_MSG_FILTER_TODAY = "Switching view to today tasks";
+public class ViewAction implements Action {
+    private static final String USR_MSG_VIEW_COMPLETE = "Switching view to completed tasks";
+    private static final String USR_MSG_VIEW_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_VIEW_TODAY = "Switching view to today tasks";
 
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
-    private ViewType cSortBy;
+    private ViewType cViewBy;
 
-    public FilterAction(CommandImpl command, TasksBag internalBag) {
+    public ViewAction(CommandData command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
-        cSortBy = cCommand.getViewType();
+        cViewBy = cCommand.getViewType();
     }
 
     @Override
     public CommandFeedback execute() {
         String msg = "";
-        switch (cSortBy) {
+        switch (cViewBy) {
             case COMPLETED:
-                msg = USR_MSG_FILTER_COMPLETE;
+                msg = USR_MSG_VIEW_COMPLETE;
                 cBag.setView(ViewType.COMPLETED);
                 break;
             case INCOMPLETE:
-                msg = USR_MSG_FILTER_INCOMPLETE;
+                msg = USR_MSG_VIEW_INCOMPLETE;
                 cBag.setView(ViewType.INCOMPLETE);
                 break;
             case DEFAULT:
-                msg = USR_MSG_FILTER_TODAY;
+                msg = USR_MSG_VIEW_TODAY;
                 cBag.setView(ViewType.DEFAULT);
                 break;
             default:

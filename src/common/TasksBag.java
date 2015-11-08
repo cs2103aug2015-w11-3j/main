@@ -88,13 +88,12 @@ public class TasksBag implements Iterable<Task> {
     }
 
     /**
-     * Sort will return a new container as specified by current sorted state
+     * Sort will return a new container as specified by current view state
      * Then sort by chronological date order
      */
-    public TasksBag getFiltered() {
+    public TasksBag getFilteredView() {
 
-        ObservableList<Task> newContainer = null;// =
-                                                 // FXCollections.observableArrayList();
+        ObservableList<Task> newContainer = null;
 
         switch (cViewType) {
             case COMPLETED:
@@ -371,7 +370,7 @@ public class TasksBag implements Iterable<Task> {
                 cViewType = ViewType.COMPLETED;
                 break;
             default:
-                log.severe("Default filter state encountered during toggleFilter.");
+                log.severe("Default view state encountered during toggleFilter.");
                 cViewType = ViewType.DEFAULT;
                 break;
         }

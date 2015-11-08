@@ -78,6 +78,7 @@ public class CelebiViewController {
 
     private InlineCssTextArea commandArea;
     private InlineCssTextArea feedbackArea;
+    private LabelFader popupFader;
 
 
     private static final String DAY_CELEBI_COLOR = "#7eb758";
@@ -96,10 +97,9 @@ public class CelebiViewController {
     private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(22, 160, 133);
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
 
-    private static final Font DEFAULT_FONT = Font.loadFont(Main.class.getResourceAsStream("Oxygen regular.ttf"), 13);
+    private static final Font DEFAULT_FONT = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen regular.ttf"), 13);
     private static final String DATE_FILTER_NONE = "none";
     private static final String SEARCH_FILTER_NONE = "none";
-    private LabelFader popupFader;
 
     public static enum Skin {
         DAY, NIGHT
@@ -552,7 +552,7 @@ public class CelebiViewController {
 
     public void updateFilterDisplay(TasksBag bag) {
         String displayString = "";
-        String dateFilterString = getDateFilterString(bag);
+        String dateFilterString = getDateFilterString(bag.getDateState(), bag.getStartDate(), bag.getEndDate());
         String searchKeywordString = getSearchKeywordString(bag);
 
         if (dateFilterString == DATE_FILTER_NONE) {
@@ -570,15 +570,12 @@ public class CelebiViewController {
         filterLabel.setText(displayString);
     }
 
-    public String getDateFilterString(TasksBag bag) {
+    public String getDateFilterString(FilterDateState state, Date start, Date end) {
         String MESSAGE_NONE = DATE_FILTER_NONE;
         String MESSAGE_AFTER = "after %1$s";
         String MESSAGE_BEFORE = "before %1$s";
         String MESSAGE_BETWEEN = "from %1$s to %2$s";
 
-        FilterDateState state = bag.getDateState();
-        Date start = bag.getStartDate();
-        Date end = bag.getEndDate();
         String formattedStart = df.formatDate(start);
         String formattedEnd = df.formatDate(end);
 

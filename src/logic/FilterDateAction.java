@@ -5,7 +5,8 @@ import java.util.Date;
 
 import common.TasksBag;
 import common.Utilities;
-import parser.CommandImpl;
+import logic.exceptions.InvalidDateException;
+import parser.commands.CommandData;
 import ui.view.DateFormatter;
 
 public class FilterDateAction implements Action {
@@ -13,17 +14,21 @@ public class FilterDateAction implements Action {
     private static final String USR_MSG_FILTER_AFTER_DATE = "Filtering dates after %1$s";
     private static final String USR_MSG_FILTER_BEFORE_DATE = "Filtering dates before %1$s";
     private static final String USR_MSG_FILTER_BETWEEN_DATE = "Filtering dates between %1$s and %2$s";
-
-    private CommandImpl cCommand;
+    private static final String USR_MSG_FILTER_INVALID_SEARCH_DATE = "I can't search for a start date that is after end date!";
+    private CommandData cCommand;
     private TasksBag cBag;
     private Date cStart;
     private Date cEnd;
 
-    public FilterDateAction(CommandImpl command, TasksBag internalBag) {
+    public FilterDateAction(CommandData command, TasksBag internalBag) throws InvalidDateException {
         cCommand = command;
         cBag = internalBag;
         cStart = cCommand.getStart();
         cEnd = cCommand.getEnd();
+        boolean isValid = Utilities.verifyDate(cStart, cEnd);
+        if (isValid == false) {
+            throw new InvalidDateException(USR_MSG_FILTER_INVALID_SEARCH_DATE);
+        }
     }
 
     @Override

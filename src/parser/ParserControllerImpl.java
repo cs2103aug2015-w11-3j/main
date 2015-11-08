@@ -17,9 +17,13 @@ import java.util.regex.Pattern;
 import common.Task;
 import common.TasksBag;
 import common.Utilities;
+import parser.commands.CommandData;
+import parser.commands.CommandDataImpl;
+import parser.temporal.CelebiDateParser;
+import parser.temporal.DateParser;
 import ui.view.CelebiViewController.Skin;
 
-public class Parser implements ParserInterface {
+public class ParserControllerImpl implements ParserController {
 	
 	/////////////////////////////////////////////////////////////////
 	// Patterns for user command arguments matching (trim results)
@@ -291,13 +295,13 @@ public class Parser implements ParserInterface {
 	// instance fields
 	/////////////////////////////////////////////////////////////////
 	private String userRawInput;
-	private static Parser parserInstance;
+	private static ParserControllerImpl parserInstance;
 	private final CelebiDateParser DATE_FORMATTER;
 	private final Aliases ALIASES;
 
 	/////////////////////////////////////////////////////////////////
 	
-	private Parser () {
+	private ParserControllerImpl() {
 		
 		userRawInput = "no user input received";
 		ALIASES = AliasesImpl.getInstance();
@@ -333,20 +337,20 @@ public class Parser implements ParserInterface {
 		P_ALIAS_CLR = Pattern.compile(REG_ALIAS_CLR);
 	}
 	// singleton access
-	public static Parser getParser () {
+	public static ParserControllerImpl getParser() {
 		if (parserInstance == null) {
-			parserInstance = new Parser();
+			parserInstance = new ParserControllerImpl();
 		}
 		return parserInstance;
 	}
 	
 	@Override
-	public void init () {
+	public void init() {
 		System.out.println("Parser Init");
 		System.out.println("Parser Init complete");
 	}
 
-	private static final String regexContaining (String[] tokens) {
+	private static final String regexContaining(String[] tokens) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(?:");
 		for (String tok : tokens) {
@@ -359,7 +363,7 @@ public class Parser implements ParserInterface {
 		sb.append(')');
 		return sb.toString();
 	}
-	private static final String regexNamedGrp (String regex, String grpName) {
+	private static final String regexNamedGrp(String regex, String grpName) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(?");
 		sb.append('<').append(grpName).append('>');
@@ -367,7 +371,7 @@ public class Parser implements ParserInterface {
 		sb.append(')');
 		return sb.toString();
 }
-	private static final String concatArgs (Object... args) {
+	private static final String concatArgs(Object... args) {
 		final StringBuilder sb = new StringBuilder();
 		for (Object item : args) {
 			sb.append(item);
@@ -376,7 +380,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	@Override
-	public CommandImpl parseCommand (String rawInput) {
+	public CommandDataImpl parseCommandData(String rawInput) {
 		assert(rawInput != null);
 		// TODO rework to not use String.split
 		userRawInput = rawInput;
@@ -386,19 +390,19 @@ public class Parser implements ParserInterface {
 		if (cmdAndArgs.length != 2) { 
 			cmdAndArgs = new String[]{cmdAndArgs[0], ""};
 		}
-		Command.Type cmdType = parseCmdType(cmdAndArgs[0]);
+		CommandData.Type cmdType = parseCmdType(cmdAndArgs[0]);
 		return passArgs(cmdType, cmdAndArgs[1]);
 	}
 	
-	private Command.Type parseCmdType (String token) {
+	private CommandData.Type parseCmdType(String token) {
 		assert(token != null);
 		token = cleanText(token);
 		
-		final Command.Type cmdType = ALIASES.getCmdFromAlias(token);
-		return cmdType == null ? Command.Type.INVALID : cmdType;
+		final CommandData.Type cmdType = ALIASES.getCmdFromAlias(token);
+		return cmdType == null ? CommandData.Type.INVALID : cmdType;
 	}
 
-	private CommandImpl passArgs (Command.Type type, String args) {
+	private CommandDataImpl passArgs(CommandData.Type type, String args) {
 		assert(type != null && args != null);
 		args = args.trim();
 		switch (type) {
@@ -459,7 +463,7 @@ public class Parser implements ParserInterface {
 		return null;
 	}
 
-	private CommandImpl parseAdd (String args) {
+	private CommandDataImpl parseAdd(String args) {
 		assert(args != null);
 		args = args.trim();
 		
@@ -506,7 +510,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseDel (String args) {
+	private CommandDataImpl parseDel(String args) {
 		assert(args != null);
 		args = args.trim();
 		Matcher m = P_DEL.matcher(args);
@@ -520,7 +524,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseUpd (String args) {
+	private CommandDataImpl parseUpd(String args) {
 		assert(args != null);
 		
 		int uid;
@@ -559,11 +563,11 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseQuit (String args) {
+	private CommandDataImpl parseQuit (String args) {
 		assert(args != null);
 		return makeQuit();
 	}
-	private CommandImpl parseShow (String args) {
+	private CommandDataImpl parseShow (String args) {
 		assert(args != null);
 		args = cleanText(args);
 		
@@ -591,15 +595,15 @@ public class Parser implements ParserInterface {
 
 		return makeInvalid();
 	}
-	private CommandImpl parseRedo (String args) {
+	private CommandDataImpl parseRedo (String args) {
 		assert(args != null);
 		return makeRedo();
 	}
-	private CommandImpl parseUndo (String args) {
+	private CommandDataImpl parseUndo (String args) {
 		assert(args != null);
 		return makeUndo();
 	}
-	private CommandImpl parseMark (String args) {
+	private CommandDataImpl parseMark (String args) {
 		assert(args != null);
 		args = args.trim();
 		final Matcher m = P_MARK.matcher(args);
@@ -609,7 +613,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseUnmark (String args) {
+	private CommandDataImpl parseUnmark (String args) {
 		assert(args != null);
 		args = args.trim();
 		final Matcher m = P_UNMARK.matcher(args);
@@ -619,7 +623,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseSearch (String args) {
+	private CommandDataImpl parseSearch (String args) {
 		assert(args != null);
 		args = args.trim();
 		if (args.length() != 0) {
@@ -627,7 +631,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseFilterDate (String args) {
+	private CommandDataImpl parseFilterDate (String args) {
 		assert(args != null);
 		args = args.trim();
 		
@@ -669,11 +673,11 @@ public class Parser implements ParserInterface {
 		
 		return makeInvalid();
 	}
-	private CommandImpl parseClear (String args) {
+	private CommandDataImpl parseClear (String args) {
 		assert(args != null);
 		return makeClear();
 	}
-	private CommandImpl parseMove (String args) {
+	private CommandDataImpl parseMove (String args) {
 		assert(args != null);
 		args = args.trim();
 		if (args.length() != 0) {
@@ -686,20 +690,20 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseHelp (String args) {
+	private CommandDataImpl parseHelp (String args) {
 		assert(args != null);
 		args = args.trim();
 		if (args.length() == 0) { // no args for help cmd
 			return makeHelp(null);
 		}
-		Command.Type helpTarget = parseCmdType(args);
+		CommandData.Type helpTarget = parseCmdType(args);
 		// help args can be parsed into a cmd type
-		if (helpTarget != Command.Type.INVALID) {
+		if (helpTarget != CommandData.Type.INVALID) {
 			return makeHelp(helpTarget);
 		}
 		return makeInvalid();
 	}
-	private CommandImpl parseTheme (String args) {
+	private CommandDataImpl parseTheme (String args) {
 		assert(args != null);
 		args = cleanText(args);
 		
@@ -717,11 +721,11 @@ public class Parser implements ParserInterface {
 
 		return makeInvalid();
 	}
-	private CommandImpl parseAlias (String args) {
+	private CommandDataImpl parseAlias (String args) {
 		assert(args != null);
 		args = cleanText(args);
 		
-		final Command.Type target;
+		final CommandData.Type target;
 		final String alias;
 		Matcher m;
 		
@@ -734,7 +738,7 @@ public class Parser implements ParserInterface {
 		if (m.matches()) {
 			target = parseCmdType(cleanText(m.group(GRPNAME_TARGET_CMD)));
 			alias = cleanText(m.group(GRPNAME_ALIAS)); // can be any non whitespace string
-			if (target != Command.Type.INVALID ) {
+			if (target != CommandData.Type.INVALID ) {
 				return makeAlias(alias, target);
 			}
 		}
@@ -768,128 +772,128 @@ public class Parser implements ParserInterface {
 		return parseDate(dateStr, isStart);
 	}
 	
-	@Override
-	public CommandImpl makeAdd (String name, Date start, Date end) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.ADD, userRawInput);
+	
+	public CommandDataImpl makeAdd (String name, Date start, Date end) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.ADD, userRawInput);
 		cmd.setEnd(end);
 		cmd.setStart(start);
 		cmd.setText(name);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeUpdateName (int taskUID, String newName) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.UPDATE, userRawInput);
+	
+	public CommandDataImpl makeUpdateName (int taskUID, String newName) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.NAME);
 		cmd.setTaskUID(taskUID);
 		cmd.setText(newName);
 		return cmd;	
 	}
-	@Override
-	public CommandImpl makeUpdateStart (int taskUID, Date newDate) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.UPDATE, userRawInput);
+	
+	public CommandDataImpl makeUpdateStart (int taskUID, Date newDate) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.DATE_START);
 		cmd.setTaskUID(taskUID);
 		cmd.setStart(newDate);
 		return cmd;	
 	}
-	@Override
-	public CommandImpl makeUpdateEnd (int taskUID, Date newDate) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.UPDATE, userRawInput);
+	
+	public CommandDataImpl makeUpdateEnd (int taskUID, Date newDate) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.DATE_END);
 		cmd.setTaskUID(taskUID);
 		cmd.setEnd(newDate);
 		return cmd;	
 	}
-	@Override
-	public CommandImpl makeDelete (int taskUID) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.DELETE, userRawInput);
+	
+	public CommandDataImpl makeDelete (int taskUID) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.DELETE, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeShow (TasksBag.ViewType view) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.SHOW, userRawInput);
+	
+	public CommandDataImpl makeShow (TasksBag.ViewType view) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.SHOW, userRawInput);
 		cmd.setViewType(view);
 		return cmd;		
 	}
-	@Override
-	public CommandImpl makeRedo () {
-		final CommandImpl cmd = new CommandImpl(Command.Type.REDO, userRawInput);
+	
+	public CommandDataImpl makeRedo () {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.REDO, userRawInput);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeUndo () {
-		final CommandImpl cmd = new CommandImpl(Command.Type.UNDO, userRawInput);
+	
+	public CommandDataImpl makeUndo () {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.UNDO, userRawInput);
 		return cmd;
 		
 	}
-	@Override
-	public CommandImpl makeMark (int taskUID) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.MARK, userRawInput);
+	
+	public CommandDataImpl makeMark (int taskUID) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.MARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeUnmark (int taskUID) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.UNMARK, userRawInput);
+	
+	public CommandDataImpl makeUnmark (int taskUID) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.UNMARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeSearch (String keywords) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.SEARCH, userRawInput);
+	
+	public CommandDataImpl makeSearch (String keywords) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.SEARCH, userRawInput);
 		cmd.setText(keywords);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeFilterDate (Date rangeStart, Date rangeEnd) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.FILTER_DATE, userRawInput);
+	
+	public CommandDataImpl makeFilterDate (Date rangeStart, Date rangeEnd) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.FILTER_DATE, userRawInput);
 		cmd.setStart(rangeStart);
 		cmd.setEnd(rangeEnd);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeClear () {
-		final CommandImpl cmd = new CommandImpl(Command.Type.CLEAR_FILTERS, userRawInput);
+	
+	public CommandDataImpl makeClear () {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.CLEAR_FILTERS, userRawInput);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeMove (Path newPath) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.MOVE, userRawInput);
+	
+	public CommandDataImpl makeMove (Path newPath) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.MOVE, userRawInput);
 		cmd.setPath(newPath);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeHelp (Command.Type helpTarget) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.HELP, userRawInput);
+	
+	public CommandDataImpl makeHelp (CommandData.Type helpTarget) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.HELP, userRawInput);
 		cmd.setSecondaryCmdType(helpTarget);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeQuit () {
-		final CommandImpl cmd = new CommandImpl(Command.Type.QUIT, userRawInput);
+	
+	public CommandDataImpl makeQuit () {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.QUIT, userRawInput);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeTheme (Skin theme) {
-        final CommandImpl cmd = new CommandImpl(Command.Type.THEME, userRawInput);
+	
+	public CommandDataImpl makeTheme (Skin theme) {
+        final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.THEME, userRawInput);
 	    cmd.setTheme(theme);
 	    return cmd;
 	}
-	@Override
-	public CommandImpl makeAlias (String alias, Command.Type target) {
-		final CommandImpl cmd = new CommandImpl(Command.Type.ALIAS, userRawInput);
+	
+	public CommandDataImpl makeAlias (String alias, CommandData.Type target) {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.ALIAS, userRawInput);
 		cmd.setText(alias);
 		cmd.setSecondaryCmdType(target);
 		return cmd;
 	}
-	@Override
-	public CommandImpl makeInvalid () {
-		final CommandImpl cmd = new CommandImpl(Command.Type.INVALID, userRawInput);
+	
+	public CommandDataImpl makeInvalid () {
+		final CommandDataImpl cmd = new CommandDataImpl(CommandData.Type.INVALID, userRawInput);
 		return cmd;
 	}
 	
-	public static void printCmd (CommandImpl c) {
+	public static void printCmd(CommandData c) {
 		System.out.println("type: " + c.getCmdType());
 		System.out.println("raw: " + c.getRawUserInput());
 		System.out.print("uid: " + c.getTaskUID());
@@ -903,11 +907,11 @@ public class Parser implements ParserInterface {
 	public static void main(String[] args) throws Exception {
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
-		Parser p = new Parser();
+		ParserControllerImpl p = new ParserControllerImpl();
 		while (true) {
 //			System.out.println(p.P_ADD_FLT.pattern());
 //			System.out.println(p.P_ADD_FLT.matcher(sc.nextLine()).matches());
-			printCmd(p.parseCommand(sc.nextLine()));
+			printCmd(p.parseCommandData(sc.nextLine()));
 		}
 	}
 }

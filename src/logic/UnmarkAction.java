@@ -9,7 +9,7 @@ import common.Utilities;
 import logic.exceptions.AlreadyUnmarkedException;
 import logic.exceptions.IllegalAccessCommandException;
 import logic.exceptions.LogicException;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 import storage.StorageInterface;
 
 public class UnmarkAction implements UndoableAction {
@@ -19,15 +19,17 @@ public class UnmarkAction implements UndoableAction {
     private static final String USR_MSG_UNMARK_FAIL = "Already unmarked %1$s!";
     private static final String USR_MSG_UNMARK_UNDO = "Undo unmarked %1$s!";
 
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cCurBag;
     private TasksBag cIntBag;
     private StorageInterface cStore;
     private Task cWhichTask;
 
-    public UnmarkAction(CommandImpl command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
+    private Logger log;
+
+    public UnmarkAction(CommandData command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         cCommand = command;
-        cCurBag = internalBag.getFiltered();
+        cCurBag = internalBag.getFilteredView();
         cIntBag = internalBag;
         cStore = stor;
 

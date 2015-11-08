@@ -69,6 +69,7 @@ public class LogicTest {
         testPass("redo");
 
         // UpdateAction.java
+        testPass("show undone");
         testFailException("update 0 name hello", IllegalAccessCommandException.class);
         testFailException("update 3 name hello", IllegalAccessCommandException.class);
         testPass("update 1 name hello");

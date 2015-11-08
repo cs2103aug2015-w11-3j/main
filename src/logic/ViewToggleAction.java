@@ -4,16 +4,17 @@ import common.TasksBag;
 import common.TasksBag.ViewType;
 import javafx.scene.input.KeyCode;
 import logic.exceptions.LogicException;
+
 //@@author A0125546E
-public class FilterToggleAction implements Action {
-    private static final String USR_MSG_FILTER_COMPLETE = "Switching view to completed tasks";
-    private static final String USR_MSG_FILTER_INCOMPLETE = "Switching view to incompleted tasks";
-    private static final String USR_MSG_FILTER_TODAY = "Switching view to today tasks";
+public class ViewToggleAction implements Action {
+    private static final String USR_MSG_VIEW_COMPLETE = "Switching view to completed tasks";
+    private static final String USR_MSG_VIEW_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_VIEW_TODAY = "Switching view to today tasks";
 
     private TasksBag cBag;
     private KeyCode cKey;
 
-    public FilterToggleAction(TasksBag bag, KeyCode key) {
+    public ViewToggleAction(TasksBag bag, KeyCode key) {
         cBag = bag;
         cKey = key;
     }
@@ -21,26 +22,26 @@ public class FilterToggleAction implements Action {
     @Override
     public KeyEventFeedback execute() throws LogicException {
         KeyEventFeedback fb;
-        ViewType bagState = cBag.getView();
+        ViewType viewState;
         String msg = "";
 
-        // cBag.toggleFilter();
         cBag.toggleView();
-
-        switch (bagState) {
+        viewState = cBag.getView();
+        
+        switch (viewState) {
             case COMPLETED:
-                msg = USR_MSG_FILTER_COMPLETE;
+                msg = USR_MSG_VIEW_COMPLETE;
                 break;
 
             case INCOMPLETE:
-                msg = USR_MSG_FILTER_INCOMPLETE;
+                msg = USR_MSG_VIEW_INCOMPLETE;
                 break;
 
             case DEFAULT:
-                msg = USR_MSG_FILTER_TODAY;
+                msg = USR_MSG_VIEW_TODAY;
                 break;
         }
-        
+
         fb = new KeyEventFeedback(cBag, cKey, msg);
         return fb;
     }

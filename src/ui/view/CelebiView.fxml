@@ -38,7 +38,7 @@
                                 </tabs>
                               </TabPane>
                               <AnchorPane id="tableview-background-pane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="26.0" />
-                              <TableView fx:id="celebiTable" focusTraversable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+                              <TableView id="celebi-table-view" fx:id="celebiTable" focusTraversable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="359.0" prefWidth="618.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
                                 <columns>
                                     <TableColumn fx:id="spaceColumn" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
                                   <TableColumn fx:id="idColumn" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" text="ID" />

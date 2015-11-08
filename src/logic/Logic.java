@@ -9,9 +9,9 @@ import javafx.scene.input.KeyCode;
 import logic.exceptions.IntegrityCommandException;
 import logic.exceptions.LogicException;
 import logic.exceptions.UnknownCommandException;
-import parser.CommandImpl;
-import parser.Parser;
-import parser.ParserInterface;
+import parser.ParserController;
+import parser.ParserControllerImpl;
+import parser.commands.CommandData;
 import storage.Storage;
 import storage.StorageInterface;
 
@@ -23,7 +23,7 @@ public class Logic implements LogicInterface {
     private static final ViewType DEFAULT_UI_VIEW = TasksBag.ViewType.DEFAULT;
     private static final KeyCode TOGGLE_FILTER_STATE_KEY = KeyCode.TAB;
     private StorageInterface cStorage;
-    private ParserInterface cParser;
+    private ParserController cParser;
     private TasksBag cInternalBag;
     private ActionInvoker cInvoker;
     private Logger log;
@@ -39,7 +39,7 @@ public class Logic implements LogicInterface {
 
         cStorage = Storage.getStorage();
         cStorage.init();
-        cParser = Parser.getParser();
+        cParser = ParserControllerImpl.getParser();
         cParser.init();
 
         System.out.println("Logic Init complete");
@@ -59,12 +59,12 @@ public class Logic implements LogicInterface {
     public CommandFeedback executeCommand(String userString) throws LogicException {
         assert userString != null;
 
-        CommandImpl rtnCmd = cParser.parseCommand(userString);
+        CommandData rtnCmd = cParser.parseCommandData(userString);
         log.info("executing " + userString);
         return executeParsed(rtnCmd);
     }
 
-    private CommandFeedback executeParsed(CommandImpl rtnCmd) throws LogicException {
+    private CommandFeedback executeParsed(CommandData rtnCmd) throws LogicException {
 
         Feedback fb;
         switch (rtnCmd.getCmdType()) {
@@ -75,7 +75,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag));
+                fb = cInvoker.placeAction(new ViewAction(rtnCmd, cInternalBag));
                 break;
             case UPDATE:
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
@@ -143,7 +143,7 @@ public class Logic implements LogicInterface {
         cStorage = storageStub;
     }
 
-    public void setParser(ParserInterface parserStub) {
+    public void setParser(ParserController parserStub) {
         System.out.println("STUB ADDED FOR PARSER");
         cParser = parserStub;
     }
@@ -151,7 +151,7 @@ public class Logic implements LogicInterface {
     @Override
     public TasksBag getDefaultBag() {
         cInternalBag.setView(DEFAULT_UI_VIEW);
-        return cInternalBag.getFiltered();
+        return cInternalBag.getFilteredView();
     }
 
     public void close() {
@@ -162,7 +162,7 @@ public class Logic implements LogicInterface {
     public KeyEventFeedback executeKeyEvent(KeyCode whichKey) throws LogicException {
         KeyEventFeedback fb = null;
         if (whichKey == TOGGLE_FILTER_STATE_KEY) {
-            fb = (KeyEventFeedback) cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
+            fb = (KeyEventFeedback) cInvoker.placeAction(new ViewToggleAction(cInternalBag, whichKey));
         }
         return fb;
     }

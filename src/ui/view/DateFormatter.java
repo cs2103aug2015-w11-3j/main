@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-import parser.DateParser;
+import parser.temporal.DateParser;
 
 public class DateFormatter {
 
