@@ -4,7 +4,7 @@ import common.TasksBag;
 import logic.exceptions.LogicException;
 import parser.Command;
 import ui.view.CelebiViewController;
-
+//@@author A0125546E
 public class ThemeChangeAction implements Action {
     private static final String USR_MSG_THEME_NIGHT = "Switched to night theme~!";
     private static final String USR_MSG_THEME_DAY = "Switched to day theme~!";
@@ -22,7 +22,7 @@ public class ThemeChangeAction implements Action {
     @Override
     public Feedback execute() throws LogicException {
         String msg = "";
-        switch(cSkin){
+        switch (cSkin) {
             case DAY:
                 msg = USR_MSG_THEME_DAY;
                 break;
@@ -31,7 +31,7 @@ public class ThemeChangeAction implements Action {
                 break;
             default:
                 break;
-            
+
         }
         CommandFeedback fb = new CommandFeedback(cCommand, cBag, msg);
         return fb;

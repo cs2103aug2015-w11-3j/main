@@ -38,7 +38,7 @@ public class FilterDateAction implements Action {
     }
 
     private String getFeedbackText(TasksBag.FilterDateState state) {
-        String rtn = "Filtering date after " + cStart + " to " + cEnd;
+        String rtn = "";
         String formatStart;
         String formatEnd;
         DateFormatter df = new DateFormatter();
