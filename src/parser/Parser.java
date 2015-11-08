@@ -376,7 +376,7 @@ public class Parser implements ParserInterface {
 	}
 	
 	@Override
-	public Command parseCommand (String rawInput) {
+	public CommandImpl parseCommand (String rawInput) {
 		assert(rawInput != null);
 		// TODO rework to not use String.split
 		userRawInput = rawInput;
@@ -398,7 +398,7 @@ public class Parser implements ParserInterface {
 		return cmdType == null ? Command.Type.INVALID : cmdType;
 	}
 
-	private Command passArgs (Command.Type type, String args) {
+	private CommandImpl passArgs (Command.Type type, String args) {
 		assert(type != null && args != null);
 		args = args.trim();
 		switch (type) {
@@ -459,7 +459,7 @@ public class Parser implements ParserInterface {
 		return null;
 	}
 
-	private Command parseAdd (String args) {
+	private CommandImpl parseAdd (String args) {
 		assert(args != null);
 		args = args.trim();
 		
@@ -506,7 +506,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseDel (String args) {
+	private CommandImpl parseDel (String args) {
 		assert(args != null);
 		args = args.trim();
 		Matcher m = P_DEL.matcher(args);
@@ -520,7 +520,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseUpd (String args) {
+	private CommandImpl parseUpd (String args) {
 		assert(args != null);
 		
 		int uid;
@@ -559,11 +559,11 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseQuit (String args) {
+	private CommandImpl parseQuit (String args) {
 		assert(args != null);
 		return makeQuit();
 	}
-	private Command parseShow (String args) {
+	private CommandImpl parseShow (String args) {
 		assert(args != null);
 		args = cleanText(args);
 		
@@ -591,15 +591,15 @@ public class Parser implements ParserInterface {
 
 		return makeInvalid();
 	}
-	private Command parseRedo (String args) {
+	private CommandImpl parseRedo (String args) {
 		assert(args != null);
 		return makeRedo();
 	}
-	private Command parseUndo (String args) {
+	private CommandImpl parseUndo (String args) {
 		assert(args != null);
 		return makeUndo();
 	}
-	private Command parseMark (String args) {
+	private CommandImpl parseMark (String args) {
 		assert(args != null);
 		args = args.trim();
 		final Matcher m = P_MARK.matcher(args);
@@ -609,7 +609,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseUnmark (String args) {
+	private CommandImpl parseUnmark (String args) {
 		assert(args != null);
 		args = args.trim();
 		final Matcher m = P_UNMARK.matcher(args);
@@ -619,7 +619,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseSearch (String args) {
+	private CommandImpl parseSearch (String args) {
 		assert(args != null);
 		args = args.trim();
 		if (args.length() != 0) {
@@ -627,7 +627,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseFilterDate (String args) {
+	private CommandImpl parseFilterDate (String args) {
 		assert(args != null);
 		args = args.trim();
 		
@@ -669,11 +669,11 @@ public class Parser implements ParserInterface {
 		
 		return makeInvalid();
 	}
-	private Command parseClear (String args) {
+	private CommandImpl parseClear (String args) {
 		assert(args != null);
 		return makeClear();
 	}
-	private Command parseMove (String args) {
+	private CommandImpl parseMove (String args) {
 		assert(args != null);
 		args = args.trim();
 		if (args.length() != 0) {
@@ -686,7 +686,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseHelp (String args) {
+	private CommandImpl parseHelp (String args) {
 		assert(args != null);
 		args = args.trim();
 		if (args.length() == 0) { // no args for help cmd
@@ -699,7 +699,7 @@ public class Parser implements ParserInterface {
 		}
 		return makeInvalid();
 	}
-	private Command parseTheme (String args) {
+	private CommandImpl parseTheme (String args) {
 		assert(args != null);
 		args = cleanText(args);
 		
@@ -717,7 +717,7 @@ public class Parser implements ParserInterface {
 
 		return makeInvalid();
 	}
-	private Command parseAlias (String args) {
+	private CommandImpl parseAlias (String args) {
 		assert(args != null);
 		args = cleanText(args);
 		
@@ -769,127 +769,127 @@ public class Parser implements ParserInterface {
 	}
 	
 	@Override
-	public Command makeAdd (String name, Date start, Date end) {
-		final Command cmd = new Command(Command.Type.ADD, userRawInput);
+	public CommandImpl makeAdd (String name, Date start, Date end) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.ADD, userRawInput);
 		cmd.setEnd(end);
 		cmd.setStart(start);
 		cmd.setText(name);
 		return cmd;
 	}
 	@Override
-	public Command makeUpdateName (int taskUID, String newName) {
-		final Command cmd = new Command(Command.Type.UPDATE, userRawInput);
+	public CommandImpl makeUpdateName (int taskUID, String newName) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.NAME);
 		cmd.setTaskUID(taskUID);
 		cmd.setText(newName);
 		return cmd;	
 	}
 	@Override
-	public Command makeUpdateStart (int taskUID, Date newDate) {
-		final Command cmd = new Command(Command.Type.UPDATE, userRawInput);
+	public CommandImpl makeUpdateStart (int taskUID, Date newDate) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.DATE_START);
 		cmd.setTaskUID(taskUID);
 		cmd.setStart(newDate);
 		return cmd;	
 	}
 	@Override
-	public Command makeUpdateEnd (int taskUID, Date newDate) {
-		final Command cmd = new Command(Command.Type.UPDATE, userRawInput);
+	public CommandImpl makeUpdateEnd (int taskUID, Date newDate) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.UPDATE, userRawInput);
 		cmd.setTaskField(Task.DataType.DATE_END);
 		cmd.setTaskUID(taskUID);
 		cmd.setEnd(newDate);
 		return cmd;	
 	}
 	@Override
-	public Command makeDelete (int taskUID) {
-		final Command cmd = new Command(Command.Type.DELETE, userRawInput);
+	public CommandImpl makeDelete (int taskUID) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.DELETE, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	@Override
-	public Command makeShow (TasksBag.ViewType view) {
-		final Command cmd = new Command(Command.Type.SHOW, userRawInput);
+	public CommandImpl makeShow (TasksBag.ViewType view) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.SHOW, userRawInput);
 		cmd.setViewType(view);
 		return cmd;		
 	}
 	@Override
-	public Command makeRedo () {
-		final Command cmd = new Command(Command.Type.REDO, userRawInput);
+	public CommandImpl makeRedo () {
+		final CommandImpl cmd = new CommandImpl(Command.Type.REDO, userRawInput);
 		return cmd;
 	}
 	@Override
-	public Command makeUndo () {
-		final Command cmd = new Command(Command.Type.UNDO, userRawInput);
+	public CommandImpl makeUndo () {
+		final CommandImpl cmd = new CommandImpl(Command.Type.UNDO, userRawInput);
 		return cmd;
 		
 	}
 	@Override
-	public Command makeMark (int taskUID) {
-		final Command cmd = new Command(Command.Type.MARK, userRawInput);
+	public CommandImpl makeMark (int taskUID) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.MARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	@Override
-	public Command makeUnmark (int taskUID) {
-		final Command cmd = new Command(Command.Type.UNMARK, userRawInput);
+	public CommandImpl makeUnmark (int taskUID) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.UNMARK, userRawInput);
 		cmd.setTaskUID(taskUID);
 		return cmd;
 	}
 	@Override
-	public Command makeSearch (String keyword) {
-		final Command cmd = new Command(Command.Type.SEARCH, userRawInput);
-		cmd.setText(keyword);
+	public CommandImpl makeSearch (String keywords) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.SEARCH, userRawInput);
+		cmd.setText(keywords);
 		return cmd;
 	}
 	@Override
-	public Command makeFilterDate (Date rangeStart, Date rangeEnd) {
-		final Command cmd = new Command(Command.Type.FILTER_DATE, userRawInput);
+	public CommandImpl makeFilterDate (Date rangeStart, Date rangeEnd) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.FILTER_DATE, userRawInput);
 		cmd.setStart(rangeStart);
 		cmd.setEnd(rangeEnd);
 		return cmd;
 	}
 	@Override
-	public Command makeClear () {
-		final Command cmd = new Command(Command.Type.CLEAR_FILTERS, userRawInput);
+	public CommandImpl makeClear () {
+		final CommandImpl cmd = new CommandImpl(Command.Type.CLEAR_FILTERS, userRawInput);
 		return cmd;
 	}
 	@Override
-	public Command makeMove (Path newPath) {
-		final Command cmd = new Command(Command.Type.MOVE, userRawInput);
+	public CommandImpl makeMove (Path newPath) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.MOVE, userRawInput);
 		cmd.setPath(newPath);
 		return cmd;
 	}
 	@Override
-	public Command makeHelp (Command.Type helpTarget) {
-		final Command cmd = new Command(Command.Type.HELP, userRawInput);
+	public CommandImpl makeHelp (Command.Type helpTarget) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.HELP, userRawInput);
 		cmd.setSecondaryCmdType(helpTarget);
 		return cmd;
 	}
 	@Override
-	public Command makeQuit () {
-		final Command cmd = new Command(Command.Type.QUIT, userRawInput);
+	public CommandImpl makeQuit () {
+		final CommandImpl cmd = new CommandImpl(Command.Type.QUIT, userRawInput);
 		return cmd;
 	}
 	@Override
-	public Command makeTheme (Skin theme) {
-        final Command cmd = new Command(Command.Type.THEME, userRawInput);
+	public CommandImpl makeTheme (Skin theme) {
+        final CommandImpl cmd = new CommandImpl(Command.Type.THEME, userRawInput);
 	    cmd.setTheme(theme);
 	    return cmd;
 	}
 	@Override
-	public Command makeAlias (String alias, Command.Type target) {
-		final Command cmd = new Command(Command.Type.ALIAS, userRawInput);
+	public CommandImpl makeAlias (String alias, Command.Type target) {
+		final CommandImpl cmd = new CommandImpl(Command.Type.ALIAS, userRawInput);
 		cmd.setText(alias);
 		cmd.setSecondaryCmdType(target);
 		return cmd;
 	}
 	@Override
-	public Command makeInvalid () {
-		final Command cmd = new Command(Command.Type.INVALID, userRawInput);
+	public CommandImpl makeInvalid () {
+		final CommandImpl cmd = new CommandImpl(Command.Type.INVALID, userRawInput);
 		return cmd;
 	}
 	
-	public static void printCmd (Command c) {
+	public static void printCmd (CommandImpl c) {
 		System.out.println("type: " + c.getCmdType());
 		System.out.println("raw: " + c.getRawUserInput());
 		System.out.print("uid: " + c.getTaskUID());

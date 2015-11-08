@@ -117,6 +117,7 @@ public class AliasesImpl extends Aliases {
 			if (cmdName != null && !RESERVED_CMD_ALIASES.contains(alias)) {
 				rtnCmd = Enum.valueOf(Command.Type.class, cmdName);
 				assert(rtnCmd != Command.Type.INVALID);
+				return rtnCmd;
 			}
 		} catch (IllegalArgumentException iae) {
 			;

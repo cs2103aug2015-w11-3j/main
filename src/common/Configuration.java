@@ -17,6 +17,7 @@ import org.json.simple.JSONValue;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
+import static ui.view.CelebiViewController.Skin;
 
 /*
  * Possible errors and solutions: 
@@ -27,31 +28,39 @@ import parser.Command;
 public class Configuration implements ConfigurationInterface {
 
     private static final String CONFIG_DIRECTORY = "bin/config.json";
+    
     private static final String KEY_STORAGE_LOCATION = "STORAGE_LOCATION";
     private static final String KEY_DEFAULT_START_TIME = "DEFAULT_START_TIME";
     private static final String KEY_DEFAULT_END_TIME = "DEFAULT_END_TIME";
     private static final String KEY_ALIAS_MAPPINGS = "ALIAS_MAPPINGS";
+    private static final String KEY_SKIN = "SKIN";
+    
+    private static final String VALUE_SKIN_DAY = Skin.DAY.name();
+    private static final String VALUE_SKIN_NIGHT = Skin.NIGHT.name();
     
     private static final String DEFAULT_VALUE_STORAGE_LOCATION = "bin";
     private static final String DEFAULT_VALUE_DEFAULT_START_TIME = "08:00";
     private static final String DEFAULT_VALUE_DEFAULT_END_TIME = "23:59";
+    private static final String DEFAULT_VALUE_SKIN = VALUE_SKIN_DAY;
     
     private static final String MESSAGE_INVALID_STORAGE_LOCATION = "%1$s is not a valid path";
     private static final String MESSAGE_INVALID_DEFAULT_START_TIME = "Start time %1$s is invalid";
     private static final String MESSAGE_INVALID_DEFAULT_END_TIME = "End time %1$s is invalid";
     private static final String MESSAGE_INVALID_ALIAS_MAP = "Corrupted Map (format or values)%s";
+    private static final String MESSAGE_INVALID_SKIN = "Skin %1s does not exist";
     
     private static final String MESSAGE_RESET_STORAGE_LOCATION = "Storage location set to " + DEFAULT_VALUE_STORAGE_LOCATION;
     private static final String MESSAGE_RESET_DEFAULT_START_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_START_TIME;
     private static final String MESSAGE_RESET_DEFAULT_END_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_END_TIME;
     private static final String MESSAGE_RESET_NEW_ALIAS_MAP = "";
+    private static final String MESSAGE_RESET_SKIN = "";
     
     private static Configuration instance = null;
 
     private File configFile;
     private Scanner configReader;
     private Writer configWriter;
-    private String configStorageLocation, configDefaultStartTime, configDefaultEndTime;
+    private String configStorageLocation, configDefaultStartTime, configDefaultEndTime, configSkin;
     private Map<String, String> configUserCmdAliases;
     private final Aliases ALIASES;
 
@@ -126,6 +135,12 @@ public class Configuration implements ConfigurationInterface {
             	logError(MESSAGE_INVALID_ALIAS_MAP, "", MESSAGE_RESET_NEW_ALIAS_MAP);
             }
             
+            configSkin = (String) parsedResult.get(KEY_SKIN);
+            if (!isValidSkin(configSkin)) {
+            	resetSkin();
+            	logError(MESSAGE_INVALID_SKIN, configSkin, MESSAGE_RESET_SKIN);
+            }
+            
             writeBack();
         } catch (ClassCastException e) {
         	resetAll();
@@ -153,8 +168,13 @@ public class Configuration implements ConfigurationInterface {
     public Time getDefaultEndTime() {
         return new Time(configDefaultEndTime);
     }
+    
+    @Override
+    public String getSkin() {
+    	return configSkin;
+    }
 
-    //@@author A0131891E
+	//@@author A0131891E
     @Override
     public boolean isUserAlias(String alias) {
     	return configUserCmdAliases.containsKey(alias);
@@ -167,6 +187,7 @@ public class Configuration implements ConfigurationInterface {
     // setters
     //@@author A0133920N
 
+    @Override
     public void setUsrFileDirector(String newDir) throws IOException {
 		configStorageLocation = newDir;
 		
@@ -175,6 +196,7 @@ public class Configuration implements ConfigurationInterface {
         Log.log("usr file moved to " + newDir, this.getClass());
     }
 
+    @Override
     public void setDefaultStartTime(String newTime) throws IOException {
     	if (isValidTime(newTime)) {
     		configDefaultStartTime = newTime;
@@ -186,6 +208,7 @@ public class Configuration implements ConfigurationInterface {
     	//TODO how would caller know if newTime is accepteed as valid time
     }
     
+    @Override
     public void setDefaultEndTime(String newTime) throws IOException {
     	if (isValidTime(newTime)) {
     		configDefaultEndTime = newTime;
@@ -195,6 +218,15 @@ public class Configuration implements ConfigurationInterface {
             Log.log("default end time reset to " + newTime, this.getClass());
     	}
     	//TODO how would caller know if newTime is accepteed as valid time
+    }
+    
+    @Override
+    public void setSkin(String skin) throws IOException {
+    	if (isValidSkin(skin)) {
+    		configSkin = skin;
+    		writeBack();
+    		Log.log("skin reset to " + configSkin, this.getClass());
+    	}
     }
     
     //@@author A0131891E
@@ -221,9 +253,8 @@ public class Configuration implements ConfigurationInterface {
     	Log.log("alias mapping removed: " + alias);
     }
     
-    // resetters
+    // resetterss
     //@@author A0133920N
-
     
     private void resetAll() throws IOException {
         // set all properties to default value
@@ -249,6 +280,11 @@ public class Configuration implements ConfigurationInterface {
     
     private void resetDefaultEndTime() throws IOException {
     	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
+    	writeBack();
+    }
+    
+    private void resetSkin() throws IOException {
+    	configSkin = DEFAULT_VALUE_SKIN;
     	writeBack();
     }
     
@@ -311,6 +347,16 @@ public class Configuration implements ConfigurationInterface {
     	Time t = new Time(str);
     	return t.isValid();
     }
+    
+    private boolean isValidSkin(String str) {
+    	if (str == null) {
+    		return false;
+    	}
+    	
+    	String upper = str.toUpperCase();
+    	
+    	return upper.equals(VALUE_SKIN_DAY) || upper.equals(VALUE_SKIN_NIGHT);
+    }
 
     private void logError(String invalidMsg, String arg, String resetMsg) {
     	String formatted = Utilities.formatString(invalidMsg, arg);
@@ -325,6 +371,7 @@ public class Configuration implements ConfigurationInterface {
         configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
         configJson.put(KEY_DEFAULT_START_TIME, configDefaultStartTime);
         configJson.put(KEY_DEFAULT_END_TIME, configDefaultEndTime);
+        configJson.put(KEY_SKIN, configSkin);
         //TODO new alias code
         configJson.put(KEY_ALIAS_MAPPINGS, configUserCmdAliases);
 

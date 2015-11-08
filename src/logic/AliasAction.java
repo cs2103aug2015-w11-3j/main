@@ -11,6 +11,7 @@ import logic.exceptions.LogicException;
 import parser.Aliases;
 import parser.AliasesImpl;
 import parser.Command;
+import parser.CommandImpl;
 
 public class AliasAction implements Action {
 
@@ -19,17 +20,17 @@ public class AliasAction implements Action {
 	private static final String USR_MSG_ALIAS_RESERVED = "You cannot use the reserved keyword \"%s\" as an alias. Reserved keywords are shown in \"help\"";
 	private static final String USR_MSG_ALIAS_SUCCESS = "Alias mapping created: %s --> %s";
 	
-	private static final Pattern P_VALID_ALIAS = Pattern.compile("^[\\S&&[^\\p{javaUpperCase}]]$");
+	private static final Pattern P_VALID_ALIAS = Pattern.compile("^[\\S&&[^\\p{javaUpperCase}]]++$");
 	
 	private static final Aliases ALIASES = AliasesImpl.getInstance();
 	
-    private Command cCommand;
+    private CommandImpl cCommand;
     private TasksBag cBag;
     
     private String newAlias;
     private Command.Type aliasTarget;
     
-	public AliasAction(Command cmd, TasksBag internalBag) {
+	public AliasAction(CommandImpl cmd, TasksBag internalBag) {
         cCommand = cmd;
         cBag = internalBag;
         newAlias = cmd.getText();
