@@ -29,7 +29,7 @@ public class UnmarkAction implements UndoableAction {
 
     public UnmarkAction(CommandData command, TasksBag internalBag, StorageInterface stor) throws IllegalAccessCommandException {
         cCommand = command;
-        cCurBag = internalBag.getFiltered();
+        cCurBag = internalBag.getFilteredView();
         cIntBag = internalBag;
         cStore = stor;
 

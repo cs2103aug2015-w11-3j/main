@@ -50,7 +50,7 @@ public class DeleteAction implements UndoableAction {
         assert command != null;
 
         cCommand = command;
-        cCurBag = internalBag.getFiltered();
+        cCurBag = internalBag.getFilteredView();
         cIntBag = internalBag;
         cStore = stor;
         log = Logger.getLogger("DeleteAction");

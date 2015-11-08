@@ -16,6 +16,6 @@ public class Feedback {
      * @return sorted state of bag
      */
     public TasksBag getcBag() {
-        return cBag.getFiltered();
+        return cBag.getFilteredView();
     }
 }

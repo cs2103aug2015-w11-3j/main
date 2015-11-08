@@ -75,7 +75,7 @@ public class Logic implements LogicInterface {
                 fb = cInvoker.placeAction(new DeleteAction(rtnCmd, cInternalBag, cStorage));
                 break;
             case SHOW:
-                fb = cInvoker.placeAction(new FilterAction(rtnCmd, cInternalBag));
+                fb = cInvoker.placeAction(new ViewAction(rtnCmd, cInternalBag));
                 break;
             case UPDATE:
                 fb = cInvoker.placeAction(new UpdateAction(rtnCmd, cInternalBag, cStorage));
@@ -151,7 +151,7 @@ public class Logic implements LogicInterface {
     @Override
     public TasksBag getDefaultBag() {
         cInternalBag.setView(DEFAULT_UI_VIEW);
-        return cInternalBag.getFiltered();
+        return cInternalBag.getFilteredView();
     }
 
     public void close() {
@@ -162,7 +162,7 @@ public class Logic implements LogicInterface {
     public KeyEventFeedback executeKeyEvent(KeyCode whichKey) throws LogicException {
         KeyEventFeedback fb = null;
         if (whichKey == TOGGLE_FILTER_STATE_KEY) {
-            fb = (KeyEventFeedback) cInvoker.placeAction(new FilterToggleAction(cInternalBag, whichKey));
+            fb = (KeyEventFeedback) cInvoker.placeAction(new ViewToggleAction(cInternalBag, whichKey));
         }
         return fb;
     }

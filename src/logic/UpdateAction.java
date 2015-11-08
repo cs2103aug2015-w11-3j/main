@@ -36,7 +36,7 @@ public class UpdateAction implements UndoableAction {
 
     public UpdateAction(CommandData command, TasksBag bag, StorageInterface stor) throws LogicException {
         cCommand = command;
-        cCurBag = bag.getFiltered();
+        cCurBag = bag.getFilteredView();
         cIntBag = bag;
         cStore = stor;
 
