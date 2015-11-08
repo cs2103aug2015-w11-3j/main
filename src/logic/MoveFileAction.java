@@ -43,7 +43,7 @@ public class MoveFileAction implements Action {
         try {
             cStore.moveFileTo(cPath.toString());
             
-            config.setUsrFileDirector(cPath.toString());
+            config.setStorageLocation(cPath.toString());
             
             fb = new CommandFeedback(cCommand, cBag, USR_MSG_MOVE_OK);
 

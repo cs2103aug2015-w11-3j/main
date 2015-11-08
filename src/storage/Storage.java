@@ -10,6 +10,7 @@ public class Storage implements StorageInterface {
 	
 	private static Storage instance;
 	private static boolean _isTestMode;
+	private ConfigurationInterface config;
 	
     private Storage() {
     }
@@ -24,12 +25,10 @@ public class Storage implements StorageInterface {
 
     public void init() {
         Log.log("Storage Init");
-        try {
-            connectToDatabase();
-            Log.log("Storage Init complete");
-        } catch (IOException e) {
-        	Log.log("Storage Init Fail");
-        } 
+    	config = Configuration.getInstance();
+    	 System.out.println("wocap");
+        connectToDatabase();
+        Log.log("Storage Init complete");
     }
 
     public void close() {
@@ -37,19 +36,14 @@ public class Storage implements StorageInterface {
         Database.disconnect();
     }
 
-    private void connectToDatabase() throws IOException {
-    	ConfigurationInterface setting = Configuration.getInstance();
-        String fileLoc = setting.getUsrFileDirectory();
+    private void connectToDatabase() {        
+        boolean connectSuccess = tryConnect();
         
-        boolean connectResult = Database.connect(fileLoc, _isTestMode);
-        
-        if (!connectResult) {
-        	Log.log("Location invalid");
-        	setting.resetStorageLocation();
-        	connectToDatabase();
-        }
-    	
-        Database.load();
+        if (!connectSuccess) {
+        	Log.log("Fail to connect to storage file");
+        	config.resetStorageLocation();
+        	tryConnect();
+        }    	
     }
 
     @Override
@@ -98,6 +92,12 @@ public class Storage implements StorageInterface {
     @Override
     public void moveFileTo(String destination) throws IOException {
     	Database.moveTo(destination, _isTestMode);
+    }
+    
+    private boolean tryConnect() {
+        String fileLoc = config.getUsrFileDirectory();
+        
+        return Database.connect(fileLoc, _isTestMode);
     }
        
     // Methods below are only used for Storage unit tests

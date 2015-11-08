@@ -28,8 +28,6 @@ abstract class Database {
 	private static List<TaskJson> dbData;
 	private static HashMap<Integer, TaskJson> dbIndex;
 	
-	private static boolean isConnected;
-
 	static boolean connect (String path, boolean isTestMode) {
 		try {
 			if (isTestMode) {
@@ -41,84 +39,69 @@ abstract class Database {
 					db.createNewFile();
 				}
 			}
+
+			load();
 			
-			dbReader = new Scanner(db);
-			dbReader.useDelimiter("\\Z");
-			
-			isConnected = true;
-		
+			return true;
 		} catch (IOException e) {
-			return false;
-		}
-		
-		return true;	
-	}
-	
-	static boolean load () {
-		if (!isConnected) {
-			return false;
-		} 
-		
-		try {
-			String plainText = "";
-			if (dbReader.hasNext()) {
-				plainText = dbReader.next();
-			}
-			
-			JSONArray parsedResult = (JSONArray)JSONValue.parse(plainText);
-			
-			if (parsedResult == null) {
-				parsedResult = new JSONArray();
-			}
-						
 			dbData = new ArrayList<TaskJson>();
 			dbIndex = new HashMap<Integer, TaskJson>();
-			for (int i = 0; i < parsedResult.size(); i ++) {
-				TaskJson cj = new TaskJson((JSONObject)parsedResult.get(i));
-				if(cj.isValid()) {
-					dbData.add(cj);
-					dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
-				}
-			}
-			save();
-			return true;
-		} catch (ClassCastException e) {
-			return false;
-		} catch (Exception e) {
-			System.out.println(e);
 			return false;
 		}
 	}
 	
-	static boolean disconnect () {
-		if (isConnected) {
-			db = null;
-			dbReader.close();
-			dbReader = null;
-			dbData = null;
-			dbIndex = null;
-			
-			isConnected = false;
-			
-			return true;
-		} else {
-			return false;
+	static private void load () throws IOException {
+		assert(db != null);
+		
+		String plainText = "";
+		
+		dbReader = new Scanner(db);
+		dbReader.useDelimiter("\\Z");
+		
+		if (dbReader.hasNext()) {
+			plainText = dbReader.next();
 		}
+		
+		dbReader.close();
+		dbReader = null;
+		
+		JSONArray parsedResult = (JSONArray)JSONValue.parse(plainText);
+		
+		if (parsedResult == null) {
+			parsedResult = new JSONArray();
+		}
+					
+		dbData = new ArrayList<TaskJson>();
+		dbIndex = new HashMap<Integer, TaskJson>();
+		for (int i = 0; i < parsedResult.size(); i ++) {
+			TaskJson cj = new TaskJson((JSONObject)parsedResult.get(i));
+			if(cj.isValid()) {
+				dbData.add(cj);
+				dbIndex.put(Integer.parseInt(cj.get("ID")), cj);
+			}
+		}
+		save();
+	}
+	
+	static void disconnect () {
+		db = null;
+		dbData = null;
+		dbIndex = null;
 	}
 	
 	static List<TaskJson> selectAll () {
-		if (!isConnected) {
-			return new ArrayList<TaskJson>();
-		} 
-		
+		checkConnected();
 		return new ArrayList<TaskJson>(dbData);
 	}
 	
 	static TaskJson selectById (int id) {
+		checkConnected();
 		return dbIndex.get(id);
 	}
 	
 	static int insert (TaskJson cj) throws IOException {
+		checkConnected();
+		
 		int last; 
 		int dbSize = dbData.size();
 
@@ -140,6 +123,8 @@ abstract class Database {
 	}
 		
 	static void update (TaskJson cj) throws IOException {
+		checkConnected();
+		
 		TaskJson cjInDb = dbIndex.get(cj.getId());
 		cjInDb.update(cj);
 				
@@ -147,6 +132,7 @@ abstract class Database {
 	}
 	
 	static void delete (int id) throws IOException {
+		checkConnected();
 		TaskJson cj= dbIndex.get(id);
 		
 		dbData.remove(cj);
@@ -156,6 +142,7 @@ abstract class Database {
 	}
 	
 	static void restore (TaskJson cj) throws IOException {
+		checkConnected();
 		dbData.add(cj);
 		dbIndex.put(cj.getId(), cj);
 		orderById();
@@ -163,22 +150,18 @@ abstract class Database {
 		save ();
 	}
 	
-	static boolean moveTo(String destination, boolean isTestMode) throws IOException {
+	static void moveTo(String destination, boolean isTestMode) throws IOException {
+		checkConnected();
 		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
 		File newDb = new File(destination, fileName);
 		
-		dbReader.close();
 		Files.move(db.toPath(), newDb.toPath());		
 		db = newDb;
-				
-		
-		dbReader = new Scanner(db);
-		dbReader.useDelimiter("\\Z");
-		return true;
 	}
 		
 	// private methods
-	private static boolean save () throws IOException {
+	private static void save () throws IOException {
+		checkConnected();
 		dbWriter = new BufferedWriter(new FileWriter(db));
 		String text = JSONValue.toJSONString(dbData);
 			
@@ -186,10 +169,15 @@ abstract class Database {
 		dbWriter.close();
 			
 		dbWriter = null;
-		return true;
 	}
 	
 	private static void orderById () {
+		checkConnected();
 		Collections.sort(dbData, TaskJson.getComparator());
+	}
+	
+	private static void checkConnected() {
+		assert(dbData != null);
+		assert(dbIndex != null);
 	}
 }

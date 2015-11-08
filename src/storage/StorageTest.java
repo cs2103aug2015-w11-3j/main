@@ -135,7 +135,7 @@ public class StorageTest {
     public void testInvalidPath() throws IOException {
         File path = new File(NOT_EXSITS_FILEPATH);
 
-        config.setUsrFileDirector(NOT_EXSITS_FILEPATH);
+        config.setStorageLocation(NOT_EXSITS_FILEPATH);
         Assert.assertEquals(config.getUsrFileDirectory(), NOT_EXSITS_FILEPATH);
 
         deleteIfExists(path);

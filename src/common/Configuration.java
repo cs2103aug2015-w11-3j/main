@@ -4,7 +4,6 @@ package common;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
@@ -51,13 +50,7 @@ public class Configuration implements ConfigurationInterface {
     private static final String MESSAGE_INVALID_DEFAULT_END_TIME = "End time %1$s is invalid";
     private static final String MESSAGE_INVALID_ALIAS_MAP = "Corrupted Map (format or values)%s";
     private static final String MESSAGE_INVALID_SKIN = "Skin %1s does not exist";
-    
-    private static final String MESSAGE_RESET_STORAGE_LOCATION = "Storage location set to " + DEFAULT_VALUE_STORAGE_LOCATION;
-    private static final String MESSAGE_RESET_DEFAULT_START_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_START_TIME;
-    private static final String MESSAGE_RESET_DEFAULT_END_TIME = "Storage location set to " + DEFAULT_VALUE_DEFAULT_END_TIME;
-    private static final String MESSAGE_RESET_NEW_ALIAS_MAP = "";
-    private static final String MESSAGE_RESET_SKIN = "";
-    
+        
     private static Configuration instance = null;
 
     private File configFile;
@@ -65,7 +58,7 @@ public class Configuration implements ConfigurationInterface {
     private Writer configWriter;
     private String configStorageLocation, configDefaultStartTime, configDefaultEndTime, configSkin;
     private Map<String, String> configUserCmdAliases;
-    private final Aliases ALIASES;
+    private Aliases ALIASES;
 
     public static ConfigurationInterface getInstance() {
         if (instance == null) {
@@ -75,37 +68,39 @@ public class Configuration implements ConfigurationInterface {
     }
     
     private Configuration() {
-        try {
-            findConfigFile();
-            readProperties();
-        } catch (IOException e) {
-            System.out.println(e);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        ALIASES = AliasesImpl.getInstance();
+        findConfigFile();
+        readProperties();
     }
 
-    private void findConfigFile() throws IOException {
-        configFile = new File(CONFIG_FILE_DIR);
+    private void findConfigFile() {
+    	try {
+    		configFile = new File(CONFIG_FILE_DIR);
 
-        if (!configFile.exists()) {
-            // if not found, re-create and set to default configuration
-            configFile.createNewFile();
-            resetAll();
-        }
-
-        configReader = new Scanner(configFile);
-        configReader.useDelimiter("\\Z");
+            if (!configFile.exists()) {
+                // if not found, re-create and set to default configuration
+                configFile.createNewFile();
+                resetAll();
+            }
+    	} catch (Exception e) {
+    		Log.log("Fail to create configuration file", this.getClass());
+    		resetAll();
+    	}
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void readProperties() throws IOException {
+	private void readProperties() {
         try {
-            String plainText = "";
+        	assert(configFile != null);
+        	String plainText = "";
+        	
+        	configReader = new Scanner(configFile);
+            configReader.useDelimiter("\\Z");
+            
             if (configReader.hasNext()) {
                 plainText = configReader.next();
             }
+            
+            configReader.close();
 
             JSONObject parsedResult = (JSONObject) JSONValue.parse(plainText);
             if (parsedResult == null) {
@@ -113,39 +108,38 @@ public class Configuration implements ConfigurationInterface {
             }
 
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
-            
             if (configStorageLocation == null) {
             	resetStorageLocation();
-            	logError(MESSAGE_INVALID_STORAGE_LOCATION, configStorageLocation, MESSAGE_RESET_STORAGE_LOCATION);
+            	logError(MESSAGE_INVALID_STORAGE_LOCATION, configStorageLocation);
             } 
             
             configDefaultStartTime = (String) parsedResult.get(KEY_DEFAULT_START_TIME);
             if (!isValidTime(configDefaultStartTime)) {
             	resetDefaultStartTime();
-            	logError(MESSAGE_INVALID_DEFAULT_START_TIME, configDefaultStartTime, MESSAGE_RESET_DEFAULT_START_TIME);
+            	logError(MESSAGE_INVALID_DEFAULT_START_TIME, configDefaultStartTime);
             } 
             
             configDefaultEndTime = (String) parsedResult.get(KEY_DEFAULT_END_TIME);
             if (!isValidTime(configDefaultEndTime)) {
             	resetDefaultEndTime();
-            	logError(MESSAGE_INVALID_DEFAULT_END_TIME, configDefaultEndTime, MESSAGE_RESET_DEFAULT_END_TIME);
+            	logError(MESSAGE_INVALID_DEFAULT_END_TIME, configDefaultEndTime);
             } 
 
-            //TODO new alias code
             configUserCmdAliases = (Map) parsedResult.get(KEY_ALIAS_MAPPINGS);
             if (!isValidAliasMap(configUserCmdAliases)) {
             	clearUserAliases();
-            	logError(MESSAGE_INVALID_ALIAS_MAP, "", MESSAGE_RESET_NEW_ALIAS_MAP);
+            	logError(MESSAGE_INVALID_ALIAS_MAP, "");
             }
             
             configSkin = (String) parsedResult.get(KEY_SKIN);
             if (!isValidSkin(configSkin)) {
             	resetSkin();
-            	logError(MESSAGE_INVALID_SKIN, configSkin, MESSAGE_RESET_SKIN);
+            	logError(MESSAGE_INVALID_SKIN, configSkin);
             }
             
             writeBack();
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
+        	Log.log("Fail to read user settings", this.getClass());
         	resetAll();
         }
     }
@@ -182,6 +176,7 @@ public class Configuration implements ConfigurationInterface {
     public boolean isUserAlias(String alias) {
     	return configUserCmdAliases.containsKey(alias);
     }
+    
     @Override
     public String getUserAliasTargetName(String alias) {
     	return configUserCmdAliases.get(alias);
@@ -189,52 +184,50 @@ public class Configuration implements ConfigurationInterface {
     
     // setters
     //@@author A0133920N
-
     @Override
-    public void setUsrFileDirector(String newDir) throws IOException {
+    public void setStorageLocation(String newDir) {
+    	assert(newDir != null);
 		configStorageLocation = newDir;
 		
 		// write to the configuration file
         writeBack();
-        Log.log("usr file moved to " + newDir, this.getClass());
+        Log.log("Storage file moved to " + newDir, this.getClass());
     }
 
     @Override
-    public void setDefaultStartTime(String newTime) throws IOException {
+    public void setDefaultStartTime(String newTime) {
     	if (isValidTime(newTime)) {
     		configDefaultStartTime = newTime;
     		
     		// write to the configuration file
             writeBack();
-            Log.log("default start time reset to " + newTime, this.getClass());
+            Log.log("Default start time set to " + newTime, this.getClass());
     	} 
-    	//TODO how would caller know if newTime is accepteed as valid time
     }
     
     @Override
-    public void setDefaultEndTime(String newTime) throws IOException {
+    public void setDefaultEndTime(String newTime) {
     	if (isValidTime(newTime)) {
     		configDefaultEndTime = newTime;
     		
     		// write to the configuration file
             writeBack();
-            Log.log("default end time reset to " + newTime, this.getClass());
+            Log.log("Default end time set to " + newTime, this.getClass());
     	}
-    	//TODO how would caller know if newTime is accepteed as valid time
     }
     
     @Override
-    public void setSkin(String skin) throws IOException {
+    public void setSkin(String skin) {
     	if (isValidSkin(skin)) {
     		configSkin = skin;
     		writeBack();
-    		Log.log("skin reset to " + configSkin, this.getClass());
+    		Log.log("Theme set to " + configSkin, this.getClass());
     	}
     }
     
     //@@author A0131891E
     @Override
-    public void setUserAlias(String alias, String targetName) throws IOException {
+    public void setUserAlias(String alias, String targetName) {
     	assert( alias != null 
     			&& targetName != null 
     			&& !alias.equals("")
@@ -244,65 +237,59 @@ public class Configuration implements ConfigurationInterface {
     	configUserCmdAliases.put(alias, targetName);
     	
     	writeBack();
-    	Log.log("new alias mapping added: " + alias + "-->" + targetName);
+    	Log.log("New alias mapping added: " + alias + "-->" + targetName, this.getClass());
     }
-    //@@author A0131891E
+    
     @Override
-    public void removeUserAlias(String alias) throws IOException {
+    public void removeUserAlias(String alias) {
     	assert(alias != null && alias.length() != 0);
     	configUserCmdAliases.remove(alias);
     	
     	writeBack();
-    	Log.log("alias mapping removed: " + alias);
+    	Log.log("Alias mapping removed: " + alias, this.getClass());
     }
     
-    // resetterss
+    // resetters
     //@@author A0133920N
     
-    private void resetAll() throws IOException {
+    private void resetAll() {
         // set all properties to default value
     	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
     	configDefaultStartTime = DEFAULT_VALUE_DEFAULT_START_TIME;
     	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
     	configSkin = DEFAULT_VALUE_SKIN;
-    	//TODO new alias code
-    	configUserCmdAliases = new LinkedHashMap<>();
+    	configUserCmdAliases = new LinkedHashMap<String, String>();
 
         // write to the configuration file
         writeBack();
     }
     
-    public void resetStorageLocation() throws IOException {
-    	configStorageLocation = DEFAULT_VALUE_STORAGE_LOCATION;
-    	writeBack();
+    public void resetStorageLocation() {
+    	setStorageLocation(DEFAULT_VALUE_STORAGE_LOCATION);
     }
     
-    private void resetDefaultStartTime() throws IOException {
-    	configDefaultStartTime = DEFAULT_VALUE_DEFAULT_START_TIME;
-    	writeBack();
+    private void resetDefaultStartTime() {
+    	setDefaultStartTime(DEFAULT_VALUE_DEFAULT_START_TIME);
     }
     
-    private void resetDefaultEndTime() throws IOException {
-    	configDefaultEndTime = DEFAULT_VALUE_DEFAULT_END_TIME;
-    	writeBack();
+    private void resetDefaultEndTime() {
+    	setDefaultEndTime(DEFAULT_VALUE_DEFAULT_END_TIME);
     }
     
-    private void resetSkin() throws IOException {
-    	configSkin = DEFAULT_VALUE_SKIN;
-    	writeBack();
+    private void resetSkin() {
+    	setSkin(DEFAULT_VALUE_SKIN);
     }
     
     //@@author A0131891E
     @Override
-	public void clearUserAliases() throws IOException {
-    	configUserCmdAliases = new LinkedHashMap<>();
+	public void clearUserAliases() {
+    	configUserCmdAliases = new LinkedHashMap<String, String>();
     	writeBack();
-    	Log.log("All user alias mappings cleared");
+    	Log.log("All user alias mappings cleared", this.getClass());
     }
 	
 	// file data validation
 	
-    //@@author A0131891E
     @SuppressWarnings("rawtypes")
 	private boolean isValidAliasMap(Map aliasMap) {
 		if (aliasMap == null) {
@@ -333,6 +320,7 @@ public class Configuration implements ConfigurationInterface {
 			}
 			
 			// check alias
+			ALIASES = AliasesImpl.getInstance();
 			if (ALIASES.isReservedCmdAlias((String)entry.getKey())) {
 				return false; // reserved alias names cannot be redirected
 			}
@@ -342,7 +330,6 @@ public class Configuration implements ConfigurationInterface {
 	}
 	
     //@@author A0133920N
-
     private boolean isValidTime(String str) {
     	if (str == null) {
     		return false;
@@ -362,27 +349,30 @@ public class Configuration implements ConfigurationInterface {
     	return upper.equals(VALUE_SKIN_DAY) || upper.equals(VALUE_SKIN_NIGHT);
     }
 
-    private void logError(String invalidMsg, String arg, String resetMsg) {
+    private void logError(String invalidMsg, String arg) {
     	String formatted = Utilities.formatString(invalidMsg, arg);
     	Log.log(formatted);
-    	Log.log(resetMsg);
     }
     
     @SuppressWarnings("unchecked")
-	private void writeBack() throws IOException {
-        JSONObject configJson = new JSONObject();
-        configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
-        configJson.put(KEY_DEFAULT_START_TIME, configDefaultStartTime);
-        configJson.put(KEY_DEFAULT_END_TIME, configDefaultEndTime);
-        configJson.put(KEY_SKIN, configSkin);
-        //TODO new alias code
-        configJson.put(KEY_ALIAS_MAPPINGS, configUserCmdAliases);
+	private void writeBack() { 
+    	try {
+    		JSONObject configJson = new JSONObject();
+            configJson.put(KEY_STORAGE_LOCATION, configStorageLocation);
+            configJson.put(KEY_DEFAULT_START_TIME, configDefaultStartTime);
+            configJson.put(KEY_DEFAULT_END_TIME, configDefaultEndTime);
+            configJson.put(KEY_SKIN, configSkin);
+            //TODO new alias code
+            configJson.put(KEY_ALIAS_MAPPINGS, configUserCmdAliases);
 
-        configWriter = new BufferedWriter(new FileWriter(CONFIG_FILE_DIR));
-        String text = JSONValue.toJSONString(configJson);
-        configWriter.write(text);
-        configWriter.close();
-        configWriter = null;
+            configWriter = new BufferedWriter(new FileWriter(CONFIG_FILE_DIR));
+            String text = JSONValue.toJSONString(configJson);
+            configWriter.write(text);
+            configWriter.close();
+            configWriter = null;
+    	} catch (Exception e) {
+    		Log.log("Fail to write user settings");
+    	}
     }
 
 }

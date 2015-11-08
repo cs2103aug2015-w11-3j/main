@@ -1,8 +1,6 @@
 //@@author A0133920N
 package common;
 
-import java.io.IOException;
-
 public interface ConfigurationInterface {
 	
 	public String getDefaultUsrFileDirectory();
@@ -13,15 +11,15 @@ public interface ConfigurationInterface {
     public boolean isUserAlias(String alias);
     public String getUserAliasTargetName(String alias);
     
-    public void setUsrFileDirector(String newDir) throws IOException;
-    public void setDefaultStartTime(String newTime) throws IOException;
-    public void setDefaultEndTime(String newTime) throws IOException;
-    public void setSkin(String skin) throws IOException;
-    public void setUserAlias(String alias, String target) throws IOException;
-    public void removeUserAlias(String alias) throws IOException;
-    public void clearUserAliases() throws IOException;
+    public void setStorageLocation(String newDir);
+    public void setDefaultStartTime(String newTime);
+    public void setDefaultEndTime(String newTime);
+    public void setSkin(String skin);
+    public void setUserAlias(String alias, String target);
+    public void removeUserAlias(String alias);
+    public void clearUserAliases();
     
-    public void resetStorageLocation() throws IOException;
+    public void resetStorageLocation();
 	
 	
 }
