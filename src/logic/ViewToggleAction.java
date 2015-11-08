@@ -4,6 +4,7 @@ import common.TasksBag;
 import common.TasksBag.ViewType;
 import javafx.scene.input.KeyCode;
 import logic.exceptions.LogicException;
+
 //@@author A0125546E
 public class ViewToggleAction implements Action {
     private static final String USR_MSG_VIEW_COMPLETE = "Switching view to completed tasks";
@@ -21,11 +22,12 @@ public class ViewToggleAction implements Action {
     @Override
     public KeyEventFeedback execute() throws LogicException {
         KeyEventFeedback fb;
-        ViewType viewState = cBag.getView();
+        ViewType viewState;
         String msg = "";
 
         cBag.toggleView();
-
+        viewState = cBag.getView();
+        
         switch (viewState) {
             case COMPLETED:
                 msg = USR_MSG_VIEW_COMPLETE;
@@ -39,7 +41,7 @@ public class ViewToggleAction implements Action {
                 msg = USR_MSG_VIEW_TODAY;
                 break;
         }
-        
+
         fb = new KeyEventFeedback(cBag, cKey, msg);
         return fb;
     }
