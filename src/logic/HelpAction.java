@@ -3,18 +3,16 @@ package logic;
 
 import common.TasksBag;
 import logic.exceptions.LogicException;
-import parser.Command;
-import parser.Command.Type;
-import parser.CommandImpl;
 import parser.HelpStrings;
+import parser.commands.CommandData;
 
 public class HelpAction implements Action {
 
     private static final String USR_MSG_HELP_INVALID = "No help available for this command";
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
     
-    public HelpAction(CommandImpl rtnCmd, TasksBag bag) {
+    public HelpAction(CommandData rtnCmd, TasksBag bag) {
         cCommand = rtnCmd;
         cBag = bag;
     }
@@ -23,7 +21,7 @@ public class HelpAction implements Action {
     public CommandFeedback execute() throws LogicException {
         String msg = "";
         CommandFeedback fb;
-        Command.Type cmdType = cCommand.getSecondaryCmdType();
+        CommandData.Type cmdType = cCommand.getSecondaryCmdType();
         
         // General help command requested by user
         if(cmdType == null){

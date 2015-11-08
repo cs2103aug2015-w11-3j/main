@@ -16,7 +16,8 @@ import org.json.simple.JSONValue;
 
 import parser.Aliases;
 import parser.AliasesImpl;
-import parser.Command;
+import parser.commands.CommandData;
+
 import static ui.view.CelebiViewController.Skin;
 
 /*
@@ -320,8 +321,8 @@ public class Configuration implements ConfigurationInterface {
 			
 			// check target command
 			try {
-				Command.Type target = Enum.valueOf(Command.Type.class, (String) entry.getValue());
-				if (target == Command.Type.INVALID) {
+				CommandData.Type target = Enum.valueOf(CommandData.Type.class, (String) entry.getValue());
+				if (target == CommandData.Type.INVALID) {
 					return false; // cannot map to invalid command
 				}
 			} catch (IllegalArgumentException iae) {

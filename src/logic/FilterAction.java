@@ -3,7 +3,7 @@ package logic;
 
 import common.TasksBag;
 import common.TasksBag.ViewType;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 
 /**
  * Changes the state of the internal taskbags to given sort state Undo sets the
@@ -14,12 +14,12 @@ public class FilterAction implements Action {
     private static final String USR_MSG_FILTER_INCOMPLETE = "Switching view to incompleted tasks";
     private static final String USR_MSG_FILTER_TODAY = "Switching view to today tasks";
 
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
     private ViewType cSortBy;
 
     
-    public FilterAction(CommandImpl command, TasksBag internalBag) {
+    public FilterAction(CommandData command, TasksBag internalBag) {
         cCommand = command;
         cBag = internalBag;
         cSortBy = cCommand.getViewType();

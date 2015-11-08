@@ -10,8 +10,7 @@ import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.Aliases;
 import parser.AliasesImpl;
-import parser.Command;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 
 public class AliasAction implements Action {
 
@@ -23,13 +22,13 @@ public class AliasAction implements Action {
 	
 	private static final Aliases ALIASES = AliasesImpl.getInstance();
 	
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
     
     private String newAlias;
-    private Command.Type aliasTarget;
+    private CommandData.Type aliasTarget;
     
-	public AliasAction(CommandImpl cmd, TasksBag internalBag) {
+	public AliasAction(CommandData cmd, TasksBag internalBag) {
         cCommand = cmd;
         cBag = internalBag;
         newAlias = cmd.getText();
@@ -53,7 +52,7 @@ public class AliasAction implements Action {
 		
 		assert newAlias != null // if aliasTarget != null, must have newAlias.
 				&& !"".equals(newAlias) // parser won't parse empty string as alias
-				&& aliasTarget != Command.Type.INVALID // parser shouldnt give INVALID
+				&& aliasTarget != CommandData.Type.INVALID // parser shouldnt give INVALID
 				&& P_VALID_ALIAS.matcher(newAlias).matches(); // parser should have removed whitespace and tolowercase
 		
 		// Don't allow user to user to re-map reserved keywords

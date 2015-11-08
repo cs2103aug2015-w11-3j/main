@@ -3,6 +3,10 @@ package parser;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import parser.commands.CommandData;
+import parser.commands.CommandDataImpl;
+
 import org.junit.Before;
 
 import java.util.Random;
@@ -10,7 +14,7 @@ import java.nio.charset.*;
 
 public class ParserTest {
 
-	private Parser P;
+	private ParserControllerImpl P;
 	private Random RNG;
 	private static final Charset CHARSET = StandardCharsets.UTF_8;
 	
@@ -36,7 +40,7 @@ public class ParserTest {
 	@Before
 	public void setUp () {
 		RNG = new Random();
-		P = Parser.getParser();
+		P = ParserControllerImpl.getParser();
 	}
 	
 	
@@ -47,7 +51,7 @@ public class ParserTest {
 	@Test
 	public void testInvalidCmdToken () {
 		StringBuilder testInput;
-		CommandImpl cmd;
+		CommandDataImpl cmd;
 		// test random inputs with guaranteed invalid command tokens 
 		for (int i = 0; i < NUM_RANDOM_RETESTS; i++) {
 			testInput = new StringBuilder(randInvalidCmdToken());
@@ -55,10 +59,10 @@ public class ParserTest {
 			testInput.append(randInputString());
 			System.out.println(testInput);
 			// testInput now holds a random command token + a space + random data
-			cmd = P.parseCommand(testInput.toString());
+			cmd = P.parseCommandData(testInput.toString());
 			
-			if (cmd.getCmdType() != Command.Type.INVALID) {
-				Parser.printCmd(cmd);
+			if (cmd.getCmdType() != CommandData.Type.INVALID) {
+				ParserControllerImpl.printCmd(cmd);
 				fail("invalid command token string does not correctly return INVALID\n");
 			}
 		}		
@@ -108,7 +112,7 @@ public class ParserTest {
 	@Test
 	public void testAddWithValidName () {
 		// 
-		CommandImpl cmd = P.parseCommand("add ");
+		CommandDataImpl cmd = P.parseCommandData("add ");
 	}
 
 	//private String getRandomVa

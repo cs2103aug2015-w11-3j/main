@@ -1,16 +1,16 @@
 package logic;
 
 import common.TasksBag;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 
 public class FilterClearAction implements Action {
     
     private static final String USR_MSG_FILTER_CLEAR = "Cleared searches and filters!";
 
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
 
-    public FilterClearAction(CommandImpl rtnCmd, TasksBag cInternalBag) {
+    public FilterClearAction(CommandData rtnCmd, TasksBag cInternalBag) {
         cCommand = rtnCmd;
         cBag = cInternalBag;
     }

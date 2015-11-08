@@ -6,19 +6,19 @@ import common.Configuration;
 import common.ConfigurationInterface;
 import common.TasksBag;
 import logic.exceptions.LogicException;
-import parser.CommandImpl;
+import parser.commands.CommandData;
 import ui.view.CelebiViewController;
 
 public class ThemeChangeAction implements Action {
     private static final String USR_MSG_THEME_NIGHT = "Switched to night theme~!";
     private static final String USR_MSG_THEME_DAY = "Switched to day theme~!";
     private static final String USR_MSG_FAIL_SAVE = "Fail to write new settings into configuration";
-    private CommandImpl cCommand;
+    private CommandData cCommand;
     private TasksBag cBag;
     private ConfigurationInterface cConfig;
     private CelebiViewController.Skin cSkin;
 
-    public ThemeChangeAction(CommandImpl comd, TasksBag bag) {
+    public ThemeChangeAction(CommandData comd, TasksBag bag) {
     	cConfig = Configuration.getInstance();
         cCommand = comd;
         cBag = bag;
