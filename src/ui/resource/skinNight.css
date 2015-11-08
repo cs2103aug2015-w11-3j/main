@@ -289,3 +289,19 @@
     -fx-background-radius: 4px;
     -fx-padding: 1 8 1 8;
 }
+
+.tool-bar:horizontal {
+	-fx-background-color: #30ae95;
+	-fx-padding: 0px 0px 0px 840px;
+}
+
+.button {
+	-fx-background-color: #ffffff, transparent, #5ccdb6;
+	-fx-padding: 3px 6px 2px 6px;
+	-fx-background-radius: 5, 5, 5;
+	-fx-text-fill: #ffffff;
+}
+
+.caret {
+    -fx-stroke: #ffffff;
+}
