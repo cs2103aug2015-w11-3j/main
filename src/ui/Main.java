@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -45,6 +46,16 @@ public class Main extends Application {
         	
         }
 	}
+	
+	private void setToolBar(BorderPane borderPane) {
+		ToolBar bar = new ToolBar();
+		int height = 25;
+		bar.setPrefHeight(height);
+		bar.setMinHeight(height);
+		bar.setMaxHeight(height);
+		//bar.getItems().add(new WindowButtons());
+		borderPane.setTop(bar);
+	}
 
 	private void loadFonts() {
 		Font regularFont = Font.loadFont(Main.class.getResourceAsStream("resource/Oxygen regular.ttf"), 10);
@@ -62,6 +73,7 @@ public class Main extends Application {
             rootLayout = (BorderPane) loader.load();
 
             // Show the scene containing the root layout.
+            //setToolBar(rootLayout);
             Scene scene = new Scene(rootLayout);
             scene.setFill(Color.TRANSPARENT);
             primaryStage.setScene(scene);
@@ -69,7 +81,7 @@ public class Main extends Application {
             primaryStage.show();
             this.scene = scene;
         } catch (IOException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
         }
     }
     
@@ -89,6 +101,7 @@ public class Main extends Application {
             
             // Give the controller access to the main app and UI.
             controller = loader.getController();
+            controller.setStage(primaryStage);
             ConfigurationInterface config = Configuration.getInstance();
             CelebiViewController.Skin skin;
             try {
@@ -109,6 +122,7 @@ public class Main extends Application {
             
             controller.setUI(mUI);
             controller.setMainApp(this);
+            controller.setToolBar();
             
             // Give the UI acess to the controller.
             mUI.setController(controller);
@@ -119,19 +133,6 @@ public class Main extends Application {
         }
     }
     
-     
-    class WindowsBar extends HBox {
-    	public WindowsBar() {
-    		Button close = new Button("X");
-    		close.setOnAction(new EventHandler<ActionEvent>() {
-    			@Override
-    			public void handle(ActionEvent event) {
-    				Platform.exit();
-    			}
-    		});
-    		this.getChildren().add(close);
-    	}
-    }
 	
 	
     /**
@@ -147,6 +148,9 @@ public class Main extends Application {
     }
     
     public BorderPane getRootLayout() {
+    	System.out.println("WTF");
+    	System.out.println(rootLayout == null);
+    	System.out.println("WTF");
     	return rootLayout;
     }
     
