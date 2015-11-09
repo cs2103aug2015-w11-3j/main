@@ -15,7 +15,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import common.Configuration;
 import common.Task;
 import common.TasksBag;
 import logic.exceptions.AlreadyMarkedException;
@@ -104,7 +103,8 @@ public class LogicTest {
         testPass("show complete");
         testPass("show undone");
         testPass("show incomplete");
-
+        testPass("show default");
+        testFailException("show tod1", UnknownCommandException.class);
         // filter
         testPass("filter after now");
         testPass("filter before now");
@@ -112,21 +112,6 @@ public class LogicTest {
 
         // help
         testPass("help");
-        testPass("help done");
-        testPass("help complete");
-        testPass("help undo");
-        testPass("help redo");
-        testPass("help mark");
-        testPass("help unmark");
-        testPass("help add");
-        testPass("help delete");
-        testPass("help quit");
-        testPass("help search");
-        testPass("help filter");
-        testPass("help show");
-        // testPass("help show done");
-        // testPass("help show undone");
-        // testPass("help show today");
         testPass("help help");
         testFailException("help 1", UnknownCommandException.class);
 
