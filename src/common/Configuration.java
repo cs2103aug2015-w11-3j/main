@@ -68,7 +68,7 @@ public class Configuration implements ConfigurationInterface {
     private Map<String, String> configUserCmdAliases;
     private Aliases ALIASES;
 
-    // Singleton Pattern
+    // Apply Singleton Pattern
     public static ConfigurationInterface getInstance() {
         if (instance == null) {
             instance = new Configuration();
@@ -81,7 +81,8 @@ public class Configuration implements ConfigurationInterface {
         readProperties();
     }
 
-    // getters
+    // Getters
+    
     @Override
     /*
      * @see common.ConfigurationInterface#getDefaultUsrFileDirectory()
@@ -95,6 +96,7 @@ public class Configuration implements ConfigurationInterface {
      * @see common.ConfigurationInterface#getUsrFileDirectory()
      */
     public String getUsrFileDirectory() {
+    	assert(configStorageLocation != null);
         return configStorageLocation;
     }
 
@@ -103,6 +105,7 @@ public class Configuration implements ConfigurationInterface {
      * @see common.ConfigurationInterface#getDefaultStartTime()
      */
     public Time getDefaultStartTime() {
+    	assert(isValidTime(configDefaultStartTime));
         return new Time(configDefaultStartTime);
     }
 
@@ -111,6 +114,7 @@ public class Configuration implements ConfigurationInterface {
      * @see common.ConfigurationInterface#getDefaultEndTime()
      */
     public Time getDefaultEndTime() {
+    	assert(isValidTime(configDefaultEndTime));
         return new Time(configDefaultEndTime);
     }
     
@@ -119,6 +123,7 @@ public class Configuration implements ConfigurationInterface {
      * @see common.ConfigurationInterface#getSkin()
      */
     public String getSkin() {
+    	assert(isValidSkin(configSkin));
     	return configSkin;
     }
 
@@ -139,7 +144,7 @@ public class Configuration implements ConfigurationInterface {
     	return configUserCmdAliases.get(alias);
     }
     
-    // setters
+    // Setters
     //@@author A0133920N
     @Override
     /*
@@ -262,7 +267,7 @@ public class Configuration implements ConfigurationInterface {
     	Log.log("All user alias mappings cleared", this.getClass());
     }
 	
-	// file data validation
+	// Alias validation
     @SuppressWarnings("rawtypes")
 	private boolean isValidAliasMap(Map aliasMap) {
 		if (aliasMap == null) {
@@ -302,8 +307,8 @@ public class Configuration implements ConfigurationInterface {
 		return true; // all tests passed, phew!
 	}
 	
-    //@@author A0133920N
     // Validators
+    //@@author A0133920N
     private boolean isValidTime(String str) {
     	if (str == null) {
     		return false;
