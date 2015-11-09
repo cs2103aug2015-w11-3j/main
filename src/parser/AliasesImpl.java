@@ -20,7 +20,6 @@ public class AliasesImpl extends Aliases {
 	    
 		if (instance == null) {
 		
-		    System.out.println("iasdasdnit"); 
 		    instance = new AliasesImpl();
 		}
 		return instance;
