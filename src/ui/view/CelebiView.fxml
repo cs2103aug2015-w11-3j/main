@@ -72,11 +72,7 @@
          </children>
       </AnchorPane>
       <AnchorPane maxHeight="60.0" minHeight="60.0" prefHeight="60.0" prefWidth="200.0" styleClass="header-background" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <ImageView fx:id="logo" fitHeight="74.0" fitWidth="222.0" layoutX="14.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="35.0">
-         <image>
-            <Image url="@../../../../../CS2103/logo/Celebi%20logo_day.png" />
-         </image>
-      </ImageView>
+      <ImageView fx:id="logo" fitHeight="74.0" fitWidth="222.0" layoutX="14.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="35.0" />
          <Label id="popupLabel" fx:id="popupLabel" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="50.0" />
    </children>
 </AnchorPane>
