@@ -1,4 +1,12 @@
 //@@author A0133920N
+
+/*
+ * @class: Storage
+ * 
+ * The controller of this package. When Storage is invoked by the Logic Component,
+ * it controls Database on how to operate the storage file and the persist data.
+ */
+
 package storage;
 
 import java.io.IOException;
