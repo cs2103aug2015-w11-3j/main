@@ -43,7 +43,8 @@ public class Main extends Application {
 	private void setStageTransparent() {
 		try {
         	this.primaryStage.initStyle(StageStyle.TRANSPARENT);
-        } catch (Exception e) {
+        } 
+		catch (Exception e) {
         	
         }
 	}
@@ -70,7 +71,8 @@ public class Main extends Application {
             primaryStage.setResizable(false);
             primaryStage.show();
             this.scene = scene;
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
         	e.printStackTrace();
         }
     }
@@ -105,7 +107,8 @@ public class Main extends Application {
             mUI.setController(controller);
             mUI.showWelcomeView();
 
-        } catch (IOException e) {
+        } 
+    	catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -118,7 +121,8 @@ public class Main extends Application {
 		CelebiViewController.Skin skin;
 		try {
 			skin = Enum.valueOf(CelebiViewController.Skin.class, config.getSkin());
-		} catch (IllegalArgumentException e) {
+		} 
+		catch (IllegalArgumentException e) {
 			skin = CelebiViewController.Skin.DAY;
 		}
 		

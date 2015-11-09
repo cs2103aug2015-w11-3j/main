@@ -335,18 +335,22 @@ public class CelebiViewController {
             case DAY:
                 if (task.isCompleted()) {
                     nameText.setFill(DAY_COMPLETED_TASK_COLOR);
-                } else if (task.isOverDue()) {
+                } 
+                else if (task.isOverDue()) {
                     nameText.setFill(DAY_OVERDUE_TASK_COLOR);
-                } else {
+                } 
+                else {
                     nameText.setFill(DAY_NORMAL_TASK_COLOR);
                 }
                 break;
             case NIGHT:
                 if (task.isCompleted()) {
                     nameText.setFill(NIGHT_COMPLETED_TASK_COLOR);
-                } else if (task.isOverDue()) {
+                } 
+                else if (task.isOverDue()) {
                     nameText.setFill(NIGHT_OVERDUE_TASK_COLOR);
-                } else {
+                } 
+                else {
                     nameText.setFill(NIGHT_NORMAL_TASK_COLOR);
                 }
                 break;
@@ -376,7 +380,8 @@ public class CelebiViewController {
                     if (item == null || empty) {
                         setText(null);
                         setStyle("");
-                    } else {
+                    } 
+                    else {
                         // Format date.
                         setText(df.formatDate(item));
                     }
