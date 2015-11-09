@@ -1,4 +1,4 @@
-// @@author A0133895U
+//@@author A0133895U
 package ui.view;
 
 import javafx.application.Platform;
@@ -9,7 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-class WindowButtons extends HBox {
+public class WindowButtons extends HBox {
 	private Stage stage;
 	
 	public WindowButtons(Stage stage) {

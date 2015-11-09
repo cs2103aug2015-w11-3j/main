@@ -1,4 +1,4 @@
-// @@author A0133895U
+//@@author A0133895U
 /**
  * This is the controller for the main view.
  */
