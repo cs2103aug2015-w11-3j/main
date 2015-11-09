@@ -31,7 +31,7 @@ public class StorageStub implements StorageInterface {
 
     @Override
     public void moveFileTo(String destination) {
-        
+
     }
 
     @Override

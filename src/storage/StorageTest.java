@@ -27,9 +27,11 @@ import common.TasksBag;
 public class StorageTest {
     private final static String TEST_FILENAME = "test_task.json";
 
+    // Test content to be written into storage file
     private final String TESTFILE_CONTENT_EMPTY = "";
     private final String TESTFILE_CONTENT_INVALID_JSON = "[invalid json)";
     private final String TESTFILE_CONTENT_INVALID_JSON_ARRAY = "\"foo\":\"bar\"";
+    private final String TESTFILE_CONTENT_INITIAL = "[]";
 
     private final String VALID_TASK = "{\"ID\":\"1\","
             + "\"NAME\":\"test valid task\",\"DATE_START\":\"null\",\"DATE_END\":\"null\","
@@ -96,8 +98,7 @@ public class StorageTest {
             INVALID_TASK_INVALID_DATE_2, INVALID_TASK_INVALID_DATE_3, INVALID_TASK_NO_IS_COMPLETE,
             INVALID_TASK_INVALID_IS_COMPLETE };
 
-    private final static String TESTFILE_CONTENT_INITIAL = "[]";
-
+    // Some path strings used in tests
     private final static String NOT_EXSITS_FILEPATH = "notExists";
     private final static String MOVE_TO_FILEPATH = "newPath";
 
@@ -440,44 +441,51 @@ public class StorageTest {
     }
 
     @Test
+    /*
+     * Test for a entire flow of a use case
+     */
     public void testComplicatedCases() {
         TasksBag tb;
+        Storage storage = Storage.getStorage();
+        
+        Task c1 = new Task("storage test1",
+        		           createDate(2015, 10, 10, 0, 0, 0), 
+        		           createDate(2015, 11, 11, 0, 0, 0));
+        Task c2 = new Task("storage test2", 
+        		           createDate(2016, 10, 10, 0, 0, 0), 
+        		           createDate(2016, 11, 11, 0, 0, 0));
+        Task c3 = new Task("storage test3", 
+        		           createDate(2017, 10, 10, 0, 0, 0), 
+        		           createDate(2017, 11, 11, 0, 0, 0));
 
-        Storage s = Storage.getStorage();
-        s.init();
-        Task c1 = new Task("storage test1", createDate(2015, 10, 10, 0, 0, 0), createDate(2015, 11, 11, 0, 0, 0));
-        Task c2 = new Task("storage test2", createDate(2016, 10, 10, 0, 0, 0), createDate(2016, 11, 11, 0, 0, 0));
-        Task c3 = new Task("storage test3", createDate(2017, 10, 10, 0, 0, 0), createDate(2017, 11, 11, 0, 0, 0));
-
-        boolean result = s.save(c1);
-        Assert.assertEquals(true, result);
-
-        s.save(c2);
-        s.save(c3);
+        storage.init();
+        storage.save(c1);
+        storage.save(c2);
+        storage.save(c3);
 
         tb = new TasksBag();
-        s.load(tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 3);
 
         c1.setName("new");
-        s.save(c1);
+        storage.save(c1);
 
         tb = new TasksBag();
-        s.load(tb);
+        storage.load(tb);
 
         Task ct = tb.getTask(0);
         String ctName = ct.getName();
         Assert.assertEquals("new", ctName);
 
-        s.delete(c2);
+        storage.delete(c2);
 
         tb = new TasksBag();
-        s.load(tb);
+        storage.load(tb);
         Assert.assertEquals(tb.size(), 2);
-
-        s.close();
     }
+    
 
+    // Private Methods
     /*
      * Test if file exists but the content is corrupted, input could be empty,
      * invalid JSON format or invalid Task format
@@ -533,9 +541,11 @@ public class StorageTest {
 
         return content;
     }
-
-    // private methods
-    private static Date createDate(int year, int month, int day, int hour, int minute, int second) {
+    
+    /*
+     * Create date object for testing
+     */
+    private Date createDate(int year, int month, int day, int hour, int minute, int second) {
         Calendar calender = Calendar.getInstance();
         calender.set(year, month, day, hour, minute, second);
         return new Date(calender.getTimeInMillis());
@@ -600,12 +610,12 @@ public class StorageTest {
         assertFileExists(f);
     }
 
-    private static void assertFileExists(File f) {
+    private void assertFileExists(File f) {
         Assert.assertTrue(f.exists());
     }
 
-    private static void assertTaskIdentical(Task task1, Task task2) {
-        System.out.println(task1.getId());
+    // Check whether two tasks's attributes are all the same
+    private void assertTaskIdentical(Task task1, Task task2) {
         Assert.assertEquals(task1.getId(), task2.getId());
         Assert.assertEquals(task1.getName(), task2.getName());
         Assert.assertEquals(task1.isCompleted(), task2.isCompleted());
@@ -614,9 +624,8 @@ public class StorageTest {
         assertDateEqual(task1.getEnd(), task2.getEnd());
     }
 
-    private static void assertDateEqual(Date d1, Date d2) {
+    private void assertDateEqual(Date d1, Date d2) {
         int result = d1.compareTo(d2);
-
         Assert.assertEquals(result, 1);
     }
 }
