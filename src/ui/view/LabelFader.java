@@ -1,4 +1,3 @@
-//@@author A0125546E
 package ui.view;
 
 import javafx.animation.FadeTransition;
