@@ -26,7 +26,7 @@
                                         <AnchorPane id="tab-anchorpane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                       </content>
                                     </Tab>
-                                  <Tab closable="false" text="Incompleted">
+                                  <Tab closable="false" text="Incomplete">
                                        <content>
                                           <AnchorPane id="tab-anchorpane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                        </content>

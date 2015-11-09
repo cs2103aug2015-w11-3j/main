@@ -103,7 +103,7 @@ public class CelebiViewController {
     private static final Color DAY_COMPLETED_TASK_COLOR = Color.rgb(82, 146, 40);
     private static final Color DAY_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
     private static final Color NIGHT_NORMAL_TASK_COLOR = Color.rgb(236, 240, 241);
-    private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(22, 160, 133);
+    private static final Color NIGHT_COMPLETED_TASK_COLOR = Color.rgb(26, 188, 156);
     private static final Color NIGHT_OVERDUE_TASK_COLOR = Color.rgb(158, 158, 156);
 
     // Load the necessary files
