@@ -372,6 +372,11 @@ public class Configuration implements ConfigurationInterface {
     }
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
+	/*
+	 * Read the properties from config file one by one,
+	 * also check whether the data parsed are valid or not,
+	 * if encounter any invalid data, reset it to default value
+	 */
 	private void readProperties() {
         try {
         	assert(configFile != null);
@@ -389,6 +394,7 @@ public class Configuration implements ConfigurationInterface {
             JSONObject parsedResult = (JSONObject) JSONValue.parse(plainText);
             if (parsedResult == null) {
             	resetAll();
+            	return;
             }
 
             configStorageLocation = (String) parsedResult.get(KEY_STORAGE_LOCATION);
