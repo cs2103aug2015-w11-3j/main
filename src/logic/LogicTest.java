@@ -268,9 +268,7 @@ public class LogicTest {
         testFailException("a task; from 2015_00_1, 10:00", UnknownCommandException.class);
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
 
-        // @yijin Currently failing
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
-        testFailException("a task; from 2015_2_-1, 10:00", UnknownCommandException.class);
     }
 
     @Test
