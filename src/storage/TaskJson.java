@@ -34,7 +34,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 	boolean _isValid = true;
 	
 	// constructors
-	public TaskJson (Task c) {
+	TaskJson (Task c) {
 		String id = Integer.toString(c.getId());
 		String name = c.getName();
 		String start = formatDate(c.getStart());
@@ -48,7 +48,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 		put(KEY_NAME_IS_COMPLETED, isCompleted);
 	}
 	
-	public TaskJson (JSONObject j) {
+	TaskJson (JSONObject j) {
 		mapFromJSONObject(j);
 				
 		if (isValid()) {
@@ -59,7 +59,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 		}
 	}
 	
-	public boolean isValid () {
+	boolean isValid () {
 		return _isValid;
 	}
 	
@@ -113,7 +113,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 		}
 	}
 	
-	public Task toCelebi () {
+	Task toTask () {
 		int id = Integer.parseInt(get(KEY_NAME_ID));
 		String name = get(KEY_NAME_NAME);
 		Date start = parseDate(get(KEY_NAME_DATE_START));
@@ -127,11 +127,11 @@ class TaskJson extends LinkedHashMap<String, String>{
 		return c;
 	}
 	
-	public void setId (int id) {
+	void setId (int id) {
 		put(KEY_NAME_ID, Integer.toString(id));
 	}
 	
-	public int getId () {
+	int getId () {
 		String id = get(KEY_NAME_ID);
 		if (id == null) {
 			return 0;
@@ -140,7 +140,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 		}
 	}
 	
-	public void update (TaskJson cj) {
+	void update (TaskJson cj) {
 		put(KEY_NAME_ID, cj.get(KEY_NAME_ID));
 		put(KEY_NAME_NAME, cj.get(KEY_NAME_NAME));
 		put(KEY_NAME_DATE_START, cj.get(KEY_NAME_DATE_START));
@@ -148,7 +148,7 @@ class TaskJson extends LinkedHashMap<String, String>{
 		put(KEY_NAME_IS_COMPLETED, cj.get(KEY_NAME_IS_COMPLETED));
 	}
 	
-	public static TJComparator getComparator () {
+	static TJComparator getComparator () {
 		return new TJComparator();
 	}
 	

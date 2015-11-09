@@ -17,18 +17,32 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-abstract class Database {
+class Database {
 	private final static String FILENAME = "task.json";
 	private final static String TEST_FILENAME = "test_task.json";
 	
-	private static File db;
-	private static Scanner dbReader;
-	private static Writer dbWriter;
-
-	private static List<TaskJson> dbData;
-	private static HashMap<Integer, TaskJson> dbIndex;
+	private static Database _instance;
 	
-	static boolean connect (String path, boolean isTestMode) {
+	private File db;
+	private Scanner dbReader;
+	private Writer dbWriter;
+
+	private List<TaskJson> dbData;
+	private HashMap<Integer, TaskJson> dbIndex;
+	
+	private Database() {
+		
+	}
+	
+	static Database getDatabase() {
+		if (_instance == null) {
+			_instance = new Database();
+    	}
+    	
+    	return _instance;
+	}
+	
+	boolean connect (String path, boolean isTestMode) {
 		try {
 			if (isTestMode) {
 				db = new File(path, TEST_FILENAME);
@@ -50,7 +64,84 @@ abstract class Database {
 		}
 	}
 	
-	static private void load () throws IOException {
+	void disconnect () {
+		db = null;
+		dbData = null;
+		dbIndex = null;
+	}
+	
+	List<TaskJson> selectAll () {
+		checkConnected();
+		return new ArrayList<TaskJson>(dbData);
+	}
+	
+	TaskJson selectById (int id) {
+		checkConnected();
+		return dbIndex.get(id);
+	}
+	
+	int insert (TaskJson cj) throws IOException {
+		checkConnected();
+		
+		int last; 
+		int dbSize = dbData.size();
+
+		if (dbSize < 1) {
+			last = 0;
+		} else {
+			last = Integer.parseInt(dbData.get(dbSize - 1).get("ID"));
+		}
+		
+		int id = last + 1;
+		
+		cj.setId(id);
+		dbData.add(cj);
+		dbIndex.put(id, cj);
+		
+		save ();
+		
+		return id;
+	}
+		
+	void update (TaskJson cj) throws IOException {
+		checkConnected();
+		
+		TaskJson cjInDb = dbIndex.get(cj.getId());
+		cjInDb.update(cj);
+				
+		save ();
+	}
+	
+	void delete (int id) throws IOException {
+		checkConnected();
+		TaskJson cj= dbIndex.get(id);
+		
+		dbData.remove(cj);
+		dbIndex.remove(id);
+		
+		save ();
+	}
+	
+	void restore (TaskJson cj) throws IOException {
+		checkConnected();
+		dbData.add(cj);
+		dbIndex.put(cj.getId(), cj);
+		orderById();
+		
+		save ();
+	}
+	
+	void moveTo(String destination, boolean isTestMode) throws IOException {
+		checkConnected();
+		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
+		File newDb = new File(destination, fileName);
+		
+		Files.move(db.toPath(), newDb.toPath());		
+		db = newDb;
+	}
+		
+	// private methods
+	private void load () throws IOException {
 		assert(db != null);
 		
 		String plainText = "";
@@ -83,84 +174,7 @@ abstract class Database {
 		save();
 	}
 	
-	static void disconnect () {
-		db = null;
-		dbData = null;
-		dbIndex = null;
-	}
-	
-	static List<TaskJson> selectAll () {
-		checkConnected();
-		return new ArrayList<TaskJson>(dbData);
-	}
-	
-	static TaskJson selectById (int id) {
-		checkConnected();
-		return dbIndex.get(id);
-	}
-	
-	static int insert (TaskJson cj) throws IOException {
-		checkConnected();
-		
-		int last; 
-		int dbSize = dbData.size();
-
-		if (dbSize < 1) {
-			last = 0;
-		} else {
-			last = Integer.parseInt(dbData.get(dbSize - 1).get("ID"));
-		}
-		
-		int id = last + 1;
-		
-		cj.setId(id);
-		dbData.add(cj);
-		dbIndex.put(id, cj);
-		
-		save ();
-		
-		return id;
-	}
-		
-	static void update (TaskJson cj) throws IOException {
-		checkConnected();
-		
-		TaskJson cjInDb = dbIndex.get(cj.getId());
-		cjInDb.update(cj);
-				
-		save ();
-	}
-	
-	static void delete (int id) throws IOException {
-		checkConnected();
-		TaskJson cj= dbIndex.get(id);
-		
-		dbData.remove(cj);
-		dbIndex.remove(id);
-		
-		save ();
-	}
-	
-	static void restore (TaskJson cj) throws IOException {
-		checkConnected();
-		dbData.add(cj);
-		dbIndex.put(cj.getId(), cj);
-		orderById();
-		
-		save ();
-	}
-	
-	static void moveTo(String destination, boolean isTestMode) throws IOException {
-		checkConnected();
-		String fileName = isTestMode ? TEST_FILENAME : FILENAME;
-		File newDb = new File(destination, fileName);
-		
-		Files.move(db.toPath(), newDb.toPath());		
-		db = newDb;
-	}
-		
-	// private methods
-	private static void save () throws IOException {
+	private void save () throws IOException {
 		checkConnected();
 		dbWriter = new BufferedWriter(new FileWriter(db));
 		String text = JSONValue.toJSONString(dbData);
@@ -171,12 +185,12 @@ abstract class Database {
 		dbWriter = null;
 	}
 	
-	private static void orderById () {
+	private void orderById () {
 		checkConnected();
 		Collections.sort(dbData, TaskJson.getComparator());
 	}
 	
-	private static void checkConnected() {
+	private void checkConnected() {
 		assert(dbData != null);
 		assert(dbIndex != null);
 	}

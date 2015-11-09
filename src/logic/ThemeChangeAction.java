@@ -1,11 +1,8 @@
 package logic;
 
-import java.io.IOException;
-
 import common.Configuration;
 import common.ConfigurationInterface;
 import common.TasksBag;
-import common.Utilities;
 import logic.exceptions.LogicException;
 import parser.commands.CommandData;
 import ui.view.CelebiViewController;

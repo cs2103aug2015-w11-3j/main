@@ -11,6 +11,7 @@ public class Storage implements StorageInterface {
 	private static Storage instance;
 	private static boolean _isTestMode;
 	private ConfigurationInterface config;
+	private Database _database;
 	
     private Storage() {
     }
@@ -26,17 +27,18 @@ public class Storage implements StorageInterface {
     public void init() {
         Log.log("Storage Init");
     	config = Configuration.getInstance();
-    	 System.out.println("wocap");
         connectToDatabase();
         Log.log("Storage Init complete");
     }
 
     public void close() {
+    	assert(_database != null);
+        _database.disconnect();
         Log.log("Storage closed");
-        Database.disconnect();
     }
 
-    private void connectToDatabase() {        
+    private void connectToDatabase() {     
+    	_database = Database.getDatabase();
         boolean connectSuccess = tryConnect();
         
         if (!connectSuccess) {
@@ -48,17 +50,19 @@ public class Storage implements StorageInterface {
 
     @Override
     public boolean save(Task c) {
+    	assert(_database != null);
+    	
         TaskJson cj = new TaskJson(c);
         int id = c.getId();
         
         try {
         	if (id <= 0) {
-                id = Database.insert(cj);
+                id = _database.insert(cj);
                 c.setId(id);
-            } else if (Database.selectById(id) != null) {
-                Database.update(cj);
+            } else if (_database.selectById(id) != null) {
+            	_database.update(cj);
             } else {
-                Database.restore(cj);
+            	_database.restore(cj);
             }
         } catch (IOException e) {
         	return false;
@@ -69,9 +73,10 @@ public class Storage implements StorageInterface {
 
     @Override
     public boolean load(TasksBag c) {
-        List<TaskJson> data = Database.selectAll();
+    	assert(_database != null);
+        List<TaskJson> data = _database.selectAll();
         for (int i = 0; i < data.size(); i++) {
-            c.addTask(data.get(i).toCelebi());
+            c.addTask(data.get(i).toTask());
         }
 
         boolean loadSuccessful = true;
@@ -80,8 +85,9 @@ public class Storage implements StorageInterface {
 
     @Override
     public boolean delete(Task c) {
+    	assert(_database != null);
     	try {
-    		Database.delete(c.getId());
+    		_database.delete(c.getId());
     	} catch (IOException e) {
         	return false;
         }
@@ -91,13 +97,15 @@ public class Storage implements StorageInterface {
 
     @Override
     public void moveFileTo(String destination) throws IOException {
-    	Database.moveTo(destination, _isTestMode);
+    	assert(_database != null);
+    	_database.moveTo(destination, _isTestMode);
     }
     
     private boolean tryConnect() {
+    	assert(_database != null);
+    	
         String fileLoc = config.getUsrFileDirectory();
-        
-        return Database.connect(fileLoc, _isTestMode);
+        return _database.connect(fileLoc, _isTestMode);
     }
        
     // Methods below are only used for Storage unit tests
