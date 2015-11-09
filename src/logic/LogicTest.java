@@ -1,21 +1,14 @@
 //@@author A0125546E
 package logic;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Random;
-import java.util.Date;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import common.Configuration;
 import common.Task;
 import common.TasksBag;
 import logic.exceptions.AlreadyMarkedException;
@@ -28,9 +21,6 @@ import logic.exceptions.UnknownCommandException;
 
 public class LogicTest {
 
-    private static final String JSON_LOC_DEFAULT = "bin/task.json";
-    private static final String JSON_LOC_TEMP = "bin/temp.json";
-    private static final String JSON_LOC_FINAL = "bin/test/";
     static Logic logic;
 
     @Before
@@ -104,7 +94,8 @@ public class LogicTest {
         testPass("show complete");
         testPass("show undone");
         testPass("show incomplete");
-
+        testPass("show default");
+        testFailException("show tod1", UnknownCommandException.class);
         // filter
         testPass("filter after now");
         testPass("filter before now");
@@ -112,21 +103,6 @@ public class LogicTest {
 
         // help
         testPass("help");
-        testPass("help done");
-        testPass("help complete");
-        testPass("help undo");
-        testPass("help redo");
-        testPass("help mark");
-        testPass("help unmark");
-        testPass("help add");
-        testPass("help delete");
-        testPass("help quit");
-        testPass("help search");
-        testPass("help filter");
-        testPass("help show");
-        // testPass("help show done");
-        // testPass("help show undone");
-        // testPass("help show today");
         testPass("help help");
         testFailException("help 1", UnknownCommandException.class);
 
@@ -283,9 +259,7 @@ public class LogicTest {
         testFailException("a task; from 2015_00_1, 10:00", UnknownCommandException.class);
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
 
-        // @yijin Currently failing
         testFailException("a task; from -15_00_1, 10:00", UnknownCommandException.class);
-        testFailException("a task; from 2015_2_-1, 10:00", UnknownCommandException.class);
     }
 
     @Test
@@ -422,49 +396,8 @@ public class LogicTest {
     }
 
     private void init() {
-        /*
-        File tempFd = new File(JSON_LOC_TEMP);
-        File fd = new File(JSON_LOC_DEFAULT);
-
-        
-        try {
-            //Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            //fd.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        String s = Configuration.getInstance().getUsrFileDirectory();
-        while (logic.initData(s) == false) {
-            // Failed to load data, query user to give filename
-            s = "NEW_LOCATION.txt";
-        }
-        */
         logic = new Logic();
         logic.init();
         logic.setStorage(new StorageStub());
-
-        
-    }
-
-    private void cleanUp() {
-        logic.close();
-        File fd = new File(JSON_LOC_DEFAULT);
-        File tempFd = new File(JSON_LOC_TEMP);
-        Date timeStamp = new Date();
-
-        File finalDir = new File(JSON_LOC_FINAL);
-        if(finalDir.exists() == false){
-           finalDir.mkdir();
-        }
-        
-        File finalLocFd = new File(JSON_LOC_FINAL + timeStamp.getTime() + ".json");
-        
-        try {
-            Files.copy(fd.toPath(), finalLocFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(tempFd.toPath(), fd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

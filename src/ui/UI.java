@@ -83,11 +83,13 @@ public class UI implements UIInterface {
                     doDefault(fb);
                     break;
             }
-        } catch (LogicException e) {
+        } 
+        catch (LogicException e) {
             // show the error message if logic exception caught
         	usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.showFeedback(usrMsg);
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             e.printStackTrace();
             log.severe(e.toString());
         }
@@ -194,11 +196,13 @@ public class UI implements UIInterface {
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, cmd.getMsg());
             controller.showFeedback(usrMsg);
 
-        } catch (LogicException e) {
+        } 
+        catch (LogicException e) {
 
             usrMsg = Utilities.formatString(UI_TXT_FEEDBACK, e.cMsg);
             controller.showFeedback(usrMsg);
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             log.severe(e.toString());
         }
     }

@@ -11,7 +11,7 @@ import parser.commands.CommandData;
  */
 public class ViewAction implements Action {
     private static final String USR_MSG_VIEW_COMPLETE = "Switching view to completed tasks";
-    private static final String USR_MSG_VIEW_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_VIEW_INCOMPLETE = "Switching view to incomplete tasks";
     private static final String USR_MSG_VIEW_TODAY = "Switching view to today tasks";
 
     private CommandData cCommand;

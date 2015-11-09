@@ -121,7 +121,6 @@ public class Task {
         return cType.get();
     }
 
-    // @@author YUKA??
     // get properties
     public StringProperty nameProperty() {
         return cName;

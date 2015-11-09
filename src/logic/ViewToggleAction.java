@@ -8,7 +8,7 @@ import logic.exceptions.LogicException;
 //@@author A0125546E
 public class ViewToggleAction implements Action {
     private static final String USR_MSG_VIEW_COMPLETE = "Switching view to completed tasks";
-    private static final String USR_MSG_VIEW_INCOMPLETE = "Switching view to incompleted tasks";
+    private static final String USR_MSG_VIEW_INCOMPLETE = "Switching view to incomplete tasks";
     private static final String USR_MSG_VIEW_TODAY = "Switching view to today tasks";
 
     private TasksBag cBag;

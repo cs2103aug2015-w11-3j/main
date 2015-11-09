@@ -59,7 +59,8 @@ public class GUITest extends FxRobot {
 		controller = mainApp.getController();
 		WaitForAsyncUtils.waitFor(10, TimeUnit.SECONDS, primaryStage.showingProperty());
 		sleep(2000);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			e.printStackTrace(System.out);
 		}
 	}
