@@ -5,7 +5,7 @@
  * 
  * Database is the class implementing the actual file I/O logic, including appending, 
  * insertion, removal, loading of binary data, as well as moving the storage file to 
- * a certain location. Also handles serialisation and JSON load parsing. 
+ * a certain location. Also handles serialization and JSON load parsing. 
  * It keeps a direct and strict map of the content of tasks.json, which is an array
  * of the tasks (in JSON format). 
  */
@@ -30,8 +30,8 @@ import org.json.simple.JSONValue;
 
 class Database {
 	// name of storage files
-	private final static String FILENAME = "task.json";
-	private final static String TEST_FILENAME = "test_task.json";
+	private final static String FILENAME = "task.txt";
+	private final static String TEST_FILENAME = "test_task.txt";
 	
 	// used to apply singleton pattern
 	private static Database _instance;
