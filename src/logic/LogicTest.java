@@ -1,15 +1,9 @@
 //@@author A0125546E
 package logic;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Random;
-import java.util.Date;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,9 +21,6 @@ import logic.exceptions.UnknownCommandException;
 
 public class LogicTest {
 
-    private static final String JSON_LOC_DEFAULT = "bin/task.json";
-    private static final String JSON_LOC_TEMP = "bin/temp.json";
-    private static final String JSON_LOC_FINAL = "bin/test/";
     static Logic logic;
 
     @Before
@@ -405,49 +396,8 @@ public class LogicTest {
     }
 
     private void init() {
-        /*
-        File tempFd = new File(JSON_LOC_TEMP);
-        File fd = new File(JSON_LOC_DEFAULT);
-
-        
-        try {
-            //Files.copy(fd.toPath(), tempFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            //fd.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        String s = Configuration.getInstance().getUsrFileDirectory();
-        while (logic.initData(s) == false) {
-            // Failed to load data, query user to give filename
-            s = "NEW_LOCATION.txt";
-        }
-        */
         logic = new Logic();
         logic.init();
         logic.setStorage(new StorageStub());
-
-        
-    }
-
-    private void cleanUp() {
-        logic.close();
-        File fd = new File(JSON_LOC_DEFAULT);
-        File tempFd = new File(JSON_LOC_TEMP);
-        Date timeStamp = new Date();
-
-        File finalDir = new File(JSON_LOC_FINAL);
-        if(finalDir.exists() == false){
-           finalDir.mkdir();
-        }
-        
-        File finalLocFd = new File(JSON_LOC_FINAL + timeStamp.getTime() + ".json");
-        
-        try {
-            Files.copy(fd.toPath(), finalLocFd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(tempFd.toPath(), fd.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

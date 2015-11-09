@@ -8,7 +8,6 @@ import parser.commands.CommandDataParser;
 import static ui.view.CelebiViewController.Skin;
 import common.TasksBag;
 import parser.commands.CommandData;
-import parser.commands.CommandDataImpl;
 
 public interface ParserController extends CommandDataParser {
 	
