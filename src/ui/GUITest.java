@@ -1,4 +1,4 @@
-// @@author A0133895U
+//@@author A0133895U
 /**
  * This is the GUI test for Celebi.
  * Please first add testFx-3.1.2.jar , testfx-core-4.0.1-alpha.jar , guava-18.0.jar 
