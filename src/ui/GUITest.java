@@ -148,9 +148,9 @@ public class GUITest extends FxRobot {
 		String lengthyTask3 = generateRandomString(51);
 		
 		// check whether string that is longer than 50 characters is rejected
-		assert(!isTaskRejectedDueToLengthyName(lengthyTask1));
-		assert(!isTaskRejectedDueToLengthyName(lengthyTask2));
-		assert(isTaskRejectedDueToLengthyName(lengthyTask3));
+		assertTrue(!isTaskRejectedDueToLengthyName(lengthyTask1));
+		assertTrue(!isTaskRejectedDueToLengthyName(lengthyTask2));
+		assertTrue(isTaskRejectedDueToLengthyName(lengthyTask3));
 	}
 	
 	@Test
