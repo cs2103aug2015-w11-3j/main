@@ -25,7 +25,7 @@ import common.Task;
 import common.TasksBag;
 
 public class StorageTest {
-    private final static String TEST_FILENAME = "test_task.json";
+    private final static String TEST_FILENAME = "test_task.txt";
 
     // Test content to be written into storage file
     private final String TESTFILE_CONTENT_EMPTY = "";
