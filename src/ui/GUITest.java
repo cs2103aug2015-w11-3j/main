@@ -202,30 +202,30 @@ public class GUITest extends FxRobot {
 		Calendar c2 = Calendar.getInstance();
 		
 		// Test default
-		Assert.assertEquals("", filterLabel.getText());
+		Assert.assertEquals(" ", filterLabel.getText());
 		
 		// Test filtering after
 		write("filter after 2015/12/11").push(KeyCode.ENTER);
 		c1.set(2015, 12-1, 11, 8, 0);
 		formattedDate = controller.getDateFilterString(FilterDateState.AFTER, c1.getTime(), null);
-		Assert.assertEquals(String.format(FILTER_MSG, formattedDate), filterLabel.getText());
+		Assert.assertEquals(String.format(FILTER_MSG, formattedDate) + " ", filterLabel.getText());
 		
 		// Test filtering before
 		write("filter before 2016/3/2").push(KeyCode.ENTER);
 		c2.set(2016, 3-1, 2, 23, 59);
 		formattedDate = controller.getDateFilterString(FilterDateState.BEFORE, null, c2.getTime());
-		Assert.assertEquals(String.format(FILTER_MSG, formattedDate), filterLabel.getText());
+		Assert.assertEquals(String.format(FILTER_MSG, formattedDate) + " ", filterLabel.getText());
 		
 		// Test filtering between
 		write("filter from 2018/2/18 to 2019/10/12").push(KeyCode.ENTER);
 		c1.set(2018, 2-1, 18, 8, 0);
 		c2.set(2019, 10-1, 12, 23, 59);
 		formattedDate = controller.getDateFilterString(FilterDateState.BETWEEN, c1.getTime(), c2.getTime());
-		Assert.assertEquals(String.format(FILTER_MSG, formattedDate), filterLabel.getText());
+		Assert.assertEquals(String.format(FILTER_MSG, formattedDate) + " ", filterLabel.getText());
 		
 		// Test clearing filter
 		write("clear").push(KeyCode.ENTER);
-		Assert.assertEquals("", filterLabel.getText());
+		Assert.assertEquals(" ", filterLabel.getText());
 	}
 	
 	@Test
@@ -238,15 +238,15 @@ public class GUITest extends FxRobot {
 		clickOn("#command-area");
         
         // Test default
-     	Assert.assertEquals("", filterLabel.getText());
+	Assert.assertEquals(" ", filterLabel.getText());
      	
      	// Test searching
      	write("search task").push(KeyCode.ENTER);
-     	Assert.assertEquals(String.format(SEARCH_MSG, "task"), filterLabel.getText());
+     	Assert.assertEquals(" " + String.format(SEARCH_MSG, "task"), filterLabel.getText());
      	
      	// Test clearing filter
      	write("clear").push(KeyCode.ENTER);
-     	Assert.assertEquals("", filterLabel.getText());
+     	Assert.assertEquals(" ", filterLabel.getText());
 	}
 	
 	@Test
