@@ -71,7 +71,7 @@ public class Storage implements StorageInterface {
     public boolean load(TasksBag c) {
         List<TaskJson> data = Database.selectAll();
         for (int i = 0; i < data.size(); i++) {
-            c.addTask(data.get(i).toCelebi());
+            c.addTask(data.get(i).toTask());
         }
 
         boolean loadSuccessful = true;
