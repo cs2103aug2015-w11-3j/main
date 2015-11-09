@@ -23,8 +23,8 @@ public class TasksBag implements Iterable<Task> {
         NONE, AFTER, BEFORE, BETWEEN
     }
 
-    private static final int FLOAT_LIMIT = 3;
-    private static final int TASKS_LIMIT = 15;
+    private static final int FLOAT_LIMIT = 2;
+    private static final int TASKS_LIMIT = 7;
     private static final int DEFAULT_DAY_RANGE = 3;
 
     private ViewType cViewType = null;
