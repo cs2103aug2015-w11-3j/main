@@ -54,7 +54,8 @@ public abstract class Aliases {
 		"skin",
 		"help",
 		"exit",
-		"move"
+		"move",
+		"alias"
 	};
 	
 	static final String[] CMD_ADD = {
