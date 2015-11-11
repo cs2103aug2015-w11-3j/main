@@ -615,7 +615,8 @@ public class CelebiViewController {
         String MESSAGE_FILTER = "Now filtering: %1$s. ";
         String MESSAGE_SEARCH = "Now searching: %1$s.";
     	
-    	String displayString = "";
+    	String displayFilterString = "";
+    	String displaySearchString = "";
         String dateFilterString = getDateFilterString(bag.getDateState(), bag.getStartDate(), bag.getEndDate());
         String searchKeywordString = getSearchKeywordString(bag);
 
@@ -624,7 +625,7 @@ public class CelebiViewController {
 
         } 
         else {
-            displayString = String.format(MESSAGE_FILTER, dateFilterString);
+            displayFilterString = String.format(MESSAGE_FILTER, dateFilterString);
         }
 
         // if the string is empty, don't show the search message
@@ -632,12 +633,13 @@ public class CelebiViewController {
 
         } 
         else {
-            displayString = String.format(MESSAGE_SEARCH, searchKeywordString);
+            displaySearchString = String.format(MESSAGE_SEARCH, searchKeywordString);
         }
-
+        
+        String displayString = displayFilterString + " " + displaySearchString;
         filterLabel.setText(displayString);
     }
-
+    	
     /**
      * Format the filter display
      * @param state
@@ -795,7 +797,7 @@ public class CelebiViewController {
         this.mainApp = mainApp;
 
         // Add observable list data to the table
-        System.out.println(ui == null);
+        assert(ui != null);
         updateTableItems(ui.getCelebiList());
     }
 
