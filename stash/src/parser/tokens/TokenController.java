@@ -5,13 +5,7 @@ import java.io.IOException;
 
 import common.Task.DataType;
 import common.TasksBag.ViewType;
-import parser.commands.ClearCommand;
-import parser.commands.CommandParams;
-import parser.commands.HelpCommand;
-import parser.commands.QuitCommand;
-import parser.commands.RedoCommand;
-import parser.commands.ThemeCommand;
-import parser.commands.UndoCommand;
+import parser.commands.*;
 import parser.commands.CommandParams.CmdType;
 import ui.view.CelebiViewController.Skin;
 
@@ -170,16 +164,16 @@ public interface TokenController {
 	// Aliases for themes
 	/////////////////////////////////////////////////////
 	static final String[] THEME_DAY = {
-			"day",
-			"light",
-			"bright",
-			"white"
+		"day",
+		"light",
+		"bright",
+		"white"
 	};
 	static final String[] THEME_NIGHT = {
-			"night",
-			"shadow",
-			"dark",
-			"black"
+		"night",
+		"shadow",
+		"dark",
+		"black"
 	};
 
     /////////////////////////////////////////////////////////
@@ -196,27 +190,4 @@ public interface TokenController {
 		"reset"
 	};
 
-	public static final Class<?>[] ALL_COMMANDS = {
-			// 0-ary
-			QuitCommand.class,
-			HelpCommand.class,
-			UndoCommand.class,
-			RedoCommand.class,
-			ClearCommand.class,
-			// 1-ary
-			ThemeCommand.class
-//			DeleteCommand.class,
-//			MarkCommand.class,
-//			UnmarkCommand.class,
-//			ShowCommand.class,
-//			SearchCommand.class,
-//			MoveCommand.class,
-//			// 2-ary
-//			AliasCommand.class,
-//			// 3-ary
-//			UpdateCommand.class,
-//			// variadic
-//			AddCommand.class,
-//			FilterCommand.class
-	};
 }

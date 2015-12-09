@@ -11,30 +11,18 @@ import common.Configuration;
 import common.Task.DataType;
 import common.TasksBag.ViewType;
 import parser.ParserFacade;
-import parser.commands.AliasCommand;
-import parser.commands.ClearCommand;
-import parser.commands.CommandParams.CmdType;
-import parser.commands.DeleteCommand;
-import parser.commands.HelpCommand;
-import parser.commands.MarkCommand;
-import parser.commands.MoveCommand;
-import parser.commands.QuitCommand;
-import parser.commands.RedoCommand;
-import parser.commands.SearchCommand;
-import parser.commands.ShowCommand;
-import parser.commands.ThemeCommand;
-import parser.commands.UndoCommand;
-import parser.commands.UnmarkCommand;
+import parser.commands.*;
 import parser.commands.abstracted.ConcreteCommand;
 import ui.view.CelebiViewController.Skin;
 
+
 /**
- * Implements operations defined in Aliases interface.
+ * Implements operations defined in TokenController interface.
  * 
  * Uses Maps for keyword mapping and checking.
  * Uses the common.config.CustomAliases class methods to change user alias mappings.
  * 
- * @author Leow Yijin
+ * Also a singleton @see getInstance
  */
 public class DefaultTokenController implements TokenController {
 
@@ -47,27 +35,27 @@ public class DefaultTokenController implements TokenController {
 	private static DefaultTokenController instance;
 
 	private static ConcreteCommand[] ALL_COMMANDS = {
-			// 0-ary
-			new QuitCommand("PLACEHOLDER"),
-			new HelpCommand("PLACEHOLDER"),
-			new UndoCommand("PLACEHOLDER"),
-			new RedoCommand("PLACEHOLDER"),
-			new ClearCommand("PLACEHOLDER"),
-			// 1-ary
-			new ThemeCommand("PLACEHOLDER"),
-			new DeleteCommand("PLACEHOLDER"),
-			new MarkCommand("PLACEHOLDER"),
-			new UnmarkCommand("PLACEHOLDER"),
-			new ShowCommand("PLACEHOLDER"),
-			new SearchCommand("PLACEHOLDER"),
-			new MoveCommand("PLACEHOLDER"),
-			// 2-ary
-			new AliasCommand("PLACEHOLDER"),
-//			// 3-ary
-//			new UpdateCommand("PLACEHOLDER"),
-//			// variadic
-//			new AddCommand("PLACEHOLDER"),
-//			new FilterCommand("PLACEHOLDER")
+		// 0-ary
+		new QuitCommand("PLACEHOLDER"),
+		new HelpCommand("PLACEHOLDER"),
+		new UndoCommand("PLACEHOLDER"),
+		new RedoCommand("PLACEHOLDER"),
+		new ClearCommand("PLACEHOLDER"),
+		// 1-ary
+		new ThemeCommand("PLACEHOLDER"),
+		new DeleteCommand("PLACEHOLDER"),
+		new MarkCommand("PLACEHOLDER"),
+		new UnmarkCommand("PLACEHOLDER"),
+		new ShowCommand("PLACEHOLDER"),
+		new SearchCommand("PLACEHOLDER"),
+		new MoveCommand("PLACEHOLDER"),
+		// 2-ary
+		new AliasCommand("PLACEHOLDER"),
+		// 3-ary
+		new UpdateCommand("PLACEHOLDER"),
+		// variadic
+		new AddCommand("PLACEHOLDER"),
+		new FilterCommand("PLACEHOLDER")
 	};
 	
 	// Stores the default keyword->CmdType mappings.
@@ -134,10 +122,12 @@ public class DefaultTokenController implements TokenController {
 		initialised = true;
 	}
 	
+	// initialises Skin keyword token map
 	private void mapSkinKeywords() {
 		mapAliasesToValue(THEME_KEYWORDS, Skin.DAY, Arrays.asList(THEME_DAY));
 		mapAliasesToValue(THEME_KEYWORDS, Skin.NIGHT, Arrays.asList(THEME_NIGHT));
 	}
+	// initialises View keyword token map
 	private void mapViewKeywords() {
 		mapAliasesToValue(VIEW_KEYWORDS, ViewType.DEFAULT, Arrays.asList(VIEW_DEFAULT));
 		mapAliasesToValue(VIEW_KEYWORDS, ViewType.COMPLETED, Arrays.asList(VIEW_COMPLETED));
@@ -325,12 +315,12 @@ public class DefaultTokenController implements TokenController {
 		return regexContaining(FILTER_ARG_BTW_DELIM);
 	}
 	
-	
+	// REGEX GENERATOR: generates a regex string to match any String element in the tokens argument
 	private static final String regexContaining(String[] tokens) {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(?:");
 		for (String tok : tokens) {
-			sb.append("\\Q").append(tok).append("\\E"); // necesary escaping
+			sb.append("\\Q").append(tok).append("\\E"); // necessary escaping
 			sb.append('|');
 		}
 		if (tokens.length > 0) { 
